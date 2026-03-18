@@ -13,6 +13,7 @@ import ChallengeDetailPage from "./pages/ChallengeDetailPage";
 import HomeworkPage from "./pages/HomeworkPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import AdminHomeworksPage from "./pages/AdminHomeworksPage";
+import AboutPage from "./pages/AboutPage";
 import { UserProvider, useUserSafe } from "./context/UserContext";
 import { LessonProvider } from "./context/LessonContext";
 
@@ -145,6 +146,11 @@ export const router = createBrowserRouter([
         // Admin homeworks management page
         path: "admin-homeworks",
         Component: AdminHomeworksPage,
+      },
+      {
+        // About page
+        path: "about",
+        Component: AboutPage,
       },
       {
         // Catch-all — redirect to home
