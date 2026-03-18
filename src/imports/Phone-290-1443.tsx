@@ -16,7 +16,7 @@ function ListItemContainer() {
   return (
     <div className="content-stretch flex gap-[20px] items-center relative shrink-0 w-[484px]" data-name="List Item Container">
       <ListItem />
-      <p className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] relative shrink-0 text-[#f1f2fb] text-[24px] whitespace-nowrap">Зачем цвет нужен в интерфейсе</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f1f2fb] text-[24px] whitespace-nowrap">Зачем цвет нужен в интерфейсе</p>
     </div>
   );
 }
@@ -215,7 +215,7 @@ function ExerciseBadge() {
 function Frame1() {
   return (
     <div className="content-stretch flex items-start justify-between relative shrink-0 w-full" data-name="Frame">
-      <p className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] relative shrink-0 text-[#f1f2fb] text-[26px] whitespace-nowrap">Какой интерфейс лучше?</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f1f2fb] text-[26px] whitespace-nowrap">Какой интерфейс лучше?</p>
       <ExerciseBadge />
     </div>
   );

@@ -213,7 +213,7 @@ export function ActiveCourseCard({ course }: { course: CourseDisplay }) {
                 </p>
                 <div className="bg-[#404d52] flex h-[24px] items-center justify-center px-[8px] gap-[4px] rounded-full">
                   <Zap size={10} color="#ff6b21" fill="#ff6b21" />
-                  <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#eef5ff] text-[9px] whitespace-nowrap">
+                  <p className="font-['Inter:Semi_Bold',sans-serif] font-medium text-[#eef5ff] text-[9px] whitespace-nowrap">
                     {totalXP} XP
                   </p>
                 </div>
@@ -287,7 +287,7 @@ export function ActiveCourseCard({ course }: { course: CourseDisplay }) {
                     </p>
                     <div className="bg-[#404d52] content-stretch flex h-[28px] items-center justify-center px-[10px] gap-[4px] relative rounded-full shrink-0">
                       <Zap size={12} color="#ff6b21" fill="#ff6b21" />
-                      <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[15px] not-italic relative shrink-0 text-[#eef5ff] text-[10px] whitespace-nowrap">
+                      <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[15px] not-italic relative shrink-0 text-[#eef5ff] text-[10px] whitespace-nowrap">
                         {totalXP} XP
                       </p>
                     </div>

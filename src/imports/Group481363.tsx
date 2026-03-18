@@ -202,7 +202,7 @@ function Tapbar() {
 function Frame() {
   return (
     <div className="-translate-x-1/2 -translate-y-1/2 absolute bg-[#364146] content-stretch flex h-[25.017px] items-center justify-center left-[calc(50%+0.49px)] pb-[8.266px] pt-[7.026px] px-[21.078px] rounded-[8.266px] top-[calc(100%-52.33px)] w-[120.341px]">
-      <p className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[1.307] relative shrink-0 text-[#f7f7f8] text-[8px] text-center whitespace-nowrap">Выйти</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.307] relative shrink-0 text-[#f7f7f8] text-[8px] text-center whitespace-nowrap">Выйти</p>
     </div>
   );
 }
@@ -210,7 +210,7 @@ function Frame() {
 function Frame1() {
   return (
     <div className="-translate-x-1/2 -translate-y-1/2 absolute bg-[#d6d6d6] content-stretch flex h-[25.017px] items-center justify-center left-[calc(50%+0.49px)] pb-[7.732px] pt-[6.185px] px-[12.37px] rounded-[8.27px] top-[calc(100%-23.88px)] w-[120.341px]">
-      <p className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[1.307] relative shrink-0 text-[#3f3f3f] text-[8px] text-center whitespace-nowrap">Отмена</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.307] relative shrink-0 text-[#3f3f3f] text-[8px] text-center whitespace-nowrap">Отмена</p>
     </div>
   );
 }

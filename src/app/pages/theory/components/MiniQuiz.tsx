@@ -26,7 +26,7 @@ export function MiniQuiz({ sectionIndex, state, isCorrect, onAnswerSelect, onCon
     <div className="bg-[#394449] rounded-[15px] w-full mt-[10px]">
       <div className="p-[30px] flex flex-col gap-[20px]">
         <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-          <p className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] text-[#f1f2fb] text-[24px] flex-1 pr-[20px]">
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f1f2fb] text-[24px] flex-1 pr-[20px]">
             Какой интерфейс лучше?
           </p>
           <div className="content-stretch flex gap-[7px] items-center relative shrink-0">
@@ -61,10 +61,10 @@ export function MiniQuiz({ sectionIndex, state, isCorrect, onAnswerSelect, onCon
                 <div className="content-stretch flex gap-[12px] items-center justify-end relative shrink-0">
                   <div className="content-stretch flex gap-[9px] items-end relative shrink-0">
                     <PartyPopperIcon />
-                    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[20.587px] relative shrink-0 text-[#cdf6db] text-[18px] whitespace-nowrap">Верно!</p>
+                    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[20.587px] relative shrink-0 text-[#cdf6db] text-[18px] whitespace-nowrap">Верно!</p>
                   </div>
                   <div className="content-stretch flex items-center justify-between relative shrink-0 w-[47px]">
-                    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[20.587px] relative shrink-0 text-[#00d043] text-[18px] whitespace-nowrap">+15</p>
+                    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[20.587px] relative shrink-0 text-[#00d043] text-[18px] whitespace-nowrap">+15</p>
                     <SparkleIcon />
                   </div>
                 </div>
@@ -76,7 +76,7 @@ export function MiniQuiz({ sectionIndex, state, isCorrect, onAnswerSelect, onCon
               <div className="content-stretch flex flex-col gap-[10px] items-start justify-center relative shrink-0 pr-[20px]" style={{ width: '50%' }}>
                 <div className="flex gap-[10px] items-center">
                   <FistIcon />
-                  <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[1.2] relative text-[#ffbaaa] text-[18px]">Почти получилось!</p>
+                  <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[1.2] relative text-[#ffbaaa] text-[18px]">Почти получилось!</p>
                 </div>
                 <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[1.2] relative shrink-0 text-[16px] text-[#ffd8d2]">
                   Основная кнопка имеет высокий контраст и лучше выделяется, поэтому интерфейс читается быстрее.
@@ -93,7 +93,7 @@ export function MiniQuiz({ sectionIndex, state, isCorrect, onAnswerSelect, onCon
               }`}
             >
               {isLastSection && showFeedback && <Zap className="h-[24px] w-[17px] text-[#f1f2fb]" fill="currentColor" />}
-              <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[22.852px] relative shrink-0 text-[24px] whitespace-nowrap ${
+              <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[22.852px] relative shrink-0 text-[24px] whitespace-nowrap ${
                 isLastSection && showFeedback ? "text-[#f1f2fb]" : "text-[#343e42]"
               }`}>
                 {isLastSection && showFeedback ? "Начать квиз" : "Продолжить"}
@@ -127,7 +127,7 @@ export function MiniQuiz2({ sectionIndex, state, isCorrect, onAnswerSelect, onCo
     <div className={compact ? "flex flex-col gap-[16px] w-full" : "bg-[#394449] rounded-[15px] w-full mt-[10px]"}>
       <div className={compact ? "flex flex-col gap-[16px]" : "p-[30px] flex flex-col gap-[25px]"}>
         <div className={`content-stretch flex items-center justify-between relative shrink-0 w-full ${compact ? 'px-[4px]' : ''}`}>
-          <p className={`font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] text-[#f1f2fb] ${compact ? 'text-[22px]' : 'text-[24px]'} flex-1 pr-[10px]`}>
+          <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f1f2fb] ${compact ? 'text-[22px]' : 'text-[24px]'} flex-1 pr-[10px]`}>
             Какой подход к цветам лучше?
           </p>
           <div className="content-stretch flex gap-[7px] items-center relative shrink-0">
@@ -164,10 +164,10 @@ export function MiniQuiz2({ sectionIndex, state, isCorrect, onAnswerSelect, onCo
                 <div className="content-stretch flex gap-[12px] items-center justify-end relative shrink-0">
                   <div className="content-stretch flex gap-[9px] items-end relative shrink-0">
                     <PartyPopperIcon />
-                    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[20.587px] relative shrink-0 text-[#cdf6db] text-[18px] whitespace-nowrap">Верно!</p>
+                    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[20.587px] relative shrink-0 text-[#cdf6db] text-[18px] whitespace-nowrap">Верно!</p>
                   </div>
                   <div className="content-stretch flex items-center justify-between relative shrink-0 w-[47px]">
-                    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[20.587px] relative shrink-0 text-[#00d043] text-[18px] whitespace-nowrap">+15</p>
+                    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[20.587px] relative shrink-0 text-[#00d043] text-[18px] whitespace-nowrap">+15</p>
                     <SparkleIcon />
                   </div>
                 </div>
@@ -179,7 +179,7 @@ export function MiniQuiz2({ sectionIndex, state, isCorrect, onAnswerSelect, onCo
               <div className="content-stretch flex flex-col gap-[10px] items-start justify-center relative shrink-0 pr-[20px]" style={{ flex: '1 1 160px' }}>
                 <div className="flex gap-[10px] items-center">
                   <FistIcon />
-                  <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[1.2] relative text-[#ffbaaa] text-[18px]">Почти получилось!</p>
+                  <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[1.2] relative text-[#ffbaaa] text-[18px]">Почти получилось!</p>
                 </div>
                 <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[1.2] relative shrink-0 text-[16px] text-[#ffd8d2]">
                   Если интерфейс использует много ярких цветов, элементы начинают конкурировать между собой и пользователю становится сложнее понять, куда смотреть.
@@ -195,7 +195,7 @@ export function MiniQuiz2({ sectionIndex, state, isCorrect, onAnswerSelect, onCo
               }`}
             >
               {isLastSection && showFeedback && <Zap className="h-[24px] w-[17px] text-[#f1f2fb]" fill="currentColor" />}
-              <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[22.852px] relative shrink-0 text-[24px] whitespace-nowrap ${
+              <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[22.852px] relative shrink-0 text-[24px] whitespace-nowrap ${
                 isLastSection && showFeedback ? "text-[#f1f2fb]" : "text-[#343e42]"
               }`}>
                 {isLastSection && showFeedback ? "Начать квиз" : "Продолжить"}
@@ -280,7 +280,7 @@ export function MiniQuizText({
     <div className={compact ? "flex flex-col gap-[16px] w-full" : "bg-[#394449] rounded-[15px] w-full mt-[10px]"}>
       <div className={compact ? "flex flex-col gap-[16px]" : "p-[30px] flex flex-col gap-[25px]"}>
         <div className={`content-stretch flex items-center justify-between relative shrink-0 w-full ${compact ? 'px-[4px]' : ''}`}>
-          <p className={`font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] text-[#f1f2fb] ${compact ? 'text-[22px]' : 'text-[24px]'} flex-1 pr-[10px]`}>
+          <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f1f2fb] ${compact ? 'text-[22px]' : 'text-[24px]'} flex-1 pr-[10px]`}>
             {question}
           </p>
           <div className="content-stretch flex gap-[7px] items-center relative shrink-0">
@@ -317,10 +317,10 @@ export function MiniQuizText({
                 <div className="content-stretch flex gap-[12px] items-center justify-end relative shrink-0">
                   <div className="content-stretch flex gap-[9px] items-end relative shrink-0">
                     <PartyPopperIcon />
-                    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[20.587px] relative shrink-0 text-[#cdf6db] text-[18px] whitespace-nowrap">Верно 👍</p>
+                    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[20.587px] relative shrink-0 text-[#cdf6db] text-[18px] whitespace-nowrap">Верно 👍</p>
                   </div>
                   <div className="content-stretch flex items-center justify-between relative shrink-0 w-[47px]">
-                    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[20.587px] relative shrink-0 text-[#00d043] text-[18px] whitespace-nowrap">+15</p>
+                    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[20.587px] relative shrink-0 text-[#00d043] text-[18px] whitespace-nowrap">+15</p>
                     <SparkleIcon />
                   </div>
                 </div>
@@ -330,7 +330,7 @@ export function MiniQuizText({
               <div className="content-stretch flex flex-col gap-[10px] items-start justify-center relative shrink-0 pr-[20px]" style={{ flex: '1 1 160px' }}>
                 <div className="flex gap-[10px] items-center">
                   <FistIcon />
-                  <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[1.2] relative text-[#ffbaaa] text-[18px]">Почти получилось!</p>
+                  <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[1.2] relative text-[#ffbaaa] text-[18px]">Почти получилось!</p>
                 </div>
                 <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[1.2] relative shrink-0 text-[16px] text-[#ffd8d2]">{incorrectFeedback}</p>
               </div>
@@ -344,7 +344,7 @@ export function MiniQuizText({
               }`}
             >
               {isLastSection && showFeedback && <Zap className="h-[24px] w-[17px] text-[#f1f2fb]" fill="currentColor" />}
-              <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[22.852px] relative shrink-0 text-[24px] whitespace-nowrap ${
+              <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[22.852px] relative shrink-0 text-[24px] whitespace-nowrap ${
                 isLastSection && showFeedback ? "text-[#f1f2fb]" : "text-[#343e42]"
               }`}>
                 {isLastSection && showFeedback ? "Начать квиз" : "Продолжить"}

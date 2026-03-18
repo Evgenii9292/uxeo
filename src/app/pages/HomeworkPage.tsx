@@ -14,7 +14,7 @@ import { useUserSafe } from "../context/UserContext";
 
 // ── Shared styles ──────────────────────────────────────────────────────────────
 
-const TEXT_TITLE  = "font-['Roboto_Condensed:Bold',sans-serif] font-semibold";
+const TEXT_TITLE  = "font-['Roboto_Condensed:Bold',sans-serif] font-medium";
 const TEXT_BODY   = "font-['Roboto_Condensed:Regular',sans-serif] font-normal";
 const TEXT_MEDIUM = "font-['Roboto_Condensed:Medium',sans-serif] font-medium";
 

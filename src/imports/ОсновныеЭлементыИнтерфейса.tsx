@@ -1346,7 +1346,7 @@ function Paragraph70() {
   return (
     <div className="h-[15px] relative shrink-0 w-[8.813px]" data-name="Paragraph">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
-        <p className="absolute font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[15px] left-0 not-italic text-[#d1d3db] text-[10px] top-[0.5px] whitespace-nowrap">✓</p>
+        <p className="absolute font-['Inter:Semi_Bold',sans-serif] font-medium leading-[15px] left-0 not-italic text-[#d1d3db] text-[10px] top-[0.5px] whitespace-nowrap">✓</p>
       </div>
     </div>
   );

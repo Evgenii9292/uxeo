@@ -61,7 +61,7 @@ function Frame1() {
 function TextContainer() {
   return (
     <div className="content-stretch flex flex-[1_0_0] flex-col gap-[15px] items-start min-h-px min-w-px relative text-[#232a2d]" data-name="Text Container">
-      <p className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] relative shrink-0 text-[26px] whitespace-nowrap">Цвет</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[26px] whitespace-nowrap">Цвет</p>
       <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] min-w-full relative shrink-0 text-[18px] w-[min-content]">Базовые принципы цвета в интерфейсах: контраст, акцентные и нейтральные цвета.</p>
     </div>
   );

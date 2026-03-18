@@ -72,7 +72,7 @@ function OrangeButton({ label, onClick, isMobile }: { label: string; onClick: ()
         transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
     >
       <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
-      <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[1.2] text-[#f4f5fc] whitespace-nowrap ${isMobile ? "text-[20px]" : "text-[26px]"}`}>{label}</p>
+      <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[1.2] text-[#f4f5fc] whitespace-nowrap ${isMobile ? "text-[20px]" : "text-[26px]"}`}>{label}</p>
     </button>
   );
 }
@@ -86,7 +86,7 @@ function SecondaryButton({ label, onClick }: { label: string; onClick: () => voi
         transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
     >
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[15px] border border-[#57646a] border-solid transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
-      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[22.955px] text-[#c8ccd4] text-[26px] whitespace-nowrap">{label}</p>
+      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[22.955px] text-[#c8ccd4] text-[26px] whitespace-nowrap">{label}</p>
     </button>
   );
 }
@@ -131,7 +131,7 @@ export default function LessonCompletionScreen({
             <PartyPopperIcon />
 
             <div className="flex flex-col items-center gap-[16px]">
-              <h1 className={`font-['Roboto_Condensed:Bold',sans-serif] font-semibold text-[#cdf6db] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[28px]" : "text-[48px]"}`}>
+              <h1 className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium text-[#cdf6db] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[28px]" : "text-[48px]"}`}>
                 Поздравляем!
               </h1>
               <p className={`font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#f4f5fc] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[17px]" : "text-[24px]"}`}>
@@ -156,7 +156,7 @@ export default function LessonCompletionScreen({
           /* ── STATE B: FAILED ────────────────────────────────────────────── */
           <>
             <div className="flex flex-col items-center gap-[16px]">
-              <h1 className={`font-['Roboto_Condensed:Bold',sans-serif] font-semibold text-[#ffbaaa] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[28px]" : "text-[48px]"}`}>
+              <h1 className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium text-[#ffbaaa] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[28px]" : "text-[48px]"}`}>
                 Попробуйте ещё раз
               </h1>
               <p className={`font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#f4f5fc] leading-[1.4] text-center max-w-[480px] ${isMobile ? "text-[15px] px-[24px]" : "text-[22px]"}`}>
@@ -168,7 +168,7 @@ export default function LessonCompletionScreen({
             {/* Partial XP (if any) */}
             {earnedXP > 0 && (
               <div className="flex items-center gap-[12px]">
-                <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-semibold text-[#798589] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[20px]" : "text-[28px]"}`}>
+                <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium text-[#798589] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[20px]" : "text-[28px]"}`}>
                   +{earnedXP} XP
                 </p>
                 <LightningIcon size={isMobile ? 18 : 26} />

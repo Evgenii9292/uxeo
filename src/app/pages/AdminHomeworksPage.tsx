@@ -3,7 +3,7 @@ import { useUserSafe } from "../context/UserContext";
 import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 import { useNavigate } from "react-router";
 
-const TEXT_TITLE = "font-['Roboto_Condensed:Bold',sans-serif] font-semibold";
+const TEXT_TITLE = "font-['Roboto_Condensed:Bold',sans-serif] font-medium";
 const TEXT_BODY = "font-['Roboto_Condensed:Regular',sans-serif] font-normal";
 
 interface Homework {

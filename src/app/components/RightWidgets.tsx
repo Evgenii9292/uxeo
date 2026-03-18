@@ -188,7 +188,7 @@ function LeagueProgress() {
                       </svg>
                     </div>
                   </div>
-                  <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[0] relative shrink-0 text-[#798589] text-[0px] text-[18px] whitespace-nowrap">
+                  <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[0] relative shrink-0 text-[#798589] text-[0px] text-[18px] whitespace-nowrap">
                     <span className="leading-[20px] text-[#798589]">{xp}</span>
                     <span className="leading-[20px]">{` `}</span>
                     <span className="leading-[20px]">{`/ ${LEAGUE_MAX} XP `}</span>
@@ -394,7 +394,7 @@ function DailyChallenge() {
                       </svg>
                     </div>
                   </div>
-                  <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[0] relative shrink-0 text-[#f1f2fb] text-[0px] text-[18px] whitespace-nowrap">
+                  <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[0] relative shrink-0 text-[#f1f2fb] text-[0px] text-[18px] whitespace-nowrap">
                     <span className="leading-[20px] text-[#798589]">{xp} / {DAILY_MAX} XP</span>
                   </p>
                 </div>
@@ -525,7 +525,7 @@ export default function RightWidgets({ compact = false }: { compact?: boolean })
                 Начать квиз
               </p>
               <div className="bg-[#ff6b21] h-[24px] relative rounded-[12px] shrink-0 px-[10px] flex items-center justify-center">
-                <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[14px] relative shrink-0 text-[#ffffff] text-[9px] whitespace-nowrap">
+                <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[14px] relative shrink-0 text-[#ffffff] text-[9px] whitespace-nowrap">
                   +125 XP
                 </p>
               </div>

@@ -46,7 +46,7 @@ function Frame30() {
   return (
     <div className="content-stretch flex gap-[20px] items-center relative shrink-0 w-[484px]">
       <Container2 />
-      <p className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] relative shrink-0 text-[#798589] text-[24px] whitespace-nowrap">Роль цвета в интерфейсе</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#798589] text-[24px] whitespace-nowrap">Роль цвета в интерфейсе</p>
     </div>
   );
 }
@@ -128,7 +128,7 @@ function Frame31() {
   return (
     <div className="content-stretch flex gap-[20px] items-center relative shrink-0 w-[484px]">
       <Container6 />
-      <p className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] relative shrink-0 text-[#798589] text-[24px] whitespace-nowrap">Роль цвета в интерфейсе</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#798589] text-[24px] whitespace-nowrap">Роль цвета в интерфейсе</p>
     </div>
   );
 }
@@ -180,7 +180,7 @@ function ListItemContainer() {
   return (
     <div className="content-stretch flex gap-[20px] items-center relative shrink-0 w-[484px]" data-name="List Item Container">
       <Frame34 />
-      <p className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] relative shrink-0 text-[#f1f2fb] text-[24px] whitespace-nowrap">Зачем цвет нужен в интерфейсе</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f1f2fb] text-[24px] whitespace-nowrap">Зачем цвет нужен в интерфейсе</p>
     </div>
   );
 }
@@ -379,7 +379,7 @@ function Frame35() {
 function Frame2() {
   return (
     <div className="content-stretch flex items-start justify-between relative shrink-0 w-full" data-name="Frame">
-      <p className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] relative shrink-0 text-[#f1f2fb] text-[26px] whitespace-nowrap">Какой интерфейс лучше?</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f1f2fb] text-[26px] whitespace-nowrap">Какой интерфейс лучше?</p>
       <Frame35 />
     </div>
   );
@@ -1051,7 +1051,7 @@ function BackButton() {
           </svg>
         </div>
       </div>
-      <p className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[32.747px] relative shrink-0 text-[#f4f5fc] text-[26px] whitespace-nowrap">Теория</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[32.747px] relative shrink-0 text-[#f4f5fc] text-[26px] whitespace-nowrap">Теория</p>
     </div>
   );
 }
@@ -1477,7 +1477,7 @@ function Container30() {
   return (
     <div className="bg-[#d65e43] h-[28.585px] relative rounded-[12296925px] shrink-0" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex h-full items-center justify-center px-[11.727px] relative">
-        <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[15.392px] not-italic relative shrink-0 text-[#eef5ff] text-[10.261px] whitespace-nowrap">+125 XP</p>
+        <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[15.392px] not-italic relative shrink-0 text-[#eef5ff] text-[10.261px] whitespace-nowrap">+125 XP</p>
       </div>
     </div>
   );

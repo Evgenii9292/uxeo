@@ -153,7 +153,7 @@ export function RedCardIcon() {
           </g>
         </svg>
       </div>
-      <p className="absolute font-['Roboto_Condensed:Bold',sans-serif] font-semibold inset-[20%_47.25%_32.17%_26.67%] leading-[1.2] text-[#f1f2fb] text-[9.2px] whitespace-nowrap">А</p>
+      <p className="absolute font-['Roboto_Condensed:Bold',sans-serif] font-medium inset-[20%_47.25%_32.17%_26.67%] leading-[1.2] text-[#f1f2fb] text-[9.2px] whitespace-nowrap">А</p>
     </div>
   );
 }
