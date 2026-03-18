@@ -1,3 +1,6 @@
+import contrastQ1A from "../assets/contrast-q1-a.svg";
+import contrastQ1B from "../assets/contrast-q1-b.svg";
+
 function Paragraph() {
   return (
     <div className="absolute h-[21px] left-0 top-[8px] w-[9.297px]" data-name="Paragraph">
@@ -1262,26 +1265,26 @@ export default function Component() {
 
 // ── Compare UI — Q1 ──────────────────────────────────────────────────────────
 export function CQCompare1A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ContrastQuiz2VariantA /></div>;
+  return <div style={{ position: "relative", width: 207, height: 231 }}><img src={contrastQ1A} style={{ width: "100%", height: "100%", objectFit: "contain" }} /></div>;
 }
 export function CQCompare1B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ContrastQuiz2VariantB /></div>;
+  return <div style={{ position: "relative", width: 207, height: 231 }}><img src={contrastQ1B} style={{ width: "100%", height: "100%", objectFit: "contain" }} /></div>;
 }
 
 // ── Compare UI — Q2 ──────────────────────────────────────────────────────────
 export function CQCompare2A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ContrastQuiz3VariantA /></div>;
+  return <div style={{ position: "relative", width: 207, height: 231 }}><ContrastQuiz2VariantA /></div>;
 }
 export function CQCompare2B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ContrastQuiz3VariantB /></div>;
+  return <div style={{ position: "relative", width: 207, height: 231 }}><ContrastQuiz2VariantB /></div>;
 }
 
 // ── Compare UI — Q3 ──────────────────────────────────────────────────────────
 export function CQCompare3A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ContrastQuiz4VariantA /></div>;
+  return <div style={{ position: "relative", width: 207, height: 231 }}><ContrastQuiz3VariantA /></div>;
 }
 export function CQCompare3B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ContrastQuiz4VariantB /></div>;
+  return <div style={{ position: "relative", width: 207, height: 231 }}><ContrastQuiz3VariantB /></div>;
 }
 
 // ── Single Choice — Q4 ───────────────────────────────────────────────────────

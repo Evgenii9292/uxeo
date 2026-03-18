@@ -304,7 +304,7 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
                   aria-hidden="true"
                   className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none"
                 />
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[28px] whitespace-nowrap relative">
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[26px] whitespace-nowrap relative">
                   {pct >= 100 ? "Повторить" : pct > 0 ? "Продолжить" : "Квиз"}
                 </p>
               </button>
@@ -317,7 +317,7 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
                   aria-hidden="true"
                   className="absolute inset-0 pointer-events-none rounded-[15px] shadow-[0px_5px_0px_0px_#d2d4df] group-hover:shadow-[0px_2px_0px_0px_#d2d4df] group-active:shadow-none transition-shadow duration-75"
                 />
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#323c41] text-[28px] whitespace-nowrap relative">
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#323c41] text-[26px] whitespace-nowrap relative">
                   Теория
                 </p>
               </button>
