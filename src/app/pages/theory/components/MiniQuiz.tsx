@@ -209,7 +209,7 @@ export function MiniQuiz2({ sectionIndex, state, isCorrect, onAnswerSelect, onCo
             <div className="flex items-center justify-between pointer-events-auto">
               <button
                 onClick={onContinue}
-                className="bg-[#f7f8fc] h-[59px] flex items-center justify-center px-[20px] rounded-[15px] pointer-events-auto hover:translate-y-[1px] active:translate-y-[3px] transition-all shadow-[0px_5px_0px_0px_#d2d4df] hover:shadow-[0px_4px_0px_0px_#d2d4df] active:shadow-[0px_1px_0px_0px_#d2d4df]"
+                className="bg-[#f7f8fc] h-[65px] flex items-center justify-center px-[20px] rounded-[15px] pointer-events-auto hover:translate-y-[1px] active:translate-y-[3px] transition-all shadow-[0px_5px_0px_0px_#d2d4df] hover:shadow-[0px_4px_0px_0px_#d2d4df] active:shadow-[0px_1px_0px_0px_#d2d4df]"
                 style={{ minWidth: '140px' }}
               >
                 <p className="font-['Roboto_Condensed:Bold',sans-serif] text-[#343e42] text-[20px] whitespace-nowrap">Продолжить</p>
@@ -358,7 +358,7 @@ export function MiniQuizText({
             <div className="flex items-center justify-between pointer-events-auto">
               <button
                 onClick={onContinue}
-                className="bg-[#f7f8fc] h-[59px] flex items-center justify-center px-[20px] rounded-[15px] pointer-events-auto hover:translate-y-[1px] active:translate-y-[3px] transition-all shadow-[0px_5px_0px_0px_#d2d4df] hover:shadow-[0px_4px_0px_0px_#d2d4df] active:shadow-[0px_1px_0px_0px_#d2d4df]"
+                className="bg-[#f7f8fc] h-[65px] flex items-center justify-center px-[20px] rounded-[15px] pointer-events-auto hover:translate-y-[1px] active:translate-y-[3px] transition-all shadow-[0px_5px_0px_0px_#d2d4df] hover:shadow-[0px_4px_0px_0px_#d2d4df] active:shadow-[0px_1px_0px_0px_#d2d4df]"
                 style={{ minWidth: '140px' }}
               >
                 <p className="font-['Roboto_Condensed:Bold',sans-serif] text-[#343e42] text-[20px] whitespace-nowrap">Продолжить</p>

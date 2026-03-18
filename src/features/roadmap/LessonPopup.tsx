@@ -11,6 +11,34 @@ import imgProgressRoot from "figma:asset/010ae10dcd9db562072cdc157b19ca2406d1fb3
 import type { Lesson } from "./roadmap-types";
 import { NODE_W, NODE_H } from "./roadmap-layout";
 import iconBtn from "../../assets/icon-btn.svg";
+import { GreenIndicator } from "../../app/pages/theory/ui/Indicators";
+
+// ─── Lesson total time (theory + quiz) ───────────────────────────────────────
+const LESSON_TOTAL_TIME: Record<string, string> = {
+  "color-lesson":               "~12 мин",
+  "contrast-lesson":            "~13 мин",
+  "hierarchy-lesson":           "~12 мин",
+  "navigation-lesson":          "~12 мин",
+  "what-is-ux-lesson":          "~10 мин",
+  "user-flow-lesson":           "~12 мин",
+  "interface-structure-lesson": "~12 мин",
+  "interface-elements-lesson":  "~13 мин",
+  "ux-errors-lesson":           "~13 мин",
+  "what-is-ui-kit-lesson":      "~10 мин",
+  "ui-elements-lesson":         "~13 мин",
+  "element-states-lesson":      "~12 мин",
+  "figma-components-lesson":    "~14 мин",
+  "creating-ui-kit-lesson":     "~15 мин",
+};
+
+function ClockIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="7" cy="7" r="6.25" stroke="#232A2D" strokeWidth="1.5"/>
+      <path d="M7 4V7.5L9 9" stroke="#232A2D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
 
 // ─── Popup dimensions (from Figma) ───────────────────────────────────────────
 
@@ -234,24 +262,22 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
                 </div>
               </div>
             </div>
-            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#343e42] text-[16px] whitespace-nowrap shrink-0">
-              {Math.round(pct)}%
-            </p>
+            {pct >= 100 ? (
+              <GreenIndicator />
+            ) : (
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#343e42] text-[16px] whitespace-nowrap shrink-0">
+                {Math.round(pct)}%
+              </p>
+            )}
           </div>
 
           {/* Info row */}
           <div className="flex items-center justify-between w-full h-[20px] mt-[20px]">
-            <div className="flex gap-[21px] items-center">
-              <div className="flex gap-[5px] items-center">
-                <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#232a2d] text-[16px] whitespace-nowrap">
-                  {lesson.status === "completed" ? "Завершён" : lesson.status === "current" ? "В процессе" : "Новичек"}
-                </span>
-              </div>
-              <div className="flex gap-[5px] items-center">
-                <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#232a2d] text-[16px] whitespace-nowrap">
-                  Квизы
-                </span>
-              </div>
+            <div className="flex gap-[6px] items-center">
+              <ClockIcon />
+              <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#232a2d] text-[16px] whitespace-nowrap">
+                {LESSON_TOTAL_TIME[lesson.lessonId] ?? "~12 мин"}
+              </span>
             </div>
             <div className="flex gap-[5px] items-center justify-center">
               <svg className="shrink-0" width="14" height="14" fill="none" viewBox="0 0 12 14">
