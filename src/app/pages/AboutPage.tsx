@@ -23,38 +23,43 @@ function HeroAbout() {
   const shift = scrollY * 0.25;
 
   return (
-    <div ref={wrapRef} className="rounded-[20px] overflow-hidden relative w-full" style={{ height: 220 }}>
-      {/* Dark base */}
-      <div className="absolute inset-0" style={{ background: "#2D363A" }} />
+    // Outer wrapper — NO overflow-hidden, glow rings render freely here
+    <div ref={wrapRef} className="relative w-full" style={{ height: 220 }}>
 
-      {/* Glow rings — static, never clipped */}
+      {/* Glow rings — live outside overflow-hidden so they're never clipped */}
       <div
         className="absolute rounded-full pointer-events-none"
         style={{
-          width: 340, height: 340,
-          background: "radial-gradient(circle, rgba(255,107,33,0.18) 0%, transparent 65%)",
+          width: 400, height: 400,
+          background: "radial-gradient(circle, rgba(255,107,33,0.20) 0%, transparent 65%)",
           top: "50%", left: "50%", transform: "translate(-50%, -50%)",
         }}
       />
       <div
         className="absolute rounded-full pointer-events-none"
         style={{
-          width: 200, height: 200,
-          background: "radial-gradient(circle, rgba(255,107,33,0.10) 0%, transparent 70%)",
-          top: "50%", left: "32%", transform: "translate(-50%, -50%)",
+          width: 220, height: 220,
+          background: "radial-gradient(circle, rgba(255,107,33,0.12) 0%, transparent 70%)",
+          top: "50%", left: "35%", transform: "translate(-50%, -50%)",
         }}
       />
 
-      {/* Logo only — parallaxes */}
-      <div
-        className="absolute inset-0 flex items-center justify-center"
-        style={{ transform: `translateY(${shift}px)`, willChange: "transform" }}
-      >
-        <img
-          src={uxeoLogo}
-          alt="UXEO"
-          style={{ width: 200, height: "auto", position: "relative", zIndex: 10 }}
-        />
+      {/* Inner container — overflow-hidden only here, for rounded corners + logo clipping */}
+      <div className="absolute inset-0 rounded-[20px] overflow-hidden">
+        {/* Dark base */}
+        <div className="absolute inset-0" style={{ background: "#2D363A" }} />
+
+        {/* Logo — parallaxes */}
+        <div
+          className="absolute inset-0 flex items-center justify-center"
+          style={{ transform: `translateY(${shift}px)`, willChange: "transform" }}
+        >
+          <img
+            src={uxeoLogo}
+            alt="UXEO"
+            style={{ width: 200, height: "auto", position: "relative", zIndex: 10 }}
+          />
+        </div>
       </div>
     </div>
   );
