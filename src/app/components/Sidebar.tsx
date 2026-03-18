@@ -337,6 +337,7 @@ function NavItems({ activePath }: { activePath: string }) {
 }
 
 function SidebarFooter() {
+  const navigate = useNavigate();
   const handleResetData = () => {
     if (confirm('Вы уверены, что хотите сбросить весь прогресс? Это действие нельзя отменить.')) {
       try {
