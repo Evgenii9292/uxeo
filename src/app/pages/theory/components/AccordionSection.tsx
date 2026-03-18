@@ -123,15 +123,6 @@ export function AccordionSectionMobile({
                 {state.showFeedback && (
                   <div className="flex flex-col gap-[16px] w-full pointer-events-none">
                     <div className="flex items-center justify-between pointer-events-auto">
-                      <button
-                        onClick={onContinue}
-                        className="bg-[#f7f8fc] h-[59px] flex items-center justify-center px-[20px] rounded-[15px] hover:translate-y-[1px] active:translate-y-[3px] transition-all shadow-[0px_5px_0px_0px_#d2d4df] hover:shadow-[0px_4px_0px_0px_#d2d4df] active:shadow-[0px_1px_0px_0px_#d2d4df]"
-                        style={{ minWidth: "140px" }}
-                      >
-                        <p className="font-['Roboto_Condensed:Bold',sans-serif] text-[#343e42] text-[20px] whitespace-nowrap">
-                          Продолжить
-                        </p>
-                      </button>
                       {isCorrect ? (
                         <div className="flex items-center gap-[6px]">
                           <p className="font-['Roboto_Condensed:Bold',sans-serif] text-[#cdf6db] text-[18px]">
@@ -144,6 +135,15 @@ export function AccordionSectionMobile({
                           Ещё раз!
                         </p>
                       )}
+                      <button
+                        onClick={onContinue}
+                        className="bg-[#f7f8fc] h-[59px] flex items-center justify-center px-[20px] rounded-[15px] hover:translate-y-[1px] active:translate-y-[3px] transition-all shadow-[0px_5px_0px_0px_#d2d4df] hover:shadow-[0px_4px_0px_0px_#d2d4df] active:shadow-[0px_1px_0px_0px_#d2d4df]"
+                        style={{ minWidth: "140px" }}
+                      >
+                        <p className="font-['Roboto_Condensed:Bold',sans-serif] text-[#343e42] text-[20px] whitespace-nowrap">
+                          Продолжить
+                        </p>
+                      </button>
                     </div>
                     {isCorrect ? (
                       <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#cdf6db] text-[16px] leading-[1.3]">
