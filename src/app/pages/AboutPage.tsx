@@ -46,9 +46,6 @@ function HeroAbout() {
 
       {/* Inner container — overflow-hidden only here, for rounded corners + logo clipping */}
       <div className="absolute inset-0 rounded-[20px] overflow-hidden">
-        {/* Dark base */}
-        <div className="absolute inset-0" style={{ background: "#2D363A" }} />
-
         {/* Logo — parallaxes */}
         <div
           className="absolute inset-0 flex items-center justify-center"
