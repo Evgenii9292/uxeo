@@ -149,7 +149,7 @@ function AboutContent() {
           UXEO — платформа, где дизайнеры прокачивают навыки через практику
         </p>
         <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[17px] text-[#798589] leading-[1.3]">
-          Не просто теория, а реальные задания, челленджи и обратная связь от менторов
+          Не просто теория, а <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">реальные задания</span>, челленджи и обратная связь от менторов
         </p>
 
         <PrimaryButton label="Начать обучение" onClick={() => navigate("/level")} />
@@ -235,8 +235,8 @@ function AboutContent() {
         <SectionTitle>Почему мы это сделали</SectionTitle>
         <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[15px] text-[#9ba3a8] leading-[1.3]">
           Мы сами проходили курсы, где много теории, но мало практики. После урока —
-          ощущение, что ничего не осталось. Поэтому сделали продукт, который помогает
-          <span className="text-[#f4f5fc] font-['Roboto_Condensed:Medium',sans-serif] font-medium"> реально прокачивать навыки</span>,
+          ощущение, что ничего не осталось. Поэтому сделали продукт, который помогает{" "}
+          <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">реально прокачивать навыки</span>,
           а не просто смотреть уроки.
         </p>
       </div>
@@ -277,7 +277,7 @@ function AboutContent() {
         <div>
           <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[16px] text-[#f4f5fc] mb-[4px]">Команда с опытом в образовании</p>
           <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[14px] text-[#798589] leading-[1.3]">
-            В команде методолог и преподаватель с опытом в образовательных проектах.
+            В команде <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">методолог</span> и преподаватель с опытом в образовательных проектах.
             Контент построен так, чтобы знания действительно закреплялись.
           </p>
         </div>
