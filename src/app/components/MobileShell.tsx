@@ -118,8 +118,6 @@ export function MobileHeader({
         </div>
       </div>
 
-      {/* Bottom divider */}
-      <div style={{ height: 1, background: "rgba(86,101,107,0.35)", flexShrink: 0 }} />
     </div>
   );
 }
