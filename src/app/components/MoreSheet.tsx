@@ -15,6 +15,15 @@ interface MoreSheetProps {
 
 // ── Icon components ───────────────────────────────────────────────────────────
 
+function IconInfo() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" stroke="#FF6B21" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M12 16v-4M12 8h.01" stroke="#FF6B21" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
 function IconTrophy() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -320,6 +329,12 @@ export function MoreSheet({ onClose }: MoreSheetProps) {
 
         {/* Menu items */}
         <div className="flex flex-col gap-[8px]">
+          <MenuItem
+            icon={<IconInfo />}
+            label="О проекте"
+            sublabel="Что такое UXEO и как это работает"
+            onClick={() => handleNavigate("/about")}
+          />
           <MenuItem
             icon={<IconBell />}
             label="Уведомления"
