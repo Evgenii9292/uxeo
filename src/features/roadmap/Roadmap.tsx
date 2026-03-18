@@ -304,7 +304,7 @@ export function Roadmap({
               const annotW = hasStarted
                 ? Math.round(194.895 * 0.7 * 0.75)
                 : Math.round(87 * 0.7 * 0.75);
-              left = pos.x - annotW - 19;
+              left = pos.x - annotW - 29;
               top  = pos.y + NODE_H * 0.4 - 22;
             } else {
               left = pos.x - (hasStarted ? 130 : 90);
@@ -318,7 +318,7 @@ export function Roadmap({
                   left,
                   top,
                   transform: mobile
-                    ? "scale(0.75) rotate(-8deg)"
+                    ? "scale(0.75) rotate(-5deg)"
                     : undefined,
                   transformOrigin: "top left",
                 }}
