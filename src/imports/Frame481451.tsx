@@ -1453,7 +1453,7 @@ function Group51() {
 
 function Frame1() {
   return (
-    <div className="bg-[#2e383b] h-full relative shrink-0 w-[185px] rounded-[15px]">
+    <div className="h-full relative shrink-0 w-[185px] rounded-[15px]">
       <Group51 />
     </div>
   );
@@ -2175,7 +2175,7 @@ function Group59() {
 
 function Frame2() {
   return (
-    <div className="bg-[#2e383b] h-full relative shrink-0 w-[185px] rounded-[15px]">
+    <div className="h-full relative shrink-0 w-[185px] rounded-[15px]">
       <Group59 />
     </div>
   );
