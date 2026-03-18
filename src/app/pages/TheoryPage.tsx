@@ -87,12 +87,6 @@ export default function TheoryPage() {
                   <TimeIcon />
                   <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap">{lessonData.duration}</p>
                 </div>
-                {lessonData.level && (
-                  <div className="flex gap-[5px] items-center">
-                    <TheoryLevelIcon />
-                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f7fb] text-[16px] whitespace-nowrap">{lessonData.level}</p>
-                  </div>
-                )}
               </div>
             </div>
           </div>

@@ -694,7 +694,6 @@ export default function ContrastPage() {
               <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[27.5px] text-[#f4f5fc] text-[26px]">Контраст в UX/UI</p>
               <div className="flex gap-[12px] items-center shrink-0 pb-[2px]">
                 <div className="flex gap-[5px] items-center"><TimeIcon /><p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f2fb] text-[14px]">7 мин</p></div>
-                <div className="flex gap-[5px] items-center"><TheoryLevelIcon /><p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f2fb] text-[14px]">Новичок</p></div>
               </div>
             </div>
           </div>
@@ -892,10 +891,6 @@ export default function ContrastPage() {
                     <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
                       <TimeIcon />
                       <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[16px] whitespace-nowrap">7 мин</p>
-                    </div>
-                    <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
-                      <TheoryLevelIcon />
-                      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[16px] whitespace-nowrap">Новичок</p>
                     </div>
                   </div>
                 </div>

@@ -117,12 +117,6 @@ export function TheoryMobileLayout({
                 <TimeIcon />
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f7fb] text-[16px]">{lessonData.duration}</p>
               </div>
-              {lessonData.level && (
-                <div className="flex gap-[5px] items-center">
-                  <TheoryLevelIcon />
-                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f7fb] text-[16px]">{lessonData.level}</p>
-                </div>
-              )}
             </div>
           </div>
         </div>
