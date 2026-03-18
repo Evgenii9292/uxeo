@@ -10,6 +10,7 @@ import svgPopup  from "../../imports/svg-wibidt795v";
 import imgProgressRoot from "figma:asset/010ae10dcd9db562072cdc157b19ca2406d1fb36.png";
 import type { Lesson } from "./roadmap-types";
 import { NODE_W, NODE_H } from "./roadmap-layout";
+import iconBtn from "../../assets/icon-btn.svg";
 
 // ─── Popup dimensions (from Figma) ───────────────────────────────────────────
 
@@ -200,14 +201,7 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
           <div className="flex gap-[15px] items-start w-full">
             {/* Icon */}
             <div className="h-[55px] shrink-0 w-[56px] relative">
-              <svg className="absolute block" fill="none" style={{ inset: 0, width: "100%", height: "100%" }} viewBox="0 0 61.13 57.14">
-                <rect width="56" height="55" rx="4" fill="none" />
-              </svg>
-              <div className="absolute inset-[8%] flex items-center justify-center">
-                <svg className="block" width="25" height="25" fill="none" viewBox="0 0 25 25">
-                  <path d={svgFigma.p1868b300} stroke="#272F32" strokeLinecap="round" strokeWidth="3" transform="scale(1.04) translate(0, 0)" />
-                </svg>
-              </div>
+              <img src={iconBtn} alt="" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
             </div>
             {/* Text */}
             <div className="flex flex-1 flex-col gap-[15px] items-start min-w-0">
