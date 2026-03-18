@@ -55,7 +55,7 @@ export function MobileHeader({
 }) {
   return (
     <div
-      className="flex-none flex flex-col z-50 relative"
+      className="flex-none flex flex-col z-[200] relative"
       style={{
         background: "rgba(45,54,58,0.85)",
         backdropFilter: "blur(14px)",
