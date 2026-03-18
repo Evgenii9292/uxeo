@@ -8,7 +8,7 @@ function Container1() {
   return (
     <div className="bg-[#343e42] h-[28.585px] relative rounded-[12296925px] shrink-0" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex h-full items-center justify-center px-[11.727px] relative">
-        <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[15.392px] not-italic relative shrink-0 text-[#eef5ff] text-[10.261px] whitespace-nowrap">еще 3 дня</p>
+        <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[15.392px] not-italic relative shrink-0 text-[#eef5ff] text-[10.261px] whitespace-nowrap">еще 3 дня</p>
       </div>
     </div>
   );
@@ -807,7 +807,7 @@ function Container10() {
   return (
     <div className="bg-[#3a474c] h-[28.585px] relative rounded-[12296925px] shrink-0" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex h-full items-center justify-center px-[11.727px] relative">
-        <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[15.392px] not-italic relative shrink-0 text-[#eef5ff] text-[10.261px] whitespace-nowrap">+1250 XP</p>
+        <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[15.392px] not-italic relative shrink-0 text-[#eef5ff] text-[10.261px] whitespace-nowrap">+1250 XP</p>
       </div>
     </div>
   );

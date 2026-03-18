@@ -157,7 +157,7 @@ function ActiveModuleCard() {
           <div className="flex items-center justify-center gap-[8px] size-full px-[16px]">
             <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[20px] whitespace-nowrap">{buttonText}</p>
             <div className="bg-[#404d52] flex h-[24px] items-center justify-center px-[8px] rounded-full">
-              <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#eef5ff] text-[9px] whitespace-nowrap">+{totalXP} XP</p>
+              <p className="font-['Inter:Semi_Bold',sans-serif] font-medium text-[#eef5ff] text-[9px] whitespace-nowrap">+{totalXP} XP</p>
             </div>
           </div>
         </div>
@@ -228,7 +228,7 @@ function ActiveModuleCard() {
             <div className="flex flex-row items-center justify-center gap-[8px] size-full px-[16px]">
               <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[26px] whitespace-nowrap">{buttonText}</p>
               <div className="bg-[#404d52] content-stretch flex h-[28px] items-center justify-center px-[12px] relative rounded-full shrink-0">
-                <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[15px] not-italic relative shrink-0 text-[#eef5ff] text-[10px] whitespace-nowrap">+{totalXP} XP</p>
+                <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[15px] not-italic relative shrink-0 text-[#eef5ff] text-[10px] whitespace-nowrap">+{totalXP} XP</p>
               </div>
             </div>
           </div>

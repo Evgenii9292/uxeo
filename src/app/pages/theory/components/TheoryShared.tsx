@@ -55,7 +55,7 @@ export function AccordionHeader({ title, isOpen, showGreenIndicator, onClick }: 
         <div className="content-stretch flex gap-[20px] items-center relative shrink-0">
           {showGreenIndicator ? <GreenIndicator /> : <GrayIndicator />}
           <p
-            className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[27.5px] relative shrink-0 text-[26px] whitespace-nowrap"
+            className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[26px] whitespace-nowrap"
             style={{ color: isOpen ? "#f1f2fb" : "#798589" }}
           >
             {title}

@@ -536,7 +536,7 @@ function Container3() {
   return (
     <div className="bg-[#38444a] content-stretch flex gap-[4px] h-[39px] items-center justify-center px-[16px] relative rounded-[16777200px] shrink-0" data-name="Container">
       <Zap />
-      <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[21px] not-italic relative shrink-0 text-[#eef5ff] text-[14px] whitespace-nowrap">+1250 XP</p>
+      <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[21px] not-italic relative shrink-0 text-[#eef5ff] text-[14px] whitespace-nowrap">+1250 XP</p>
     </div>
   );
 }

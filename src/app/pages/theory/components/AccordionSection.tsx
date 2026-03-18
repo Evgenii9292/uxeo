@@ -66,7 +66,7 @@ export function AccordionSectionMobile({
           <div className="flex gap-[20px] items-center">
             {state.completed ? <GreenIndicator /> : state.hasIncorrectAnswer ? <OrangeIndicator /> : <GrayIndicator />}
             <p
-              className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] text-[22px]"
+              className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[22px]"
               style={{ color: !isUnlocked ? "#4a5560" : isOpen ? "#f1f2fb" : "#798589" }}
             >
               {section.title}
@@ -80,7 +80,7 @@ export function AccordionSectionMobile({
       <div style={{ display: "grid", gridTemplateRows: isOpen ? "1fr" : "0fr", transition: "grid-template-rows 300ms ease" }}>
         <div style={{ overflow: "hidden", minHeight: 0 }}>
           <div className="flex flex-col items-center w-full">
-            <div className="flex flex-col gap-[25px] items-center py-[20px] px-[25px] w-full">
+            <div className="flex flex-col gap-[25px] items-center pt-[4px] pb-[20px] px-[25px] w-full">
               {/* Theory Content */}
               <div className="flex flex-col gap-[20px] items-center w-full">
                 {section.content}
@@ -96,7 +96,7 @@ export function AccordionSectionMobile({
                       {section.quizLabel}
                     </p>
                   </div>
-                  <p className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] text-[#f1f2fb] text-[22px] w-full">
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f1f2fb] text-[22px] w-full">
                     {section.quizQuestion}
                   </p>
                 </div>
@@ -137,7 +137,7 @@ export function AccordionSectionMobile({
                       )}
                       <button
                         onClick={onContinue}
-                        className="bg-[#f7f8fc] h-[59px] flex items-center justify-center px-[20px] rounded-[15px] hover:translate-y-[1px] active:translate-y-[3px] transition-all shadow-[0px_5px_0px_0px_#d2d4df] hover:shadow-[0px_4px_0px_0px_#d2d4df] active:shadow-[0px_1px_0px_0px_#d2d4df]"
+                        className="bg-[#f7f8fc] h-[52px] flex items-center justify-center px-[20px] rounded-[15px] hover:translate-y-[1px] active:translate-y-[3px] transition-all shadow-[0px_5px_0px_0px_#d2d4df] hover:shadow-[0px_4px_0px_0px_#d2d4df] active:shadow-[0px_1px_0px_0px_#d2d4df]"
                         style={{ minWidth: "140px" }}
                       >
                         <p className="font-['Roboto_Condensed:Bold',sans-serif] text-[#343e42] text-[20px] whitespace-nowrap">
@@ -189,7 +189,7 @@ export function AccordionSectionDesktop({
           <div className="content-stretch flex gap-[20px] items-center relative shrink-0">
             {state.completed ? <GreenIndicator /> : state.hasIncorrectAnswer ? <OrangeIndicator /> : <GrayIndicator />}
             <p
-              className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] relative shrink-0 text-[24px] whitespace-nowrap"
+              className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[24px] whitespace-nowrap"
               style={{ color: !isUnlocked ? "#4a5560" : isOpen ? "#f1f2fb" : "#798589" }}
             >
               {section.title}
@@ -215,7 +215,7 @@ export function AccordionSectionDesktop({
                   <div className="p-[30px] flex flex-col gap-[25px]">
                     {/* Header row: question LEFT, label RIGHT */}
                     <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-                      <p className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] text-[#f1f2fb] text-[24px] flex-1 pr-[20px]">
+                      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f1f2fb] text-[24px] flex-1 pr-[20px]">
                         {section.quizQuestion}
                       </p>
                       <div className="content-stretch flex gap-[7px] items-center relative shrink-0">
@@ -271,12 +271,12 @@ export function AccordionSectionDesktop({
                                     </defs>
                                   </svg>
                                 </div>
-                                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[20.587px] relative shrink-0 text-[#cdf6db] text-[18px] whitespace-nowrap">
+                                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[20.587px] relative shrink-0 text-[#cdf6db] text-[18px] whitespace-nowrap">
                                   Верно!
                                 </p>
                               </div>
                               <div className="content-stretch flex items-center justify-between relative shrink-0 w-[47px]">
-                                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[20.587px] relative shrink-0 text-[#00d043] text-[18px] whitespace-nowrap">
+                                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[20.587px] relative shrink-0 text-[#00d043] text-[18px] whitespace-nowrap">
                                   +15
                                 </p>
                                 <SparkleIcon />

@@ -200,7 +200,7 @@ function RedCardIcon() {
           </g>
         </svg>
       </div>
-      <p className="absolute font-['Roboto_Condensed:Bold',sans-serif] font-semibold inset-[20%_47.25%_32.17%_26.67%] leading-[1.2] text-[#f1f2fb] text-[9.2px] whitespace-nowrap">А</p>
+      <p className="absolute font-['Roboto_Condensed:Bold',sans-serif] font-medium inset-[20%_47.25%_32.17%_26.67%] leading-[1.2] text-[#f1f2fb] text-[9.2px] whitespace-nowrap">А</p>
     </div>
   );
 }
@@ -223,7 +223,7 @@ function ContrastContent1() {
   return (
     <>
       <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 text-[#f1f2fb] text-[18px] w-full">
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold h-[22px] leading-[22px] relative shrink-0">🎯 Контраст делает интерфейс понятным</p>
+        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium h-[22px] leading-[22px] relative shrink-0">🎯 Контраст делает интерфейс понятным</p>
         <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] min-w-full opacity-80 relative shrink-0 flex flex-col gap-[8px]">
           <p>Контраст — это <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb] not-italic">разница между элементами</span>.</p>
           <p>Когда элементы отличаются, пользователь быстро понимает: что главное, что второстепенное и куда нажимать.</p>
@@ -231,7 +231,7 @@ function ContrastContent1() {
       </div>
       <ContentDivider />
       <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 text-[#f1f2fb] text-[18px] w-full">
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold h-[22px] leading-[22px] relative shrink-0">⭐ Виды контраста</p>
+        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium h-[22px] leading-[22px] relative shrink-0">⭐ Виды контраста</p>
         <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] min-w-full opacity-80 relative shrink-0 flex flex-col gap-[8px]">
           <p>Контраст может быть: <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">по размеру</span>, <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">по цвету</span>, <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">по форме</span> и <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">по толщине линий</span>.</p>
           <p>Если всё выглядит одинаково, пользователь <em>теряется</em>.</p>
@@ -245,7 +245,7 @@ function ContrastContent2() {
   return (
     <>
       <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 text-[#f1f2fb] text-[18px] w-full">
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold h-[22px] leading-[22px] relative shrink-0">📏 Размер управляет вниманием</p>
+        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium h-[22px] leading-[22px] relative shrink-0">📏 Размер управляет вниманием</p>
         <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] min-w-full opacity-80 relative shrink-0 flex flex-col gap-[8px]">
           <p>Самый <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">простой и мощный</span> контраст — это размер.</p>
           <p>Большое притягивает внимание быстрее, чем маленькое. Поэтому заголовок больше текста, а кнопка больше подписи.</p>
@@ -253,7 +253,7 @@ function ContrastContent2() {
       </div>
       <ContentDivider />
       <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 text-[#f1f2fb] text-[18px] w-full">
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold h-[22px] leading-[22px] relative shrink-0">📶 Визуальная иерархия</p>
+        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium h-[22px] leading-[22px] relative shrink-0">📶 Визуальная иерархия</p>
         <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] min-w-full opacity-80 relative shrink-0 flex flex-col gap-[8px]">
           <p>Контраст размера создаёт <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">иерархию</span>: крупные элементы — важные, средние — второстепенные, мелкие — вспомогательные.</p>
           <p>Так интерфейс становится <em>понятным</em>.</p>
@@ -267,7 +267,7 @@ function ContrastContent3() {
   return (
     <>
       <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 text-[#f1f2fb] text-[18px] w-full">
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold h-[22px] leading-[22px] relative shrink-0">🎨 Цвет выделяет действия</p>
+        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium h-[22px] leading-[22px] relative shrink-0">🎨 Цвет выделяет действия</p>
         <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] min-w-full opacity-80 relative shrink-0 flex flex-col gap-[8px]">
           <p>Цветовой контраст помогает выделить действия. Кнопка должна <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">отличаться от фона</span> и окружающих элементов.</p>
           <p>Иначе пользователь может просто её не заметить.</p>
@@ -275,7 +275,7 @@ function ContrastContent3() {
       </div>
       <ContentDivider />
       <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 text-[#f1f2fb] text-[18px] w-full">
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold h-[22px] leading-[22px] relative shrink-0">⭐ Доступность</p>
+        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium h-[22px] leading-[22px] relative shrink-0">⭐ Доступность</p>
         <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] min-w-full opacity-80 relative shrink-0 flex flex-col gap-[8px]">
           <p>Контраст важен не только для красоты, но и для <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">доступности</span>.</p>
           <p>Текст должен быть достаточно тёмным на светлом фоне или светлым на тёмном.</p>
@@ -289,7 +289,7 @@ function ContrastContent4() {
   return (
     <>
       <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 text-[#f1f2fb] text-[18px] w-full">
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold h-[22px] leading-[22px] relative shrink-0">✨ ��орма создаёт акцент</p>
+        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium h-[22px] leading-[22px] relative shrink-0">✨ ��орма создаёт акцент</p>
         <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] min-w-full opacity-80 relative shrink-0 flex flex-col gap-[8px]">
           <p>Контраст — это не только цвет и размер. <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">Форма, толщина и насыщенность</span> тоже помогают выделять элементы.</p>
           <p>Например: жирный текст рядом с обычным, круглая кнопка среди прямоугольных, залитая иконка среди контурных.</p>
@@ -303,14 +303,14 @@ function ContrastContent5() {
   return (
     <>
       <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 text-[#f1f2fb] text-[18px] w-full">
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold h-[22px] leading-[22px] relative shrink-0">⚡ Один акцент лучше многих</p>
+        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium h-[22px] leading-[22px] relative shrink-0">⚡ Один акцент лучше многих</p>
         <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] min-w-full opacity-80 relative shrink-0 flex flex-col gap-[8px]">
           <p>Слишком <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">слабый</span> контраст делает интерфейс скучным. Слишком <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">сильный</span> — утомляет и создаёт визуальный шум.</p>
         </div>
       </div>
       <ContentDivider />
       <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 text-[#f1f2fb] text-[18px] w-full">
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold h-[22px] leading-[22px] relative shrink-0">💡 Правило баланса</p>
+        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium h-[22px] leading-[22px] relative shrink-0">💡 Правило баланса</p>
         <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] min-w-full opacity-80 relative shrink-0 flex flex-col gap-[8px]">
           <p>Лучше всего работает <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">один главный акцент</span> и спокойная база вокруг него.</p>
           <p>Контраст должен помогать пользователю понять, что здесь самое важное.</p>
@@ -691,7 +691,7 @@ export default function ContrastPage() {
           {/* Title + meta: title left, badges right — no description */}
           <div className="px-[16px] pb-[16px] relative z-10" style={{ marginTop: '-30px' }}>
             <div className="flex items-end justify-between gap-[10px]">
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[27.5px] text-[#f4f5fc] text-[26px]">Контраст в UX/UI</p>
+              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[26px]">Контраст в UX/UI</p>
               <div className="flex gap-[12px] items-center shrink-0 pb-[2px]">
                 <div className="flex gap-[5px] items-center"><TimeIcon /><p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f2fb] text-[14px]">7 мин</p></div>
               </div>
@@ -714,7 +714,7 @@ export default function ContrastPage() {
                     <div className="flex items-center justify-between px-[20px] w-full py-[12px]">
                       <div className="flex gap-[14px] items-center flex-1 pr-[10px]">
                         {state.completed ? <GreenIndicator /> : state.hasIncorrectAnswer ? <OrangeIndicator /> : <GrayIndicator />}
-                        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[24px] text-[22px]"
+                        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[24px] text-[22px]"
                           style={{ color: !isUnlocked(index) ? "#4a5560" : openSections.has(index) ? "#f1f2fb" : "#798589" }}>
                           {section.title}
                         </p>
@@ -730,7 +730,7 @@ export default function ContrastPage() {
                           <div className="bg-[#3F4C52] rounded-[15px] w-full mt-[10px]">
                             <div className="p-[20px] flex flex-col gap-[20px]">
                               <div className="flex items-center justify-between w-full">
-                                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[24px] text-[#f1f2fb] text-[20px] flex-1 pr-[10px]">{section.question}</p>
+                                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[24px] text-[#f1f2fb] text-[20px] flex-1 pr-[10px]">{section.question}</p>
                                 <div className="flex gap-[7px] items-center shrink-0">
                                   <RedCardIcon />
                                   <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#ff6b21] text-[16px]">{section.label}</p>
@@ -882,7 +882,7 @@ export default function ContrastPage() {
                 </div>
                 {/* Right: title + meta */}
                 <div className="flex flex-col gap-[14px] flex-1 py-[10px]">
-                  <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[32px]">Контраст в UX/UI</p>
+                  <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[32px]">Контраст в UX/UI</p>
 
                   <div className="flex-1" />
 
@@ -915,7 +915,7 @@ export default function ContrastPage() {
                           <div className="content-stretch flex gap-[20px] items-center relative shrink-0">
                             {state.completed ? <GreenIndicator /> : state.hasIncorrectAnswer ? <OrangeIndicator /> : <GrayIndicator />}
                             <p
-                              className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[27.5px] relative shrink-0 text-[26px] whitespace-nowrap"
+                              className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[26px] whitespace-nowrap"
                               style={{ color: !isUnlocked(index) ? "#4a5560" : openSections.has(index) ? "#f1f2fb" : "#798589" }}
                             >
                               {section.title}
@@ -941,7 +941,7 @@ export default function ContrastPage() {
                                   <div className={`${isMobile ? 'p-[20px]' : 'p-[30px]'} flex flex-col gap-[20px]`}>
                                     {/* Header row: question LEFT, label RIGHT (Fix #3) */}
                                     <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-                                      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[27.5px] text-[#f1f2fb] text-[26px] flex-1 pr-[20px]">
+                                      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[27.5px] text-[#f1f2fb] text-[26px] flex-1 pr-[20px]">
                                         {section.question}
                                       </p>
                                       <div className="content-stretch flex gap-[7px] items-center relative shrink-0">
@@ -980,10 +980,10 @@ export default function ContrastPage() {
                                             <div className="content-stretch flex gap-[12px] items-center relative shrink-0">
                                               <div className="content-stretch flex gap-[9px] items-end relative shrink-0">
                                                 <PartyPopperIcon />
-                                                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[20.587px] relative shrink-0 text-[#cdf6db] text-[18px] whitespace-nowrap">Верно!</p>
+                                                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[20.587px] relative shrink-0 text-[#cdf6db] text-[18px] whitespace-nowrap">Верно!</p>
                                               </div>
                                               <div className="content-stretch flex items-center justify-between relative shrink-0 w-[47px]">
-                                                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[20.587px] relative shrink-0 text-[#00d043] text-[18px] whitespace-nowrap">+15</p>
+                                                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[20.587px] relative shrink-0 text-[#00d043] text-[18px] whitespace-nowrap">+15</p>
                                                 <SparkleIcon />
                                               </div>
                                             </div>
@@ -993,7 +993,7 @@ export default function ContrastPage() {
                                           <div className="content-stretch flex flex-col gap-[10px] items-start justify-center relative shrink-0 pr-[20px]" style={{ flex: '1 1 160px' }}>
                                             <div className="flex gap-[10px] items-center">
                                               <FistIcon />
-                                              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[1.2] relative text-[#ffbaaa] text-[18px]">Почти получилось!</p>
+                                              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[1.2] relative text-[#ffbaaa] text-[18px]">Почти получилось!</p>
                                             </div>
                                             <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[1.2] relative shrink-0 text-[16px] text-[#ffd8d2]">{section.incorrectFeedback}</p>
                                           </div>
@@ -1007,7 +1007,7 @@ export default function ContrastPage() {
                                           }`}
                                         >
                                           {isLast && state.showFeedback && <Zap className="h-[24px] w-[17px] text-[#f1f2fb]" fill="currentColor" />}
-                                          <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[22.852px] relative shrink-0 text-[24px] whitespace-nowrap ${isLast && state.showFeedback ? "text-[#f1f2fb]" : "text-[#343e42]"}`}>
+                                          <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[22.852px] relative shrink-0 text-[24px] whitespace-nowrap ${isLast && state.showFeedback ? "text-[#f1f2fb]" : "text-[#343e42]"}`}>
                                             {isLast && state.showFeedback ? "Начать квиз" : "Продолжить"}
                                           </p>
                                         </button>

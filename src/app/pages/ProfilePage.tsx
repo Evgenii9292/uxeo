@@ -356,7 +356,7 @@ function EmptyAchievementCard() {
 // ─── Section title ────────────────────────────────────────────────────────────
 function SectionTitle({ text }: { text: string }) {
   return (
-    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[22px] relative shrink-0 text-[20px] text-[rgba(244,245,252,0.9)] w-full">
+    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[22px] relative shrink-0 text-[20px] text-[rgba(244,245,252,0.9)] w-full">
       {text}
     </p>
   );

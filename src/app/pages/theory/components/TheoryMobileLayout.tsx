@@ -162,7 +162,7 @@ export function TheoryMobileLayout({
         >
           <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[20px]">Начать квиз</p>
           <div className="bg-black/20 flex h-[24px] items-center justify-center px-[10px] rounded-full">
-            <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#eef5ff] text-[10px]">+125 XP</p>
+            <p className="font-['Inter:Semi_Bold',sans-serif] font-medium text-[#eef5ff] text-[10px]">+125 XP</p>
           </div>
         </button>
       </div>

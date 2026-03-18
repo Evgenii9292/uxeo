@@ -118,14 +118,14 @@ function TabBar({ active, onSwitch }: TabBarProps) {
         }`}
         onClick={() => onSwitch("current")}
       >
-        <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[27.5px] shrink-0 text-[18px] whitespace-nowrap transition-colors duration-150 ${active === "current" ? "text-[#f4f5fc]" : "text-[#798589]"}`}>
+        <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[27.5px] shrink-0 text-[18px] whitespace-nowrap transition-colors duration-150 ${active === "current" ? "text-[#f4f5fc]" : "text-[#798589]"}`}>
           Текущие
         </p>
         <div
           className="h-[24px] flex items-center justify-center px-[11.727px] rounded-[12296925px] shrink-0 transition-colors duration-150"
           style={{ background: active === "current" ? "#343e42" : "#2c3438" }}
         >
-          <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[15.392px] shrink-0 text-[#eef5ff] text-[10.261px] whitespace-nowrap">3 дня</p>
+          <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[15.392px] shrink-0 text-[#eef5ff] text-[10.261px] whitespace-nowrap">3 дня</p>
         </div>
       </div>
       <div
@@ -134,7 +134,7 @@ function TabBar({ active, onSwitch }: TabBarProps) {
         }`}
         onClick={() => onSwitch("archive")}
       >
-        <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[27.5px] shrink-0 text-[18px] whitespace-nowrap transition-colors duration-150 ${active === "archive" ? "text-[#f4f5fc]" : "text-[#798589]"}`}>
+        <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[27.5px] shrink-0 text-[18px] whitespace-nowrap transition-colors duration-150 ${active === "archive" ? "text-[#f4f5fc]" : "text-[#798589]"}`}>
           См. архив
         </p>
       </div>
@@ -182,7 +182,7 @@ function Card1({ onClick }: { onClick?: () => void }) {
               <IconPencilEdit />
               <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[18px]">Начать</p>
               <div className="bg-[#404d52] flex h-[26px] items-center justify-center px-[10px] rounded-full">
-                <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#eef5ff] text-[10px]">+1250 XP</p>
+                <p className="font-['Inter:Semi_Bold',sans-serif] font-medium text-[#eef5ff] text-[10px]">+1250 XP</p>
               </div>
             </div>
           </button>
@@ -242,7 +242,7 @@ function Card1({ onClick }: { onClick?: () => void }) {
                   Начать
                 </p>
                 <div className="bg-[#404d52] content-stretch flex h-[28px] items-center justify-center px-[12px] relative rounded-full shrink-0">
-                  <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[15px] not-italic relative shrink-0 text-[#eef5ff] text-[10px] whitespace-nowrap">
+                  <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[15px] not-italic relative shrink-0 text-[#eef5ff] text-[10px] whitespace-nowrap">
                     +1250 XP
                   </p>
                 </div>
@@ -352,7 +352,7 @@ function Card3() {
           </p>
           <div className="bg-[#3a464a] flex gap-[4px] h-[22px] items-center px-[8px] rounded-[10px] w-fit">
             <IconVerify />
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold text-[#6a777b] text-[11px] whitespace-nowrap">Проверено ментором</p>
+            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium text-[#6a777b] text-[11px] whitespace-nowrap">Проверено ментором</p>
           </div>
           <div className="flex items-center gap-[12px] mt-[2px]">
             <button className="group bg-[#343e42] h-[48px] relative rounded-[13px] flex-1 cursor-pointer select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75">
@@ -363,7 +363,7 @@ function Card3() {
             </button>
             <div className="bg-[#424d52] flex gap-[6px] h-[36px] items-center justify-center px-[12px] rounded-full shrink-0">
               <IconGreenCheck />
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold text-[#5edd60] text-[14px] whitespace-nowrap">Готово</p>
+              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium text-[#5edd60] text-[14px] whitespace-nowrap">Готово</p>
             </div>
           </div>
         </div>
@@ -393,7 +393,7 @@ function Card3() {
             </p>
             <div className="bg-[#3a464a] flex gap-[4.967px] h-[22.351px] items-center px-[9.934px] rounded-[12px]">
               <IconVerify />
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[12px] text-[#6a777b] text-[10.99px] whitespace-nowrap">Проверено ментором</p>
+              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[12px] text-[#6a777b] text-[10.99px] whitespace-nowrap">Проверено ментором</p>
             </div>
           </div>
 
@@ -412,7 +412,7 @@ function Card3() {
             </div>
             <div className="bg-[#424d52] flex gap-[8px] h-[36px] items-center justify-center px-[16px] rounded-full shrink-0">
               <IconGreenCheck />
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[27.5px] text-[#5edd60] text-[16px] whitespace-nowrap">Готово</p>
+              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[27.5px] text-[#5edd60] text-[16px] whitespace-nowrap">Готово</p>
             </div>
           </div>
         </div>
@@ -429,7 +429,7 @@ function ArchivePlaceholder() {
       className="h-[200px] flex flex-col items-center justify-center rounded-[20px] w-full gap-[10px]"
       style={{ border: "2px dashed #4B595F" }}
     >
-      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[27.5px] text-[#798589] text-[22px]">
+      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[27.5px] text-[#798589] text-[22px]">
         Архив недельных вызовов пуст
       </p>
       <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[20px] text-[#57646a] text-[16px]">

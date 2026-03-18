@@ -77,7 +77,7 @@ function ContinueButton({ onClick }: { onClick: () => void }) {
           Продолжить
         </p>
         <div className="bg-[#d65e43] h-[28.585px] rounded-[12296925px] shrink-0 flex items-center justify-center px-[11.727px]">
-          <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[15.392px] text-[#eef5ff] text-[10.261px] whitespace-nowrap">
+          <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[15.392px] text-[#eef5ff] text-[10.261px] whitespace-nowrap">
             +125 XP
           </p>
         </div>
@@ -108,7 +108,7 @@ function MobileContinueButton({ onClick }: { onClick: () => void }) {
         Продолжить
       </p>
       <div className="bg-black/20 flex h-[24px] items-center justify-center px-[10px] rounded-full">
-        <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#eef5ff] text-[10px]">
+        <p className="font-['Inter:Semi_Bold',sans-serif] font-medium text-[#eef5ff] text-[10px]">
           +125 XP
         </p>
       </div>

@@ -262,7 +262,7 @@ function FilterBar({
       style={{ background: active === f ? "#404d52" : "#323d41" }}
       onClick={() => onChange(f)}
     >
-      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[27.5px] relative shrink-0 text-[18px] whitespace-nowrap" style={{ color: "rgba(244,245,252,0.7)" }}>
+      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[18px] whitespace-nowrap" style={{ color: "rgba(244,245,252,0.7)" }}>
         {label}
       </p>
       {badge}

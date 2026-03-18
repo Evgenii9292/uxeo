@@ -327,7 +327,7 @@ export default function AppHeader({ title, subtitle, showBack = false, onBack, i
                   title="Админ-панель"
                 >
                   <div className="px-[12px] py-[6px] rounded-[8px] bg-[#ff6b21] hover:bg-[#e66020] transition-colors">
-                    <span className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold text-[14px] text-[#f4f5fc]">
+                    <span className="font-['Roboto_Condensed:Bold',sans-serif] font-medium text-[14px] text-[#f4f5fc]">
                       ADMIN
                     </span>
                   </div>
