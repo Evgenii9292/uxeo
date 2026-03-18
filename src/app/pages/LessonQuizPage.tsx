@@ -998,7 +998,7 @@ export default function LessonQuizPage() {
         {/* Mobile: one fixed row — X | progress | XP */}
         {isMobile ? (
           <div className="fixed top-0 left-0 right-0 z-10 flex items-center gap-[10px] px-[14px]" style={{ height: 44 }}>
-            <CloseButton onClick={() => setShowExitModal(true)} />
+            <CloseButton onClick={() => setShowExitModal(true)} mobile />
             <div className="flex-1 h-[10px] bg-[#465256] rounded-[9999px] overflow-hidden">
               <div
                 className="h-full bg-gradient-to-b from-[#ff6b21] to-[#994014] rounded-[9999px] transition-[width] duration-300"
