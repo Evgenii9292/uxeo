@@ -2,8 +2,12 @@ import { useNavigate } from "react-router";
 import { useRef, useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import RightWidgets from "../components/RightWidgets";
+import uxeoLogo from "../../assets/uxeo-logo.svg";
 
 // ─── Hero image with parallax ─────────────────────────────────────────────────
+// Extra height for the parallax layer so overflow-hidden never clips the gradient
+const PARALLAX_EXTRA = 60;
+
 function HeroAbout() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [scrollY, setScrollY] = useState(0);
@@ -16,52 +20,47 @@ function HeroAbout() {
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
+  const shift = scrollY * 0.25;
+
   return (
     <div ref={wrapRef} className="rounded-[20px] overflow-hidden relative w-full" style={{ height: 220 }}>
       {/* Dark base */}
       <div className="absolute inset-0" style={{ background: "#2D363A" }} />
-      {/* Parallax layer */}
+
+      {/* Parallax layer — taller than container so clipping never shows */}
       <div
-        className="absolute inset-0 flex items-center justify-center"
-        style={{ transform: `translateY(${scrollY * 0.25}px)`, willChange: "transform" }}
+        className="absolute left-0 right-0 flex items-center justify-center"
+        style={{
+          top: -PARALLAX_EXTRA / 2,
+          height: 220 + PARALLAX_EXTRA,
+          transform: `translateY(${shift}px)`,
+          willChange: "transform",
+        }}
       >
-        {/* Decorative glow rings */}
-        <div className="relative flex items-center justify-center w-full h-full">
-          <div
-            className="absolute rounded-full"
-            style={{
-              width: 320, height: 320,
-              background: "radial-gradient(circle, rgba(255,107,33,0.18) 0%, transparent 65%)",
-              top: "50%", left: "50%", transform: "translate(-50%, -50%)",
-            }}
-          />
-          <div
-            className="absolute rounded-full"
-            style={{
-              width: 180, height: 180,
-              background: "radial-gradient(circle, rgba(255,107,33,0.1) 0%, transparent 70%)",
-              top: "50%", left: "30%", transform: "translate(-50%, -50%)",
-            }}
-          />
-          {/* Logo wordmark */}
-          <div className="flex flex-col items-center gap-[8px] relative z-10">
-            <svg width="40" height="58" viewBox="0 0 21.38 31.16" fill="none">
-              <path d="M10.69 0C10.69 0 0 10.5 0 19.5C0 25.3 4.8 31.16 10.69 31.16C16.58 31.16 21.38 25.3 21.38 19.5C21.38 10.5 10.69 0 10.69 0Z"
-                fill="url(#hero_flame)" />
-              <defs>
-                <linearGradient id="hero_flame" x1="9" y1="13.36" x2="-7" y2="30.86" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#FF6B21" /><stop offset="1" stopColor="#994014" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[48px] text-[#f4f5fc] leading-none opacity-90">
-              UXEO
-            </p>
-            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[14px] text-[#798589] tracking-wider uppercase">
-              Design Learning Platform
-            </p>
-          </div>
-        </div>
+        {/* Glow rings */}
+        <div
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: 340, height: 340,
+            background: "radial-gradient(circle, rgba(255,107,33,0.18) 0%, transparent 65%)",
+            top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+          }}
+        />
+        <div
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: 200, height: 200,
+            background: "radial-gradient(circle, rgba(255,107,33,0.10) 0%, transparent 70%)",
+            top: "50%", left: "32%", transform: "translate(-50%, -50%)",
+          }}
+        />
+
+        {/* Custom UXEO logo */}
+        <img
+          src={uxeoLogo}
+          alt="UXEO"
+          style={{ width: 200, height: "auto", position: "relative", zIndex: 10 }}
+        />
       </div>
     </div>
   );
