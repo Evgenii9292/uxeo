@@ -182,7 +182,7 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
         left:            pos.left,
         width:           POPUP_W,
         height:          POPUP_H,
-        zIndex:          200,
+        zIndex:          100,
         // CSS transition instead of keyframe — re-triggers on each mount, even during rapid taps
         opacity:         visible ? 1 : 0,
         transform:       `${pos.scale < 1 ? `scale(${pos.scale})` : ""} translateY(${visible ? 0 : -8}px)`.trim(),
