@@ -89,16 +89,16 @@ export function AccordionSectionMobile({
 
               {/* Quiz */}
               <div className="flex flex-col gap-[16px] w-full">
-                <div className="flex items-center justify-between w-full px-[4px]">
-                  <p className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] text-[#f1f2fb] text-[22px] flex-1 pr-[10px]">
-                    {section.quizQuestion}
-                  </p>
-                  <div className="flex gap-[7px] items-center shrink-0">
+                <div className="flex flex-col gap-[8px] w-full px-[4px]">
+                  <div className="flex gap-[7px] items-center">
                     <RedCardIcon />
                     <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#ff6b21] text-[16px]">
                       {section.quizLabel}
                     </p>
                   </div>
+                  <p className="font-['Roboto_Condensed:SemiBold',sans-serif] font-semibold leading-[27.5px] text-[#f1f2fb] text-[22px] w-full">
+                    {section.quizQuestion}
+                  </p>
                 </div>
 
                 <div className="flex flex-row gap-[14px] items-stretch w-full">
