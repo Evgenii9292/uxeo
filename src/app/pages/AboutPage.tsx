@@ -20,19 +20,22 @@ function HeroAbout() {
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
-  const shift = scrollY * 0.25;
+  const shiftFar  = scrollY * 0.10;  // гlow — самый медленный слой (фон)
+  const shiftLogo = scrollY * 0.25;  // лого — быстрее, создаёт объём
 
   return (
     // Outer wrapper — NO overflow-hidden, glow rings render freely here
     <div ref={wrapRef} className="relative w-full" style={{ height: 220 }}>
 
-      {/* Glow rings — live outside overflow-hidden so they're never clipped */}
+      {/* Glow rings — параллакс медленнее лого для эффекта глубины */}
       <div
         className="absolute rounded-full pointer-events-none"
         style={{
           width: 400, height: 400,
           background: "radial-gradient(circle, rgba(255,107,33,0.20) 0%, transparent 65%)",
-          top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+          top: "50%", left: "50%",
+          transform: `translate(-50%, calc(-50% + ${shiftFar}px))`,
+          willChange: "transform",
         }}
       />
       <div
@@ -40,16 +43,18 @@ function HeroAbout() {
         style={{
           width: 220, height: 220,
           background: "radial-gradient(circle, rgba(255,107,33,0.12) 0%, transparent 70%)",
-          top: "50%", left: "35%", transform: "translate(-50%, -50%)",
+          top: "50%", left: "35%",
+          transform: `translate(-50%, calc(-50% + ${shiftFar * 0.7}px))`,
+          willChange: "transform",
         }}
       />
 
       {/* Inner container — overflow-hidden only here, for rounded corners + logo clipping */}
       <div className="absolute inset-0 rounded-[20px] overflow-hidden">
-        {/* Logo — parallaxes */}
+        {/* Logo — параллакс быстрее гlow */}
         <div
           className="absolute inset-0 flex items-center justify-center"
-          style={{ transform: `translateY(${shift}px)`, willChange: "transform" }}
+          style={{ transform: `translateY(${shiftLogo}px)`, willChange: "transform" }}
         >
           <img
             src={uxeoLogo}
