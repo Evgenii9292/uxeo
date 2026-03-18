@@ -16,7 +16,7 @@ function ProblemCard({ icon, title, text }: { icon: string; title: string; text:
   return (
     <div
       className="flex flex-col gap-[12px] p-[20px] rounded-[16px] flex-1"
-      style={{ background: "#374348", border: "1px solid rgba(255,255,255,0.06)" }}
+      style={{ background: "#343e42" }}
     >
       <div className="text-[26px] leading-none">{icon}</div>
       <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[16px] text-[#f4f5fc] leading-snug">{title}</p>
@@ -66,13 +66,13 @@ function AboutContent() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col gap-[32px] w-full">
+    <div className="flex flex-col gap-[44px] w-full">
 
       {/* ── Hero ── */}
       <div className="flex flex-col gap-[14px]">
         <div
           className="inline-flex items-center gap-[8px] px-[12px] py-[5px] rounded-full self-start"
-          style={{ background: "#374348", border: "1px solid rgba(255,255,255,0.08)" }}
+          style={{ background: "#343e42" }}
         >
           <span className="text-[12px]">🚀</span>
           <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[13px] text-[#9ba3a8]">Открытая бета</span>
@@ -103,7 +103,7 @@ function AboutContent() {
         <SectionTitle>Что есть в UXEO</SectionTitle>
         <div
           className="flex flex-col gap-[0px] rounded-[16px] overflow-hidden"
-          style={{ background: "#374348", border: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ background: "#343e42" }}
         >
           {[
             { icon: "⚡", bg: "#2A3F4A", title: "Интерактивные задания", text: "Решаешь реальные задачи интерфейсов — не читаешь, а делаешь" },
@@ -115,7 +115,7 @@ function AboutContent() {
             <div
               key={item.title}
               className="flex gap-[14px] items-center px-[18px] py-[14px]"
-              style={{ borderBottom: i < arr.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none" }}
+              style={{ borderBottom: "none" }}
             >
               <div
                 className="flex items-center justify-center shrink-0 w-[40px] h-[40px] rounded-[10px] text-[18px]"
@@ -145,7 +145,7 @@ function AboutContent() {
             <div
               key={num}
               className="flex flex-col gap-[10px] items-center text-center p-[16px] rounded-[14px] flex-1"
-              style={{ background: "#374348", border: "1px solid rgba(255,255,255,0.06)" }}
+              style={{ background: "#343e42" }}
             >
               <div
                 className="flex items-center justify-center w-[34px] h-[34px] rounded-full font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[16px]"
@@ -162,7 +162,7 @@ function AboutContent() {
       {/* ── Why we made it ── */}
       <div
         className="flex flex-col gap-[12px] p-[20px] rounded-[16px]"
-        style={{ background: "#374348", border: "1px solid rgba(255,255,255,0.06)" }}
+        style={{ background: "#343e42" }}
       >
         <span className="text-[22px]">💡</span>
         <SectionTitle>Почему мы это сделали</SectionTitle>
@@ -187,7 +187,7 @@ function AboutContent() {
             <div
               key={text}
               className="flex items-center gap-[10px] p-[14px] rounded-[14px]"
-              style={{ background: "#374348", border: "1px solid rgba(255,255,255,0.06)" }}
+              style={{ background: "#343e42" }}
             >
               <span className="text-[20px] shrink-0">{icon}</span>
               <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[14px] text-[#c8cdd0] leading-snug">{text}</span>
@@ -199,7 +199,7 @@ function AboutContent() {
       {/* ── Team ── */}
       <div
         className="flex gap-[14px] items-start p-[18px] rounded-[16px]"
-        style={{ background: "#374348", border: "1px solid rgba(255,255,255,0.06)" }}
+        style={{ background: "#343e42" }}
       >
         <div
           className="flex items-center justify-center shrink-0 w-[46px] h-[46px] rounded-[12px] text-[20px]"
@@ -224,7 +224,7 @@ function AboutContent() {
             <span
               key={tag}
               className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[13px] text-[#9ba3a8] px-[12px] py-[6px] rounded-full"
-              style={{ background: "#374348" }}
+              style={{ background: "#343e42" }}
             >
               {tag}
             </span>
@@ -242,7 +242,7 @@ function AboutContent() {
           <a
             href="mailto:hello@uxeo.app"
             className="flex items-center justify-center h-[46px] px-[24px] rounded-[14px] transition-colors duration-150"
-            style={{ background: "#374348", border: "1px solid rgba(255,255,255,0.1)" }}
+            style={{ background: "#343e42" }}
           >
             <span className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[16px] text-[#f4f5fc]">Написать</span>
           </a>
