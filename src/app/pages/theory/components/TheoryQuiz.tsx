@@ -37,7 +37,7 @@ function QuizVariantSlot({ node }: { node: React.ReactNode }) {
   }, []);
 
   const scaledW = Math.round(186 * scale);
-  const scaledH = Math.round(231 * scale * 1.2); // +20% height
+  const scaledH = Math.round(231 * scale);
 
   return (
     <div

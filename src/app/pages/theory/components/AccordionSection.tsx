@@ -80,7 +80,7 @@ export function AccordionSectionMobile({
       <div style={{ display: "grid", gridTemplateRows: isOpen ? "1fr" : "0fr", transition: "grid-template-rows 300ms ease" }}>
         <div style={{ overflow: "hidden", minHeight: 0 }}>
           <div className="flex flex-col items-center w-full">
-            <div className="flex flex-col gap-[25px] items-center pb-[20px] px-[25px] w-full">
+            <div className="flex flex-col gap-[25px] items-center py-[20px] px-[25px] w-full">
               {/* Theory Content */}
               <div className="flex flex-col gap-[20px] items-center w-full">
                 {section.content}
