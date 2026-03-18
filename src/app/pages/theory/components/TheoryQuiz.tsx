@@ -63,7 +63,7 @@ export function QuizCardLeft({ isSelected, isCorrect, showFeedback, onClick, dis
   return (
     <div
       onClick={disabled ? undefined : onClick}
-      className={`flex-[1_0_0] min-h-px min-w-px relative rounded-[20px] transition-all overflow-hidden ${
+      className={`flex-[1_0_0] min-h-px min-w-px relative rounded-[15px] transition-all overflow-hidden ${
         showFeedback ? "cursor-default" : "cursor-pointer hover:scale-[1.01]"
       } ${disabled ? "pointer-events-none" : ""}`}
       style={
@@ -99,7 +99,7 @@ export function QuizCardRight({ isSelected, isCorrect, showFeedback, onClick, di
   return (
     <div
       onClick={disabled ? undefined : onClick}
-      className={`flex-[1_0_0] min-h-px min-w-px relative rounded-[20px] transition-all overflow-hidden ${
+      className={`flex-[1_0_0] min-h-px min-w-px relative rounded-[15px] transition-all overflow-hidden ${
         showFeedback ? "cursor-default" : "cursor-pointer hover:scale-[1.01]"
       } ${disabled ? "pointer-events-none" : ""}`}
       style={

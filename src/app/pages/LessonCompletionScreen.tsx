@@ -68,10 +68,10 @@ function OrangeButton({ label, onClick, isMobile }: { label: string; onClick: ()
     <button
       onClick={() => { onClick(); playClick(true); }}
       className="group relative flex h-[59px] items-center justify-center px-[40px]
-        rounded-[20px] shrink-0 bg-[#ff5d39] cursor-pointer select-none outline-none
+        rounded-[15px] shrink-0 bg-[#ff5d39] cursor-pointer select-none outline-none
         transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
     >
-      <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[20px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
+      <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
       <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[1.2] text-[#f4f5fc] whitespace-nowrap ${isMobile ? "text-[20px]" : "text-[26px]"}`}>{label}</p>
     </button>
   );
@@ -82,10 +82,10 @@ function SecondaryButton({ label, onClick }: { label: string; onClick: () => voi
     <button
       onClick={() => { onClick(); playClick(false); }}
       className="group relative flex h-[59px] items-center justify-center px-[40px]
-        rounded-[20px] shrink-0 bg-[#3d484e] cursor-pointer select-none outline-none
+        rounded-[15px] shrink-0 bg-[#3d484e] cursor-pointer select-none outline-none
         transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
     >
-      <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[20px] border border-[#57646a] border-solid transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
+      <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[15px] border border-[#57646a] border-solid transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
       <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[22.955px] text-[#c8ccd4] text-[26px] whitespace-nowrap">{label}</p>
     </button>
   );

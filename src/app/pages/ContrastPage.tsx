@@ -29,7 +29,7 @@ interface AccordionState {
 
 function HeroImage() {
   return (
-    <div className="bg-[#38444a] h-full min-h-[217px] relative rounded-[20px] shrink-0 w-full">
+    <div className="bg-[#38444a] h-full min-h-[217px] relative rounded-[15px] shrink-0 w-full">
       <div className="absolute flex h-[130px] items-center justify-center left-[175px] top-[42px] w-[182px]">
         <div className="-rotate-90 flex-none">
           <div className="h-[182px] relative w-[130px]">
@@ -706,7 +706,7 @@ export default function ContrastPage() {
               const isLast = index === 4;
               const ContentComp = section.ContentComponent;
               return (
-                <div key={index} data-csection={String(index)} className="w-full bg-[#374348] rounded-[20px] overflow-hidden">
+                <div key={index} data-csection={String(index)} className="w-full bg-[#374348] rounded-[15px] overflow-hidden">
                   <div
                     className={`h-auto min-h-[100px] relative shrink-0 w-full flex items-center ${isUnlocked(index) ? "cursor-pointer" : "cursor-not-allowed"}`}
                     onClick={() => handleToggle(index)}
@@ -727,7 +727,7 @@ export default function ContrastPage() {
                       <div className="flex flex-col items-center w-full">
                         <div className="flex flex-col gap-[16px] items-center pb-[20px] px-[20px] w-full">
                           <div className="flex flex-col gap-[20px] items-center w-full"><ContentComp /></div>
-                          <div className="bg-[#3F4C52] rounded-[20px] w-full mt-[10px]">
+                          <div className="bg-[#3F4C52] rounded-[15px] w-full mt-[10px]">
                             <div className="p-[20px] flex flex-col gap-[20px]">
                               <div className="flex items-center justify-between w-full">
                                 <p className="font-['Roboto_Condensed:Bold',sans-serif] font-semibold leading-[24px] text-[#f1f2fb] text-[20px] flex-1 pr-[10px]">{section.question}</p>
@@ -873,11 +873,11 @@ export default function ContrastPage() {
     <Layout title="Контраст" showBack backPath="/lessons" rightContent={<RightWidgets />} leftWidth="820px" rightWidth="256px">
       <div className="flex flex-col gap-[20px] w-full">
         {/* Hero block — independent */}
-            <div className="bg-[#404d52] rounded-[20px] p-[20px] w-full">
+            <div className="bg-[#404d52] rounded-[15px] p-[20px] w-full">
               {/* Hero + Title */}
               <div className="content-stretch flex gap-[20px] items-stretch relative shrink-0 w-full">
                 {/* Left: image ~400px */}
-                <div className="shrink-0 rounded-[20px] overflow-hidden self-stretch" style={{ width: '400px' }}>
+                <div className="shrink-0 rounded-[15px] overflow-hidden self-stretch" style={{ width: '400px' }}>
                   <HeroImage />
                 </div>
                 {/* Right: title + meta */}
@@ -905,7 +905,7 @@ export default function ContrastPage() {
                   const isLast = index === 4;
                   const ContentComp = section.ContentComponent;
                   return (
-                    <div key={index} data-csection={String(index)} className="w-full bg-[#374348] rounded-[20px] overflow-hidden">
+                    <div key={index} data-csection={String(index)} className="w-full bg-[#374348] rounded-[15px] overflow-hidden">
                       {/* Header */}
                       <div
                         className={`${isMobile ? 'h-auto min-h-[100px]' : 'h-[120px]'} relative shrink-0 w-full flex items-center ${isUnlocked(index) ? "cursor-pointer" : "cursor-not-allowed"}`}
@@ -936,7 +936,7 @@ export default function ContrastPage() {
                                 </div>
 
                                 {/* Outer quiz container */}
-                                <div className="bg-[#3F4C52] rounded-[20px] w-full mt-[10px]">
+                                <div className="bg-[#3F4C52] rounded-[15px] w-full mt-[10px]">
                                   {/* Inner quiz container — 30px padding all sides (Fix #2) */}
                                   <div className={`${isMobile ? 'p-[20px]' : 'p-[30px]'} flex flex-col gap-[20px]`}>
                                     {/* Header row: question LEFT, label RIGHT (Fix #3) */}

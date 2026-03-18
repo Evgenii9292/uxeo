@@ -41,11 +41,11 @@ export function ExitConfirmationModal({
                 o.start(); o.stop(ctx.currentTime + 0.08);
               } catch (_) {}
             }}
-            className="group relative flex h-[56px] items-center justify-center px-[25px] rounded-[20px] bg-[#ff5d39] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px]"
+            className="group relative flex h-[56px] items-center justify-center px-[25px] rounded-[15px] bg-[#ff5d39] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px]"
           >
             <div
               aria-hidden="true"
-              className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[20px] transition-[box-shadow] duration-75 shadow-[0px_4px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none"
+              className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_4px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none"
             />
             <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[24px] whitespace-nowrap">
               Продолжить урок
@@ -69,11 +69,11 @@ export function ExitConfirmationModal({
                 o.start(); o.stop(ctx.currentTime + 0.1);
               } catch (_) {}
             }}
-            className="group relative flex h-[56px] items-center justify-center px-[25px] rounded-[20px] bg-[#e8eaef] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px]"
+            className="group relative flex h-[56px] items-center justify-center px-[25px] rounded-[15px] bg-[#e8eaef] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px]"
           >
             <div
               aria-hidden="true"
-              className="absolute inset-0 pointer-events-none rounded-[20px] transition-[box-shadow] duration-75 shadow-[0px_4px_0px_0px_#c5c8d3] group-hover:shadow-[0px_2px_0px_0px_#c5c8d3] group-active:shadow-none"
+              className="absolute inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_4px_0px_0px_#c5c8d3] group-hover:shadow-[0px_2px_0px_0px_#c5c8d3] group-active:shadow-none"
             />
             <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#5a6569] text-[24px] whitespace-nowrap">
               Выйти из урока

@@ -180,7 +180,7 @@ export function CompareUIQuiz({
                 <div
                   key={option.label}
                   onClick={isClickable ? () => handleSelect(option.label) : undefined}
-                  className={`relative rounded-[20px] overflow-hidden flex-shrink-0 transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.99]" : ""}`}
+                  className={`relative rounded-[15px] overflow-hidden flex-shrink-0 transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.99]" : ""}`}
                   style={{
                     height: containerH,
                     background: "linear-gradient(172deg, rgb(44,53,56) 2%, rgb(56,67,72) 99%)",

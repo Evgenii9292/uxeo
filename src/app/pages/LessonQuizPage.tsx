@@ -1115,7 +1115,7 @@ export default function LessonQuizPage() {
 
                       {/* Image card — 185px (small) / 215px (large) */}
                       <div
-                        className="relative rounded-[20px] overflow-hidden flex-shrink-0 w-full"
+                        className="relative rounded-[15px] overflow-hidden flex-shrink-0 w-full"
                         style={{
                           height: isLargePhone ? 215 : 185,
                           background: "linear-gradient(172deg, rgb(44,53,56) 2%, rgb(56,67,72) 99%)",
