@@ -14,11 +14,11 @@ export default defineConfig({
     alias: [
       {
         find: /^figma:asset\//,
-        replacement: `/Users/evgenii/Downloads/uxeo 2.0 (beta) (КВИЗЫ)/src/assets/`,
+        replacement: path.resolve(__dirname, "./src/assets") + "/",
       },
       {
         find: "@",
-        replacement: path.resolve("/Users/evgenii/Downloads/uxeo 2.0 (beta) (КВИЗЫ)", "./src"),
+        replacement: path.resolve(__dirname, "./src"),
       },
     ],
   },
