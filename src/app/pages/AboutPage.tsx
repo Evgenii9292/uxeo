@@ -113,7 +113,7 @@ function PrimaryButton({ label, onClick }: { label: string; onClick: () => void 
   return (
     <button
       onClick={onClick}
-      className="group relative h-[52px] rounded-[14px] w-full max-w-[280px] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
+      className="group relative h-[52px] rounded-[14px] w-full md:max-w-[280px] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
     >
       <div className="bg-[#ff5d39] flex items-center justify-center px-6 relative rounded-[14px] size-full">
         <div
@@ -159,7 +159,7 @@ function AboutContent() {
       {/* ── Problem cards ── */}
       <div className="flex flex-col gap-[14px]">
         <SectionTitle>С чем сталкиваются дизайнеры</SectionTitle>
-        <div className="flex gap-[10px]">
+        <div className="flex flex-col gap-[10px] md:flex-row">
           <ProblemCard icon="📚" title="Много теории, мало практики" text="Часы видео, минимум реальных задач — знания не закрепляются" />
           <ProblemCard icon="🤔" title="Нет обратной связи" text="Непонятно, правильно ли сделано — нет кому проверить" />
           <ProblemCard icon="📉" title="Нет системы роста" text="Сложно отследить прогресс и понять что изучать дальше" />
@@ -203,7 +203,7 @@ function AboutContent() {
       {/* ── How it works ── */}
       <div className="flex flex-col gap-[14px]">
         <SectionTitle>Как это работает</SectionTitle>
-        <div className="flex gap-[10px]">
+        <div className="grid grid-cols-2 gap-[10px] md:grid-cols-4">
           {[
             { num: "1", text: "Проходишь урок" },
             { num: "2", text: "Решаешь задания" },
