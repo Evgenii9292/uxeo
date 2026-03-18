@@ -27,35 +27,29 @@ function HeroAbout() {
       {/* Dark base */}
       <div className="absolute inset-0" style={{ background: "#2D363A" }} />
 
-      {/* Parallax layer — taller than container so clipping never shows */}
+      {/* Glow rings — static, never clipped */}
       <div
-        className="absolute left-0 right-0 flex items-center justify-center"
+        className="absolute rounded-full pointer-events-none"
         style={{
-          top: -PARALLAX_EXTRA / 2,
-          height: 220 + PARALLAX_EXTRA,
-          transform: `translateY(${shift}px)`,
-          willChange: "transform",
+          width: 340, height: 340,
+          background: "radial-gradient(circle, rgba(255,107,33,0.18) 0%, transparent 65%)",
+          top: "50%", left: "50%", transform: "translate(-50%, -50%)",
         }}
-      >
-        {/* Glow rings */}
-        <div
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            width: 340, height: 340,
-            background: "radial-gradient(circle, rgba(255,107,33,0.18) 0%, transparent 65%)",
-            top: "50%", left: "50%", transform: "translate(-50%, -50%)",
-          }}
-        />
-        <div
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            width: 200, height: 200,
-            background: "radial-gradient(circle, rgba(255,107,33,0.10) 0%, transparent 70%)",
-            top: "50%", left: "32%", transform: "translate(-50%, -50%)",
-          }}
-        />
+      />
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 200, height: 200,
+          background: "radial-gradient(circle, rgba(255,107,33,0.10) 0%, transparent 70%)",
+          top: "50%", left: "32%", transform: "translate(-50%, -50%)",
+        }}
+      />
 
-        {/* Custom UXEO logo */}
+      {/* Logo only — parallaxes */}
+      <div
+        className="absolute inset-0 flex items-center justify-center"
+        style={{ transform: `translateY(${shift}px)`, willChange: "transform" }}
+      >
         <img
           src={uxeoLogo}
           alt="UXEO"
