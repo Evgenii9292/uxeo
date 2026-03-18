@@ -73,7 +73,7 @@ export default function TheoryPage() {
         <div className="flex flex-col gap-[20px] w-full">
           {/* Hero block */}
           <div className="w-full flex flex-col gap-[14px]">
-            <div className="rounded-[20px] overflow-hidden relative" style={{ height: '220px' }}>
+            <div className="rounded-[15px] overflow-hidden relative" style={{ height: '220px' }}>
               <div className="absolute inset-0">
                 <HeroImage />
               </div>

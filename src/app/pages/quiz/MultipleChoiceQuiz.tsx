@@ -98,19 +98,19 @@ function MultiSelectCard({
   return (
     <div
       onClick={isClickable ? onClick : undefined}
-      className={`relative rounded-[20px] shrink-0 w-full flex items-center transition-all duration-200 ${state === "selected" ? "bg-[#354349]" : ""} ${isClickable ? "cursor-pointer" : "cursor-default"}`}
+      className={`relative rounded-[15px] shrink-0 w-full flex items-center transition-all duration-200 ${state === "selected" ? "bg-[#354349]" : ""} ${isClickable ? "cursor-pointer" : "cursor-default"}`}
       style={{
         height: fixedHeight,
         ...(state !== "selected" ? { backgroundImage: bgMap[state] } : {}),
       }}
     >
       {state === "selected" && (
-        <div aria-hidden="true" className="absolute border-[3px] border-[#505158] border-solid inset-[-3px] pointer-events-none rounded-[23px]" />
+        <div aria-hidden="true" className="absolute border-[3px] border-[#505158] border-solid inset-[-3px] pointer-events-none rounded-[18px]" />
       )}
       {borderColor[state] && state !== "selected" && (
         <div
           aria-hidden="true"
-          className="absolute border-[3px] border-solid inset-[-3px] pointer-events-none rounded-[23px]"
+          className="absolute border-[3px] border-solid inset-[-3px] pointer-events-none rounded-[18px]"
           style={{ borderColor: borderColor[state]! }}
         />
       )}
@@ -143,7 +143,7 @@ function MultiSelectCard({
 function CheckButton({ onClick, disabled, fullWidth }: { onClick: () => void; disabled: boolean; fullWidth?: boolean }) {
   if (disabled) {
     return (
-      <div className={`bg-[#333d41] content-stretch flex h-[56px] items-center justify-center px-[25px] relative rounded-[20px] shadow-[0px_5px_0px_0px_#212226] shrink-0 ${fullWidth ? "w-full" : ""}`}>
+      <div className={`bg-[#333d41] content-stretch flex h-[56px] items-center justify-center px-[25px] relative rounded-[15px] shadow-[0px_5px_0px_0px_#212226] shrink-0 ${fullWidth ? "w-full" : ""}`}>
         <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[22.955px] relative shrink-0 text-[#465256] text-[22px] whitespace-nowrap">Проверить</p>
       </div>
     );
@@ -151,9 +151,9 @@ function CheckButton({ onClick, disabled, fullWidth }: { onClick: () => void; di
   return (
     <button
       onClick={onClick}
-      className={`group relative flex h-[56px] items-center justify-center px-[25.835px] py-[0.835px] rounded-[20px] shrink-0 bg-[#ff5d39] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px] ${fullWidth ? "w-full" : ""}`}
+      className={`group relative flex h-[56px] items-center justify-center px-[25.835px] py-[0.835px] rounded-[15px] shrink-0 bg-[#ff5d39] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px] ${fullWidth ? "w-full" : ""}`}
     >
-      <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[20px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
+      <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
       <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[22.955px] text-[#f4f5fc] text-[22px] whitespace-nowrap">Проверить</p>
     </button>
   );
@@ -253,7 +253,7 @@ export function MultipleChoiceQuiz({
 
           {/* Image card — FIXED height */}
           <div
-            className="relative rounded-[20px] overflow-hidden flex-shrink-0 w-full"
+            className="relative rounded-[15px] overflow-hidden flex-shrink-0 w-full"
             style={{
               height: cardH,
               background: "linear-gradient(172deg, rgb(44,53,56) 2%, rgb(56,67,72) 99%)",

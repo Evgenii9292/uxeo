@@ -522,7 +522,7 @@ export function MatchingQuiz({
                     style={{
                       width: topCardW,
                       height: topCardH,
-                      borderRadius: 16,
+                      borderRadius: 15,
                       backgroundImage: topCardBg,
                       boxShadow: ring ? `0 0 0 3px ${ring}` : undefined,
                       cursor: checked ? "default" : "pointer",
@@ -581,7 +581,7 @@ export function MatchingQuiz({
                     style={{
                       width: topCardW,
                       height: 56,
-                      borderRadius: 14,
+                      borderRadius: 15,
                       backgroundImage: bottomCardBg,
                       boxShadow: ring ? `0 0 0 3px ${ring}` : undefined,
                       display: "flex", alignItems: "center", justifyContent: "center",
@@ -723,7 +723,7 @@ export function MatchingQuiz({
                   style={{
                     width: pair.node ? 330 : 300,
                     height: pair.node ? 280 : 250,
-                    borderRadius: 24,
+                    borderRadius: 15,
                     backgroundImage: topCardBg,
                     boxShadow: ring
                       ? `0 0 0 3px ${ring}, inset -4px 0px 4px 0px #384348, inset 4px 0px 4px 0px #384348, inset 0px -4px 4px 0px rgba(0,0,0,0.2), inset 0px 4px 4px 0px rgba(0,0,0,0.2)`
@@ -745,7 +745,7 @@ export function MatchingQuiz({
                           position: "absolute",
                           inset: 0,
                           overflow: "hidden",
-                          borderRadius: 24,
+                          borderRadius: 15,
                           pointerEvents: "none",
                           display: "flex",
                           alignItems: "center",
@@ -827,7 +827,7 @@ export function MatchingQuiz({
                   style={{
                     width: 290,
                     height: 72,
-                    borderRadius: 20,
+                    borderRadius: 15,
                     backgroundImage: bottomCardBg,
                     boxShadow: ring
                       ? `0 0 0 3px ${ring}, inset -4px 0px 4px 0px #384348`

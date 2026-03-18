@@ -92,11 +92,11 @@ function ContinueButton({ onClick }: { onClick: () => void }) {
       }}
       className="
         group relative flex h-[59px] items-center justify-center px-[25.835px] py-[0.835px]
-        rounded-[20px] shrink-0 bg-[#ff5d39] cursor-pointer select-none outline-none
+        rounded-[15px] shrink-0 bg-[#ff5d39] cursor-pointer select-none outline-none
         transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]
       "
     >
-      <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[20px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
+      <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
       <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[22.955px] text-[#f4f5fc] text-[26px] whitespace-nowrap">Продолжить</p>
     </button>
   );
