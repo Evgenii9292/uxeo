@@ -4,6 +4,32 @@ import Layout from "../components/Layout";
 import RightWidgets from "../components/RightWidgets";
 import uxeoLogo from "../../assets/uxeo-logo.svg";
 
+// ─── Stroke SVG icons ─────────────────────────────────────────────────────────
+const S = { stroke: "#9ba3a8", fill: "none", strokeWidth: 1.6, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+
+function IconZap() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" {...S}>
+      <path d="M13 2L4.5 13.5H12L11 22L19.5 10.5H12L13 2Z" />
+    </svg>
+  );
+}
+function IconChat() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" {...S}>
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+    </svg>
+  );
+}
+function IconTrendUp() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" {...S}>
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+      <polyline points="17 6 23 6 23 12" />
+    </svg>
+  );
+}
+
 // ─── Hero image with parallax ─────────────────────────────────────────────────
 // Extra height for the parallax layer so overflow-hidden never clips the gradient
 const PARALLAX_EXTRA = 60;
@@ -174,14 +200,14 @@ function AboutContent() {
           style={{ background: "#343e42" }}
         >
           {[
-            { icon: "⚡", bg: "#2D363A", title: "Интерактивные задания", text: "Решаешь реальные задачи интерфейсов — не читаешь, а делаешь" },
-            { icon: "🎯", bg: "#2D363A", title: "Практика в Figma", text: "Задания прямо в инструменте дизайнера — не в абстрактной среде" },
-            { icon: "💬", bg: "#2D363A", title: "Обратная связь от менторов", text: "Живые люди проверяют домашки и дают конкретный фидбек" },
-            { icon: "🏆", bg: "#2D363A", title: "Челленджи и соревнования", text: "Еженедельные вызовы, которые держат в тонусе" },
-            { icon: "📈", bg: "#2D363A", title: "Прогресс, XP и уровни", text: "Видишь весь путь, знаешь куда идёшь и как далеко продвинулся" },
+            { icon: <IconZap />,      bg: "#2D363A", title: "Интерактивные задания", text: "Решаешь реальные задачи интерфейсов — не читаешь, а делаешь" },
+            { icon: "🎯",             bg: "#2D363A", title: "Практика в Figma", text: "Задания прямо в инструменте дизайнера — не в абстрактной среде" },
+            { icon: <IconChat />,     bg: "#2D363A", title: "Обратная связь от менторов", text: "Живые люди проверяют домашки и дают конкретный фидбек" },
+            { icon: "🏆",             bg: "#2D363A", title: "Челленджи и соревнования", text: "Еженедельные вызовы, которые держат в тонусе" },
+            { icon: <IconTrendUp />,  bg: "#2D363A", title: "Прогресс, XP и уровни", text: "Видишь весь путь, знаешь куда идёшь и как далеко продвинулся" },
           ].map((item, i, arr) => (
             <div
-              key={item.title}
+              key={i}
               className="flex gap-[14px] items-center px-[18px] py-[14px]"
               style={{ borderBottom: "none" }}
             >
