@@ -107,7 +107,7 @@ export default function AboutPage() {
 
   return (
     <div
-      className="relative min-h-screen w-full overflow-x-hidden"
+      className="relative w-full h-full overflow-y-auto overflow-x-hidden"
       style={{ background: "linear-gradient(165.05deg, rgb(44, 52, 56) 14.367%, rgb(46, 57, 62) 147.74%)" }}
     >
       {/* Glow decoration */}
