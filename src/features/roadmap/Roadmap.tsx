@@ -318,7 +318,7 @@ export function Roadmap({
                   left,
                   top,
                   transform: mobile
-                    ? "scale(0.75) rotate(-5deg)"
+                    ? "scale(0.75) rotate(-13deg)"
                     : undefined,
                   transformOrigin: "top left",
                 }}
