@@ -4,13 +4,20 @@ import Layout from "../components/Layout";
 import RightWidgets from "../components/RightWidgets";
 import uxeoLogo from "../../assets/uxeo-logo.svg";
 
-// ─── Stroke SVG icons ─────────────────────────────────────────────────────────
+// ─── Stroke SVG icons (для "Что есть в UXEO") ────────────────────────────────
 const S = { stroke: "#9ba3a8", fill: "none", strokeWidth: 1.6, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
 
 function IconZap() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" {...S}>
       <path d="M13 2L4.5 13.5H12L11 22L19.5 10.5H12L13 2Z" />
+    </svg>
+  );
+}
+function IconTarget() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" {...S}>
+      <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" />
     </svg>
   );
 }
@@ -21,11 +28,54 @@ function IconChat() {
     </svg>
   );
 }
+function IconTrophy() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" {...S}>
+      <path d="M6 9H3V4h3M18 9h3V4h-3M6 9a6 6 0 0012 0M8 21h8M12 15v6M6 4h12" />
+    </svg>
+  );
+}
 function IconTrendUp() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" {...S}>
       <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
       <polyline points="17 6 23 6 23 12" />
+    </svg>
+  );
+}
+
+// ─── Filled SVG icons (для "Скоро в UXEO") ───────────────────────────────────
+const F = "#9ba3a8";
+
+function IconChatFill() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill={F}>
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+    </svg>
+  );
+}
+function IconMedalFill() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill={F}>
+      <circle cx="12" cy="14" r="7" />
+      <path d="M8.21 3.06L6 8h12l-2.21-4.94A2 2 0 0013.95 2h-3.9a2 2 0 00-1.84 1.06z" />
+    </svg>
+  );
+}
+function IconUsersFill() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill={F}>
+      <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2h16zM9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke={F} strokeWidth="0" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" fill="none" stroke={F} strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M1 21v-2a4 4 0 014-4h8a4 4 0 014 4v2z" />
+    </svg>
+  );
+}
+function IconBellFill() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill={F}>
+      <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9zM13.73 21a2 2 0 01-3.46 0" />
     </svg>
   );
 }
@@ -201,9 +251,9 @@ function AboutContent() {
         >
           {[
             { icon: <IconZap />,      bg: "#2D363A", title: "Интерактивные задания", text: "Решаешь реальные задачи интерфейсов — не читаешь, а делаешь" },
-            { icon: "🎯",             bg: "#2D363A", title: "Практика в Figma", text: "Задания прямо в инструменте дизайнера — не в абстрактной среде" },
+            { icon: <IconTarget />,   bg: "#2D363A", title: "Практика в Figma", text: "Задания прямо в инструменте дизайнера — не в абстрактной среде" },
             { icon: <IconChat />,     bg: "#2D363A", title: "Обратная связь от менторов", text: "Живые люди проверяют домашки и дают конкретный фидбек" },
-            { icon: "🏆",             bg: "#2D363A", title: "Челленджи и соревнования", text: "Еженедельные вызовы, которые держат в тонусе" },
+            { icon: <IconTrophy />,   bg: "#2D363A", title: "Челленджи и соревнования", text: "Еженедельные вызовы, которые держат в тонусе" },
             { icon: <IconTrendUp />,  bg: "#2D363A", title: "Прогресс, XP и уровни", text: "Видишь весь путь, знаешь куда идёшь и как далеко продвинулся" },
           ].map((item, i, arr) => (
             <div
@@ -314,13 +364,19 @@ function AboutContent() {
       <div className="flex flex-col gap-[12px]">
         <SectionTitle>Скоро в UXEO</SectionTitle>
         <div className="flex flex-wrap gap-[8px]">
-          {["💬 Чат сообщества", "🏅 Лиги", "🤝 Парные задания", "🔔 Уведомления"].map((tag) => (
+          {[
+            { icon: <IconChatFill />,  label: "Чат сообщества" },
+            { icon: <IconMedalFill />, label: "Лиги" },
+            { icon: <IconUsersFill />, label: "Парные задания" },
+            { icon: <IconBellFill />,  label: "Уведомления" },
+          ].map(({ icon, label }) => (
             <span
-              key={tag}
-              className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[13px] text-[#9ba3a8] px-[12px] py-[6px] rounded-full"
-              style={{ background: "#343e42" }}
+              key={label}
+              className="flex items-center gap-[6px] font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[13px] text-[#9ba3a8] px-[12px] py-[6px] rounded-full"
+              style={{ background: "#343e42", opacity: 0.5 }}
             >
-              {tag}
+              {icon}
+              {label}
             </span>
           ))}
         </div>
