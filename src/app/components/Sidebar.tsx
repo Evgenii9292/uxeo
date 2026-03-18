@@ -353,7 +353,7 @@ function SidebarFooter() {
       {/* О проекте / Сбросить прогресс / Написать нам */}
       <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
         {/* О проекте */}
-        <div className="h-[44px] relative rounded-[14px] shrink-0 w-full cursor-pointer hover:bg-[#343e42] transition-colors mt-[-10px]">
+        <div onClick={() => navigate("/about")} className="h-[44px] relative rounded-[14px] shrink-0 w-full cursor-pointer hover:bg-[#343e42] transition-colors mt-[-10px]">
           <div className="flex flex-row items-center size-full m-[0px]">
             <div className="content-stretch flex items-center relative size-full pl-[12px] pr-[0px] py-[0px] m-[0px]">
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[21px] relative shrink-0 text-[#f2f4fb] text-[18px] whitespace-nowrap">О проекте</p>
