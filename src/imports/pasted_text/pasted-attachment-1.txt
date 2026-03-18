@@ -1,0 +1,221 @@
+Generate a COMPLETE technical and product documentation for the UXEO application.
+
+This is NOT a summary.  
+This must be a full system documentation that another senior developer can use to fully understand and continue the project without additional explanations.
+
+---
+
+### YOUR ROLE
+
+Act as a senior product architect and senior frontend engineer (20+ years experience).
+
+Think in systems.  
+Document EVERYTHING clearly and structurally.
+
+---
+
+# 1. PRODUCT OVERVIEW
+
+Describe:
+
+• what UXEO is  
+• core idea (gamified UX learning)  
+• main user flow (course → module → lesson → theory → quiz → progress)  
+• core mechanics (XP, streak, roadmap, quizzes)
+
+---
+
+# 2. APPLICATION ARCHITECTURE
+
+Describe the full architecture:
+
+• app structure (pages, components)  
+• routing logic  
+• data flow between components  
+• state management (UserContext, etc.)
+
+Include:
+
+• where data lives  
+• what is derived vs stored  
+• what triggers re-renders
+
+---
+
+# 3. DATA MODELS
+
+Document all data structures:
+
+### LESSONS
+• id  
+• lessonId  
+• quizId  
+• totalQuestions  
+• xpReward  
+
+### QUIZ
+• questionId  
+• correctAnswer  
+• options  
+
+### USER STATE
+
+lessonProgress:
+• correctAnswers  
+• questions[]:
+  - correct  
+  - xpAwarded  
+  - xpValue  
+
+Explain:
+
+• what is source of truth  
+• what is derived  
+• what should NEVER be duplicated
+
+---
+
+# 4. ROADMAP LOGIC
+
+Explain FULL logic:
+
+• how nodes are generated  
+• how status is calculated:
+
+completed  
+current  
+locked  
+
+Explain:
+
+• currentAssigned logic  
+• sequential unlock system  
+• how next lesson becomes available  
+
+---
+
+# 5. PROGRESS SYSTEM
+
+Explain:
+
+• how progress is calculated  
+• correctAnswers / totalQuestions  
+• threshold = 50%  
+
+Define clearly:
+
+• when lesson is completed  
+• when next lesson unlocks  
+• what happens if user fails  
+
+---
+
+# 6. QUIZ ENGINE
+
+Describe full lifecycle:
+
+START quiz  
+→ initializeLesson  
+→ answer handling  
+→ temporary XP  
+→ completion  
+→ saveBestScore  
+
+Explain:
+
+• runAnswers buffer  
+• xpAwarded logic  
+• why XP is only awarded once  
+
+---
+
+# 7. XP SYSTEM
+
+Explain:
+
+• how XP is calculated dynamically  
+• xpAwarded flag  
+• why XP is not stored as total  
+
+Explain edge cases:
+
+• replay quiz  
+• partial completion  
+
+---
+
+# 8. STREAK SYSTEM
+
+Explain:
+
+• how streak is incremented  
+• daily check logic  
+• when streak screen appears  
+
+---
+
+# 9. UI STATE LOGIC
+
+Explain how UI reflects logic:
+
+• node states (colors, icons)  
+• progress circle  
+• popup behavior  
+• button states (start / continue / repeat)  
+
+---
+
+# 10. SCROLL & LAYOUT SYSTEM
+
+Explain:
+
+• fixed sidebar  
+• fixed widgets  
+• scrollable content  
+• roadmap scroll behavior  
+
+---
+
+# 11. KNOWN ISSUES / RISK AREAS
+
+Identify potential weak points:
+
+• progress calculation dependency  
+• duplicated totalQuestions  
+• roadmap scaling  
+• state desync risks  
+
+---
+
+# 12. RULES FOR FUTURE DEVELOPMENT
+
+Define strict rules:
+
+• single source of truth  
+• no duplicated data  
+• derived values must not be stored  
+• logic must be centralized  
+
+---
+
+# 13. OPTIONAL IMPROVEMENTS
+
+Suggest:
+
+• scalable lesson engine  
+• dynamic content loading  
+• analytics tracking  
+
+---
+
+# OUTPUT FORMAT
+
+• structured sections  
+• clear headings  
+• no fluff  
+• use examples  
+• use pseudo-code where needed  
+
+This document must be usable as a handoff to another developer.
+
+---

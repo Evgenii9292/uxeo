@@ -1,0 +1,96 @@
+_v2"}
+Fix the scroll and fade behavior on the Courses screen.
+
+Do NOT modify other pages.
+
+The scroll + fade behavior must apply ONLY to the Courses screen.
+
+---
+
+1. CARD SHOULD SCROLL UNDER THE HEADER
+
+Currently cards disappear before reaching the header.
+
+This is incorrect.
+
+Correct behavior:
+
+Cards must scroll directly under the header.
+
+There must be NO gap between the card and the header.
+
+When the card reaches the header, it should slide underneath it.
+
+Only then should the fade hide it.
+
+---
+
+2. INCREASE THE FADE ZONE
+
+Currently the fade starts too low and causes the card to look faded even in the initial position.
+
+Correct behavior:
+
+When the page first loads the first card must be fully clear.
+
+The fade must exist only directly under the header.
+
+Move the fade overlay higher so that it begins exactly at the bottom edge of the header.
+
+Cards should remain fully visible until they reach the header.
+
+---
+
+3. FADE COLOR
+
+Currently the fade color looks black.
+
+This is incorrect.
+
+The fade must use the same color as the page background.
+
+It should blend smoothly into the background.
+
+Do NOT use black.
+
+Use the exact background color gradient of the app.
+
+---
+
+4. SCROLL AREA
+
+Currently scrolling only works when the mouse is directly over the course cards.
+
+This is incorrect.
+
+Scrolling must work anywhere inside the center content area.
+
+That includes:
+
+• empty space between cards  
+• padding areas  
+• the entire central column
+
+Only the center column should scroll.
+
+Sidebar, header and right widgets must remain fixed.
+
+---
+
+5. DO NOT CLIP CARDS
+
+Cards must not be clipped or cut at the corners.
+
+Ensure the fade overlay does not interfere with card border radius or shadows.
+
+The fade should be an overlay above the content, not a mask.
+
+---
+
+Important:
+
+Do NOT modify layout structure.
+
+Do NOT apply these changes to Modules, Lessons, Theory or Quiz screens.
+
+Only the Courses screen should use this beha

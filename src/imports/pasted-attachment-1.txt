@@ -1,0 +1,98 @@
+Improve accordion behavior in the theory screen.
+
+Do not change layout or content structure.
+
+---
+
+1. ACCORDION ANIMATION SPEED
+
+Current accordion animation is too fast and feels abrupt.
+
+Update the animation timing.
+
+Use:
+
+duration: 280–320ms  
+easing: ease-out
+
+The opening and closing should feel smoother and easier to follow.
+
+---
+
+2. REMOVE RANDOM AUTO-SCROLL
+
+Currently the interface scrolls unpredictably when:
+
+• opening an accordion  
+• closing an accordion  
+• clicking "Продолжить"
+
+This causes the content to jump.
+
+Remove automatic scrolling during normal accordion open/close.
+
+Opening or closing a section should not move the page.
+
+---
+
+3. CONTINUE BUTTON BEHAVIOR
+
+When clicking "Продолжить":
+
+Current behavior:
+
+• previous accordion closes  
+• next accordion opens  
+• page scroll jumps somewhere
+
+Correct behavior:
+
+• current accordion stays open  
+• next accordion opens  
+• page scrolls smoothly so the header of the new accordion is visible
+
+The scroll should position the new accordion header near the top of the viewport.
+
+Example:
+
+viewport top  
+↓  
+accordion title  
+↓  
+accordion content
+
+---
+
+4. SCROLL ANIMATION
+
+Scrolling must be smooth.
+
+Use:
+
+duration: ~350ms  
+easing: ease-out
+
+Avoid instant jumps.
+
+---
+
+5. KEEP USER CONTEXT
+
+When navigating between accordion sections:
+
+The user should always see the title of the active accordion.
+
+Never scroll to the middle or bottom of the content.
+
+Always align the accordion header near the top of the screen.
+
+---
+
+Summary:
+
+Fix these problems:
+
+• slower accordion animation  
+• remove unexpected auto-scroll  
+• correct behavior for "Продолжить"  
+• smooth scroll only to the next accordion header

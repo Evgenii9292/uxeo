@@ -1,0 +1,198 @@
+We need to fix several issues in the lesson system and quiz layout.
+
+Please apply all corrections carefully.
+
+Do NOT redesign the UI. Only fix the issues below.
+
+------------------------------------------------
+
+1. XP AND TASK COUNT BUG
+
+Currently the system counts tasks incorrectly.
+
+Example shown:
+"8 из 5 заданий выполнено"
+
+This is incorrect.
+
+Rules:
+
+• Only count quiz tasks, not theory sections.
+• Theory blocks must NOT increase task count.
+• When a user replays the lesson, completed tasks must NOT be counted again.
+• The maximum should always equal the real number of quiz tasks.
+
+Example:
+If there are 5 quizzes → maximum = 5.
+
+Fix this both:
+
+• in the lesson completion screen  
+• in the lesson card progress bar on the course screen.
+
+------------------------------------------------
+
+2. QUIZ CARD HEIGHT
+
+Reduce the height of quiz cards slightly.
+
+Remove spacing:
+
+• 15px from the top
+• 15px from the bottom
+
+Cards must stay centered.
+
+------------------------------------------------
+
+3. WRONG INTERFACE EXAMPLE
+
+One quiz example is incorrect.
+
+The interface with buttons:
+
+Save / Delete / etc.
+
+These buttons are placed at the top of the UI.
+
+This is wrong.
+
+Action buttons should be located at the bottom of the interface, not at the top.
+
+Please correct this UI example.
+
+------------------------------------------------
+
+4. WRONG EXAMPLES IN COLOR QUESTION
+
+Question:
+
+"Какой подход к цветам лучше?"
+
+The current UI examples do not match the question.
+
+They show hierarchy instead of color usage.
+
+Fix this:
+
+Either:
+
+• replace the cards with correct color examples
+
+OR
+
+• modify the UI inside the cards so they actually demonstrate good vs bad color usage.
+
+------------------------------------------------
+
+5. MOVE WRONG CARDS BETWEEN QUIZZES
+
+Some UI examples are placed in the wrong questions.
+
+Example:
+
+Cards currently used in:
+
+"Какой подход к цветам лучше?"
+
+are actually more suitable for:
+
+"Что создаёт акцент?"
+
+Please re-check the meaning of each quiz and move cards so they match the question logically.
+
+Do not place them randomly.
+
+------------------------------------------------
+
+6. TEXT SPACING IN THEORY
+
+Currently the text spacing is too large.
+
+There is too much space between each line.
+
+Fix this:
+
+• reduce vertical spacing between text lines
+• text should read as a normal paragraph
+
+If some information needs emphasis, highlight it with a tag-style label block instead of adding extra spacing.
+
+------------------------------------------------
+
+7. SPACING AROUND DIVIDER LINES
+
+Check spacing around divider lines.
+
+Rule:
+
+Spacing above the divider line must be the same as spacing below it.
+
+Currently:
+
+top spacing is smaller than bottom spacing.
+
+Make them equal.
+
+------------------------------------------------
+
+8. QUIZ ANSWER BLOCK WIDTH
+
+Currently the answer explanation stretches too wide and reaches close to the Continue button.
+
+Reduce its width.
+
+The explanation block should end approximately at the middle of the theory container, not extend across the entire width.
+
+This improves readability.
+
+------------------------------------------------
+
+9. SEMIBOLD TYPOGRAPHY
+
+Check typography again.
+
+Replace all:
+
+font-weight 700 (bold)
+
+with:
+
+font-weight 600 (semi-bold)
+
+Apply this to:
+
+• weekly challenges widget
+• health app example screen
+• lesson titles
+• quiz titles
+
+------------------------------------------------
+
+10. HIGHLIGHT IMPORTANT TEXT
+
+Inside theory sections, highlight key words using the same label/tag style used in the "Health App Interface" example screen.
+
+Use the same visual style for emphasis.
+
+This avoids monotone text blocks.
+
+------------------------------------------------
+
+11. IMAGE INTERACTION IN HEALTH APP EXAMPLE
+
+At the end of the "Health App Interface" example there are two icons:
+
+• zoom
+• download
+
+Implement functionality:
+
+Zoom icon → enlarges the image  
+Download icon → downloads the image file
+
+------------------------------------------------
+
+Apply all fixes without changing the design system.
+
+Only correct layout, logic, spacing and example placement.

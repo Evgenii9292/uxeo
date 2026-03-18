@@ -1,0 +1,39 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+
+/* ── FIX 1: Scroll only on content area, not body ──────────────────────────── */
+html {
+  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+  height: 100%;
+}
+
+#root {
+  overflow: hidden;
+  height: 100%;
+}
+
+/* ── Global Typography: Medium as maximum weight everywhere ─────────────────── */
+/* Removes Bold and Semi-Bold across all UI components globally */
+.font-semibold {
+  font-weight: 500 !important;
+}
+.font-bold {
+  font-weight: 500 !important;
+}
+/* Exception: keep XP/streak numbers prominent */
+.font-extrabold {
+  font-weight: 800 !important;
+}
+
+/* Mobile accordion inner padding fix: px-[20px] → px-[25px] */
+.gap-\[25px\].pb-\[20px\].px-\[20px\] {
+  padding-left: 25px !important;
+  padding-right: 25px !important;
+  padding-inline: 25px !important;
+}

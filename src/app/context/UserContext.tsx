@@ -1,0 +1,320 @@
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface QuestionState {
+  correct: boolean;
+  xpAwarded: boolean; // Whether XP was already awarded for this question
+  xpValue: number; // How much XP this question awards
+}
+
+export interface LessonProgress {
+  lessonId: string;
+  totalTasks: number;
+  questions: Record<string, QuestionState>; // Track each question's state
+  isCompleted: boolean; // Whether lesson is passed (>= 60% correct)
+  correctAnswers: number; // Best correct count across all attempts (never decreases)
+}
+
+interface User {
+  lessonProgress: Record<string, LessonProgress>;
+  streak: number;
+  lastStreakDate: string | null;
+  level: ExperienceLevel | null; // Selected experience level during onboarding
+  weeklyChallengesCompleted: number; // Track weekly challenge progress (0-3)
+}
+
+export type ExperienceLevel = "beginner" | "some_experience" | "designer";
+
+interface UserContextValue {
+  user: User;
+  xp: number;
+  streak: number;
+  level: ExperienceLevel | null;
+  weeklyChallengesCompleted: number;
+  setLevel: (level: ExperienceLevel) => void;
+  getLessonProgress: (lessonId: string) => LessonProgress;
+  updateQuestionState: (lessonId: string, questionId: string, isCorrect: boolean, xpValue?: number) => { xpEarned: number };
+  saveBestScore: (lessonId: string, runCorrect: number, totalQuestions: number) => void;
+  completeLesson: (lessonId: string) => void;
+  markHomeworkCompleted: (lessonId: string) => void;
+  resetProgress: () => void;
+  incrementStreak: () => boolean; // Returns true if streak was awarded, false if already done today
+  getMiniQuizState: (lessonId: string, quizId: string) => { completed: boolean; selectedAnswer: string | null; isCorrect: boolean };
+}
+
+// ─── Context ──────────────────────────────────────────────────────────────────
+
+const UserContext = createContext<UserContextValue | undefined>(undefined);
+
+// Display name for better debugging
+UserContext.displayName = 'UserContext';
+
+// ─── Provider ─────────────────────────────────────────────────────────────────
+
+export function UserProvider({ children }: { children: ReactNode }) {
+  // Load initial state from localStorage (only lesson progress, no xp)
+  const [user, setUser] = useState<User>(() => {
+    try {
+      const saved = localStorage.getItem('uxeo-user-data');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return {
+          lessonProgress: parsed.lessonProgress || {},
+          streak: typeof parsed.streak === 'number' ? parsed.streak : 0,
+          lastStreakDate: parsed.lastStreakDate || null,
+          level: parsed.level || null,
+          weeklyChallengesCompleted: typeof parsed.weeklyChallengesCompleted === 'number' ? parsed.weeklyChallengesCompleted : 0,
+        };
+      }
+    } catch (e) {
+      // If localStorage fails, use defaults
+      console.error('Failed to load user data from localStorage:', e);
+    }
+    return { lessonProgress: {}, streak: 0, lastStreakDate: null, level: null, weeklyChallengesCompleted: 0 };
+  });
+
+  // Save to localStorage whenever user state changes
+  useEffect(() => {
+    try {
+      const toSave = {
+        lessonProgress: user.lessonProgress,
+        streak: user.streak,
+        lastStreakDate: user.lastStreakDate,
+        level: user.level,
+        weeklyChallengesCompleted: user.weeklyChallengesCompleted,
+      };
+      localStorage.setItem('uxeo-user-data', JSON.stringify(toSave));
+    } catch (e) {
+      // If localStorage fails, just continue
+    }
+  }, [user]);
+
+  // Compute XP dynamically from all xpAwarded flags (single source of truth)
+  const xp = Object.values(user.lessonProgress).reduce((total, lesson) => {
+    const earnedXp = Object.values(lesson.questions || {})
+      .filter(q => q.xpAwarded)
+      .reduce((sum, q) => sum + (q.xpValue || 25), 0);
+    return total + earnedXp;
+  }, 0);
+
+  const getLessonProgress = (lessonId: string): LessonProgress => {
+    return user.lessonProgress[lessonId] || { 
+      lessonId, 
+      totalTasks: 5,
+      questions: {},
+      isCompleted: false,
+      correctAnswers: 0,
+    };
+  };
+
+  const updateQuestionState = (lessonId: string, questionId: string, isCorrect: boolean, xpValue?: number) => {
+    let xpEarned = 0;
+    const finalXpValue = xpValue || 25;
+    
+    setUser((prev) => {
+      const lessonProgress = prev.lessonProgress[lessonId] || {
+        lessonId,
+        totalTasks: 5,
+        questions: {},
+        isCompleted: false,
+        correctAnswers: 0,
+      };
+      
+      const questionState = lessonProgress.questions[questionId] || {
+        correct: false,
+        xpAwarded: false,
+        xpValue: finalXpValue,
+      };
+      
+      if (!questionState.xpAwarded && isCorrect) {
+        xpEarned = finalXpValue;
+      }
+      
+      const updatedQuestions = {
+        ...lessonProgress.questions,
+        [questionId]: {
+          correct: questionState.correct || isCorrect,
+          xpAwarded: questionState.xpAwarded || isCorrect,
+          xpValue: finalXpValue,
+        },
+      };
+      
+      const correctCount = Object.values(updatedQuestions).filter(q => q.correct).length;
+      const isPassed = correctCount >= Math.ceil(lessonProgress.totalTasks * 0.5);
+      
+      return {
+        ...prev,
+        lessonProgress: {
+          ...prev.lessonProgress,
+          [lessonId]: {
+            ...lessonProgress,
+            questions: updatedQuestions,
+            isCompleted: isPassed,
+          },
+        },
+      };
+    });
+    
+    return { xpEarned };
+  };
+
+  // ─── saveBestScore ────────────────────────────────────────────────────────────
+  // Called when a quiz run finishes. Stores Math.max(prevBest, runCorrect).
+  // This is the single authoritative source for node progress display.
+  const saveBestScore = (lessonId: string, runCorrect: number, totalQuestions: number) => {
+    setUser((prev) => {
+      const lessonProgress = prev.lessonProgress[lessonId] || {
+        lessonId,
+        totalTasks: totalQuestions,
+        questions: {},
+        isCompleted: false,
+        correctAnswers: 0,
+      };
+
+      const prevBest = lessonProgress.correctAnswers ?? 0;
+      const newBest = Math.max(prevBest, runCorrect);
+      const isPassed = newBest >= Math.ceil(totalQuestions * 0.5);
+      
+      return {
+        ...prev,
+        lessonProgress: {
+          ...prev.lessonProgress,
+          [lessonId]: {
+            ...lessonProgress,
+            correctAnswers: newBest,
+            isCompleted: isPassed,
+          },
+        },
+      };
+    });
+  };
+
+  // Complete lesson - save progress permanently
+  const completeLesson = (lessonId: string) => {
+    setUser((prev) => {
+      const lessonProgress = prev.lessonProgress[lessonId];
+      if (!lessonProgress) return prev;
+      
+      const correctCount = Object.values(lessonProgress.questions || {}).filter(q => q.correct).length;
+      const isPassed = correctCount >= Math.ceil(lessonProgress.totalTasks * 0.5);
+      // Also update correctAnswers to best of stored vs question count
+      const newBest = Math.max(lessonProgress.correctAnswers ?? 0, correctCount);
+      
+      return {
+        ...prev,
+        lessonProgress: {
+          ...prev.lessonProgress,
+          [lessonId]: {
+            ...lessonProgress,
+            correctAnswers: newBest,
+            isCompleted: isPassed,
+          },
+        },
+      };
+    });
+  };
+
+  // Mark homework as completed
+  const markHomeworkCompleted = (lessonId: string) => {
+    setUser((prev) => {
+      const existing = prev.lessonProgress[lessonId] || {
+        lessonId,
+        totalTasks: 0,
+        questions: {},
+        isCompleted: false,
+        correctAnswers: 0,
+      };
+      
+      return {
+        ...prev,
+        lessonProgress: {
+          ...prev.lessonProgress,
+          [lessonId]: {
+            ...existing,
+            isCompleted: true,
+          },
+        },
+      };
+    });
+  };
+
+  // Reset all progress
+  const resetProgress = () => {
+    setUser({ lessonProgress: {}, streak: 0, lastStreakDate: null, level: null, weeklyChallengesCompleted: 0 });
+  };
+
+  // Increment streak once per day — returns true if actually awarded, false if already done today
+  const incrementStreak = (): boolean => {
+    const today = new Date().toISOString().split('T')[0];
+    if (user.lastStreakDate !== today) {
+      setUser((prev) => ({
+        ...prev,
+        streak: prev.streak + 1,
+        lastStreakDate: today,
+      }));
+      return true;
+    }
+    return false;
+  };
+
+  // For theory mini-quizzes
+  const getMiniQuizState = (lessonId: string, quizId: string) => {
+    const lessonProgress = user.lessonProgress[lessonId];
+    if (!lessonProgress) return { completed: false, selectedAnswer: null, isCorrect: false };
+    
+    const questionState = lessonProgress.questions[quizId];
+    if (!questionState) return { completed: false, selectedAnswer: null, isCorrect: false };
+    
+    return {
+      completed: questionState.xpAwarded,
+      selectedAnswer: null, // Assuming no selected answer is stored
+      isCorrect: questionState.correct,
+    };
+  };
+
+  const setLevel = (level: ExperienceLevel) => {
+    setUser((prev) => ({
+      ...prev,
+      level,
+    }));
+  };
+
+  return (
+    <UserContext.Provider value={{ 
+      user, 
+      xp,
+      streak: user.streak,
+      level: user.level,
+      weeklyChallengesCompleted: user.weeklyChallengesCompleted,
+      setLevel,
+      getLessonProgress, 
+      updateQuestionState,
+      saveBestScore,
+      completeLesson,
+      markHomeworkCompleted,
+      resetProgress,
+      incrementStreak,
+      getMiniQuizState,
+    }}>
+      {children}
+    </UserContext.Provider>
+  );
+}
+
+// ─── Hook ─────────────────────────────────────────────────────────────────────
+
+export function useUser(): UserContextValue {
+  const ctx = useContext(UserContext);
+  if (ctx === undefined) {
+    // During hot-reload or if used outside provider, throw descriptive error
+    throw new Error("useUser must be used inside <UserProvider>");
+  }
+  return ctx;
+}
+
+// Optional: Export a safe version that returns null instead of throwing
+export function useUserSafe(): UserContextValue | null {
+  const ctx = useContext(UserContext);
+  return ctx ?? null;
+}

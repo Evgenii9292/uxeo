@@ -1,0 +1,149 @@
+Implement UI fixes for lesson cards and buttons.  
+Do NOT change roadmap logic.
+
+---
+
+1. ORANGE BUTTON STYLE
+
+The orange button design was changed incorrectly.
+
+Restore the same button behavior used everywhere in the app.
+
+States must work like this:
+
+Hover
+- button moves down slightly
+- shadow decreases
+
+Active (click)
+- button moves further down
+- shadow disappears
+
+Default
+- full shadow
+- normal position
+
+Important:
+
+The clickable area must NOT include the shadow.  
+Only the button surface itself should be clickable.
+
+---
+
+2. APPLY BUTTON ANIMATION TO ALL BUTTONS
+
+The same animation behavior must apply to:
+
+- orange buttons
+- green buttons
+- grey buttons
+- locked buttons
+
+All buttons should behave consistently.
+
+---
+
+3. REMOVE "Финиш"
+
+Remove the "Финиш" label from the roadmap.
+
+Keep only the homework node.
+
+---
+
+4. LOCKED LESSON CARD STRUCTURE
+
+Locked lesson cards must have the SAME layout as normal lesson cards.
+
+Currently the locked card is missing the progress bar.
+
+Fix this.
+
+Structure must be identical:
+
+Title  
+Description  
+Progress label  
+Progress bar  
+Meta row  
+Buttons
+
+---
+
+5. LOCKED LESSON PROGRESS
+
+For locked lessons:
+
+Replace label:
+
+"Пройдено"
+
+with
+
+"Заблокировано"
+
+Progress value:
+
+0 / 5
+
+The progress bar should remain visible but empty.
+
+---
+
+6. LOCKED BUTTONS STYLE
+
+Locked buttons must use the SAME visual style used in course modules.
+
+Style:
+
+- inset / pressed look
+- grey color
+- lock icon
+
+Buttons:
+
+Начать квиз  
+Теория
+
+Both should appear disabled.
+
+---
+
+7. THEORY BUTTON
+
+The "Теория" button must follow the same pressed-button logic as the main button.
+
+White button style:
+
+- slight inset look
+- hover → move down
+- click → remove shadow
+
+---
+
+8. TEXT MARGINS
+
+Lesson description text currently goes too close to the card edge.
+
+Add internal padding so the text does not touch the right side.
+
+Recommended spacing:
+
+padding-right ≈ 50px
+
+Keep it visually balanced with the image on the left.
+
+---
+
+9. CARD CONSISTENCY
+
+All lesson cards must behave as a single reusable component.
+
+States:
+
+Completed  
+Current  
+Locked
+
+Only the data should change.  
+The layout must remain identical.
