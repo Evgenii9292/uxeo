@@ -234,8 +234,8 @@ export function Roadmap({
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
                   fontWeight: 400,
-                  lineHeight: "16px",
-                  marginBottom: 2,
+                  lineHeight: mobile ? "12px" : "16px",
+                  marginBottom: mobile ? 1 : 2,
                   whiteSpace: "nowrap",
                 }}
               >
@@ -250,7 +250,7 @@ export function Roadmap({
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
                   fontWeight: 400,
-                  lineHeight: "18px",
+                  lineHeight: mobile ? "14px" : "18px",
                   whiteSpace: "nowrap",
                 }}
               >
