@@ -8,6 +8,17 @@ import svgMySToboi    from "../../imports/svg-1m1v14av0g";
 import svgFigmaNote   from "../../imports/svg-mfpv5bbouj";
 import svgTyZdes      from "../../imports/svg-837vvk8vr0";
 import Group481532    from "../../imports/Group481532";
+import bodryStart  from "../../assets/bodry-start.svg";
+import plus800     from "../../assets/plus800.svg";
+import mySToboi    from "../../assets/my-s-toboi.svg";
+import strelka1    from "../../assets/strelka1.svg";
+import flou        from "../../assets/flou.svg";
+import struktura   from "../../assets/struktura.svg";
+import tolkoVpered from "../../assets/Только вперед.svg";
+import nemnoho     from "../../assets/Немного.svg";
+import dontGiveUp  from "../../assets/dont give up.svg";
+import pochti      from "../../assets/почти.svg";
+import crown       from "../../assets/Crown.svg";
 import { RoadmapPath } from "./RoadmapPath";
 import { LessonNode }  from "./LessonNode";
 import { LessonPopup } from "./LessonPopup";
@@ -289,6 +300,19 @@ export function Roadmap({
             </div>
           ))}
 
+          {/* "Мы с тобой" annotation — below first module divider only */}
+          {dividers.length > 0 && (
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: roadmapW / 2 - 50 - 108 - (mobile ? 30 : 0),
+                top: dividers[0].y + 20,
+              }}
+            >
+              <img src={mySToboi} width={108} height={63} alt="" />
+            </div>
+          )}
+
           {/* "Ты здесь" / "Продолжить" SVG annotation */}
           {currentIndex >= 0 && currentIndex < layout.length && (() => {
             const hasStarted = (lessons[currentIndex].progress ?? 0) > 0;
@@ -304,10 +328,10 @@ export function Roadmap({
               const annotW = hasStarted
                 ? Math.round(194.895 * 0.7 * 0.75)
                 : Math.round(87 * 0.7 * 0.75);
-              left = pos.x - annotW - 29;
+              left = pos.x - annotW - (hasStarted ? 24 : 29);
               top  = pos.y + NODE_H * 0.4 - 22;
             } else {
-              left = pos.x - (hasStarted ? 130 : 90);
+              left = pos.x - (hasStarted ? 135 : 90);
               top  = pos.y - 30;
             }
 
@@ -341,6 +365,90 @@ export function Roadmap({
             </div>
           )}
 
+          {/* "Стрелка 1" — between Что такое UX (idx 4) and User Flow (idx 5), mirrored, 30px right of node */}
+          {layout.length > 5 && (
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: roadmapW / 2 - 30 - 16 - (mobile ? 30 : 0),
+                top: Math.round((layout[4].y + NODE_H + layout[5].y) / 2) - 34,
+                transform: "scaleX(-1)",
+                transformOrigin: "left center",
+              }}
+            >
+              <img src={strelka1} width={16} height={68} alt="" />
+            </div>
+          )}
+
+          {/* "Флоу" — right of "User Flow" label (idx 5) */}
+          {layout.length > 5 && (
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: layout[5].x + NODE_W + 115,
+                top: layout[5].y + Math.round(NODE_H / 2) - 27,
+              }}
+            >
+              <img src={flou} width={42} height={55} alt="" />
+            </div>
+          )}
+
+          {/* "Структура" — below "Структура интерфейса" label (idx 6) */}
+          {layout.length > 6 && (
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: layout[6].x + NODE_W + 20,
+                top: layout[6].y + Math.round(NODE_H / 2) + 31,
+              }}
+            >
+              <img src={struktura} width={38} height={37} alt="" />
+            </div>
+          )}
+
+          {/* "Бодрый старт" annotation — between Цвет (idx 1) and Иерархия (idx 2) */}
+          {layout.length > 2 && (
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: mobile ? 30 : 80,
+                top: Math.round((layout[1].y + NODE_H + layout[2].y) / 2 - 39),
+              }}
+            >
+              <img src={bodryStart} width={75} height={67} alt="" />
+            </div>
+          )}
+
+          {/* "+800 XP" annotation — below each homework node except the last */}
+          {(() => {
+            const hwIndices = lessons
+              .map((l, i) => ({ l, i }))
+              .filter(({ l }) => l.lessonId?.startsWith("homework"))
+              .map(({ i }) => i);
+            const toShow = hwIndices.slice(0, -1); // all except last
+            let hwCount = 0;
+            return toShow.map((idx) => {
+              hwCount++;
+              const pos = layout[idx];
+              if (!pos) return null;
+              const rotate = hwCount === 2 ? "rotate(-8deg)" : undefined;
+              return (
+                <div
+                  key={`plus800_${idx}`}
+                  className="absolute pointer-events-none"
+                  style={{
+                    left: pos.x + NODE_W + 20,
+                    top: pos.y + Math.round(NODE_H / 2) + 41,
+                    transform: rotate,
+                    transformOrigin: "top left",
+                  }}
+                >
+                  <img src={plus800} width={60} height={27} alt="" />
+                </div>
+              );
+            });
+          })()}
+
           {/* "Figma Note" annotation — desktop only */}
           {!mobile && (() => {
             const hwIdx = lessons.findIndex(l => l.lessonId === "homework");
@@ -359,6 +467,84 @@ export function Roadmap({
               </div>
             );
           })()}
+
+          {/* "Только вперед" — after Основные элементы интерфейса (idx 7), LEFT */}
+          {layout.length > 8 && (
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: mobile ? roadmapW / 2 + 20 : roadmapW / 2 - 30 - 158,
+                top: Math.round((layout[7].y + NODE_H + layout[8].y) / 2) - 25,
+              }}
+            >
+              <img src={tolkoVpered} width={158} height={50} alt="" />
+            </div>
+          )}
+
+          {/* "Еще немного" — after module 3 divider, RIGHT +50px */}
+          {dividers.length > 1 && (
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: roadmapW / 2 + 50 - (mobile ? 30 : 0),
+                top: dividers[1].y + 20,
+              }}
+            >
+              <img src={nemnoho} width={161} height={64} alt="" />
+            </div>
+          )}
+
+          {/* "dont give up" — after Основные UI элементы (idx 11), LEFT */}
+          {layout.length > 12 && (
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: roadmapW / 2 - 30 - 50 - (mobile ? 60 : 0),
+                top: Math.round((layout[11].y + NODE_H + layout[12].y) / 2) - 22,
+              }}
+            >
+              <img src={dontGiveUp} width={50} height={44} alt="" />
+            </div>
+          )}
+
+          {/* "Стрелка 1" — after Состояния элементов (idx 12), RIGHT, normal orientation */}
+          {layout.length > 13 && (
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: roadmapW / 2 + 30 - (mobile ? 30 : 0),
+                top: Math.round((layout[12].y + NODE_H + layout[13].y) / 2) - 34,
+              }}
+            >
+              <img src={strelka1} width={16} height={68} alt="" />
+            </div>
+          )}
+
+          {/* "Почти" — after Компоненты (idx 13), LEFT */}
+          {layout.length > 14 && (
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: roadmapW / 2 - 30 - 62 - (mobile ? 40 : 0),
+                top: Math.round((layout[13].y + NODE_H + layout[14].y) / 2) - 10,
+              }}
+            >
+              <img src={pochti} width={62} height={19} alt="" />
+            </div>
+          )}
+
+          {/* Crown — above last homework (idx 15), centered on node */}
+          {layout.length > 15 && (
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: layout[15].x + Math.round((NODE_W - 67) / 2) - 40,
+                top: layout[15].y - 72 + 5,
+              }}
+            >
+              <img src={crown} width={67} height={72} alt="" />
+            </div>
+          )}
 
           {/* Lesson nodes */}
           {lessons.map((lesson, idx) => {

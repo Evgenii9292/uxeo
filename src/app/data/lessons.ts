@@ -226,7 +226,7 @@ export const LESSONS: Lesson[] = [
   {
     id: 16,
     lessonId: "homework-3",
-    title: "Домашнее задание",
+    title: "Курсовая",
     description: "Финальное практическое задание по UI Kit.",
     status: "locked",
     progress: 0,
