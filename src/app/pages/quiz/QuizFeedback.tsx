@@ -5,7 +5,7 @@ import { PartyPopperIcon, LightningIcon } from "./QuizIcons";
 export function CorrectFeedback({ explanation, showXp = true }: { explanation: string; showXp?: boolean }) {
   return (
     <div className="flex gap-[16px] items-start shrink-0 w-full">
-      <div className="flex flex-col gap-[5px] items-end justify-end shrink-0">
+      <div className="flex flex-col gap-[5px] items-end justify-start shrink-0">
         <div className="flex gap-[9px] items-end shrink-0">
           <PartyPopperIcon />
           <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[20.587px] text-[#cdf6db] text-[18px] whitespace-nowrap">Верно!</p>
