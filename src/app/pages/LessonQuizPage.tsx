@@ -1200,6 +1200,7 @@ export default function LessonQuizPage() {
                         className="relative rounded-[15px] overflow-hidden flex-shrink-0 w-full"
                         style={{
                           height: isLargePhone ? 215 : 185,
+                          maxHeight: isLargePhone ? "calc(100dvh - 608px)" : "calc(100dvh - 568px)",
                           background: "linear-gradient(172deg, rgb(44,53,56) 2%, rgb(56,67,72) 99%)",
                         }}
                       >
