@@ -853,13 +853,13 @@ export default function LessonQuizPage() {
     : currentStreak >= 3
     ? { background: "linear-gradient(180deg, #ffd700, #b8960f)" }
     : { background: "linear-gradient(180deg, #ff6b21, #994014)" };
-  const streakGlow = currentStreak >= 7
-    ? { boxShadow: "0 0 14px 5px rgba(176,110,245,0.55)" }
+  const streakFilter = currentStreak >= 7
+    ? "drop-shadow(0 0 7px rgba(176,110,245,0.8))"
     : currentStreak >= 5
-    ? { boxShadow: "0 0 10px 4px rgba(0,208,67,0.4)" }
+    ? "drop-shadow(0 0 5px rgba(0,208,67,0.65))"
     : currentStreak >= 3
-    ? { boxShadow: "0 0 8px 3px rgba(255,215,0,0.35)" }
-    : {};
+    ? "drop-shadow(0 0 4px rgba(255,215,0,0.55))"
+    : "none";
   const streakTextColor = currentStreak >= 7 ? "#c084fc" : currentStreak >= 5 ? "#00d043" : currentStreak >= 3 ? "#ffd700" : "#FFB121";
 
   const handleSelect = (card: "А" | "Б" | "В" | "Г") => {
@@ -1060,11 +1060,23 @@ export default function LessonQuizPage() {
         {isMobile ? (
           <div className="fixed top-0 left-0 right-0 z-10 flex items-center gap-[10px] px-[14px]" style={{ height: 44 }}>
             <CloseButton onClick={() => setShowExitModal(true)} mobile />
-            <div className="flex-1 h-[10px] bg-[#465256] rounded-[9999px] overflow-hidden" style={{ ...streakGlow, transition: "box-shadow 500ms ease" }}>
-              <div
-                className="h-full rounded-[9999px]"
-                style={{ width: `${runProgressPercent}%`, ...streakFill, transition: "width 300ms ease, background 500ms ease" }}
-              />
+            <div className="flex-1 flex flex-col" style={{ gap: 5 }}>
+              {/* Bar */}
+              <div className="h-[10px] bg-[#465256] rounded-[9999px]">
+                <div
+                  className="h-full rounded-[9999px]"
+                  style={{ width: `${runProgressPercent}%`, ...streakFill, filter: streakFilter, transition: "width 300ms ease, background 500ms ease, filter 500ms ease" }}
+                />
+              </div>
+              {/* Streak text — follows fill, clipped to bar bounds */}
+              <div className="relative overflow-hidden" style={{ height: 11, opacity: currentStreak >= 2 && !quizFinished ? 1 : 0, transition: "opacity 400ms ease" }}>
+                <div className="absolute inset-y-0 left-0 flex items-start justify-end" style={{ width: `${runProgressPercent}%`, minWidth: 0, transition: "width 300ms ease" }}>
+                  <span
+                    className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[10px] whitespace-nowrap leading-none"
+                    style={{ color: streakTextColor, transform: `scale(${streakBump ? 1.12 : 1})`, transformOrigin: "right top", transition: "transform 200ms ease" }}
+                  >{currentStreak} подряд</span>
+                </div>
+              </div>
             </div>
             <div className="flex gap-[4px] items-center shrink-0">
               <div className="relative shrink-0 size-[18px]">
@@ -1081,8 +1093,17 @@ export default function LessonQuizPage() {
               <CloseButton onClick={() => setShowExitModal(true)} />
             </div>
             <div className="fixed z-10 top-[35.5px] left-1/2 -translate-x-1/2 w-[1042px]">
-              <div className="bg-[#465256] overflow-clip relative rounded-[9999px] w-full h-[17px]" style={{ ...streakGlow, transition: "box-shadow 500ms ease" }}>
-                <div className="rounded-[24px] h-[17px]" style={{ width: `${runProgressPercent}%`, ...streakFill, transition: "width 300ms ease, background 500ms ease" }} />
+              <div className="bg-[#465256] relative rounded-[9999px] w-full h-[17px]">
+                <div className="rounded-[24px] h-[17px]" style={{ width: `${runProgressPercent}%`, ...streakFill, filter: streakFilter, transition: "width 300ms ease, background 500ms ease, filter 500ms ease" }} />
+              </div>
+              {/* Streak text — follows fill, 5px below bar */}
+              <div className="relative overflow-hidden mt-[5px]" style={{ height: 15, opacity: currentStreak >= 2 && !quizFinished ? 1 : 0, transition: "opacity 400ms ease" }}>
+                <div className="absolute inset-y-0 left-0 flex items-start justify-end" style={{ width: `${runProgressPercent}%`, minWidth: 0, transition: "width 300ms ease" }}>
+                  <span
+                    className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[13px] whitespace-nowrap leading-none"
+                    style={{ color: streakTextColor, transform: `scale(${streakBump ? 1.12 : 1})`, transformOrigin: "right top", transition: "transform 200ms ease" }}
+                  >{currentStreak} подряд</span>
+                </div>
               </div>
             </div>
             <div className="fixed z-10 flex gap-[4px] items-center top-[32px] right-[23px]">
@@ -1102,33 +1123,6 @@ export default function LessonQuizPage() {
             Сообщить об ошибке
           </p>
         )}
-
-        {/* Streak counter — appears below progress bar when streak >= 2 */}
-        <div
-          className="fixed z-10 pointer-events-none flex items-center gap-[5px]"
-          style={{
-            top: isMobile ? 50 : 62,
-            left: "50%",
-            opacity: currentStreak >= 2 && !quizFinished ? 1 : 0,
-            transform: `translateX(-50%) scale(${streakBump ? 1.18 : 1})`,
-            transition: "opacity 400ms ease, transform 200ms ease",
-          }}
-        >
-          <svg width="10" height="15" viewBox="0 0 16.7655 24.4324" fill="none">
-            <defs>
-              <linearGradient id="sqfg" x1="8.38" x2="8.38" y1="0" y2="24.4324" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#FFB121" /><stop offset="1" stopColor="#BB8116" />
-              </linearGradient>
-            </defs>
-            <path d="M13.5956 6.34462C13.4294 6.06951 13.1002 5.93905 12.7908 6.02528C12.4813 6.11155 12.2672 6.39348 12.2672 6.71478C12.2672 7.58838 11.5564 8.29907 10.6828 8.29907C9.80926 8.29907 9.09857 7.58833 9.09857 6.71478V0.715745C9.09857 0.426229 8.9242 0.16525 8.65668 0.0544453C8.38931 -0.0562166 8.08133 0.00491231 7.87661 0.20963C7.7963 0.289942 5.88751 2.20985 3.95372 5.11054C2.81341 6.821 1.90344 8.51763 1.24916 10.1534C0.420315 12.2256 0 14.2094 0 16.0497C0 20.6719 3.7605 24.4324 8.38273 24.4324C13.005 24.4324 16.7655 20.6719 16.7655 16.0497C16.7655 13.091 15.699 9.82582 13.5956 6.34462Z" fill="url(#sqfg)" />
-          </svg>
-          <span
-            className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[13px] leading-none whitespace-nowrap"
-            style={{ color: streakTextColor }}
-          >
-            {currentStreak} подряд
-          </span>
-        </div>
 
         {/* ZONE 2+3 — conditional on question type */}
         {questionType === "multiple_select" ? (
