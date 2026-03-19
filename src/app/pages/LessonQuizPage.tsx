@@ -185,6 +185,10 @@ export default function LessonQuizPage() {
   const runCorrectRef = useRef(0);
   // Temporary XP accumulated during this quiz run — NOT persisted until quiz is fully complete
   const [temporaryQuizXp, setTemporaryQuizXp] = useState(0);
+  // ── Streak state ──────────────────────────────────────────────────────────
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [bestStreak, setBestStreak] = useState(0);
+  const [streakBump, setStreakBump] = useState(false);
   // Temporary per-run answers — NOT persisted until quiz is fully complete
   const runAnswers = useRef<{ questionId: string; isCorrect: boolean; xpValue: number }[]>([]);
   // !! Хук до любых ранних return — Rules of Hooks !!
@@ -201,6 +205,8 @@ export default function LessonQuizPage() {
     runCorrectRef.current = 0;
     setTemporaryQuizXp(0);
     runAnswers.current = [];
+    setCurrentStreak(0);
+    setBestStreak(0);
   }, []);
 
   const lessonProgress = getLessonProgress(quizId);
@@ -224,6 +230,8 @@ export default function LessonQuizPage() {
       runCorrectRef.current = 0;
       setTemporaryQuizXp(0);
       runAnswers.current = [];
+      setCurrentStreak(0);
+      setBestStreak(0);
       initializeLesson(quizId, totalQuestions);
     };
 
@@ -234,6 +242,7 @@ export default function LessonQuizPage() {
           totalQuestions={resultTotal}
           earnedXP={totalEarnedXP}
           passed={passed}
+          bestStreak={bestStreak}
           onContinue={() => {
             setShowCompletionOverlay(false);
             if (passed) {
@@ -836,6 +845,23 @@ export default function LessonQuizPage() {
   const xpAlreadyAwarded = lessonProgress?.questions?.[currentQuestionId]?.xpAwarded || false;
   const isCorrect = selection === ((currentQuestion as any).correctAnswer ?? "");
 
+  // ── Streak visual styles (computed from state) ─────────────────────────────
+  const streakFill = currentStreak >= 7
+    ? { background: "linear-gradient(180deg, #b06ef5, #7c3aed)" }
+    : currentStreak >= 5
+    ? { background: "linear-gradient(180deg, #00d043, #007a28)" }
+    : currentStreak >= 3
+    ? { background: "linear-gradient(180deg, #ffd700, #b8960f)" }
+    : { background: "linear-gradient(180deg, #ff6b21, #994014)" };
+  const streakGlow = currentStreak >= 7
+    ? { boxShadow: "0 0 14px 5px rgba(176,110,245,0.55)" }
+    : currentStreak >= 5
+    ? { boxShadow: "0 0 10px 4px rgba(0,208,67,0.4)" }
+    : currentStreak >= 3
+    ? { boxShadow: "0 0 8px 3px rgba(255,215,0,0.35)" }
+    : {};
+  const streakTextColor = currentStreak >= 7 ? "#c084fc" : currentStreak >= 5 ? "#00d043" : currentStreak >= 3 ? "#ffd700" : "#FFB121";
+
   const handleSelect = (card: "А" | "Б" | "В" | "Г") => {
     if (phase === "feedback") return;
     setSelection(card);
@@ -843,10 +869,24 @@ export default function LessonQuizPage() {
 
   const handleContinue = () => {
     if (phase === "selecting") {
+      // ── Streak update ──────────────────────────────────────────────────────
+      let newStreak = 0;
+      if (isCorrect) {
+        newStreak = currentStreak + 1;
+        setCurrentStreak(newStreak);
+        setBestStreak((prev) => Math.max(prev, newStreak));
+        setStreakBump(true);
+        setTimeout(() => setStreakBump(false), 350);
+      } else {
+        setCurrentStreak(0);
+      }
+      // XP multiplier from streak
+      const streakMult = newStreak >= 7 ? 1.5 : newStreak >= 5 ? 1.25 : newStreak >= 3 ? 1.1 : 1;
+      const bonusXp = Math.round(questionXp * streakMult);
       // Store answer locally — do NOT write to UserContext yet
-      runAnswers.current.push({ questionId: currentQuestionId, isCorrect, xpValue: questionXp });
+      runAnswers.current.push({ questionId: currentQuestionId, isCorrect, xpValue: isCorrect ? bonusXp : questionXp });
       // Show XP feedback locally based on correctness + whether XP was already awarded in a previous run
-      const earnedXpLocal = isCorrect && !xpAlreadyAwarded ? questionXp : 0;
+      const earnedXpLocal = isCorrect && !xpAlreadyAwarded ? bonusXp : 0;
       setEarnedXP(earnedXpLocal);
       setRunAnsweredQuestions((prev) => prev + 1);
       if (isCorrect) {
@@ -854,7 +894,7 @@ export default function LessonQuizPage() {
         setRunCorrectAnswers(runCorrectRef.current);
         // Only add temporary XP if not already awarded in a previous run
         if (!xpAlreadyAwarded) {
-          setTemporaryQuizXp((prev) => prev + questionXp);
+          setTemporaryQuizXp((prev) => prev + bonusXp);
         }
       }
       setPhase("feedback");
@@ -864,19 +904,23 @@ export default function LessonQuizPage() {
         o.type = "sine";
         const g = ctx.createGain();
         if (isCorrect) {
+          const topFreq = newStreak >= 7 ? 1047 : newStreak >= 5 ? 880 : 784;
+          const dur = newStreak >= 5 ? 0.4 : 0.3;
           o.frequency.setValueAtTime(523, ctx.currentTime);
           o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
-          o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
-          g.gain.setValueAtTime(0.15, ctx.currentTime);
-          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+          o.frequency.setValueAtTime(topFreq, ctx.currentTime + 0.2);
+          g.gain.setValueAtTime(0.15 + (newStreak >= 3 ? 0.03 : 0), ctx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+          o.connect(g); g.connect(ctx.destination);
+          o.start(); o.stop(ctx.currentTime + dur);
         } else {
           o.frequency.setValueAtTime(280, ctx.currentTime);
           o.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.15);
           g.gain.setValueAtTime(0.08, ctx.currentTime);
           g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+          o.connect(g); g.connect(ctx.destination);
+          o.start(); o.stop(ctx.currentTime + 0.15);
         }
-        o.connect(g); g.connect(ctx.destination);
-        o.start(); o.stop(ctx.currentTime + 0.3);
       } catch (_) {}
     } else {
       if (currentQuestionIndex < totalQuestions - 1) {
@@ -912,14 +956,27 @@ export default function LessonQuizPage() {
 
   /** Records the result of a new-type question without changing phase/selection */
   const handleAnswerNewType = (isCorrect: boolean) => {
-    runAnswers.current.push({ questionId: currentQuestionId, isCorrect, xpValue: questionXp });
-    const earnedXpLocal = isCorrect && !xpAlreadyAwarded ? questionXp : 0;
+    // ── Streak update ──────────────────────────────────────────────────────
+    let newStreak = 0;
+    if (isCorrect) {
+      newStreak = currentStreak + 1;
+      setCurrentStreak(newStreak);
+      setBestStreak((prev) => Math.max(prev, newStreak));
+      setStreakBump(true);
+      setTimeout(() => setStreakBump(false), 350);
+    } else {
+      setCurrentStreak(0);
+    }
+    const streakMult = newStreak >= 7 ? 1.5 : newStreak >= 5 ? 1.25 : newStreak >= 3 ? 1.1 : 1;
+    const bonusXp = Math.round(questionXp * streakMult);
+    runAnswers.current.push({ questionId: currentQuestionId, isCorrect, xpValue: isCorrect ? bonusXp : questionXp });
+    const earnedXpLocal = isCorrect && !xpAlreadyAwarded ? bonusXp : 0;
     setEarnedXP(earnedXpLocal);
     setRunAnsweredQuestions((prev) => prev + 1);
     if (isCorrect) {
       runCorrectRef.current += 1;
       setRunCorrectAnswers(runCorrectRef.current);
-      if (!xpAlreadyAwarded) setTemporaryQuizXp((prev) => prev + questionXp);
+      if (!xpAlreadyAwarded) setTemporaryQuizXp((prev) => prev + bonusXp);
     }
     try {
       const ctx = new AudioContext();
@@ -927,19 +984,23 @@ export default function LessonQuizPage() {
       o.type = "sine";
       const g = ctx.createGain();
       if (isCorrect) {
+        const topFreq = newStreak >= 7 ? 1047 : newStreak >= 5 ? 880 : 784;
+        const dur = newStreak >= 5 ? 0.4 : 0.3;
         o.frequency.setValueAtTime(523, ctx.currentTime);
         o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
-        o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
-        g.gain.setValueAtTime(0.15, ctx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+        o.frequency.setValueAtTime(topFreq, ctx.currentTime + 0.2);
+        g.gain.setValueAtTime(0.15 + (newStreak >= 3 ? 0.03 : 0), ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(); o.stop(ctx.currentTime + dur);
       } else {
         o.frequency.setValueAtTime(280, ctx.currentTime);
         o.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.15);
         g.gain.setValueAtTime(0.08, ctx.currentTime);
         g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(); o.stop(ctx.currentTime + 0.15);
       }
-      o.connect(g); g.connect(ctx.destination);
-      o.start(); o.stop(ctx.currentTime + 0.3);
     } catch (_) {}
   };
 
@@ -999,10 +1060,10 @@ export default function LessonQuizPage() {
         {isMobile ? (
           <div className="fixed top-0 left-0 right-0 z-10 flex items-center gap-[10px] px-[14px]" style={{ height: 44 }}>
             <CloseButton onClick={() => setShowExitModal(true)} mobile />
-            <div className="flex-1 h-[10px] bg-[#465256] rounded-[9999px] overflow-hidden">
+            <div className="flex-1 h-[10px] bg-[#465256] rounded-[9999px] overflow-hidden" style={{ ...streakGlow, transition: "box-shadow 500ms ease" }}>
               <div
-                className="h-full bg-gradient-to-b from-[#ff6b21] to-[#994014] rounded-[9999px] transition-[width] duration-300"
-                style={{ width: `${runProgressPercent}%` }}
+                className="h-full rounded-[9999px]"
+                style={{ width: `${runProgressPercent}%`, ...streakFill, transition: "width 300ms ease, background 500ms ease" }}
               />
             </div>
             <div className="flex gap-[4px] items-center shrink-0">
@@ -1020,8 +1081,8 @@ export default function LessonQuizPage() {
               <CloseButton onClick={() => setShowExitModal(true)} />
             </div>
             <div className="fixed z-10 top-[35.5px] left-1/2 -translate-x-1/2 w-[1042px]">
-              <div className="bg-[#465256] overflow-clip relative rounded-[9999px] w-full h-[17px]">
-                <div className="bg-gradient-to-b from-[#ff6b21] to-[#994014] rounded-[24px] h-[17px] transition-[width] duration-300" style={{ width: `${runProgressPercent}%` }} />
+              <div className="bg-[#465256] overflow-clip relative rounded-[9999px] w-full h-[17px]" style={{ ...streakGlow, transition: "box-shadow 500ms ease" }}>
+                <div className="rounded-[24px] h-[17px]" style={{ width: `${runProgressPercent}%`, ...streakFill, transition: "width 300ms ease, background 500ms ease" }} />
               </div>
             </div>
             <div className="fixed z-10 flex gap-[4px] items-center top-[32px] right-[23px]">
@@ -1041,6 +1102,33 @@ export default function LessonQuizPage() {
             Сообщить об ошибке
           </p>
         )}
+
+        {/* Streak counter — appears below progress bar when streak >= 2 */}
+        <div
+          className="fixed z-10 pointer-events-none flex items-center gap-[5px]"
+          style={{
+            top: isMobile ? 50 : 62,
+            left: "50%",
+            opacity: currentStreak >= 2 && !quizFinished ? 1 : 0,
+            transform: `translateX(-50%) scale(${streakBump ? 1.18 : 1})`,
+            transition: "opacity 400ms ease, transform 200ms ease",
+          }}
+        >
+          <svg width="10" height="15" viewBox="0 0 16.7655 24.4324" fill="none">
+            <defs>
+              <linearGradient id="sqfg" x1="8.38" x2="8.38" y1="0" y2="24.4324" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#FFB121" /><stop offset="1" stopColor="#BB8116" />
+              </linearGradient>
+            </defs>
+            <path d="M13.5956 6.34462C13.4294 6.06951 13.1002 5.93905 12.7908 6.02528C12.4813 6.11155 12.2672 6.39348 12.2672 6.71478C12.2672 7.58838 11.5564 8.29907 10.6828 8.29907C9.80926 8.29907 9.09857 7.58833 9.09857 6.71478V0.715745C9.09857 0.426229 8.9242 0.16525 8.65668 0.0544453C8.38931 -0.0562166 8.08133 0.00491231 7.87661 0.20963C7.7963 0.289942 5.88751 2.20985 3.95372 5.11054C2.81341 6.821 1.90344 8.51763 1.24916 10.1534C0.420315 12.2256 0 14.2094 0 16.0497C0 20.6719 3.7605 24.4324 8.38273 24.4324C13.005 24.4324 16.7655 20.6719 16.7655 16.0497C16.7655 13.091 15.699 9.82582 13.5956 6.34462Z" fill="url(#sqfg)" />
+          </svg>
+          <span
+            className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[13px] leading-none whitespace-nowrap"
+            style={{ color: streakTextColor }}
+          >
+            {currentStreak} подряд
+          </span>
+        </div>
 
         {/* ZONE 2+3 — conditional on question type */}
         {questionType === "multiple_select" ? (
