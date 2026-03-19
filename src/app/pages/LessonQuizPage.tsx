@@ -1060,20 +1060,20 @@ export default function LessonQuizPage() {
         {isMobile ? (
           <div className="fixed top-0 left-0 right-0 z-10 flex items-center gap-[10px] px-[14px]" style={{ height: 44 }}>
             <CloseButton onClick={() => setShowExitModal(true)} mobile />
-            <div className="flex-1 flex flex-col" style={{ gap: 5 }}>
-              {/* Bar */}
-              <div className="h-[10px] bg-[#465256] rounded-[9999px]">
+            <div className="flex-1 relative h-[10px]">
+              {/* Bar — centered with CloseButton and XP */}
+              <div className="absolute inset-0 bg-[#465256] rounded-[9999px]">
                 <div
                   className="h-full rounded-[9999px]"
                   style={{ width: `${runProgressPercent}%`, ...streakFill, filter: streakFilter, transition: "width 300ms ease, background 500ms ease, filter 500ms ease" }}
                 />
               </div>
-              {/* Streak text — follows fill, clipped to bar bounds */}
-              <div className="relative overflow-hidden" style={{ height: 11, opacity: currentStreak >= 2 && !quizFinished ? 1 : 0, transition: "opacity 400ms ease" }}>
+              {/* Streak text — 5px below bar, follows fill, clipped to bar bounds */}
+              <div className="absolute left-0 right-0 overflow-hidden" style={{ top: "calc(100% + 5px)", height: 11, opacity: currentStreak >= 2 && !quizFinished ? 1 : 0, transition: "opacity 400ms ease" }}>
                 <div className="absolute inset-y-0 left-0 flex items-start justify-end" style={{ width: `${runProgressPercent}%`, minWidth: 0, transition: "width 300ms ease" }}>
                   <span
                     className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[10px] whitespace-nowrap leading-none"
-                    style={{ color: streakTextColor, transform: `scale(${streakBump ? 1.12 : 1})`, transformOrigin: "right top", transition: "transform 200ms ease" }}
+                    style={{ color: streakTextColor, textShadow: currentStreak >= 3 ? `0 0 6px ${streakTextColor}` : "none", transform: `scale(${streakBump ? 1.12 : 1})`, transformOrigin: "right top", transition: "transform 200ms ease, text-shadow 500ms ease" }}
                   >{currentStreak} подряд</span>
                 </div>
               </div>
@@ -1101,7 +1101,7 @@ export default function LessonQuizPage() {
                 <div className="absolute inset-y-0 left-0 flex items-start justify-end" style={{ width: `${runProgressPercent}%`, minWidth: 0, transition: "width 300ms ease" }}>
                   <span
                     className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[13px] whitespace-nowrap leading-none"
-                    style={{ color: streakTextColor, transform: `scale(${streakBump ? 1.12 : 1})`, transformOrigin: "right top", transition: "transform 200ms ease" }}
+                    style={{ color: streakTextColor, textShadow: currentStreak >= 3 ? `0 0 6px ${streakTextColor}` : "none", transform: `scale(${streakBump ? 1.12 : 1})`, transformOrigin: "right top", transition: "transform 200ms ease, text-shadow 500ms ease" }}
                   >{currentStreak} подряд</span>
                 </div>
               </div>
