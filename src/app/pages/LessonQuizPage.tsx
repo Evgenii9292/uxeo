@@ -860,7 +860,7 @@ export default function LessonQuizPage() {
     : currentStreak >= 3
     ? "drop-shadow(0 0 4px rgba(255,215,0,0.55))"
     : "none";
-  const streakTextColor = currentStreak >= 7 ? "#c084fc" : currentStreak >= 5 ? "#00d043" : currentStreak >= 3 ? "#ffd700" : "#FFB121";
+  const streakTextColor = currentStreak >= 7 ? "#b06ef5" : currentStreak >= 5 ? "#00d043" : currentStreak >= 3 ? "#ffd700" : "#ff6b21";
 
   const handleSelect = (card: "А" | "Б" | "В" | "Г") => {
     if (phase === "feedback") return;
