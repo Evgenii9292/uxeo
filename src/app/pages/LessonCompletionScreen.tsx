@@ -101,6 +101,7 @@ interface LessonCompletionScreenProps {
   totalQuestions: number;
   earnedXP: number;
   passed: boolean;
+  bestStreak?: number;
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
@@ -113,6 +114,7 @@ export default function LessonCompletionScreen({
   totalQuestions,
   earnedXP,
   passed,
+  bestStreak = 0,
 }: LessonCompletionScreenProps) {
   const vw = useWindowWidth();
   const isMobile = vw < 768;
@@ -149,6 +151,23 @@ export default function LessonCompletionScreen({
               </p>
               <LightningIcon size={isMobile ? 22 : 32} />
             </div>
+
+            {/* Best streak badge */}
+            {bestStreak >= 2 && (
+              <div className="flex items-center gap-[8px]">
+                <svg width="14" height="20" viewBox="0 0 16.7655 24.4324" fill="none">
+                  <defs>
+                    <linearGradient id="csfg" x1="8.38" x2="8.38" y1="0" y2="24.4324" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#FFB121" /><stop offset="1" stopColor="#BB8116" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M13.5956 6.34462C13.4294 6.06951 13.1002 5.93905 12.7908 6.02528C12.4813 6.11155 12.2672 6.39348 12.2672 6.71478C12.2672 7.58838 11.5564 8.29907 10.6828 8.29907C9.80926 8.29907 9.09857 7.58833 9.09857 6.71478V0.715745C9.09857 0.426229 8.9242 0.16525 8.65668 0.0544453C8.38931 -0.0562166 8.08133 0.00491231 7.87661 0.20963C7.7963 0.289942 5.88751 2.20985 3.95372 5.11054C2.81341 6.821 1.90344 8.51763 1.24916 10.1534C0.420315 12.2256 0 14.2094 0 16.0497C0 20.6719 3.7605 24.4324 8.38273 24.4324C13.005 24.4324 16.7655 20.6719 16.7655 16.0497C16.7655 13.091 15.699 9.82582 13.5956 6.34462Z" fill="url(#csfg)" />
+                </svg>
+                <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[15px]" : "text-[20px]"}`}>
+                  Лучшая серия: <span className="text-[#FFB121] font-bold">{bestStreak}</span>
+                </p>
+              </div>
+            )}
 
             <OrangeButton label="Продолжить" onClick={onContinue} isMobile={isMobile} />
           </>
