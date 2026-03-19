@@ -17,7 +17,7 @@ export function CorrectFeedback({ explanation, showXp = true }: { explanation: s
           </div>
         )}
       </div>
-      <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[1.2] text-[#f4f5fc] text-[16px] flex-1 min-w-0">
+      <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[1.2] text-[#f4f5fc] text-[14px] flex-1 min-w-0">
         {explanation}
       </p>
     </div>
@@ -43,7 +43,7 @@ export function IncorrectFeedback({
         </p>
       </div>
       {/* Bottom: correct answer + explanation */}
-      <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[1.3] text-[#f4f5fc] text-[15px]">
+      <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[1.3] text-[#f4f5fc] text-[13px]">
         <span className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#ffbaaa]">Верный ответ — {correctAnswer}. </span>
         {explanation}
       </p>
