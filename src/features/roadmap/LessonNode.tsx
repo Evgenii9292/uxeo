@@ -148,13 +148,7 @@ function OrangeCurrentEllipse({ uid, pct, isHomework }: { uid: string; pct: numb
         style={{ top: 0, left: 0, width: 89, height: NODE_H, borderRadius: "50%", overflow: "visible" }}
       >
         <svg className="absolute inset-0 block" fill="none" width="89" height={NODE_H} viewBox="0 0 89 79">
-          <ellipse cx="44.5" cy="39.5" fill={`url(#po_${uid})`} rx="44.5" ry="39.5" />
-          <defs>
-            <linearGradient gradientUnits="userSpaceOnUse" id={`po_${uid}`} x1="37" x2="4" y1="33" y2="94">
-              <stop stopColor="#FF6B21" />
-              <stop offset="1" stopColor="#994014" />
-            </linearGradient>
-          </defs>
+          <ellipse cx="44.5" cy="39.5" fill="#FF6B21" rx="44.5" ry="39.5" />
         </svg>
         {/* Progress ring — only for non-homework lessons */}
         {!isHomework && pct > 0 && (
@@ -217,13 +211,7 @@ function GrayLockedEllipse({ icon = "lightning", uid }: { icon?: "lightning" | "
         style={{ top: 0, left: 0, width: NODE_W, height: NODE_H, borderRadius: "50%" }}
       >
         <svg className="absolute inset-0 block" fill="none" width={NODE_W} height={NODE_H} viewBox="0 0 91 78.9811">
-          <ellipse cx="45.5" cy="39.4906" fill={`url(#pgg_${uid})`} rx="45.5" ry="39.4906" />
-          <defs>
-            <linearGradient gradientUnits="userSpaceOnUse" id={`pgg_${uid}`} x1="45.5" x2="45.5" y1="0" y2="78.9811">
-              <stop stopColor="#465256" />
-              <stop offset="1" stopColor="#313C40" />
-            </linearGradient>
-          </defs>
+          <ellipse cx="45.5" cy="39.4906" fill="#343E42" rx="45.5" ry="39.4906" />
         </svg>
         {icon === "lightning" ? (
           <svg className="absolute block" fill="none" style={{ top: 23, left: 31, width: 28, height: 33 }} viewBox="0 0 27.6456 32.2532">
