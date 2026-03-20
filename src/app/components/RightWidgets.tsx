@@ -73,32 +73,25 @@ function WeeklyChallenge() {
       className="bg-[#343e42] relative rounded-[15px] shrink-0 w-full cursor-pointer hover:brightness-110 transition-all"
       onClick={() => navigate("/challenges")}
     >
-      <div className="content-stretch flex flex-col items-start p-[20px] relative w-full gap-[10px]">
-        {/* Top row: icon + progress ring */}
-        <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-          {/* Figma icon — fixed square container (Fix #11) */}
-          <div className="bg-[#465256] flex items-center justify-center relative rounded-[15px] shrink-0 size-[58px]">
-            <FigmaIcon />
-          </div>
-          {/* Progress ring + label */}
-          <div className="h-[59.077px] relative shrink-0 w-[60px]">
-            <div className="absolute flex h-[55.385px] items-center justify-center left-[2.77px] top-[-1.62px] w-[59.077px]" style={{ "--transform-inner-width": "1200", "--transform-inner-height": "19" } as React.CSSProperties}>
-              <div className="-rotate-90 flex-none">
-                <WeeklyChallengeSvg />
-              </div>
-            </div>
-            <div className="absolute content-stretch flex h-[53.538px] items-center justify-center left-[2.77px] top-[-0.69px] w-[59.077px]">
-              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[15.231px] relative shrink-0 text-[14px] whitespace-nowrap text-[#a6a6a6]">{completed}/{total}</p>
-            </div>
-          </div>
+      <div className="content-stretch flex items-center p-[20px] relative w-full gap-[12px]">
+        {/* Title + description */}
+        <div className="flex flex-col gap-[2px] flex-1 min-w-0">
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f2fb] text-[18px]">Недельные вызовы</p>
+          <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[18px] text-[#798589] text-[14px]">Практические задания в Figma</p>
         </div>
 
-        {/* Title + description stacked tightly */}
-        <div className="flex flex-col gap-[4px] w-full">
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.5px] relative shrink-0 text-[#f1f2fb] text-[18px] whitespace-nowrap">Недельные вызовы</p>
-
-          {/* Description only — arrow removed (Fix #12) */}
-          <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[20px] relative shrink-0 text-[#798589] text-[16px]">Практические задания в Figma</p>
+        {/* Progress ring + Figma icon inside */}
+        <div className="h-[50px] relative shrink-0 w-[50px]">
+          <div className="absolute flex h-[46px] items-center justify-center left-[2px] top-[0px] w-[50px]" style={{ "--transform-inner-width": "1200", "--transform-inner-height": "19" } as React.CSSProperties}>
+            <div style={{ transform: "rotate(-90deg) scale(0.83)", transformOrigin: "center" }}>
+              <WeeklyChallengeSvg />
+            </div>
+          </div>
+          <div className="absolute flex h-[46px] items-center justify-center left-[2px] top-[2px] w-[50px]">
+            <div style={{ transform: "scale(0.78)", transformOrigin: "center" }}>
+              <FigmaIcon />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -177,29 +170,23 @@ function LeagueProgress() {
     >
       <div className="flex flex-col items-center size-full">
         <div className="content-stretch flex flex-col items-center justify-between p-[20px] relative size-full">
-          <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0 w-full">
-            {/* Title row: league name only */}
-            <div className="flex items-center gap-[8px]">
-              {isComplete && <OrangeCircleCheck />}
-              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[18px] whitespace-nowrap">
-                {league.name}
-              </p>
-            </div>
-            {/* XP sub-row — same style as DailyChallenge */}
+          <div className="flex flex-row items-center gap-[8px] relative shrink-0 w-full">
+            {isComplete && <OrangeCircleCheck />}
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[18px] whitespace-nowrap">
+              {league.name}
+            </p>
             {!isComplete && (
-              <div className="relative shrink-0">
-                <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[5px] items-center relative">
-                  <div className="relative shrink-0 size-[9px]">
-                    <div className="absolute inset-[-7.41%]">
-                      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 10.3333 10.3333">
-                        <path d={svgPaths.p28187d00} fill="#798589" id="Vector" stroke="#798589" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-                      </svg>
-                    </div>
+              <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[5px] items-center relative">
+                <div className="relative shrink-0 size-[9px]">
+                  <div className="absolute inset-[-7.41%]">
+                    <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 10.3333 10.3333">
+                      <path d={svgPaths.p28187d00} fill="#798589" id="Vector" stroke="#798589" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
+                    </svg>
                   </div>
-                  <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[0] relative shrink-0 text-[#f1f2fb] text-[0px] text-[18px] whitespace-nowrap">
-                    <span className="leading-[20px] text-[#798589]">{xp} / {LEAGUE_MAX} XP</span>
-                  </p>
                 </div>
+                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[0] relative shrink-0 text-[#f1f2fb] text-[0px] text-[18px] whitespace-nowrap">
+                  <span className="leading-[20px] text-[#798589]">{xp} / {LEAGUE_MAX} XP</span>
+                </p>
               </div>
             )}
           </div>
@@ -390,25 +377,21 @@ function DailyChallenge() {
     <div className="bg-[#343e42] w-full relative rounded-[15px]">
       <div className="content-stretch flex flex-col gap-[16px] items-start p-[20px] relative w-full">
         {/* Title + XP row */}
-        <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0 w-full">
-          <div className="flex items-center gap-[8px]">
-            {isComplete && <OrangeCircleCheck />}
-            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[18px] whitespace-nowrap">Задание дня</p>
-          </div>
+        <div className="flex flex-row items-center gap-[8px] relative shrink-0 w-full">
+          {isComplete && <OrangeCircleCheck />}
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[18px] whitespace-nowrap">Задание дня</p>
           {!isComplete && (
-            <div className="relative shrink-0">
-              <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[5px] items-center relative">
-                <div className="relative shrink-0 size-[9px]">
-                  <div className="absolute inset-[-7.41%]">
-                    <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 10.3333 10.3333">
-                      <path d={svgPaths.p28187d00} fill="#798589" id="Vector" stroke="#798589" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-                    </svg>
-                  </div>
+            <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[5px] items-center relative">
+              <div className="relative shrink-0 size-[9px]">
+                <div className="absolute inset-[-7.41%]">
+                  <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 10.3333 10.3333">
+                    <path d={svgPaths.p28187d00} fill="#798589" id="Vector" stroke="#798589" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
+                  </svg>
                 </div>
-                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[0] relative shrink-0 text-[#f1f2fb] text-[0px] text-[18px] whitespace-nowrap">
-                  <span className="leading-[20px] text-[#798589]">{xp} / {DAILY_MAX} XP</span>
-                </p>
               </div>
+              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[0] relative shrink-0 text-[#f1f2fb] text-[0px] text-[18px] whitespace-nowrap">
+                <span className="leading-[20px] text-[#798589]">{xp} / {DAILY_MAX} XP</span>
+              </p>
             </div>
           )}
         </div>

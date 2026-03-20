@@ -218,7 +218,6 @@ export default function AppHeader({ title, subtitle, showBack = false, onBack, i
       className="relative shrink-0 w-full"
       data-name="Header"
       style={{
-        paddingBottom: '8px',
         backgroundColor: '#282F33',
         ...(!(noBottomBorder || tabletFullWidthBorder || desktopFullWidthBorder) && {
           borderBottom: '1px solid rgba(87,100,106,0.35)'
@@ -226,7 +225,7 @@ export default function AppHeader({ title, subtitle, showBack = false, onBack, i
       }}
     >
       <div className="flex flex-row items-center size-full">
-        <div className="content-stretch flex items-center justify-between px-[4px] py-[9px] relative w-full">
+        <div className="content-stretch flex items-center justify-between px-[4px] pt-[4px] pb-[14px] relative w-full">
           {/* Left: back button or title */}
           <div className="relative shrink-0">
             <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[20px] items-center relative">

@@ -152,7 +152,7 @@ export function CompareUIQuiz({
     //   small  (388×858): dark container 220px, inner content area 190px → paddingY 15px
     //   large  (440×954): dark container 250px, inner content area 220px → paddingY 15px
     const containerH = isLargePhone ? 250 : 220;
-    const paddingY   = 15; // equal top/bottom margin inside dark container
+    const paddingY   = 10; // equal top/bottom margin inside dark container
 
     // Border color per card state
     const getBorderColor = (state: CompareCardState): string | undefined => {
@@ -183,10 +183,10 @@ export function CompareUIQuiz({
                 <div
                   key={option.label}
                   onClick={isClickable ? () => handleSelect(option.label) : undefined}
-                  className={`relative rounded-[15px] overflow-hidden flex-shrink-0 transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.99]" : ""}`}
+                  className={`relative rounded-[15px] overflow-hidden transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.99]" : ""}`}
                   style={{
-                    height: containerH,
-                    maxHeight: "calc((100dvh - 338px) / 2)",
+                    height: `calc((100dvh - 296px) / 2)`,
+                    minHeight: containerH,
                     background: "linear-gradient(172deg, rgb(44,53,56) 2%, rgb(56,67,72) 99%)",
                     boxShadow: borderColor ? `0 0 0 3px ${borderColor}` : undefined,
                   }}

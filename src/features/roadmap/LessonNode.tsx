@@ -377,13 +377,8 @@ export function NodeLabel({ lesson }: { lesson: Lesson }) {
 
   return (
     <p
-      className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[21px] text-[20px] bg-center bg-clip-text bg-cover bg-no-repeat text-[transparent]"
-      style={{
-        backgroundImage: `url('${imgHomework}')`,
-        maxWidth: 160,
-        wordBreak: "break-word",
-        ...(isHomework ? {} : {}),
-      }}
+      className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[21px] text-[20px]"
+      style={{ color: "#445054", maxWidth: 160, wordBreak: "break-word" }}
     >
       {lesson.title}
     </p>

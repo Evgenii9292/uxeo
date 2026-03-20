@@ -757,7 +757,7 @@ export default function NotificationsPage() {
       {/* Sticky filter bar — sticks inside Layout's scroll container */}
       <div className="flex flex-col gap-[25px] w-full">
         <div
-          className="sticky top-[-16px] z-20 mx-[-16px] px-[16px] pt-[12px] pb-[8px]"
+          className="sticky top-[0] z-20 mx-[-16px] px-[16px] pt-[12px] pb-[8px]"
           style={{ background: "#282F33" }}
         >
           <FilterBar active={filter} unreadCount={unreadCount} onChange={setFilter} />

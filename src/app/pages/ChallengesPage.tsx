@@ -450,7 +450,7 @@ export default function ChallengesPage() {
       <div className="flex flex-col gap-[20px] w-full">
         {/* Sticky tab bar — sticks to top of scroll area, bg covers content above */}
         <div
-          className="sticky top-[-16px] z-20 mx-[-16px] px-[16px] pt-[12px] pb-[8px]"
+          className="sticky top-[0] z-20 mx-[-16px] px-[16px] pt-[12px] pb-[8px]"
           style={{ background: "#282F33" }}
         >
           <TabBar active={activeTab} onSwitch={setActiveTab} />

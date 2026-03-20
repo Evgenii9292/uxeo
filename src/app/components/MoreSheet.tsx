@@ -347,7 +347,7 @@ export function MoreSheet({ onClose }: MoreSheetProps) {
           <MenuItem
             icon={<IconInfo />}
             label="О проекте"
-            sublabel="Что такое UXEO и как это работает"
+            sublabel="Что такое Скиллум и как это работает"
             onClick={() => handleNavigate("/about")}
           />
           <MenuItem
@@ -385,7 +385,7 @@ export function MoreSheet({ onClose }: MoreSheetProps) {
 
         {/* App version */}
         <p className="text-center font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#4A5A62] text-[12px] mt-[4px]">
-          UXEO · версия 1.0.0
+          Скиллум · версия 1.0.0
         </p>
       </div>
 

@@ -4,7 +4,7 @@ import Layout from "../components/Layout";
 import RightWidgets from "../components/RightWidgets";
 import uxeoLogo from "../../assets/uxeo-logo.svg";
 
-// ─── Stroke SVG icons (для "Что есть в UXEO") ────────────────────────────────
+// ─── Stroke SVG icons (для "Что есть в Скиллум") ────────────────────────────────
 const S = { stroke: "#9ba3a8", fill: "none", strokeWidth: 1.6, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
 
 function IconZap() {
@@ -44,7 +44,7 @@ function IconTrendUp() {
   );
 }
 
-// ─── Filled SVG icons (для "Скоро в UXEO") ───────────────────────────────────
+// ─── Filled SVG icons (для "Скоро в Скиллум") ───────────────────────────────────
 const F = "#9ba3a8";
 
 function IconChatFill() {
@@ -134,7 +134,7 @@ function HeroAbout() {
         >
           <img
             src={uxeoLogo}
-            alt="UXEO"
+            alt="Скиллум"
             style={{ width: 200, height: "auto", position: "relative", zIndex: 10 }}
           />
         </div>
@@ -223,7 +223,7 @@ function AboutContent() {
         </div>
 
         <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[28px] text-[#f4f5fc] leading-[1.2]">
-          UXEO — платформа, где дизайнеры прокачивают навыки через практику
+          Скиллум — платформа, где дизайнеры прокачивают навыки через практику
         </p>
         <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[17px] text-[#798589] leading-[1.3]">
           Не просто теория, а <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">реальные задания</span>, челленджи и обратная связь от менторов
@@ -244,7 +244,7 @@ function AboutContent() {
 
       {/* ── Features ── */}
       <div className="flex flex-col gap-[16px]">
-        <SectionTitle>Что есть в UXEO</SectionTitle>
+        <SectionTitle>Что есть в Скиллум</SectionTitle>
         <div
           className="flex flex-col gap-[0px] rounded-[16px] overflow-hidden"
           style={{ background: "#343e42" }}
@@ -320,7 +320,7 @@ function AboutContent() {
 
       {/* ── Advantages 2×2 ── */}
       <div className="flex flex-col gap-[14px]">
-        <SectionTitle>Почему UXEO</SectionTitle>
+        <SectionTitle>Почему Скиллум</SectionTitle>
         <div className="grid grid-cols-2 gap-[10px]">
           {[
             { icon: "🔁", text: "Практика → потом теория" },
@@ -362,7 +362,7 @@ function AboutContent() {
 
       {/* ── Coming soon ── */}
       <div className="flex flex-col gap-[12px]">
-        <SectionTitle>Скоро в UXEO</SectionTitle>
+        <SectionTitle>Скоро в Скиллум</SectionTitle>
         <div className="flex flex-wrap gap-[8px]">
           {[
             { icon: <IconChatFill />,  label: "Чат сообщества" },

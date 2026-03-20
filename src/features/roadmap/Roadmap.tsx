@@ -239,10 +239,7 @@ export function Roadmap({
                 className="font-['Roboto_Condensed:Regular',sans-serif]"
                 style={{
                   fontSize: mobile ? 11 : 14,
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.25))",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
+                  color: "#445054",
                   fontWeight: 400,
                   lineHeight: mobile ? "12px" : "16px",
                   marginBottom: mobile ? 1 : 2,
@@ -255,10 +252,7 @@ export function Roadmap({
                 className="font-['Roboto_Condensed:Regular',sans-serif]"
                 style={{
                   fontSize: mobile ? 12 : 16,
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.25))",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
+                  color: "#445054",
                   fontWeight: 400,
                   lineHeight: mobile ? "14px" : "18px",
                   whiteSpace: "nowrap",

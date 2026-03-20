@@ -11,11 +11,32 @@ import {
   CorrectFeedback,
   IncorrectFeedback,
 } from "./quiz/OnboardingQuizUI";
+import { ScaledPreview } from "../components/quiz/ScaledPreview";
+import { useWindowWidth } from "../hooks/useWindowWidth";
 import quizSvgPaths from "../../imports/svg-869ttds5wi";
 
 type Selection = "A" | "B" | null;
 type Phase = "selecting" | "feedback";
 type CardState = "idle" | "selected" | "correct" | "incorrect" | "dimmed";
+
+// Natural dimensions of CardAMockup / CardBMockup
+const MOCK_W = 333;
+const MOCK_H = 415;
+
+const BG_GRADIENT: Record<CardState, string> = {
+  idle:      "linear-gradient(172deg, rgb(44,53,56) 2%, rgb(56,67,72) 99%)",
+  selected:  "linear-gradient(172deg, rgb(55,66,70) 2%, rgb(56,67,72) 99%)",
+  correct:   "linear-gradient(172deg, rgba(58,81,67,0.5) 2%, rgba(56,72,62,0.5) 99%)",
+  incorrect: "linear-gradient(172deg, rgba(92,53,53,0.5) 2%, rgba(72,58,56,0.5) 99%)",
+  dimmed:    "linear-gradient(172deg, rgba(44,53,56,0.5) 2%, rgba(56,67,72,0.5) 99%)",
+};
+
+function getBorderColor(state: CardState): string | undefined {
+  if (state === "selected")  return "#636670";
+  if (state === "correct")   return "rgba(0, 147, 47, 0.6)";
+  if (state === "incorrect") return "#9f3500";
+  return undefined;
+}
 
 export default function QuizPage() {
   const navigate = useNavigate();
@@ -23,6 +44,7 @@ export default function QuizPage() {
   const [selection, setSelection] = useState<Selection>(null);
   const [phase, setPhase] = useState<Phase>("selecting");
   const [earnedXP, setEarnedXP] = useState(0);
+  const vw = useWindowWidth();
 
   const QUESTION_ID = "quiz-contrast-screens";
   const LESSON_ID = "onboarding-quiz";
@@ -87,30 +109,214 @@ export default function QuizPage() {
     } catch (_) {}
   }
 
+  const isMobile = vw < 768;
+  const isTablet = vw >= 768 && vw < 1280;
+
+  // Shared XP indicator JSX
+  const xpIndicator = (
+    <div className="fixed top-[32px] right-[23px] z-10 content-stretch flex gap-[4px] items-center">
+      <div className="relative shrink-0 size-[24px]">
+        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
+          <g id="Zap">
+            <path d={quizSvgPaths.p9530000} fill="var(--fill-0, #798589)" stroke="var(--stroke-0, #798589)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
+          </g>
+        </svg>
+      </div>
+      <p className="font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold leading-[21px] relative shrink-0 text-[#798589] text-[24px] whitespace-nowrap">{xp}</p>
+    </div>
+  );
+
+  const insetShadow = "inset_-4px_0px_4px_0px_#384348,inset_4px_0px_4px_0px_#384348,inset_0px_-5px_4px_0px_rgba(0,0,0,0.25),inset_0px_4px_4px_0px_rgba(0,0,0,0.25)";
+
+  // ── MOBILE layout ───────────────────────────────────────────────────────────
+  if (isMobile) {
+    const isLargePhone = vw >= 440;
+    const containerH = isLargePhone ? 250 : 220;
+    const paddingY = 10;
+
+    const cards: Array<{ id: "A" | "B"; Mockup: () => JSX.Element }> = [
+      { id: "A", Mockup: CardAMockup },
+      { id: "B", Mockup: CardBMockup },
+    ];
+
+    return (
+      <PageTransition>
+        <div
+          className="relative h-[100dvh] w-full overflow-hidden"
+          style={{ background: "#282F33" }}
+        >
+          {xpIndicator}
+          <div className="fixed top-[20px] left-[20px] z-10">
+            <BackButton onClick={() => navigate("/welcome")} />
+          </div>
+
+          {/* Content */}
+          <div
+            className="absolute inset-0 px-[16px] flex flex-col"
+            style={{ paddingTop: 76, gap: 10 }}
+          >
+            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[1.25] text-[#f4f5fc] text-[22px] text-center w-full">
+              Какой экран лучше?
+            </p>
+
+            <div className="flex flex-col" style={{ gap: 10 }}>
+              {cards.map(({ id, Mockup }) => {
+                const state = getCardState(id);
+                const isClickable = state === "idle" || state === "selected";
+                const borderColor = getBorderColor(state);
+                return (
+                  <div
+                    key={id}
+                    onClick={isClickable ? () => { handleSelect(id); playSelectSound(); } : undefined}
+                    className={`relative rounded-[15px] overflow-hidden flex-shrink-0 transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.99]" : ""}`}
+                    style={{
+                      height: `calc((100dvh - 296px) / 2)`,
+                      minHeight: containerH,
+                      background: BG_GRADIENT[state],
+                      boxShadow: borderColor ? `0 0 0 3px ${borderColor}` : undefined,
+                    }}
+                  >
+                    <div className="w-full h-full">
+                      <ScaledPreview naturalWidth={MOCK_W} naturalHeight={MOCK_H} paddingY={paddingY} maxScale={1}>
+                        <Mockup />
+                      </ScaledPreview>
+                    </div>
+                    <div className={`absolute inset-0 pointer-events-none rounded-[inherit] shadow-[${insetShadow}]`} />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Fixed bottom: feedback + button */}
+          <div
+            className="fixed left-0 right-0 z-10 px-[16px] pt-[12px]"
+            style={{ bottom: "max(40px, env(safe-area-inset-bottom, 40px))", paddingBottom: 12 }}
+          >
+            {phase === "feedback" && (
+              <div className="mb-[10px]">
+                {isCorrect ? <CorrectFeedback showXp={earnedXP > 0} /> : <IncorrectFeedback />}
+              </div>
+            )}
+            <div className="w-full">
+              {phase === "selecting"
+                ? selection === null
+                  ? <ContinueDisabled fullWidth />
+                  : <ContinueActive onClick={handleContinue} fullWidth />
+                : isCorrect
+                  ? <ContinueCorrect onClick={handleContinue} fullWidth />
+                  : <ContinueActive onClick={handleContinue} fullWidth />
+              }
+            </div>
+          </div>
+        </div>
+      </PageTransition>
+    );
+  }
+
+  // ── TABLET layout ───────────────────────────────────────────────────────────
+  if (isTablet) {
+    const avail = vw - 48;
+    const gap = 24;
+    const cardW = Math.floor((avail - gap) / 2);
+    const cardH = Math.min(Math.round(cardW * (MOCK_H / MOCK_W)), 520);
+    const paddingY = Math.round(cardH * 0.06);
+
+    const cards: Array<{ id: "A" | "B"; Mockup: () => JSX.Element }> = [
+      { id: "A", Mockup: CardAMockup },
+      { id: "B", Mockup: CardBMockup },
+    ];
+
+    return (
+      <PageTransition>
+        <div
+          className="relative h-[100dvh] w-full overflow-hidden"
+          style={{ backgroundImage: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46,57,62) 147.74%)" }}
+        >
+          {xpIndicator}
+          <div className="fixed top-[20px] left-[20px] z-10">
+            <BackButton onClick={() => navigate("/welcome")} />
+          </div>
+
+          {/* Content centered */}
+          <div
+            className="absolute inset-0 flex flex-col items-center justify-center"
+            style={{ paddingBottom: 140, paddingTop: 80 }}
+          >
+            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] text-[#f4f5fc] text-[28px] text-center mb-[28px]">
+              Какой экран лучше?
+            </p>
+            <div className="flex items-start" style={{ gap }}>
+              {cards.map(({ id, Mockup }) => {
+                const state = getCardState(id);
+                const isClickable = state === "idle" || state === "selected";
+                const borderColor = getBorderColor(state);
+                return (
+                  <div
+                    key={id}
+                    onClick={isClickable ? () => { handleSelect(id); playSelectSound(); } : undefined}
+                    className={`relative rounded-[20px] overflow-hidden transition-all duration-200 ${isClickable ? "cursor-pointer" : ""}`}
+                    style={{
+                      width: cardW,
+                      height: cardH,
+                      background: BG_GRADIENT[state],
+                      boxShadow: borderColor ? `0 0 0 3px ${borderColor}` : undefined,
+                    }}
+                  >
+                    <div className="w-full h-full">
+                      <ScaledPreview naturalWidth={MOCK_W} naturalHeight={MOCK_H} paddingY={paddingY} maxScale={1}>
+                        <Mockup />
+                      </ScaledPreview>
+                    </div>
+                    <div className={`absolute inset-0 pointer-events-none rounded-[inherit] shadow-[${insetShadow}]`} />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Fixed bottom: feedback + button */}
+          <div className="fixed bottom-[20px] left-0 right-0 z-10 flex justify-center">
+            <div className="flex gap-[24px] items-center" style={{ width: avail }}>
+              <div className="flex-1 flex items-center min-w-0">
+                {phase === "feedback" && (
+                  isCorrect
+                    ? <CorrectFeedback showXp={earnedXP > 0} />
+                    : <IncorrectFeedback />
+                )}
+              </div>
+              <div className="flex-none">
+                {phase === "selecting"
+                  ? selection === null
+                    ? <ContinueDisabled />
+                    : <ContinueActive onClick={handleContinue} />
+                  : isCorrect
+                    ? <ContinueCorrect onClick={handleContinue} />
+                    : <ContinueActive onClick={handleContinue} />
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </PageTransition>
+    );
+  }
+
+  // ── DESKTOP layout ──────────────────────────────────────────────────────────
   return (
     <PageTransition>
       <div
         className="relative min-h-screen w-full overflow-hidden"
         style={{ backgroundImage: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46,57,62) 147.74%)" }}
       >
-        {/* XP indicator */}
-        <div className="fixed top-[32px] right-[23px] z-10 content-stretch flex gap-[4px] items-center">
-          <div className="relative shrink-0 size-[24px]">
-            <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
-              <g id="Zap">
-                <path d={quizSvgPaths.p9530000} fill="var(--fill-0, #798589)" stroke="var(--stroke-0, #798589)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-              </g>
-            </svg>
-          </div>
-          <p className="font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold leading-[21px] relative shrink-0 text-[#798589] text-[24px] whitespace-nowrap">{xp}</p>
-        </div>
+        {xpIndicator}
 
         {/* Back button */}
         <div className="fixed top-[20px] left-[20px] z-10">
           <BackButton onClick={() => navigate("/welcome")} />
         </div>
 
-        {/* ZONE 2 — Cards */}
+        {/* Cards */}
         <div className="flex flex-col items-center justify-center gap-[24px] min-h-screen pb-[160px] pt-[80px]">
           <p className="text-center font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] text-[#f4f5fc] text-[32px] mx-[0px] mt-[0px] mb-[40px]">
             Какой экран лучше?
@@ -125,7 +331,7 @@ export default function QuizPage() {
           </div>
         </div>
 
-        {/* ZONE 3 — Bottom feedback + continue */}
+        {/* Bottom feedback + continue */}
         <div className="fixed bottom-[20px] left-0 right-0 z-10 flex justify-center">
           <div className="flex gap-[32px] items-center w-[1044px] mx-[0px] mt-[0px] mb-[20px]">
             <div className="w-[506px] flex items-center">
