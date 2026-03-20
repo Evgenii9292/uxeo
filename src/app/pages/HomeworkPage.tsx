@@ -486,64 +486,40 @@ function useIsMobile() {
 
 // ── PendingCard ───────────────────────────────────────────────────────────────
 
-function PendingCard({ url }: { url: string }) {
-  const navigate = useNavigate();
+function PendingCard() {
   return (
-    <div
-      className="rounded-[15px] flex flex-col gap-[14px] w-full"
-      style={{
-        background: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4%, rgb(56, 67, 72) 100%)",
-        border: "1.5px solid rgba(160,163,173,0.2)",
-        padding: "18px 20px 20px",
-      }}
-    >
-      {/* Status badge — pill style matching ChallengesPage */}
-      <div className="bg-[#374348] flex gap-[8px] h-[32px] items-center justify-center px-[12px] rounded-full self-start">
-        <IconProcessingTime />
-        <p className={`${TEXT_TITLE} text-[#ffb121] text-[13px] leading-[18px] whitespace-nowrap`}>На проверке</p>
-      </div>
-
-      {/* Title */}
-      <p className={`${TEXT_TITLE} text-[#f4f5fc] text-[16px] leading-[20px]`}>Работа отправлена</p>
-
-      {/* Description */}
-      <p className={`${TEXT_BODY} leading-[20px] text-[rgba(244,245,252,0.5)] text-[13px]`}>
-        Проверка занимает ~24 часа. Уведомление придёт в разделе Уведомлений.
-      </p>
-
-      {/* Figma URL chip */}
-      {url ? (
+    <div className="flex flex-col gap-[16px] w-full">
+      {/* Outer wrapper — same style as other states */}
+      <div
+        className="rounded-[15px] flex flex-col gap-[14px]"
+        style={{ background: "#343e42", border: "2px solid #384348", padding: "20px" }}
+      >
+        {/* Status pill */}
         <div
-          className="flex items-center gap-[8px] rounded-[10px] px-[12px] py-[9px] min-w-0"
-          style={{ background: "#374348" }}
+          className="flex gap-[7px] items-center px-[12px] h-[32px] rounded-full self-start"
+          style={{ background: "#2E3538" }}
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="shrink-0 opacity-40">
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <p
-            className={`${TEXT_BODY} text-[rgba(244,245,252,0.3)] text-[12px] leading-[16px] truncate`}
-            style={{ minWidth: 0 }}
-          >
-            {url}
+          <IconProcessingTime />
+          <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#91969B" }}>На проверке</p>
+        </div>
+        {/* Inner info card */}
+        <div
+          className="rounded-[12px] flex flex-col gap-[10px]"
+          style={{ background: "#424D52", padding: "20px" }}
+        >
+          <p className={`${TEXT_BODY} text-[15px] leading-[22px]`} style={{ color: "rgba(244,245,252,0.4)" }}>
+            Работа отправлена на проверку. Проверка занимает ~24 часа — уведомление придёт в разделе Уведомлений.
           </p>
         </div>
-      ) : null}
-
-      {/* Go to notifications */}
-      <button
-        className="flex items-center gap-[6px] self-start opacity-50 hover:opacity-80 transition-opacity"
-        style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
-        onClick={() => navigate("/notifications")}
+      </div>
+      {/* Depressed status button */}
+      <div
+        className="flex h-[56px] items-center justify-center gap-[10px] rounded-[15px] w-full select-none"
+        style={{ background: "#f7f8fc", boxShadow: "inset 0px 4px 0px 0px #d0d2dc" }}
       >
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <p className={`${TEXT_BODY} text-[#f4f5fc] text-[12px] leading-[16px]`}>
-          Перейти в Уведомления
-        </p>
-      </button>
+        <IconProcessingTime />
+        <p className={`${TEXT_TITLE} leading-[24px] text-[#2d373b] text-[24px] whitespace-nowrap`}>На проверке</p>
+      </div>
     </div>
   );
 }
@@ -579,9 +555,9 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
     }
   }, [homeworkLessonId, serverStatus]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const isSubmitted = localSubmitted || serverStatus === "pending";
   const isReviewed  = serverStatus === "reviewed";
-  const isRejected  = serverStatus === "rejected";
+  const isRejected  = serverStatus === "rejected" && !localSubmitted;
+  const isPending   = localSubmitted || serverStatus === "pending";
 
   const handleSubmit = async () => {
     if (!url.trim()) {
@@ -634,90 +610,32 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
     return (
       <div className="flex flex-col gap-[16px] w-full">
 
-        {/* Status pill */}
-        <div
-          className="flex gap-[7px] items-center px-[12px] h-[32px] rounded-full self-start"
-          style={{ background: "#2E3538" }}
-        >
-          <IconGreenCheck />
-          <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#91969B" }}>Готово</p>
-        </div>
-
-        {/* Feedback card — always visible */}
+        {/* Outer wrapper */}
         <div
           className="rounded-[15px] flex flex-col gap-[14px]"
-          style={{ background: "#424D52", padding: "20px" }}
+          style={{ background: "#343e42", border: "2px solid #384348", padding: "20px" }}
         >
-          {serverRecord?.comment ? (
-            <p className={`${TEXT_BODY} text-[15px] leading-[22px]`} style={{ color: "rgba(244,245,252,0.85)" }}>
-              {serverRecord.comment}
-            </p>
-          ) : (
-            <p className={`${TEXT_BODY} text-[15px] leading-[22px]`} style={{ color: "rgba(244,245,252,0.4)" }}>
-              Проверяющий не оставил комментарий
-            </p>
-          )}
-          {serverRecord?.image_url && (
-            <img
-              src={serverRecord.image_url}
-              alt="Скриншот от проверяющего"
-              className="w-full object-cover"
-              style={{ borderRadius: 10, border: "1px solid #9BA1A7", maxHeight: 240 }}
-            />
-          )}
-        </div>
-
-        {/* Figma link chip */}
-        {url ? (
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-[10px] rounded-[15px] px-[20px] h-[60px] w-full hover:brightness-110 transition-all"
-            style={{ background: "#2E3538", textDecoration: "none" }}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className="shrink-0 opacity-50">
-              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <p className={`${TEXT_BODY} text-[14px] leading-[18px] flex-1 min-w-0 truncate`} style={{ color: "rgba(244,245,252,0.5)" }}>{url}</p>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" className="shrink-0 opacity-30">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              <polyline points="15 3 21 3 21 9" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              <line x1="10" y1="14" x2="21" y2="3" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </a>
-        ) : null}
-
-      </div>
-    );
-  }
-
-  // ── Rejected state ──────────────────────────────────────────────────────────
-  if (isRejected) {
-    return (
-      <div className="flex flex-col gap-[16px] w-full">
-
-        {/* Status pill */}
-        <div
-          className="flex gap-[7px] items-center px-[12px] h-[32px] rounded-full self-start"
-          style={{ background: "#2E3538" }}
-        >
-          <svg width="14" height="14" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="m48 256c0 114.87 93.13 208 208 208s208-93.13 208-208-93.13-208-208-208-208 93.13-208 208zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6l84.55 79.74a8.2 8.2 0 0 1 0 11.94l-84.42 79.77a8.32 8.32 0 0 1 -14-6v-37.29c-57.07 0-84.51 13.47-108.58 38.68-5.49 5.65-15.07 1.32-14.42-6.43z" fill="#91969B" />
-          </svg>
-          <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#91969B" }}>переделать</p>
-        </div>
-
-        {/* Inner feedback card */}
-        {(serverRecord?.comment || serverRecord?.image_url) && (
+          {/* Status pill */}
           <div
-            className="rounded-[15px] flex flex-col gap-[14px]"
+            className="flex gap-[7px] items-center px-[12px] h-[32px] rounded-full self-start"
+            style={{ background: "#2E3538" }}
+          >
+            <IconGreenCheck />
+            <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#91969B" }}>Готово</p>
+          </div>
+
+          {/* Inner feedback card */}
+          <div
+            className="rounded-[12px] flex flex-col gap-[14px]"
             style={{ background: "#424D52", padding: "20px" }}
           >
-            {serverRecord?.comment && (
+            {serverRecord?.comment ? (
               <p className={`${TEXT_BODY} text-[15px] leading-[22px]`} style={{ color: "rgba(244,245,252,0.85)" }}>
                 {serverRecord.comment}
+              </p>
+            ) : (
+              <p className={`${TEXT_BODY} text-[15px] leading-[22px]`} style={{ color: "rgba(244,245,252,0.4)" }}>
+                Проверяющий не оставил комментарий
               </p>
             )}
             {serverRecord?.image_url && (
@@ -729,26 +647,83 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
               />
             )}
           </div>
-        )}
+        </div>
 
-        {/* Input for new link — same style as default state */}
+        {/* Depressed "Готово" button — no input, just status */}
         <div
-          className="relative px-[27px] rounded-[15px] h-[84px] flex items-center justify-between w-full"
+          className="flex h-[56px] items-center justify-center gap-[10px] rounded-[15px] w-full select-none"
+          style={{ background: "#f7f8fc", boxShadow: "inset 0px 4px 0px 0px #d0d2dc" }}
+        >
+          <IconGreenCheck />
+          <p className={`${TEXT_TITLE} leading-[24px] text-[#2d373b] text-[24px] whitespace-nowrap`}>Готово</p>
+        </div>
+
+      </div>
+    );
+  }
+
+  // ── Rejected state ──────────────────────────────────────────────────────────
+  if (isRejected) {
+    return (
+      <div className="flex flex-col gap-[16px] w-full">
+
+        {/* Outer wrapper */}
+        <div
+          className="rounded-[15px] flex flex-col gap-[14px]"
+          style={{ background: "#343e42", border: "2px solid #384348", padding: "20px" }}
+        >
+          {/* Status pill */}
+          <div
+            className="flex gap-[7px] items-center px-[12px] h-[32px] rounded-full self-start"
+            style={{ background: "#2E3538" }}
+          >
+            <svg width="14" height="14" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="m48 256c0 114.87 93.13 208 208 208s208-93.13 208-208-93.13-208-208-208-208 93.13-208 208zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6l84.55 79.74a8.2 8.2 0 0 1 0 11.94l-84.42 79.77a8.32 8.32 0 0 1 -14-6v-37.29c-57.07 0-84.51 13.47-108.58 38.68-5.49 5.65-15.07 1.32-14.42-6.43z" fill="#91969B" />
+            </svg>
+            <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#91969B" }}>переделать</p>
+          </div>
+
+          {/* Inner feedback card */}
+          <div
+            className="rounded-[12px] flex flex-col gap-[14px]"
+            style={{ background: "#424D52", padding: "20px" }}
+          >
+            {serverRecord?.comment ? (
+              <p className={`${TEXT_BODY} text-[15px] leading-[22px]`} style={{ color: "rgba(244,245,252,0.85)" }}>
+                {serverRecord.comment}
+              </p>
+            ) : (
+              <p className={`${TEXT_BODY} text-[15px] leading-[22px]`} style={{ color: "rgba(244,245,252,0.4)" }}>
+                Проверяющий не оставил комментарий
+              </p>
+            )}
+            {serverRecord?.image_url && (
+              <img
+                src={serverRecord.image_url}
+                alt="Скриншот от проверяющего"
+                className="w-full object-cover"
+                style={{ borderRadius: 10, border: "1px solid #9BA1A7", maxHeight: 240 }}
+              />
+            )}
+          </div>
+        </div>
+
+        {/* Input for new link */}
+        <div
+          className="relative px-[20px] rounded-[15px] h-[56px] flex items-center justify-between w-full"
           style={{ backgroundImage: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)" }}
         >
           <div aria-hidden="true" className="absolute border-[2px] border-[rgba(160,163,173,0.2)] border-solid inset-[-2px] pointer-events-none rounded-[15px]" />
           <div className="relative z-10 flex gap-[8px] items-center flex-1 min-w-0">
             <div
-              className="overflow-clip relative shrink-0 size-[17px]"
+              className="overflow-clip relative shrink-0 size-[16px]"
               style={{ opacity: inputFocused ? 0.5 : 1, transition: "opacity 150ms" }}
             >
-              <div className="absolute inset-[0.02%_0_0.01%_0]">
-                <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 19.0001 18.9956">
-                  <path d={svgInitial.p19febe00} fill="#92979D" />
-                  <path d={svgInitial.p1c506830} fill="#92979D" />
-                  <path d={svgInitial.p1f263800} fill="#92979D" />
-                </svg>
-              </div>
+              <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 19.0001 18.9956">
+                <path d={svgInitial.p19febe00} fill="#92979D" />
+                <path d={svgInitial.p1c506830} fill="#92979D" />
+                <path d={svgInitial.p1f263800} fill="#92979D" />
+              </svg>
             </div>
             <input
               type="url"
@@ -757,23 +732,15 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
               onFocus={() => setInputFocused(true)}
               onBlur={() => setInputFocused(false)}
               placeholder="Вставьте ссылку"
-              className={`${TEXT_BODY} bg-transparent text-[16px] leading-[20px] flex-1 min-w-0 outline-none border-none`}
+              className={`${TEXT_BODY} bg-transparent text-[15px] leading-[20px] flex-1 min-w-0 outline-none border-none`}
               style={{ color: "rgba(244,245,252,0.8)", caretColor: "rgba(244,245,252,0.8)" }}
             />
           </div>
-          <div
-            className="relative z-10"
-            style={{ opacity: inputFocused ? 0.5 : 1, transition: "opacity 150ms" }}
-          >
-            <div
-              className="overflow-clip relative shrink-0 size-[18px] cursor-pointer"
-              onClick={() => setShowInfo(v => !v)}
-            >
-              <div className="absolute inset-[10%_0%_10%_20%]">
-                <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
-                  <path d={svgInitial.p2c4b1e00} fill="#93999E" fillOpacity="0.6" />
-                </svg>
-              </div>
+          <div className="relative z-10" style={{ opacity: inputFocused ? 0.5 : 1, transition: "opacity 150ms" }}>
+            <div className="overflow-clip relative shrink-0 size-[16px] cursor-pointer" onClick={() => setShowInfo(v => !v)}>
+              <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
+                <path d={svgInitial.p2c4b1e00} fill="#93999E" fillOpacity="0.6" />
+              </svg>
             </div>
             {showInfo && <InfoPopup onClose={() => setShowInfo(false)} />}
           </div>
@@ -782,11 +749,11 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
 
         {/* Submit button */}
         <div
-          className={`group bg-[#f7f8fc] flex h-[84px] items-center justify-center relative rounded-[15px] select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75 w-full ${isSubmitting ? "opacity-50 cursor-wait" : "cursor-pointer"}`}
+          className={`group bg-[#f7f8fc] flex h-[56px] items-center justify-center relative rounded-[15px] select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75 w-full ${isSubmitting ? "opacity-50 cursor-wait" : "cursor-pointer"}`}
           onClick={isSubmitting ? undefined : handleSubmit}
         >
           <div aria-hidden="true" className="absolute inset-0 border-[0.835px] border-solid border-transparent pointer-events-none rounded-[15px] shadow-[0px_3px_0px_0px_#bcbec8] group-hover:shadow-[0px_2px_0px_0px_#bcbec8] group-active:shadow-none transition-shadow duration-75" />
-          <p className={`${TEXT_TITLE} leading-[27.5px] text-[#2d373b] text-[26px] whitespace-nowrap`}>
+          <p className={`${TEXT_TITLE} leading-[24px] text-[#2d373b] text-[24px] whitespace-nowrap`}>
             {isSubmitting ? "Отправка..." : "Отправить работу"}
           </p>
         </div>
@@ -811,35 +778,78 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
     );
   }
 
-  if (isSubmitted) {
+  // ── Pending state (after resubmit with previous comment, or server pending) ──
+  if (isPending && (serverRecord?.comment || serverRecord?.image_url)) {
     return (
-      <PendingCard url={url} />
+      <div className="flex flex-col gap-[16px] w-full">
+
+        {/* Outer wrapper */}
+        <div
+          className="rounded-[15px] flex flex-col gap-[14px]"
+          style={{ background: "#343e42", border: "2px solid #384348", padding: "20px" }}
+        >
+          {/* Status pill */}
+          <div
+            className="flex gap-[7px] items-center px-[12px] h-[32px] rounded-full self-start"
+            style={{ background: "#2E3538" }}
+          >
+            <IconProcessingTime />
+            <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#91969B" }}>На проверке</p>
+          </div>
+
+          {/* Inner card with previous comment */}
+          <div
+            className="rounded-[12px] flex flex-col gap-[14px]"
+            style={{ background: "#424D52", padding: "20px" }}
+          >
+            {serverRecord?.comment && (
+              <p className={`${TEXT_BODY} text-[15px] leading-[22px]`} style={{ color: "rgba(244,245,252,0.85)" }}>
+                {serverRecord.comment}
+              </p>
+            )}
+            {serverRecord?.image_url && (
+              <img
+                src={serverRecord.image_url}
+                alt="Скриншот от проверяющего"
+                className="w-full object-cover"
+                style={{ borderRadius: 10, border: "1px solid #9BA1A7", maxHeight: 240 }}
+              />
+            )}
+          </div>
+        </div>
+
+        {/* Depressed "На проверке" button */}
+        <div
+          className="flex h-[56px] items-center justify-center gap-[10px] rounded-[15px] w-full select-none"
+          style={{ background: "#f7f8fc", boxShadow: "inset 0px 4px 0px 0px #d0d2dc" }}
+        >
+          <IconProcessingTime />
+          <p className={`${TEXT_TITLE} leading-[24px] text-[#2d373b] text-[24px] whitespace-nowrap`}>На проверке</p>
+        </div>
+
+      </div>
     );
   }
 
+  if (isPending) {
+    return <PendingCard />;
+  }
+
   return (
-    <div className="flex flex-col gap-[20px] w-full">
-      {/* Input — compact */}
+    <div className="flex flex-col gap-[16px] w-full">
+      {/* Input */}
       <div
-        className="relative px-[27px] rounded-[15px] h-[84px] flex items-center justify-between w-full"
-        style={{
-          backgroundImage: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)",
-        }}
+        className="relative px-[20px] rounded-[15px] h-[56px] flex items-center justify-between w-full"
+        style={{ backgroundImage: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)" }}
       >
         <div aria-hidden="true" className="absolute border-[2px] border-[rgba(160,163,173,0.2)] border-solid inset-[-2px] pointer-events-none rounded-[15px]" />
         <div className="relative z-10 flex gap-[8px] items-center flex-1 min-w-0">
-          {/* Link icon */}
-          <div
-            className="overflow-clip relative shrink-0 size-[17px]"
-            style={{ opacity: inputFocused ? 0.5 : 1, transition: "opacity 150ms" }}
-          >
-            <div className="absolute inset-[0.02%_0_0.01%_0]">
-              <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 19.0001 18.9956">
-                <path d={svgInitial.p19febe00} fill="#92979D" />
-                <path d={svgInitial.p1c506830} fill="#92979D" />
-                <path d={svgInitial.p1f263800} fill="#92979D" />
-              </svg>
-            </div>
+          <div className="overflow-clip relative shrink-0 size-[16px]" style={{ opacity: inputFocused ? 0.5 : 1, transition: "opacity 150ms" }}>
+            <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 19.0001 18.9956">
+              <path d={svgInitial.p19febe00} fill="#92979D" />
+              <path d={svgInitial.p1c506830} fill="#92979D" />
+              <path d={svgInitial.p1f263800} fill="#92979D" />
+            </svg>
           </div>
           <input
             type="url"
@@ -848,47 +858,35 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
             onFocus={() => setInputFocused(true)}
             onBlur={() => setInputFocused(false)}
             placeholder="Вставьте ссылку"
-            className={`${TEXT_BODY} bg-transparent text-[16px] leading-[20px] flex-1 min-w-0 outline-none border-none`}
-            style={{
-              color: "rgba(244,245,252,0.8)",
-              caretColor: "rgba(244,245,252,0.8)",
-            }}
+            className={`${TEXT_BODY} bg-transparent text-[15px] leading-[20px] flex-1 min-w-0 outline-none border-none`}
+            style={{ color: "rgba(244,245,252,0.8)", caretColor: "rgba(244,245,252,0.8)" }}
           />
         </div>
-        {/* Info icon */}
         <div className="relative z-10" style={{ opacity: inputFocused ? 0.5 : 1, transition: "opacity 150ms" }}>
-          <div
-            className="overflow-clip relative shrink-0 size-[18px] cursor-pointer"
-            onClick={() => setShowInfo(v => !v)}
-          >
-            <div className="absolute inset-[10%_0%_10%_20%]">
-              <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
-                <path d={svgInitial.p2c4b1e00} fill="#93999E" fillOpacity="0.6" />
-              </svg>
-            </div>
+          <div className="overflow-clip relative shrink-0 size-[16px] cursor-pointer" onClick={() => setShowInfo(v => !v)}>
+            <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
+              <path d={svgInitial.p2c4b1e00} fill="#93999E" fillOpacity="0.6" />
+            </svg>
           </div>
           {showInfo && <InfoPopup onClose={() => setShowInfo(false)} />}
         </div>
         <div className="absolute inset-[-2px] pointer-events-none rounded-[inherit] shadow-[inset_-3px_0px_3px_0px_#384348]" />
       </div>
 
-      {/* Submit button — compact */}
+      {/* Submit button */}
       <div
-        className={`group bg-[#f7f8fc] flex h-[84px] items-center justify-center relative rounded-[15px] select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75 w-full ${isSubmitting ? 'opacity-50 cursor-wait' : 'cursor-pointer'}`}
+        className={`group bg-[#f7f8fc] flex h-[56px] items-center justify-center relative rounded-[15px] select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75 w-full ${isSubmitting ? 'opacity-50 cursor-wait' : 'cursor-pointer'}`}
         onClick={isSubmitting ? undefined : handleSubmit}
       >
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 border-[0.835px] border-solid border-transparent pointer-events-none rounded-[15px] shadow-[0px_3px_0px_0px_#bcbec8] group-hover:shadow-[0px_2px_0px_0px_#bcbec8] group-active:shadow-none transition-shadow duration-75"
-        />
-        <p className={`${TEXT_TITLE} leading-[27.5px] text-[#2d373b] text-[26px] whitespace-nowrap`}>
+        <div aria-hidden="true" className="absolute inset-0 border-[0.835px] border-solid border-transparent pointer-events-none rounded-[15px] shadow-[0px_3px_0px_0px_#bcbec8] group-hover:shadow-[0px_2px_0px_0px_#bcbec8] group-active:shadow-none transition-shadow duration-75" />
+        <p className={`${TEXT_TITLE} leading-[24px] text-[#2d373b] text-[24px] whitespace-nowrap`}>
           {isSubmitting ? "Отправка..." : "Отправить работу"}
         </p>
       </div>
 
       {/* Warning note */}
       <div className="flex gap-[8px] items-start px-[4px]">
-        <div className="relative shrink-0 size-[16px] mt-[2px]">
+        <div className="relative shrink-0 size-[14px] mt-[2px]">
           <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 18 18">
             <path d={svgInitial.pa7482f0} fill="#FAC100" />
             <path d={svgInitial.p3b885a20} fill="#FF9500" />
@@ -897,7 +895,7 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
             <path d={svgInitial.p33926b70} fill="#263F52" />
           </svg>
         </div>
-        <p className={`${TEXT_BODY} leading-[18px] text-[rgba(244,245,252,0.3)] text-[15px]`}>
+        <p className={`${TEXT_BODY} leading-[18px] text-[rgba(244,245,252,0.3)] text-[13px]`}>
           Файл должен быть открыт для просмотра в Figma
         </p>
       </div>
@@ -989,7 +987,7 @@ export default function HomeworkPage() {
           </AccordionSection>
 
           {/* Bottom padding — extra on mobile for the fixed submit block */}
-          <div style={{ height: isMobile ? 180 : 160 }} />
+          <div style={{ height: isMobile ? 130 : 110 }} />
         </div>
       </Layout>
 
@@ -1007,7 +1005,7 @@ export default function HomeworkPage() {
           position: "fixed",
           bottom: 20,
           right: "max(40px, calc((100vw - 1440px) / 2 + 40px))",
-          width: 300,
+          width: 280,
           zIndex: 50,
         }}
       >

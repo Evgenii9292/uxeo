@@ -138,8 +138,10 @@ export default function AdminHomeworksPage() {
   };
 
   const updateStatus = async (homeworkId: string, newStatus: Homework["status"]) => {
-    const comment = comments[homeworkId] ?? "";
-    const image_url = imageUrls[homeworkId] ?? "";
+    // If admin typed a new comment, use it; otherwise preserve the existing comment from server
+    const existingHw = homeworks.find(h => h.id === homeworkId);
+    const comment = comments[homeworkId] !== undefined ? comments[homeworkId] : (existingHw?.comment ?? "");
+    const image_url = imageUrls[homeworkId] ?? existingHw?.image_url ?? "";
     try {
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/homework/${homeworkId}/status`,
@@ -239,7 +241,7 @@ export default function AdminHomeworksPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46,57,62) 147.74%)" }}>
+      <div className="h-full flex items-center justify-center" style={{ background: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46,57,62) 147.74%)" }}>
         <p className={`${TEXT_BODY} text-[#f4f5fc] text-[24px]`}>Загрузка...</p>
       </div>
     );
@@ -247,7 +249,7 @@ export default function AdminHomeworksPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-[20px]" style={{ background: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46,57,62) 147.74%)" }}>
+      <div className="h-full flex flex-col items-center justify-center gap-[20px]" style={{ background: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46,57,62) 147.74%)" }}>
         <p className={`${TEXT_BODY} text-[#ff5d39] text-[24px]`}>Ошибка: {error}</p>
         <button
           onClick={fetchHomeworks}
@@ -260,7 +262,7 @@ export default function AdminHomeworksPage() {
   }
 
   return (
-    <div className="min-h-screen p-[40px]" style={{ background: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46,57,62) 147.74%)" }}>
+    <div className="h-full overflow-y-auto p-[40px]" style={{ background: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46,57,62) 147.74%)" }}>
       <div className="max-w-[1440px] mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-[40px]">
@@ -318,6 +320,7 @@ export default function AdminHomeworksPage() {
           </div>
         ) : (
           <div className="bg-[#404d52] rounded-[15px] overflow-hidden">
+            <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="bg-[#38444a]">
@@ -373,15 +376,9 @@ export default function AdminHomeworksPage() {
                       })}
                     </td>
                     <td className="px-[24px] py-[20px] min-w-[260px]">
-                      {/* Existing comment */}
-                      {hw.comment && !comments[hw.id] && (
-                        <p className={`${TEXT_BODY} text-[rgba(244,245,252,0.6)] text-[13px] mb-[10px] italic`}>
-                          «{hw.comment}»
-                        </p>
-                      )}
-                      {/* Draft comment textarea */}
+                      {/* Draft comment textarea — pre-filled with existing comment if present */}
                       <textarea
-                        value={comments[hw.id] ?? ""}
+                        value={comments[hw.id] !== undefined ? comments[hw.id] : (hw.comment ?? "")}
                         onChange={(e) => setComments((prev) => ({ ...prev, [hw.id]: e.target.value }))}
                         placeholder="Комментарий для студента..."
                         rows={2}
@@ -401,12 +398,12 @@ export default function AdminHomeworksPage() {
                       />
                       {/* Show existing or newly uploaded image */}
                       {(imageUrls[hw.id] || hw.image_url) && (
-                        <div className="mb-[10px] relative">
+                        <div className="mb-[10px] relative inline-block">
                           <img
                             src={imageUrls[hw.id] || hw.image_url}
                             alt="Скриншот"
-                            className="w-full rounded-[8px] object-cover"
-                            style={{ maxHeight: 140 }}
+                            className="rounded-[8px] object-cover block"
+                            style={{ maxHeight: 72, maxWidth: "100%", width: "auto" }}
                           />
                           {imageUrls[hw.id] && (
                             <button
@@ -463,6 +460,7 @@ export default function AdminHomeworksPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         )}
       </div>
