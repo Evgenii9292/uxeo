@@ -633,23 +633,38 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
   if (isReviewed) {
     return (
       <div className="flex flex-col gap-[16px] w-full">
+
+        {/* Status pill — same style as "переделать" pill */}
         <div
-          className="relative px-[27px] rounded-[15px] h-[84px] flex items-center justify-between w-full"
-          style={{ backgroundImage: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)" }}
+          className="flex gap-[7px] items-center px-[12px] h-[32px] rounded-full self-start"
+          style={{ background: "#2E3538" }}
         >
-          <div aria-hidden="true" className="absolute border-[2px] border-[#5EDD60] border-solid inset-[-2px] pointer-events-none rounded-[15px]" />
-          <div className="flex gap-[8px] items-center flex-1 min-w-0">
-            <input type="url" value={url} disabled className={`${TEXT_BODY} bg-transparent text-[16px] leading-[20px] flex-1 min-w-0 outline-none border-none`} style={{ color: "rgba(244,245,252,0.5)" }} />
+          <IconGreenCheck />
+          <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#91969B" }}>Готово</p>
+        </div>
+
+        {/* Inner feedback card — same style as "переделать" */}
+        {(serverRecord?.comment || serverRecord?.image_url) && (
+          <div
+            className="rounded-[15px] flex flex-col gap-[14px]"
+            style={{ background: "#424D52", padding: "20px" }}
+          >
+            {serverRecord?.comment && (
+              <p className={`${TEXT_BODY} text-[15px] leading-[22px]`} style={{ color: "rgba(244,245,252,0.85)" }}>
+                {serverRecord.comment}
+              </p>
+            )}
+            {serverRecord?.image_url && (
+              <img
+                src={serverRecord.image_url}
+                alt="Скриншот от проверяющего"
+                className="w-full object-cover"
+                style={{ borderRadius: 10, border: "1px solid #9BA1A7", maxHeight: 240 }}
+              />
+            )}
           </div>
-          <div className="absolute inset-[-2px] pointer-events-none rounded-[inherit]" style={{ boxShadow: "inset 0 0 16px 0 rgba(94, 221, 96, 0.2), inset -3px 0px 3px 0px #384348" }} />
-        </div>
-        <div className="bg-[#1a3d25] border border-[#5EDD60] flex gap-[10px] h-[84px] items-center justify-center rounded-[15px] w-full">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" fill="#5EDD60" opacity="0.15" />
-            <path d="M7 12l3 3 7-7" stroke="#5EDD60" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <p className={`${TEXT_TITLE} leading-[27.5px] text-[#5EDD60] text-[26px] whitespace-nowrap`}>Проверено ✓</p>
-        </div>
+        )}
+
       </div>
     );
   }
@@ -658,48 +673,116 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
   if (isRejected) {
     return (
       <div className="flex flex-col gap-[16px] w-full">
+
+        {/* Status pill */}
+        <div
+          className="flex gap-[7px] items-center px-[12px] h-[32px] rounded-full self-start"
+          style={{ background: "#2E3538" }}
+        >
+          <svg width="14" height="14" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="m48 256c0 114.87 93.13 208 208 208s208-93.13 208-208-93.13-208-208-208-208 93.13-208 208zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6l84.55 79.74a8.2 8.2 0 0 1 0 11.94l-84.42 79.77a8.32 8.32 0 0 1 -14-6v-37.29c-57.07 0-84.51 13.47-108.58 38.68-5.49 5.65-15.07 1.32-14.42-6.43z" fill="#91969B" />
+          </svg>
+          <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#91969B" }}>переделать</p>
+        </div>
+
+        {/* Inner feedback card */}
+        {(serverRecord?.comment || serverRecord?.image_url) && (
+          <div
+            className="rounded-[15px] flex flex-col gap-[14px]"
+            style={{ background: "#424D52", padding: "20px" }}
+          >
+            {serverRecord?.comment && (
+              <p className={`${TEXT_BODY} text-[15px] leading-[22px]`} style={{ color: "rgba(244,245,252,0.85)" }}>
+                {serverRecord.comment}
+              </p>
+            )}
+            {serverRecord?.image_url && (
+              <img
+                src={serverRecord.image_url}
+                alt="Скриншот от проверяющего"
+                className="w-full object-cover"
+                style={{ borderRadius: 10, border: "1px solid #9BA1A7", maxHeight: 240 }}
+              />
+            )}
+          </div>
+        )}
+
+        {/* Input for new link — same style as default state */}
         <div
           className="relative px-[27px] rounded-[15px] h-[84px] flex items-center justify-between w-full"
           style={{ backgroundImage: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)" }}
         >
-          <div aria-hidden="true" className="absolute border-[2px] border-[#FF5D39] border-solid inset-[-2px] pointer-events-none rounded-[15px]" />
-          <div className="flex gap-[8px] items-center flex-1 min-w-0">
-            <input type="url" value={url} disabled className={`${TEXT_BODY} bg-transparent text-[16px] leading-[20px] flex-1 min-w-0 outline-none border-none`} style={{ color: "rgba(244,245,252,0.5)" }} />
-          </div>
-        </div>
-        <div className="bg-[#3d1a12] border border-[#FF5D39] flex gap-[10px] h-[60px] items-center justify-center rounded-[15px] w-full">
-          <p className={`${TEXT_TITLE} leading-[22px] text-[#FF5D39] text-[20px] whitespace-nowrap`}>Нужно переделать ↩</p>
-        </div>
-        {/* Allow resubmission */}
-        <div className="flex flex-col gap-[16px]">
-          <div
-            className="relative px-[27px] rounded-[15px] h-[84px] flex items-center justify-between w-full"
-            style={{ backgroundImage: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)" }}
-          >
-            <div aria-hidden="true" className="absolute border-[2px] border-[rgba(160,163,173,0.2)] border-solid inset-[-2px] pointer-events-none rounded-[15px]" />
-            <div className="relative z-10 flex gap-[8px] items-center flex-1 min-w-0">
-              <input
-                type="url"
-                value={url}
-                onChange={e => setUrl(e.target.value)}
-                onFocus={() => setInputFocused(true)}
-                onBlur={() => setInputFocused(false)}
-                placeholder="Новая ссылка на Figma"
-                className={`${TEXT_BODY} bg-transparent text-[16px] leading-[20px] flex-1 min-w-0 outline-none border-none`}
-                style={{ color: "rgba(244,245,252,0.8)", caretColor: "rgba(244,245,252,0.8)" }}
-              />
+          <div aria-hidden="true" className="absolute border-[2px] border-[rgba(160,163,173,0.2)] border-solid inset-[-2px] pointer-events-none rounded-[15px]" />
+          <div className="relative z-10 flex gap-[8px] items-center flex-1 min-w-0">
+            <div
+              className="overflow-clip relative shrink-0 size-[17px]"
+              style={{ opacity: inputFocused ? 0.5 : 1, transition: "opacity 150ms" }}
+            >
+              <div className="absolute inset-[0.02%_0_0.01%_0]">
+                <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 19.0001 18.9956">
+                  <path d={svgInitial.p19febe00} fill="#92979D" />
+                  <path d={svgInitial.p1c506830} fill="#92979D" />
+                  <path d={svgInitial.p1f263800} fill="#92979D" />
+                </svg>
+              </div>
             </div>
+            <input
+              type="url"
+              value={url}
+              onChange={e => setUrl(e.target.value)}
+              onFocus={() => setInputFocused(true)}
+              onBlur={() => setInputFocused(false)}
+              placeholder="Вставьте ссылку"
+              className={`${TEXT_BODY} bg-transparent text-[16px] leading-[20px] flex-1 min-w-0 outline-none border-none`}
+              style={{ color: "rgba(244,245,252,0.8)", caretColor: "rgba(244,245,252,0.8)" }}
+            />
           </div>
           <div
-            className={`group bg-[#f7f8fc] flex h-[84px] items-center justify-center relative rounded-[15px] select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75 w-full ${isSubmitting ? "opacity-50 cursor-wait" : "cursor-pointer"}`}
-            onClick={isSubmitting ? undefined : handleSubmit}
+            className="relative z-10"
+            style={{ opacity: inputFocused ? 0.5 : 1, transition: "opacity 150ms" }}
           >
-            <div aria-hidden="true" className="absolute inset-0 border-[0.835px] border-solid border-transparent pointer-events-none rounded-[15px] shadow-[0px_3px_0px_0px_#bcbec8] group-hover:shadow-[0px_2px_0px_0px_#bcbec8] group-active:shadow-none transition-shadow duration-75" />
-            <p className={`${TEXT_TITLE} leading-[27.5px] text-[#2d373b] text-[26px] whitespace-nowrap`}>
-              {isSubmitting ? "Отправка..." : "Отправить повторно"}
-            </p>
+            <div
+              className="overflow-clip relative shrink-0 size-[18px] cursor-pointer"
+              onClick={() => setShowInfo(v => !v)}
+            >
+              <div className="absolute inset-[10%_0%_10%_20%]">
+                <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
+                  <path d={svgInitial.p2c4b1e00} fill="#93999E" fillOpacity="0.6" />
+                </svg>
+              </div>
+            </div>
+            {showInfo && <InfoPopup onClose={() => setShowInfo(false)} />}
           </div>
+          <div className="absolute inset-[-2px] pointer-events-none rounded-[inherit] shadow-[inset_-3px_0px_3px_0px_#384348]" />
         </div>
+
+        {/* Submit button */}
+        <div
+          className={`group bg-[#f7f8fc] flex h-[84px] items-center justify-center relative rounded-[15px] select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75 w-full ${isSubmitting ? "opacity-50 cursor-wait" : "cursor-pointer"}`}
+          onClick={isSubmitting ? undefined : handleSubmit}
+        >
+          <div aria-hidden="true" className="absolute inset-0 border-[0.835px] border-solid border-transparent pointer-events-none rounded-[15px] shadow-[0px_3px_0px_0px_#bcbec8] group-hover:shadow-[0px_2px_0px_0px_#bcbec8] group-active:shadow-none transition-shadow duration-75" />
+          <p className={`${TEXT_TITLE} leading-[27.5px] text-[#2d373b] text-[26px] whitespace-nowrap`}>
+            {isSubmitting ? "Отправка..." : "Отправить работу"}
+          </p>
+        </div>
+
+        {/* Warning note */}
+        <div className="flex gap-[8px] items-start px-[4px]">
+          <div className="relative shrink-0 size-[16px] mt-[2px]">
+            <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 18 18">
+              <path d={svgInitial.pa7482f0} fill="#FAC100" />
+              <path d={svgInitial.p3b885a20} fill="#FF9500" />
+              <path d={svgInitial.p1bee9700} fill="#2D4A60" />
+              <path d={svgInitial.pd85c380} fill="#2D4A60" />
+              <path d={svgInitial.p33926b70} fill="#263F52" />
+            </svg>
+          </div>
+          <p className={`${TEXT_BODY} leading-[18px] text-[rgba(244,245,252,0.3)] text-[15px]`}>
+            Файл должен быть открыт для просмотра в Figma
+          </p>
+        </div>
+
       </div>
     );
   }

@@ -18,6 +18,7 @@ export interface HomeworkRecord {
   figma_link: string;
   status: HWStatus;
   comment: string;
+  image_url?: string;
   created_at: string;
 }
 

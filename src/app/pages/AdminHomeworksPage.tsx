@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 import { useNavigate } from "react-router";
 
@@ -14,6 +14,7 @@ interface Homework {
   figma_link: string;
   status: "pending" | "reviewed" | "rejected";
   comment: string;
+  image_url?: string;
   created_at: string;
 }
 
@@ -48,6 +49,11 @@ export default function AdminHomeworksPage() {
   const [error, setError] = useState<string | null>(null);
   // Draft comments keyed by homework id
   const [comments, setComments] = useState<Record<string, string>>({});
+  // Uploaded image URLs keyed by homework id
+  const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
+  // Upload progress keyed by homework id
+  const [uploading, setUploading] = useState<Record<string, boolean>>({});
+  const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const fetchHomeworks = async () => {
     setLoading(true);
@@ -89,8 +95,51 @@ export default function AdminHomeworksPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authed]);
 
+  const uploadImage = async (homeworkId: string, file: File) => {
+    setUploading(prev => ({ ...prev, [homeworkId]: true }));
+    try {
+      const ext = file.name.split(".").pop() ?? "jpg";
+      const path = `screenshots/${homeworkId}/${Date.now()}.${ext}`;
+      const res = await fetch(
+        `https://${projectId}.supabase.co/storage/v1/object/homeworks/${path}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${publicAnonKey}`,
+            "Content-Type": file.type,
+            "x-upsert": "true",
+          },
+          body: file,
+        }
+      );
+      if (res.ok) {
+        const publicUrl = `https://${projectId}.supabase.co/storage/v1/object/public/homeworks/${path}`;
+        setImageUrls(prev => ({ ...prev, [homeworkId]: publicUrl }));
+      } else {
+        // Fallback: read as base64 data URL (stores inline)
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const dataUrl = e.target?.result as string;
+          setImageUrls(prev => ({ ...prev, [homeworkId]: dataUrl }));
+        };
+        reader.readAsDataURL(file);
+      }
+    } catch {
+      // Fallback to base64
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target?.result as string;
+        setImageUrls(prev => ({ ...prev, [homeworkId]: dataUrl }));
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      setUploading(prev => ({ ...prev, [homeworkId]: false }));
+    }
+  };
+
   const updateStatus = async (homeworkId: string, newStatus: Homework["status"]) => {
     const comment = comments[homeworkId] ?? "";
+    const image_url = imageUrls[homeworkId] ?? "";
     try {
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/homework/${homeworkId}/status`,
@@ -100,7 +149,7 @@ export default function AdminHomeworksPage() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${publicAnonKey}`,
           },
-          body: JSON.stringify({ status: newStatus, comment }),
+          body: JSON.stringify({ status: newStatus, comment, image_url }),
         }
       );
 
@@ -112,10 +161,11 @@ export default function AdminHomeworksPage() {
 
       // Update local state
       setHomeworks((prev) =>
-        prev.map((hw) => (hw.id === homeworkId ? { ...hw, status: newStatus, comment } : hw))
+        prev.map((hw) => (hw.id === homeworkId ? { ...hw, status: newStatus, comment, image_url } : hw))
       );
-      // Clear draft comment for this homework
+      // Clear draft comment and image for this homework
       setComments((prev) => { const next = { ...prev }; delete next[homeworkId]; return next; });
+      setImageUrls((prev) => { const next = { ...prev }; delete next[homeworkId]; return next; });
     } catch (err) {
       console.error("Error updating status:", err);
       alert(`Ошибка обновления: ${err instanceof Error ? err.message : "Unknown error"}`);
@@ -337,6 +387,48 @@ export default function AdminHomeworksPage() {
                         rows={2}
                         className={`${TEXT_BODY} w-full text-[13px] text-[#f4f5fc] bg-[rgba(255,255,255,0.06)] border border-[rgba(244,245,252,0.12)] rounded-[8px] px-[10px] py-[8px] resize-none outline-none focus:border-[rgba(244,245,252,0.3)] placeholder-[#798589] mb-[10px]`}
                       />
+                      {/* Image upload */}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        ref={(el) => { fileInputRefs.current[hw.id] = el; }}
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) await uploadImage(hw.id, file);
+                          e.target.value = "";
+                        }}
+                      />
+                      {/* Show existing or newly uploaded image */}
+                      {(imageUrls[hw.id] || hw.image_url) && (
+                        <div className="mb-[10px] relative">
+                          <img
+                            src={imageUrls[hw.id] || hw.image_url}
+                            alt="Скриншот"
+                            className="w-full rounded-[8px] object-cover"
+                            style={{ maxHeight: 140 }}
+                          />
+                          {imageUrls[hw.id] && (
+                            <button
+                              onClick={() => setImageUrls(prev => { const next = { ...prev }; delete next[hw.id]; return next; })}
+                              className="absolute top-[6px] right-[6px] bg-[rgba(0,0,0,0.7)] rounded-full w-[22px] h-[22px] flex items-center justify-center cursor-pointer hover:bg-[rgba(0,0,0,0.9)] border-none"
+                              title="Удалить скриншот"
+                            >
+                              <span className={`${TEXT_BODY} text-white text-[12px]`}>✕</span>
+                            </button>
+                          )}
+                        </div>
+                      )}
+                      <button
+                        onClick={() => fileInputRefs.current[hw.id]?.click()}
+                        className="flex items-center gap-[6px] px-[10px] py-[6px] rounded-[8px] mb-[10px] cursor-pointer hover:bg-[rgba(255,255,255,0.12)] transition-colors"
+                        style={{ background: "rgba(255,255,255,0.06)", border: "1px dashed rgba(244,245,252,0.2)" }}
+                        disabled={uploading[hw.id]}
+                      >
+                        <span className={`${TEXT_BODY} text-[rgba(244,245,252,0.6)] text-[12px]`}>
+                          {uploading[hw.id] ? "Загрузка..." : "📎 Прикрепить скриншот"}
+                        </span>
+                      </button>
                       <div className="flex gap-[8px]">
                         {hw.status !== "reviewed" && (
                           <button

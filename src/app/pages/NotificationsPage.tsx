@@ -811,12 +811,21 @@ export default function NotificationsPage() {
                           {hw.comment && (
                             <div
                               className="w-full mt-[8px] px-[12px] py-[10px] rounded-[10px]"
-                              style={{ background: hw.status === "reviewed" ? "rgba(158,255,51,0.08)" : "rgba(255,93,57,0.08)", borderLeft: `3px solid ${hw.status === "reviewed" ? "#9EFF33" : "#FF5D39"}` }}
+                              style={{ background: hw.status === "reviewed" ? "rgba(94,221,96,0.08)" : "rgba(255,93,57,0.08)", borderLeft: `3px solid ${hw.status === "reviewed" ? "#5EDD60" : "#FF5D39"}` }}
                             >
                               <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[14px] text-[rgba(244,245,252,0.85)] leading-[20px]">
                                 {hw.comment}
                               </p>
                             </div>
+                          )}
+                          {hw.image_url && (
+                            <img
+                              src={hw.image_url}
+                              alt="Скриншот от проверяющего"
+                              className="w-full rounded-[10px] object-cover mt-[8px]"
+                              style={{ maxHeight: 200 }}
+                              onClick={e => e.stopPropagation()}
+                            />
                           )}
                         </div>
                         <div
