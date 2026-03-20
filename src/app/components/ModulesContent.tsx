@@ -82,7 +82,7 @@ function ModuleProgressBar({ pct }: { pct: number }) {
   if (pct === 0) return null;
   return (
     <div className="content-stretch flex flex-col h-[32px] items-center justify-center relative shrink-0 w-full">
-      <div className="bg-[#2d363a] content-stretch flex flex-col h-[17px] items-start overflow-clip relative rounded-full shrink-0 w-full">
+      <div className="bg-[#282f33] content-stretch flex flex-col h-[17px] items-start overflow-clip relative rounded-full shrink-0 w-full">
         <div
           className="h-[17px] rounded-full shrink-0 transition-[width] duration-300"
           style={{ width: `${pct}%`, backgroundImage: "linear-gradient(to bottom, #ff6b21, #994014)" }}

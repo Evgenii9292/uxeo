@@ -185,7 +185,7 @@ export function AccordionSectionDesktop({
         className={`h-[120px] relative shrink-0 w-full flex items-center ${isUnlocked ? "cursor-pointer" : "cursor-not-allowed"}`}
         onClick={onToggle}
       >
-        <div className="content-stretch flex items-center justify-between px-[30px] relative w-full">
+        <div className="content-stretch flex items-center justify-between px-[20px] relative w-full">
           <div className="content-stretch flex gap-[20px] items-center relative shrink-0">
             {state.completed ? <GreenIndicator /> : state.hasIncorrectAnswer ? <OrangeIndicator /> : <GrayIndicator />}
             <p
@@ -203,7 +203,7 @@ export function AccordionSectionDesktop({
       <div style={{ display: "grid", gridTemplateRows: isOpen ? "1fr" : "0fr", transition: "grid-template-rows 300ms ease" }}>
         <div style={{ overflow: "hidden", minHeight: 0 }}>
           <div className="flex flex-col items-center w-full">
-            <div className="content-stretch flex flex-col gap-[16px] items-center pb-[30px] px-[30px] relative w-full">
+            <div className="content-stretch flex flex-col gap-[16px] items-center pb-[20px] px-[20px] relative w-full">
               <div className="content-stretch flex flex-col gap-[25px] items-center relative shrink-0 w-full">
                 {/* Theory Content */}
                 <div className="content-stretch flex flex-col gap-[25px] items-center relative shrink-0 w-full">

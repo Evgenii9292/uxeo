@@ -3,12 +3,14 @@
 // completed | partial | current | locked
 
 import React from "react";
+import { useHomeworkSafe } from "../../app/context/HomeworkContext";
 import svgPaths      from "../../imports/svg-m45lips45r";
 import svgRoad       from "../../imports/svg-r65h8i9kzg";
 import svgFullRing   from "../../imports/svg-7tw6k57ebg";
 import svgAnnotations from "../../imports/svg-jywxuurbpc";
 import svgFigmaNote  from "../../imports/svg-mfpv5bbouj";
 import svgHomeworkIcon from "../../imports/svg-lzat1pb268";
+import svgCardPaths    from "../../imports/svg-u7gh1bm86c";
 import imgHomework   from "figma:asset/73955ec9afb1b01b6b33dcbe4e02cde8a0717024.png";
 import { NODE_W, NODE_H } from "./roadmap-layout";
 import type { Lesson } from "./roadmap-types";
@@ -195,6 +197,76 @@ function OrangeCurrentEllipse({ uid, pct, isHomework }: { uid: string; pct: numb
   );
 }
 
+// ─── Homework: dark clock node (#424A4D bg, #80949B clock) ───────────────────
+
+function HomeworkClockEllipse() {
+  return (
+    <div style={{ width: NODE_W, height: NODE_H + 7, position: "relative", flexShrink: 0, overflow: "visible" }}>
+      {/* Shadow */}
+      <div
+        aria-hidden="true"
+        className="absolute"
+        style={{ top: 7, left: 0, width: NODE_W, height: NODE_H, borderRadius: "50%", background: "#222829" }}
+      />
+      <div
+        className="absolute group-hover:translate-y-[3px] group-active:translate-y-[5px] transition-transform duration-75"
+        style={{ top: 0, left: 0, width: NODE_W, height: NODE_H, overflow: "visible" }}
+      >
+        {/* Filled ellipse — no border */}
+        <svg className="absolute inset-0 block" fill="none" width={NODE_W} height={NODE_H} viewBox="0 0 91 79" overflow="visible">
+          <ellipse cx="45.5" cy="39.5" rx="45.5" ry="39.5" fill="#424A4D" />
+        </svg>
+        {/* Clock icon — 34px, centered */}
+        <div className="absolute" style={{ top: 22, left: 29, width: 34, height: 34 }}>
+          <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 19 19" opacity="0.7">
+            <path d={svgCardPaths.p10e6fc80} fill="#868D97" />
+            <path d={svgCardPaths.pe9e5cc0} fill="#868D97" />
+            <path d={svgCardPaths.p2ae2c800} fill="#868D97" />
+            <path d={svgCardPaths.p8839180} fill="#868D97" />
+            <path d={svgCardPaths.pb4b6780} fill="#868D97" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Homework reviewed+unseen: green node with Фидбек chat bubble ─────────────
+
+function HomeworkFeedbackEllipse({ uid }: { uid: string }) {
+  return (
+    <div style={{ width: NODE_W, height: NODE_H + 7, position: "relative", flexShrink: 0, overflow: "visible" }}>
+      <div
+        aria-hidden="true"
+        className="absolute"
+        style={{ top: 7, left: 0, width: NODE_W, height: NODE_H, borderRadius: "50%", background: "#34471E" }}
+      />
+      <div
+        className="absolute group-hover:translate-y-[3px] group-active:translate-y-[5px] transition-transform duration-75"
+        style={{ top: 0, left: 0, width: NODE_W, height: NODE_H, overflow: "visible" }}
+      >
+        <svg className="absolute inset-0 block" fill="none" width={NODE_W} height={NODE_H} viewBox="0 0 91 79" overflow="visible">
+          <ellipse cx="45.5" cy="39.4906" fill="#5F7F3B" rx="45.5" ry="39.4906" />
+        </svg>
+        <svg className="absolute inset-0 block pointer-events-none" fill="none" width={NODE_W} height={NODE_H} viewBox="0 0 91 79" overflow="visible">
+          <path d={svgFullRing.p145b6a00} stroke="#6DA233" strokeLinecap="round" strokeWidth="5" />
+        </svg>
+        {/* Фидбек chat bubble icon — centered, green */}
+        <svg className="absolute block" style={{ top: 28, left: 34, width: 24, height: 23 }} viewBox="0 0 28.2667 26.5" fill="none">
+          <g clipPath={`url(#clip_fb_${uid})`}>
+            <path d="M20.0182 2.35449H8.24045C4.94267 2.35449 2.35156 4.9456 2.35156 8.24338V15.31V16.4878C2.35156 19.6678 4.94267 22.3767 8.24045 22.3767H10.0071C10.3605 22.3767 10.7138 22.6123 10.9493 22.8478L12.716 25.2034C13.5405 26.2634 14.7182 26.2634 15.5427 25.2034L17.3093 22.8478C17.5449 22.4945 17.8982 22.3767 18.2516 22.3767H20.0182C23.316 22.3767 25.9071 19.7856 25.9071 16.4878V8.24338C25.9071 4.9456 23.316 2.35449 20.0182 2.35449ZM15.3071 16.2523H8.24045C7.76934 16.2523 7.29823 15.8989 7.29823 15.31C7.29823 14.7212 7.65156 14.3678 8.24045 14.3678H15.3071C15.7782 14.3678 16.2493 14.7212 16.2493 15.31C16.2493 15.8989 15.7782 16.2523 15.3071 16.2523ZM20.0182 10.3634H8.24045C7.76934 10.3634 7.41601 9.89227 7.41601 9.42116C7.41601 8.95005 7.76934 8.59671 8.24045 8.59671H20.0182C20.4893 8.59671 20.9605 8.95005 20.9605 9.53894C20.9605 10.1278 20.4893 10.3634 20.0182 10.3634Z" fill="#9EFF33" />
+          </g>
+          <defs>
+            <clipPath id={`clip_fb_${uid}`}>
+              <rect width="28.2667" height="26.5" fill="white" />
+            </clipPath>
+          </defs>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
 // ─── Locked: grey node ────────────────────────────────────────────────────────
 
 function GrayLockedEllipse({ icon = "lightning", uid }: { icon?: "lightning" | "homework"; uid: string }) {
@@ -320,23 +392,27 @@ export function NodeLabel({ lesson }: { lesson: Lesson }) {
 
 // ─── Visual renderer ──────────────────────────────────────────────────────────
 
-function renderVisual(lesson: Lesson, uid: string) {
-  if (lesson.status === "current") {
-    const isHomework = lesson.totalQuestions === 0;
-    const pct = !isHomework
-      ? Math.round((lesson.progress / lesson.totalQuestions) * 100)
-      : 0;
-    return <OrangeCurrentEllipse uid={uid} pct={pct} isHomework={isHomework} />;
+function renderVisual(lesson: Lesson, uid: string, hwStatus?: string | null, isUnseenFeedback?: boolean) {
+  const isHomework = lesson.totalQuestions === 0;
+
+  if (isHomework) {
+    if (hwStatus === "reviewed") {
+      if (isUnseenFeedback) return <HomeworkFeedbackEllipse uid={uid} />;
+      return <GreenCheckmarkEllipse uid={uid} />;
+    }
+    return <HomeworkClockEllipse />;
   }
-  // FIX 3: single consistent formula — progress / totalQuestions (= pointsEarned / pointsTotal)
+
+  if (lesson.status === "current") {
+    const pct = Math.round((lesson.progress / lesson.totalQuestions) * 100);
+    return <OrangeCurrentEllipse uid={uid} pct={pct} isHomework={false} />;
+  }
   const pct = lesson.totalQuestions > 0
     ? Math.round((lesson.progress / lesson.totalQuestions) * 100)
     : 0;
   if (pct >= 100) return <GreenCheckmarkEllipse uid={uid} />;
   if (lesson.status === "completed") return <GreenPartialEllipse pct={pct} uid={uid} />;
-  // Homework lessons (totalQuestions === 0) use homework icon, quiz lessons use lightning
-  const icon = lesson.totalQuestions === 0 ? "homework" : "lightning";
-  return <GrayLockedEllipse icon={icon as "lightning" | "homework"} uid={uid} />;
+  return <GrayLockedEllipse icon="lightning" uid={uid} />;
 }
 
 // ─── LessonNode (public) ──────────────────────────────────────────────────────
@@ -350,6 +426,9 @@ interface LessonNodeProps {
 
 export function LessonNode({ lesson, isSelected, nodeRef, onClick }: LessonNodeProps) {
   const isHomework = lesson.totalQuestions === 0;
+  const hwCtx = useHomeworkSafe();
+  const hwStatus = isHomework ? (hwCtx?.getByLessonId(lesson.lessonId)?.status ?? null) : null;
+  const isUnseenFeedback = isHomework ? (hwCtx?.isUnseen(lesson.lessonId) ?? false) : false;
 
   return (
     <div className="flex items-center gap-[20px]">
@@ -367,7 +446,7 @@ export function LessonNode({ lesson, isSelected, nodeRef, onClick }: LessonNodeP
           </div>
         )}
         {isSelected && <SelectionRing />}
-        {renderVisual(lesson, `rn${lesson.id}`)}
+        {renderVisual(lesson, `rn${lesson.id}`, hwStatus, isUnseenFeedback)}
       </div>
 
       {/* Label */}

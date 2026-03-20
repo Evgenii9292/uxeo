@@ -19,6 +19,7 @@ import { MatchingQuiz } from "./quiz/MatchingQuiz";
 import { CompareUIQuiz } from "./quiz/CompareUIQuiz";
 import { QuizLeftBlock } from "./quiz/QuizLeftBlock";
 import { ScaledPreview } from "../components/quiz/ScaledPreview";
+import { FlagReportButton } from "./quiz/FlagReportButton";
 import {
   CQCompare1A, CQCompare1B,
   CQCompare2A, CQCompare2B,
@@ -194,7 +195,11 @@ export default function LessonQuizPage() {
   // !! Хук до любых ранних return — Rules of Hooks !!
   const vw = useWindowWidth();
   const isMobile = vw < 768;
+  const isTablet = vw >= 768 && vw < 1280;
   const isLargePhone = vw >= 440; // 440×954 vs 388×858
+  // Responsive quiz content width: 1042px on wide screens, fluid on tablet
+  const quizW = isTablet ? Math.min(1042, vw - 48) : 1042;
+  const barW = isTablet ? Math.min(1042, vw - 88) : 1042;
 
   useEffect(() => {
     // Always reinitialize on mount — previous lessonState may be stale
@@ -270,7 +275,7 @@ export default function LessonQuizPage() {
     return (
       <div
         className="relative min-h-screen w-full overflow-hidden flex items-center justify-center"
-        style={{ backgroundImage: "linear-gradient(166.791deg, rgb(44, 52, 56) 14.367%, rgb(46, 57, 62) 147.74%)" }}
+        style={{ background: "#282F33" }}
       >
         <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[24px]">Загрузка...</p>
       </div>
@@ -282,7 +287,7 @@ export default function LessonQuizPage() {
     return (
       <div
         className="relative min-h-screen w-full overflow-hidden flex items-center justify-center"
-        style={{ backgroundImage: "linear-gradient(166.791deg, rgb(44, 52, 56) 14.367%, rgb(46, 57, 62) 147.74%)" }}
+        style={{ background: "#282F33" }}
       >
         <div className="flex flex-col items-center gap-[16px]">
           <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[24px]">Квиз не найден</p>
@@ -1046,7 +1051,7 @@ export default function LessonQuizPage() {
     <PageTransition>
       <div
         className="relative min-h-screen w-full overflow-hidden"
-        style={{ backgroundImage: "linear-gradient(166.791deg, rgb(44, 52, 56) 14.367%, rgb(46, 57, 62) 147.74%)" }}
+        style={{ background: "#282F33" }}
       >
         {showExitModal && (
           <ExitConfirmationModal
@@ -1089,40 +1094,36 @@ export default function LessonQuizPage() {
           </div>
         ) : (
           <>
-            <div className="fixed top-[15px] left-[22px] z-10">
+            {/* Desktop/tablet header — single flex row, no overlap */}
+            <div className="fixed top-0 left-0 right-0 z-10 flex items-center gap-[16px] px-[22px]" style={{ height: 80 }}>
               <CloseButton onClick={() => setShowExitModal(true)} />
-            </div>
-            <div className="fixed z-10 top-[35.5px] left-1/2 -translate-x-1/2 w-[1042px]">
-              <div className="bg-[#465256] relative rounded-[9999px] w-full h-[17px]">
-                <div className="rounded-[24px] h-[17px]" style={{ width: `${runProgressPercent}%`, ...streakFill, filter: streakFilter, transition: "width 300ms ease, background 500ms ease, filter 500ms ease" }} />
-              </div>
-              {/* Streak text — follows fill, 5px below bar */}
-              <div className="relative overflow-hidden mt-[5px]" style={{ height: 15, opacity: currentStreak >= 2 && !quizFinished ? 1 : 0, transition: "opacity 400ms ease" }}>
-                <div className="absolute inset-y-0 left-0 flex items-start justify-end" style={{ width: `${runProgressPercent}%`, minWidth: 0, transition: "width 300ms ease" }}>
-                  <span
-                    className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[13px] whitespace-nowrap leading-none"
-                    style={{ color: streakTextColor, textShadow: currentStreak >= 3 ? `0 0 6px ${streakTextColor}` : "none", transform: `scale(${streakBump ? 1.12 : 1})`, transformOrigin: "right top", transition: "transform 200ms ease, text-shadow 500ms ease" }}
-                  >{currentStreak} подряд</span>
+              {/* Bar — height:17 so items-center aligns bar track center with button center */}
+              <div className="flex-1 relative" style={{ height: 17 }}>
+                <div className="bg-[#465256] relative rounded-[9999px] w-full h-[17px]">
+                  <div className="rounded-[24px] h-[17px]" style={{ width: `${runProgressPercent}%`, ...streakFill, filter: streakFilter, transition: "width 300ms ease, background 500ms ease, filter 500ms ease" }} />
+                </div>
+                {/* Streak text — absolute, 5px below bar track */}
+                <div className="absolute left-0 right-0 overflow-hidden" style={{ top: 22, height: 15, opacity: currentStreak >= 2 && !quizFinished ? 1 : 0, transition: "opacity 400ms ease" }}>
+                  <div className="absolute inset-y-0 left-0 flex items-start justify-end" style={{ width: `${runProgressPercent}%`, minWidth: 0, transition: "width 300ms ease" }}>
+                    <span
+                      className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[13px] whitespace-nowrap leading-none"
+                      style={{ color: streakTextColor, textShadow: currentStreak >= 3 ? `0 0 6px ${streakTextColor}` : "none", transform: `scale(${streakBump ? 1.12 : 1})`, transformOrigin: "right top", transition: "transform 200ms ease, text-shadow 500ms ease" }}
+                    >{currentStreak} подряд</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="fixed z-10 flex gap-[4px] items-center top-[32px] right-[23px]">
-              <div className="relative shrink-0 size-[24px]">
-                <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
-                  <g id="Zap"><path d={svgPaths.p9530000} fill="#798589" stroke="#798589" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" /></g>
-                </svg>
+              <div className="flex gap-[4px] items-center shrink-0">
+                <div className="relative shrink-0 size-[24px]">
+                  <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
+                    <g id="Zap"><path d={svgPaths.p9530000} fill="#798589" stroke="#798589" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" /></g>
+                  </svg>
+                </div>
+                <p className="font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold leading-[21px] text-[#798589] whitespace-nowrap text-[24px]">{totalXp}</p>
               </div>
-              <p className="font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold leading-[21px] text-[#798589] whitespace-nowrap text-[24px]">{totalXp}</p>
             </div>
           </>
         )}
 
-        {/* Error report — desktop only */}
-        {!isMobile && (
-          <p className="fixed bottom-[20px] left-[28px] z-10 font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#777982] text-[16px] whitespace-nowrap cursor-pointer hover:text-[#a0a3ab] transition-colors duration-150">
-            Сообщить об ошибке
-          </p>
-        )}
 
         {/* ZONE 2+3 — conditional on question type */}
         {questionType === "multiple_select" ? (
@@ -1246,12 +1247,12 @@ export default function LessonQuizPage() {
                 ) : (
                   /* ── DESKTOP layout ── */
                   <>
-                    <div className="w-[1042px] px-[150px] min-h-[70px] flex items-center justify-center">
+                    <div className="px-[150px] min-h-[70px] flex items-center justify-center" style={{ width: quizW }}>
                       <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-center leading-[35px] text-[32px]">
                         {currentQuestion.question}
                       </p>
                     </div>
-                    <div className="content-stretch flex gap-[18px] items-stretch w-[1042px]">
+                    <div className="content-stretch flex gap-[18px] items-stretch" style={{ width: quizW }}>
                       <QuizLeftBlock
                         type="static"
                         content={singleLeftCard}
@@ -1289,22 +1290,28 @@ export default function LessonQuizPage() {
                     }
                   </div>
                 )}
-                {phase === "selecting"
-                  ? selection === null ? <ContinueDisabled fullWidth /> : <ContinueActive onClick={handleContinue} fullWidth />
-                  : isCorrect ? <ContinueCorrect onClick={handleContinue} fullWidth /> : <ContinueActive onClick={handleContinue} fullWidth />
-                }
+                <div className="flex items-center gap-[20px]">
+                  <FlagReportButton />
+                  <div className="flex-1">
+                    {phase === "selecting"
+                      ? selection === null ? <ContinueDisabled fullWidth /> : <ContinueActive onClick={handleContinue} fullWidth />
+                      : isCorrect ? <ContinueCorrect onClick={handleContinue} fullWidth /> : <ContinueActive onClick={handleContinue} fullWidth />
+                    }
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="fixed bottom-[20px] left-0 right-0 z-10 flex justify-center">
-                <div className="flex gap-[32px] items-center w-[1042px] mx-[0px] mt-[0px] mb-[20px]">
-                  <div className="w-[506px] flex items-center">
+                <div className="flex gap-[32px] items-center mx-[0px] mt-[0px] mb-[20px]" style={{ width: quizW }}>
+                  <div className="flex-1 flex items-center">
                     {phase === "feedback" && (
                       isCorrect
                         ? <CorrectFeedback explanation={(currentQuestion as any).explanation} showXp={earnedXP > 0} />
                         : <IncorrectFeedback correctAnswer={(currentQuestion as any).correctAnswer ?? ""} explanation={(currentQuestion as any).explanation} isReplay={xpAlreadyAwarded} />
                     )}
                   </div>
-                  <div className="w-[506px] flex items-center justify-end">
+                  <div className="flex-none flex items-center gap-[20px] justify-end">
+                    {!isMobile && <FlagReportButton />}
                     {phase === "selecting" ? (
                       selection === null ? <ContinueDisabled /> : <ContinueActive onClick={handleContinue} />
                     ) : isCorrect ? (

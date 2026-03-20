@@ -57,9 +57,7 @@ export function MobileHeader({
     <div
       className="flex-none flex flex-col z-[200] relative"
       style={{
-        background: "rgba(45,54,58,0.85)",
-        backdropFilter: "blur(14px)",
-        WebkitBackdropFilter: "blur(14px)",
+        background: "#282F33",
       }}
     >
       <div
@@ -163,7 +161,7 @@ export default function MobileShell({
   return (
     <div
       className="flex flex-col size-full"
-      style={{ background: "#2D363A" }}
+      style={{ background: "#282F33" }}
     >
       <MobileHeader
         title={title}

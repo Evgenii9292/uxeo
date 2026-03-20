@@ -6,6 +6,7 @@ import { CorrectFeedback, IncorrectFeedback } from "./QuizFeedback";
 import { ContinueCorrect, ContinueActive } from "./ContinueButtons";
 import { ScaledPreview } from "../../components/quiz/ScaledPreview";
 import { useWindowWidth } from "../../hooks/useWindowWidth";
+import { FlagReportButton } from "./FlagReportButton";
 
 // Natural Figma card dimensions (same as single cards in QuizLeftBlock)
 const FIGMA_W = 186;
@@ -79,7 +80,7 @@ function MultiSelectCard({
   const borderColor: Record<OptionState, string | null> = {
     idle:      null,
     selected:  "rgba(80,81,88,0.8)",
-    correct:   "#00932f",
+    correct:   "rgba(0, 147, 47, 0.6)",
     incorrect: "#9f3500",
     missed:    "#006a22",
     dimmed:    null,
@@ -87,7 +88,7 @@ function MultiSelectCard({
   const checkboxBg: Record<OptionState, string | null> = {
     idle:      null,
     selected:  "#ff6b21",
-    correct:   "#00932f",
+    correct:   "rgba(0, 147, 47, 0.6)",
     incorrect: "#9f3500",
     missed:    null,
     dimmed:    null,
@@ -193,6 +194,7 @@ export function MultipleChoiceQuiz({
   const [isCorrect, setIsCorrect] = useState(false);
   const vw = useWindowWidth();
   const isMobile = vw < 768;
+  const quizW = Math.min(1042, vw - 48);
 
   const toggleOption = (label: string) => {
     if (phase === "checked") return;
@@ -311,12 +313,17 @@ export function MultipleChoiceQuiz({
           </div>
 
           {/* Button */}
-          {phase === "selecting"
-            ? <CheckButton onClick={handleCheck} disabled={selected.size === 0} fullWidth />
-            : isCorrect
-              ? <ContinueCorrect onClick={onContinue} fullWidth />
-              : <ContinueActive onClick={onContinue} fullWidth />
-          }
+          <div className="flex items-center gap-[20px]">
+            <FlagReportButton />
+            <div className="flex-1">
+              {phase === "selecting"
+                ? <CheckButton onClick={handleCheck} disabled={selected.size === 0} fullWidth />
+                : isCorrect
+                  ? <ContinueCorrect onClick={onContinue} fullWidth />
+                  : <ContinueActive onClick={onContinue} fullWidth />
+              }
+            </div>
+          </div>
         </div>
       </>
     );
@@ -326,7 +333,7 @@ export function MultipleChoiceQuiz({
   return (
     <>
       {/* Question header */}
-      <div className="w-[1042px] px-[100px] flex flex-col items-center gap-[9px]">
+      <div className="px-[100px] flex flex-col items-center gap-[9px]" style={{ width: quizW }}>
         <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[20px] text-[#798589] text-[18px] whitespace-nowrap">
           {subtitle}
         </p>
@@ -336,7 +343,7 @@ export function MultipleChoiceQuiz({
       </div>
 
       {/* Main content row */}
-      <div className="content-stretch flex gap-[18px] items-center w-[1042px]">
+      <div className="content-stretch flex gap-[18px] items-center" style={{ width: quizW }}>
         <QuizLeftBlock
           type="static"
           content={leftContent}
@@ -358,8 +365,8 @@ export function MultipleChoiceQuiz({
 
       {/* Fixed bottom bar */}
       <div className="fixed bottom-[20px] left-0 right-0 z-10 flex justify-center">
-        <div className="flex gap-[32px] items-center w-[1042px] mb-[20px]">
-          <div className="w-[506px] flex items-center">
+        <div className="flex gap-[32px] items-center mb-[20px]" style={{ width: quizW }}>
+          <div className="flex-1 flex items-center">
             {phase === "checked" && (
               isCorrect
                 ? <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
@@ -370,7 +377,8 @@ export function MultipleChoiceQuiz({
                   />
             )}
           </div>
-          <div className="w-[506px] flex items-center justify-end">
+          <div className="flex-none flex items-center justify-end gap-[20px]">
+            <FlagReportButton />
             {phase === "selecting" ? (
               <CheckButton onClick={handleCheck} disabled={selected.size === 0} />
             ) : isCorrect ? (

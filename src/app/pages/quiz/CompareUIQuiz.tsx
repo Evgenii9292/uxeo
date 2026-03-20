@@ -9,6 +9,7 @@ import type { CompareCardState } from "./QuizLeftBlock";
 import { useWindowWidth } from "../../hooks/useWindowWidth";
 import { ScaledPreview } from "../../components/quiz/ScaledPreview";
 import { CardAMockup, CardBMockup } from "../../components/quiz/QuizCardMockups";
+import { FlagReportButton } from "./FlagReportButton";
 
 // Natural dimensions of Figma compare cards
 const FIGMA_W = 207;
@@ -90,6 +91,8 @@ export function CompareUIQuiz({
   const [phase, setPhase] = useState<Phase>("selecting");
   const vw = useWindowWidth();
   const isMobile = vw < 768;
+  const quizW = Math.min(1042, vw - 48);
+  const colW = Math.min(506, Math.floor((quizW - 18) / 2));
 
   // ── Debug guard — logs a warning if data is malformed ───────────────────────
   if (!compareOptions || compareOptions.length === 0) {
@@ -154,7 +157,7 @@ export function CompareUIQuiz({
     // Border color per card state
     const getBorderColor = (state: CompareCardState): string | undefined => {
       if (state === "selected") return "#636670";
-      if (state === "correct")  return "#00932f";
+      if (state === "correct")  return "rgba(0, 147, 47, 0.6)";
       if (state === "incorrect") return "#9f3500";
       return undefined;
     };
@@ -232,10 +235,15 @@ export function CompareUIQuiz({
               }
             </div>
           )}
-          {phase === "selecting"
-            ? selection === null ? <ContinueDisabled fullWidth /> : <ContinueActive onClick={handleContinue} fullWidth />
-            : isCorrect ? <ContinueCorrect onClick={handleContinue} fullWidth /> : <ContinueActive onClick={handleContinue} fullWidth />
-          }
+          <div className="flex items-center gap-[20px]">
+            <FlagReportButton />
+            <div className="flex-1">
+              {phase === "selecting"
+                ? selection === null ? <ContinueDisabled fullWidth /> : <ContinueActive onClick={handleContinue} fullWidth />
+                : isCorrect ? <ContinueCorrect onClick={handleContinue} fullWidth /> : <ContinueActive onClick={handleContinue} fullWidth />
+              }
+            </div>
+          </div>
         </div>
       </>
     );
@@ -245,7 +253,7 @@ export function CompareUIQuiz({
   return (
     <>
       {/* Question */}
-      <div className="w-[1042px] flex justify-center">
+      <div className="flex justify-center" style={{ width: quizW }}>
         <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[35px] text-[#f4f5fc] text-[32px] text-center">
           {question}
         </p>
@@ -257,7 +265,7 @@ export function CompareUIQuiz({
           display: "flex",
           alignItems: "stretch",
           justifyContent: "center",
-          width: 1042,
+          width: quizW,
           flexShrink: 0,
         }}
       >
@@ -268,20 +276,22 @@ export function CompareUIQuiz({
           onCardClick={handleSelect}
           compareCardMinHeight={compareCardMinHeight}
           compareMaxScale={compareMaxScale}
+          cardWidth={colW}
         />
       </div>
 
       {/* Fixed bottom bar */}
       <div className="fixed bottom-[20px] left-0 right-0 z-10 flex justify-center">
-        <div className="flex gap-[32px] items-center w-[1042px] mb-[20px]">
-          <div className="w-[506px] flex items-center">
+        <div className="flex gap-[32px] items-center mb-[20px]" style={{ width: quizW }}>
+          <div className="flex-1 flex items-center">
             {phase === "feedback" && (
               isCorrect
                 ? <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
                 : <IncorrectFeedback correctAnswer={correctAnswer} explanation={explanation} isReplay={isReplay} />
             )}
           </div>
-          <div className="w-[506px] flex items-center justify-end">
+          <div className="flex-none flex items-center justify-end gap-[20px]">
+            <FlagReportButton />
             {phase === "selecting" ? (
               selection === null ? <ContinueDisabled /> : <ContinueActive onClick={handleContinue} />
             ) : isCorrect ? (

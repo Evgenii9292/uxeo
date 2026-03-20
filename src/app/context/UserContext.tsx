@@ -1,4 +1,6 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect, useRef } from "react";
+import { projectId, publicAnonKey } from "../../../utils/supabase/info";
+import { useAuthSafe } from "./AuthContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -73,6 +75,74 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
     return { lessonProgress: {}, streak: 0, lastStreakDate: null, level: null, weeklyChallengesCompleted: 0 };
   });
+
+  const { userId } = useAuthSafe() ?? { userId: null };
+
+  // Debounce ref for Supabase sync
+  const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Load from Supabase on mount (merge with localStorage)
+  useEffect(() => {
+    if (!userId) return;
+
+    fetch(
+      `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/progress?userId=${encodeURIComponent(userId)}`,
+      { headers: { Authorization: `Bearer ${publicAnonKey}` } }
+    )
+      .then(r => r.json())
+      .then((res) => {
+        if (!res.found) return;
+        const d = res.data;
+        setUser(prev => ({
+          lessonProgress: Object.keys(d.lesson_progress ?? {}).length > 0
+            ? d.lesson_progress
+            : prev.lessonProgress,
+          streak: d.streak ?? prev.streak,
+          lastStreakDate: d.last_streak_date || prev.lastStreakDate,
+          level: d.level || prev.level,
+          weeklyChallengesCompleted: d.weekly_challenges ?? prev.weeklyChallengesCompleted,
+        }));
+      })
+      .catch(() => { /* silent — use localStorage */ });
+  }, [userId]);
+
+  // Sync to Supabase on user changes (debounced 3s)
+  useEffect(() => {
+    if (!userId) return;
+    if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
+
+    syncTimerRef.current = setTimeout(() => {
+      const xpVal = Object.values(user.lessonProgress).reduce((total, lesson) => {
+        return total + Object.values(lesson.questions || {})
+          .filter(q => q.xpAwarded)
+          .reduce((sum, q) => sum + (q.xpValue || 25), 0);
+      }, 0);
+
+      fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/progress`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${publicAnonKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId,
+            xp: xpVal,
+            streak: user.streak,
+            lastStreakDate: user.lastStreakDate ?? "",
+            level: user.level ?? "",
+            lessonProgress: user.lessonProgress,
+            weeklyChallenges: user.weeklyChallengesCompleted,
+          }),
+        }
+      ).catch(() => { /* silent */ });
+    }, 3000);
+
+    return () => {
+      if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
+    };
+  }, [user, userId]);
 
   // Save to localStorage whenever user state changes
   useEffect(() => {

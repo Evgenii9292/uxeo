@@ -79,7 +79,7 @@ export function TheoryMobileLayout({
   return (
     <div
       className="theory-page fixed inset-0 flex flex-col overflow-hidden"
-      style={{ background: "#2D363A" }}
+      style={{ background: "#282F33" }}
     >
       {/* ── Sticky Header (shared MobileHeader) ── */}
       <MobileHeader

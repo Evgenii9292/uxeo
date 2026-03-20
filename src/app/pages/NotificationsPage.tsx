@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router";
 import Layout from "../components/Layout";
+import { useHomeworkSafe } from "../context/HomeworkContext";
 import svgPaths from "../../imports/svg-6p9skem17z";
 import imgImageColor from "figma:asset/848cc9d9d2ee375b005fbdca2522ab616019dc08.png";
 
@@ -692,6 +693,7 @@ function DateGroup({ label, children }: { label: string; children: ReactNode }) 
 
 export default function NotificationsPage() {
   const navigate = useNavigate();
+  const hwCtx = useHomeworkSafe();
   const [filter, setFilter] = useState<Filter>("all");
 
   // Mutable read state — toggled when user clicks the status dot
@@ -701,11 +703,29 @@ export default function NotificationsPage() {
   // Deleted notifications
   const [deleted, setDeleted] = useState<Set<number>>(new Set());
 
+  // Homework notifications (reviewed/rejected)
+  const hwNotifs = (hwCtx?.homeworks ?? []).filter(
+    hw => hw.status === "reviewed" || hw.status === "rejected"
+  );
+  const [hwRead, setHwRead] = useState<Record<string, boolean>>({});
+
+  // Mark all as seen when page opens
+  useEffect(() => {
+    hwCtx?.markAllSeen();
+    // Also pre-mark all hw notifs as read in local display
+    const init: Record<string, boolean> = {};
+    for (const hw of hwCtx?.homeworks ?? []) {
+      if (hw.status === "reviewed" || hw.status === "rejected") init[hw.id] = false;
+    }
+    setHwRead(init);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const toggleRead  = (id: number) => setReadState(p => ({ ...p, [id]: !p[id] }));
   const markRead    = (id: number) => setReadState(p => ({ ...p, [id]: true }));
   const deleteNotif = (id: number) => setDeleted(p => new Set([...p, id]));
 
-  const unreadCount = DATA.filter(d => !deleted.has(d.id) && !readState[d.id]).length;
+  const hwUnreadCount = hwNotifs.filter(hw => !hwRead[hw.id]).length;
+  const unreadCount = DATA.filter(d => !deleted.has(d.id) && !readState[d.id]).length + hwUnreadCount;
 
   const visible = (id: number): boolean => {
     if (deleted.has(id)) return false;
@@ -738,7 +758,7 @@ export default function NotificationsPage() {
       <div className="flex flex-col gap-[25px] w-full">
         <div
           className="sticky top-[-16px] z-20 mx-[-16px] px-[16px] pt-[12px] pb-[8px]"
-          style={{ background: "#2D363A" }}
+          style={{ background: "#282F33" }}
         >
           <FilterBar active={filter} unreadCount={unreadCount} onChange={setFilter} />
         </div>
@@ -746,7 +766,78 @@ export default function NotificationsPage() {
         {/* Notification list */}
         <div className="content-stretch flex flex-col gap-[37px] items-start relative shrink-0 w-full pb-[40px]">
 
-          {listEmpty && <EmptyState />}
+          {listEmpty && hwNotifs.length === 0 && <EmptyState />}
+
+          {/* ── Homework status notifications (real, from backend) ── */}
+          {hwNotifs.length > 0 && (filter === "all" || filter === "action" || filter === "unread") && (
+            <DateGroup label="Домашние работы">
+              {hwNotifs.map(hw => {
+                const isRead = hwRead[hw.id] ?? false;
+                const label = hw.status === "reviewed" ? "Работа проверена ✅" : "Нужно переделать ↩";
+                const desc  = hw.status === "reviewed"
+                  ? `Мы проверили задание «${hw.lesson_name}». Посмотрите результат.`
+                  : `Задание «${hw.lesson_name}» требует доработки.`;
+                const color = hw.status === "reviewed" ? "#5EDD60" : "#FF5D39";
+                const bg    = isRead ? "bg-[#343e42]" : "bg-[#404d52]";
+                const lessonId = hw.lesson_id || hw.lesson_name;
+                if (filter === "unread" && isRead) return null;
+                return (
+                  <div
+                    key={hw.id}
+                    className={`${bg} content-stretch flex flex-col items-center p-[20px] relative rounded-[15px] shrink-0 w-full cursor-pointer hover:brightness-105 active:brightness-95 transition-all`}
+                    onClick={() => {
+                      setHwRead(p => ({ ...p, [hw.id]: true }));
+                      navigate("/homework", { state: { homeworkId: lessonId } });
+                    }}
+                  >
+                    <div className="content-stretch flex gap-[16px] items-center relative shrink-0 w-full">
+                      <button
+                        className="shrink-0 outline-none bg-transparent border-none cursor-pointer self-start mt-[4px]"
+                        onClick={e => { e.stopPropagation(); setHwRead(p => ({ ...p, [hw.id]: !p[hw.id] })); }}
+                      >
+                        <DotIndicator isRead={isRead} />
+                      </button>
+                      <div className="content-stretch flex flex-col gap-[20px] items-start relative self-stretch shrink-0 flex-1 min-w-0">
+                        <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
+                          <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
+                            <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 whitespace-nowrap`} style={{ color }}>
+                              {label}
+                            </p>
+                            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">
+                              {new Date(hw.created_at).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}
+                            </p>
+                          </div>
+                          <p className={`${T} w-full`}>{desc}</p>
+                          {hw.comment && (
+                            <div
+                              className="w-full mt-[8px] px-[12px] py-[10px] rounded-[10px]"
+                              style={{ background: hw.status === "reviewed" ? "rgba(158,255,51,0.08)" : "rgba(255,93,57,0.08)", borderLeft: `3px solid ${hw.status === "reviewed" ? "#9EFF33" : "#FF5D39"}` }}
+                            >
+                              <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[14px] text-[rgba(244,245,252,0.85)] leading-[20px]">
+                                {hw.comment}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                        <div
+                          className="content-stretch flex flex-wrap gap-y-[5px] items-center justify-between relative shrink-0 w-full cursor-pointer"
+                          onClick={e => { e.stopPropagation(); setHwRead(p => ({ ...p, [hw.id]: true })); navigate("/homework", { state: { homeworkId: lessonId } }); }}
+                        >
+                          <div className="h-[20px] shrink-0 w-[29px]" />
+                          <div className="content-stretch flex gap-[7px] items-center justify-end relative shrink-0">
+                            <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[20px] opacity-80 relative shrink-0 text-[#f1f7fb] text-[16px] whitespace-nowrap">
+                              {hw.status === "reviewed" ? "Смотреть результат" : "Переделать работу"}
+                            </p>
+                            <ChevronRight />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </DateGroup>
+          )}
 
           {/* Сегодня */}
           {hasDate("today") && (

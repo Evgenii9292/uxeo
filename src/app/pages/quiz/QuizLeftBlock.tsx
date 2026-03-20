@@ -37,19 +37,21 @@ function CompareCard({
   onClick,
   cardMinHeight,
   figmaMaxScale,
+  cardWidth,
 }: {
   option: CompareUIOption;
   state: CompareCardState;
   onClick?: () => void;
   cardMinHeight?: number;
   figmaMaxScale?: number;
+  cardWidth?: number;
 }) {
   return (
     <QuizCard
       state={state}
       onClick={onClick}
-      className="w-[506px] self-stretch"
-      style={cardMinHeight ? { minHeight: cardMinHeight } : undefined}
+      className="self-stretch"
+      style={{ width: cardWidth ?? 506, ...(cardMinHeight ? { minHeight: cardMinHeight } : {}) }}
     >
       {option.content ? (
         <ScaledPreview naturalWidth={FIGMA_COMPARE_W} naturalHeight={FIGMA_COMPARE_H} paddingY={40} maxScale={figmaMaxScale ?? 1.15}>
@@ -112,6 +114,8 @@ type QuizLeftBlockProps =
       compareCardMinHeight?: number;
       /** Optional max scale for Figma content ScaledPreview — allows upscaling beyond default 1.15 */
       compareMaxScale?: number;
+      /** Explicit card width — for responsive tablet/laptop layouts */
+      cardWidth?: number;
     };
 
 export function QuizLeftBlock(props: QuizLeftBlockProps) {
@@ -126,6 +130,7 @@ export function QuizLeftBlock(props: QuizLeftBlockProps) {
             onClick={() => props.onCardClick(option.label)}
             cardMinHeight={props.compareCardMinHeight}
             figmaMaxScale={props.compareMaxScale}
+            cardWidth={props.cardWidth}
           />
         ))}
       </div>

@@ -70,7 +70,7 @@ export default function TheoryPage() {
   return (
     <div className="theory-page size-full">
       <Layout title={lessonData.title.split(' ')[0]} showBack backPath="/lessons" rightContent={<RightWidgets />} leftWidth="660px" rightWidth="320px">
-        <div className="flex flex-col gap-[20px] w-full">
+        <div className="flex flex-col gap-[20px] w-full px-[20px]">
           {/* Hero block */}
           <div className="w-full flex flex-col gap-[14px]">
             <div className="rounded-[15px] overflow-hidden relative" style={{ height: '220px' }}>

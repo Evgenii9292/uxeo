@@ -8,7 +8,7 @@ import { ChevronIcon } from "../ui/Icons";
 
 export function HeroImage() {
   return (
-    <div className="bg-[#2D363A] h-full min-h-[217px] relative rounded-[15px] shrink-0 w-full">
+    <div className="bg-[#282F33] h-full min-h-[217px] relative rounded-[15px] shrink-0 w-full">
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="-rotate-90 flex-none">
           <div className="h-[182px] relative w-[130px]">

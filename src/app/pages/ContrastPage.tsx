@@ -93,7 +93,7 @@ function GreenIndicator() {
   );
 }
 
-function GrayIndicator({ color = "#2D363A" }: { color?: string }) {
+function GrayIndicator({ color = "#282F33" }: { color?: string }) {
   return (
     <div className="relative shrink-0 size-[18px]">
       <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 18 18">
@@ -369,7 +369,7 @@ function QuizCardLeft({ isSelected, isCorrect, showFeedback, onClick, disabled, 
       style={isSelected ? isCorrect
         ? { background: `linear-gradient(#2D3B36, #2D3B36) padding-box, linear-gradient(to bottom, #00932F, #002D0E) border-box`, borderColor: "transparent" }
         : { background: `linear-gradient(#3B3736, #3B3736) padding-box, linear-gradient(to bottom, #932E00, #2D0000) border-box`, borderColor: "transparent" }
-        : { background: "#2D363A", borderColor: "#2D363A" }}
+        : { background: "#282F33", borderColor: "#282F33" }}
     >
       {contentNode ? <QuizVariantSlot node={contentNode} /> : (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '247px' }}>
@@ -390,7 +390,7 @@ function QuizCardRight({ isSelected, isCorrect, showFeedback, onClick, disabled,
       style={isSelected ? isCorrect
         ? { background: `linear-gradient(#2D3B36, #2D3B36) padding-box, linear-gradient(to bottom, #00932F, #002D0E) border-box`, borderColor: "transparent" }
         : { background: `linear-gradient(#3B3736, #3B3736) padding-box, linear-gradient(to bottom, #932E00, #2D0000) border-box`, borderColor: "transparent" }
-        : { background: "#2D363A", borderColor: "#2D363A" }}
+        : { background: "#282F33", borderColor: "#282F33" }}
     >
       {contentNode ? <QuizVariantSlot node={contentNode} /> : (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '247px' }}>
@@ -650,7 +650,7 @@ export default function ContrastPage() {
     return (
       <div
         className="fixed inset-0 flex flex-col overflow-hidden"
-        style={{ background: "#2D363A" }}
+        style={{ background: "#282F33" }}
       >
         {/* ── Sticky Header ── */}
         <div

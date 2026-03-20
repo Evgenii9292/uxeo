@@ -5,8 +5,10 @@ import React, { useRef, useEffect, useLayoutEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { useNavigate } from "react-router";
 import { useUser } from "../../app/context/UserContext";
-import svgFigma  from "../../imports/svg-1vg08dliev";
-import svgPopup  from "../../imports/svg-wibidt795v";
+import { useHomeworkSafe } from "../../app/context/HomeworkContext";
+import svgFigma    from "../../imports/svg-1vg08dliev";
+import svgPopup    from "../../imports/svg-wibidt795v";
+import svgCardPaths from "../../imports/svg-u7gh1bm86c";
 import imgProgressRoot from "figma:asset/010ae10dcd9db562072cdc157b19ca2406d1fb36.png";
 import type { Lesson } from "./roadmap-types";
 import { NODE_W, NODE_H } from "./roadmap-layout";
@@ -30,6 +32,33 @@ const LESSON_TOTAL_TIME: Record<string, string> = {
   "figma-components-lesson":    "~14 мин",
   "creating-ui-kit-lesson":     "~15 мин",
 };
+
+function IconProcessingTime() {
+  return (
+    <div className="relative shrink-0 size-[20px]">
+      <div className="absolute inset-[-2.78%]">
+        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 19 19">
+          <path d={svgCardPaths.p10e6fc80} fill="#FFB121" />
+          <path d={svgCardPaths.pe9e5cc0} fill="#FFB121" />
+          <path d={svgCardPaths.p2ae2c800} fill="#FFB121" />
+          <path d={svgCardPaths.p8839180} fill="#FFB121" />
+          <path d={svgCardPaths.pb4b6780} fill="#FFB121" />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+function IconGreenCheck() {
+  return (
+    <div className="relative shrink-0 size-[20px]">
+      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 17 17">
+        <path d={svgCardPaths.p9304f00} fill="#5EDD60" />
+        <path d={svgCardPaths.p28422000} fill="white" />
+      </svg>
+    </div>
+  );
+}
 
 function ClockIcon() {
   return (
@@ -114,6 +143,7 @@ interface LessonPopupProps {
 export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
   const navigate = useNavigate();
   const { getLessonProgress } = useUser();
+  const hwCtx   = useHomeworkSafe();
   const popupRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ top: number; left: number; scale: number } | null>(null);
   // Fade-in state: starts false, goes true after first paint
@@ -130,6 +160,10 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
 
   const theoryPath = lesson.lessonId === "contrast-lesson" ? "/contrast" : "/theory";
   const isHomework = lesson.totalQuestions === 0;
+
+  // Homework backend status
+  const hwRecord = isHomework ? hwCtx?.getByLessonId(lesson.lessonId) : undefined;
+  const hwStatus = hwRecord?.status ?? null;
 
   // Use useLayoutEffect so position is computed before the browser paints —
   // avoids the 1-frame blank state that caused visible jumps when switching nodes.
@@ -293,12 +327,38 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
         {/* Buttons */}
         <div className="flex gap-[17px] items-start w-full mt-[4px] pb-[20px]">
           {isHomework ? (
-            isCompleted ? (
-              <div className="bg-[#2a7d4f] h-[60px] rounded-[15px] flex items-center justify-center px-[17px] w-full cursor-default">
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[28px]">
-                  Отправлено ✓
+            hwStatus === "reviewed" ? (
+              <button
+                onClick={() => navigate("/homework", { state: { homeworkId: lesson.lessonId } })}
+                className="group h-[60px] rounded-[15px] flex items-center justify-center px-[17px] w-full cursor-pointer select-none relative hover:translate-y-[3px] active:translate-y-[5px] transition-all duration-75 bg-[#343e42] gap-[10px]"
+              >
+                <div aria-hidden="true" className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
+                <IconGreenCheck />
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#5edd60] text-[26px] whitespace-nowrap relative">
+                  Готово
                 </p>
-              </div>
+              </button>
+            ) : hwStatus === "rejected" ? (
+              <button
+                onClick={() => navigate("/homework", { state: { homeworkId: lesson.lessonId } })}
+                className="group h-[60px] rounded-[15px] flex items-center justify-center px-[17px] w-full cursor-pointer select-none relative hover:translate-y-[3px] active:translate-y-[5px] transition-all duration-75 bg-[#343e42] gap-[10px]"
+              >
+                <div aria-hidden="true" className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#FF5D39] text-[26px] whitespace-nowrap relative">
+                  Переделать ↩
+                </p>
+              </button>
+            ) : hwStatus === "pending" || isCompleted ? (
+              <button
+                onClick={() => navigate("/homework", { state: { homeworkId: lesson.lessonId } })}
+                className="group h-[60px] rounded-[15px] flex items-center justify-center px-[17px] w-full cursor-pointer select-none relative hover:translate-y-[3px] active:translate-y-[5px] transition-all duration-75 bg-[#343e42] gap-[10px]"
+              >
+                <div aria-hidden="true" className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
+                <IconProcessingTime />
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#ffb121] text-[26px] whitespace-nowrap relative">
+                  На проверке
+                </p>
+              </button>
             ) : (
               <button
                 onClick={() => navigate("/homework", { state: { homeworkId: lesson.lessonId } })}

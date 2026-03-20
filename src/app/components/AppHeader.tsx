@@ -4,36 +4,26 @@ import { useUserSafe } from "../context/UserContext";
 import { useEffect, useRef, useState } from "react";
 
 function FireIcon({ isActive }: { isActive: boolean }) {
+  if (isActive) {
+    return <img src="/fire-icon.svg" width={22} height={24} style={{ objectFit: "contain" }} />;
+  }
   return (
-    <div className="relative shrink-0 w-[14px] h-[20.4px]" data-name="Fire Icon">
+    <div className="relative shrink-0 w-[14px] h-[20px]">
       <svg className="absolute block size-full" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16.7655 24.4324">
-        <g id="Fire Icon Group">
-          <path d={svgPaths.p33094f0} fill={isActive ? "#FFB121" : "#798589"} id="Vector" />
-        </g>
+        <path d={svgPaths.p33094f0} fill="#798589" />
       </svg>
     </div>
   );
 }
 
 function ZapIcon({ isActive }: { isActive: boolean }) {
+  if (isActive) {
+    return <img src="/zap-icon.svg" width={24} height={24} style={{ objectFit: "contain" }} />;
+  }
   return (
-    <div className="relative shrink-0 size-[24px]" data-name="Zap Icon">
+    <div className="relative shrink-0 size-[22px]">
       <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
-        <g id="Zap Icon">
-          <path 
-            d={svgPaths.p3b6e5180} 
-            fill={isActive ? "url(#paint0_linear_header_xp)" : "#798589"} 
-            id="Vector" 
-          />
-        </g>
-        {isActive && (
-          <defs>
-            <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_header_xp" x1="12" x2="12" y1="2" y2="22">
-              <stop stopColor="#FF6B21" />
-              <stop offset="1" stopColor="#C15C2A" />
-            </linearGradient>
-          </defs>
-        )}
+        <path d={svgPaths.p3b6e5180} fill="#798589" />
       </svg>
     </div>
   );
@@ -229,9 +219,7 @@ export default function AppHeader({ title, subtitle, showBack = false, onBack, i
       data-name="Header"
       style={{
         paddingBottom: '8px',
-        backgroundColor: 'rgba(45, 54, 58, 0.7)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
+        backgroundColor: '#282F33',
         ...(!(noBottomBorder || tabletFullWidthBorder || desktopFullWidthBorder) && {
           borderBottom: '1px solid rgba(87,100,106,0.35)'
         })

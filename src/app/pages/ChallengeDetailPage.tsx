@@ -12,6 +12,7 @@ import RequirementsIcon from "../../imports/Требования";
 import ExampleIcon from "../../imports/Пример";
 import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 import { useUserSafe } from "../context/UserContext";
+import { useAuthSafe } from "../context/AuthContext";
 
 // ── Shared styles ──────────────────────────────────────────────────────────────
 
@@ -339,6 +340,7 @@ function InfoPopup({ onClose }: { onClose: () => void }) {
 
 function SubmitBlock({ homeworkLessonId }: { homeworkLessonId?: string }) {
   const userData = useUserSafe();
+  const auth = useAuthSafe();
   const [submitted, setSubmitted]       = useState(false);
   const [url, setUrl]                   = useState("");
   const [showInfo, setShowInfo]         = useState(false);
@@ -367,7 +369,7 @@ function SubmitBlock({ homeworkLessonId }: { homeworkLessonId?: string }) {
         },
         body: JSON.stringify({
           lessonName: "Интерфейс приложения здоровья",
-          userId: userData.email || "anonymous",
+          userId: auth?.userId ?? userData?.email ?? "anonymous",
           figmaLink: url,
         }),
       });

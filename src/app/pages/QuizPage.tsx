@@ -62,7 +62,7 @@ export default function QuizPage() {
         o.start(); o.stop(ctx.currentTime + 0.3);
       } catch (_) {}
     } else {
-      navigate("/");
+      navigate("/email");
     }
   };
 
@@ -91,7 +91,7 @@ export default function QuizPage() {
     <PageTransition>
       <div
         className="relative min-h-screen w-full overflow-hidden"
-        style={{ backgroundImage: "linear-gradient(165.05deg, rgb(44,52,56) 14.367%, rgb(46,57,62) 147.74%)" }}
+        style={{ backgroundImage: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46,57,62) 147.74%)" }}
       >
         {/* XP indicator */}
         <div className="fixed top-[32px] right-[23px] z-10 content-stretch flex gap-[4px] items-center">

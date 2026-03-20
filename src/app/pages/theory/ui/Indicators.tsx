@@ -18,7 +18,7 @@ export function GreenIndicator() {
   );
 }
 
-export function GrayIndicator({ color = "#2D363A" }: { color?: string }) {
+export function GrayIndicator({ color = "#282F33" }: { color?: string }) {
   return (
     <div className="relative shrink-0 size-[18px]">
       <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 18 18">

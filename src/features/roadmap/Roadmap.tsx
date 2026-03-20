@@ -8,7 +8,6 @@ import svgMySToboi    from "../../imports/svg-1m1v14av0g";
 import svgFigmaNote   from "../../imports/svg-mfpv5bbouj";
 import svgTyZdes      from "../../imports/svg-837vvk8vr0";
 import Group481532    from "../../imports/Group481532";
-import bodryStart  from "../../assets/bodry-start.svg";
 import plus800     from "../../assets/plus800.svg";
 import mySToboi    from "../../assets/my-s-toboi.svg";
 import strelka1    from "../../assets/strelka1.svg";
@@ -406,18 +405,6 @@ export function Roadmap({
             </div>
           )}
 
-          {/* "Бодрый старт" annotation — between Цвет (idx 1) and Иерархия (idx 2) */}
-          {layout.length > 2 && (
-            <div
-              className="absolute pointer-events-none"
-              style={{
-                left: mobile ? 30 : 80,
-                top: Math.round((layout[1].y + NODE_H + layout[2].y) / 2 - 39),
-              }}
-            >
-              <img src={bodryStart} width={75} height={67} alt="" />
-            </div>
-          )}
 
           {/* "+800 XP" annotation — below each homework node except the last */}
           {(() => {

@@ -111,7 +111,7 @@ export default function StreakScreen({ onContinue, currentStreak = 1 }: StreakSc
   return (
     <div
       className="relative min-h-screen w-full overflow-hidden flex items-center justify-center"
-      style={{ backgroundImage: "linear-gradient(166.791deg, rgb(44, 52, 56) 14.367%, rgb(46, 57, 62) 147.74%)" }}
+      style={{ backgroundImage: "#282F33" }}
     >
       <div className="flex flex-col items-center gap-[48px]">
         {/* UXEO Fire icon */}

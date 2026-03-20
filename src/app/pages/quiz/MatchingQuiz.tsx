@@ -18,6 +18,7 @@ import type { MatchingPair } from "../../data/quiz-bank";
 import { ContinueDisabled, ContinueActive, ContinueCorrect } from "./ContinueButtons";
 import { CorrectFeedback } from "./QuizFeedback";
 import { useWindowWidth } from "../../hooks/useWindowWidth";
+import { FlagReportButton } from "./FlagReportButton";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -161,6 +162,7 @@ export function MatchingQuiz({
   const allCorrect   = pairs.every((p) => connections[p.id] === p.id);
   const vw = useWindowWidth();
   const isMobile = vw < 768;
+  const quizW = Math.min(1042, vw - 48);
 
   // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -427,7 +429,7 @@ export function MatchingQuiz({
     if (id === selectedId) return "rgba(150,158,165,0.7)";
     if (id === hoveredTopId && selectedBottomId) return "rgba(150,158,165,0.7)";
     if (checked) {
-      if (connections[id] === id) return "#00932f";
+      if (connections[id] === id) return "rgba(0, 147, 47, 0.6)";
       if (connections[id])        return "#9f3500";
     }
     return null;
@@ -451,7 +453,7 @@ export function MatchingQuiz({
     if (hoveredBottomId === id && selectedId) return "rgba(150,158,165,0.7)";
     const fromId = Object.entries(connections).find(([, v]) => v === id)?.[0];
     if (!fromId || !checked) return null;
-    return fromId === id ? "#00932f" : "#9f3500";
+    return fromId === id ? "rgba(0, 147, 47, 0.6)" : "#9f3500";
   };
 
   const topCardBg = "linear-gradient(146.493deg, rgb(44,53,56) 2.42%, rgb(56,67,72) 98.53%, rgb(44,53,56) 116.25%)";
@@ -637,10 +639,15 @@ export function MatchingQuiz({
               )}
             </div>
           )}
-          {!allConnected && !checked && <ContinueDisabled fullWidth />}
-          {allConnected && !checked && <ContinueActive onClick={handleCheck} fullWidth />}
-          {checked && allCorrect && <ContinueCorrect onClick={onContinue} fullWidth />}
-          {checked && !allCorrect && <ContinueActive onClick={onContinue} fullWidth />}
+          <div className="flex items-center gap-[20px]">
+            <FlagReportButton />
+            <div className="flex-1">
+              {!allConnected && !checked && <ContinueDisabled fullWidth />}
+              {allConnected && !checked && <ContinueActive onClick={handleCheck} fullWidth />}
+              {checked && allCorrect && <ContinueCorrect onClick={onContinue} fullWidth />}
+              {checked && !allCorrect && <ContinueActive onClick={onContinue} fullWidth />}
+            </div>
+          </div>
         </div>
       </>
     );
@@ -667,7 +674,7 @@ export function MatchingQuiz({
       )}
 
       {/* Question */}
-      <div className="w-[1042px] flex justify-center">
+      <div className="flex justify-center" style={{ width: quizW }}>
         <p
           className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[35px] text-[#f4f5fc] text-[32px] text-center"
           style={{ userSelect: "none" }}
@@ -679,8 +686,9 @@ export function MatchingQuiz({
       {/* Matching container */}
       <div
         ref={containerRef}
-        className="relative w-[1042px]"
+        className="relative"
         style={{
+          width: quizW,
           minHeight: 500,
           userSelect: "none",
           display: "flex",
@@ -884,9 +892,9 @@ export function MatchingQuiz({
 
       {/* ── Fixed bottom bar ──────────────────────────────────────────────── */}
       <div className="fixed bottom-[20px] left-0 right-0 flex justify-center" style={{ zIndex: 20 }}>
-        <div className="flex gap-[32px] items-center w-[1042px] mb-[20px]">
+        <div className="flex gap-[32px] items-center mb-[20px]" style={{ width: quizW }}>
           {/* Left: feedback */}
-          <div className="w-[506px] flex items-center">
+          <div className="flex-1 flex items-center">
             {checked && allCorrect && (
               <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
             )}
@@ -902,7 +910,8 @@ export function MatchingQuiz({
           </div>
 
           {/* Right: button */}
-          <div className="w-[506px] flex items-center justify-end">
+          <div className="flex-none flex items-center justify-end gap-[20px]">
+            <FlagReportButton />
             {!allConnected && !checked && <ContinueDisabled />}
             {allConnected && !checked && <ContinueActive onClick={handleCheck} />}
             {checked && <ContinueCorrect onClick={onContinue} />}

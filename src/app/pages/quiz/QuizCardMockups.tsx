@@ -93,7 +93,7 @@ export function QuizCard({
   };
 
   const borderMap: Record<CardState, string | null> = {
-    idle: null, selected: "#636670", correct: "#00932f", incorrect: "#9f3500", dimmed: null,
+    idle: null, selected: "#636670", correct: "rgba(0, 147, 47, 0.6)", incorrect: "#9f3500", dimmed: null,
   };
 
   const border = borderMap[state];

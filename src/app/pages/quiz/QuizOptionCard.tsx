@@ -32,7 +32,7 @@ export function QuizOptionCard({
   const borderMap: Record<CardState, string | null> = {
     idle:      null,
     selected:  "rgba(99, 102, 112, 0.5)",
-    correct:   "#00932f",
+    correct:   "rgba(0, 147, 47, 0.6)",
     incorrect: "#9f3500",
     dimmed:    null,
   };

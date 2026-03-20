@@ -1,8 +1,8 @@
 import { X } from "lucide-react";
 
 export function CloseButton({ onClick, mobile }: { onClick: () => void; mobile?: boolean }) {
-  const btnSize = mobile ? 32 : 24;
-  const iconSize = mobile ? 26 : 20;
+  const btnSize = mobile ? 32 : 32;
+  const iconSize = mobile ? 26 : 26;
   return (
     <button
       type="button"

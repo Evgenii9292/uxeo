@@ -117,7 +117,7 @@ export default function LevelSelectPage() {
   return (
     <div
       className="relative min-h-screen w-full flex flex-col overflow-hidden"
-      style={{ backgroundImage: "linear-gradient(165.05deg, rgb(44, 52, 56) 14.367%, rgb(46, 57, 62) 147.74%)" }}
+      style={{ backgroundImage: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46, 57, 62) 147.74%)" }}
     >
       {/* Header with back button */}
       <div className="content-stretch flex items-center px-[22px] py-[15px]">
