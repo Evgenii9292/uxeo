@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { useUserSafe } from "../context/UserContext";
 import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 import { useNavigate } from "react-router";
+
+const ADMIN_PIN = "uxeo2024";
 
 const TEXT_TITLE = "font-['Roboto_Condensed:Bold',sans-serif] font-medium";
 const TEXT_BODY = "font-['Roboto_Condensed:Regular',sans-serif] font-normal";
@@ -12,6 +13,7 @@ interface Homework {
   user_id: string;
   figma_link: string;
   status: "pending" | "reviewed" | "rejected";
+  comment: string;
   created_at: string;
 }
 
@@ -37,14 +39,15 @@ function StatusBadge({ status }: { status: Homework["status"] }) {
 }
 
 export default function AdminHomeworksPage() {
-  const userData = useUserSafe();
   const navigate = useNavigate();
+  const [pinInput, setPinInput] = useState("");
+  const [pinError, setPinError] = useState(false);
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem("admin-authed") === "1");
   const [homeworks, setHomeworks] = useState<Homework[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Check admin access
-  const isAdmin = userData?.email === "pavlov-evgenii@list.ru";
+  // Draft comments keyed by homework id
+  const [comments, setComments] = useState<Record<string, string>>({});
 
   const fetchHomeworks = async () => {
     setLoading(true);
@@ -81,18 +84,13 @@ export default function AdminHomeworksPage() {
   };
 
   useEffect(() => {
-    if (!isAdmin && !loading) {
-      navigate("/");
-      return;
-    }
-
-    if (!isAdmin) return;
-
+    if (!authed) return;
     fetchHomeworks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAdmin, navigate]);
+  }, [authed]);
 
   const updateStatus = async (homeworkId: string, newStatus: Homework["status"]) => {
+    const comment = comments[homeworkId] ?? "";
     try {
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/homework/${homeworkId}/status`,
@@ -102,7 +100,7 @@ export default function AdminHomeworksPage() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${publicAnonKey}`,
           },
-          body: JSON.stringify({ status: newStatus }),
+          body: JSON.stringify({ status: newStatus, comment }),
         }
       );
 
@@ -114,21 +112,84 @@ export default function AdminHomeworksPage() {
 
       // Update local state
       setHomeworks((prev) =>
-        prev.map((hw) => (hw.id === homeworkId ? { ...hw, status: newStatus } : hw))
+        prev.map((hw) => (hw.id === homeworkId ? { ...hw, status: newStatus, comment } : hw))
       );
+      // Clear draft comment for this homework
+      setComments((prev) => { const next = { ...prev }; delete next[homeworkId]; return next; });
     } catch (err) {
       console.error("Error updating status:", err);
       alert(`Ошибка обновления: ${err instanceof Error ? err.message : "Unknown error"}`);
     }
   };
 
-  if (!isAdmin) {
-    return null; // Will redirect in useEffect
+  // ── PIN gate ──────────────────────────────────────────────────────────────────
+  if (!authed) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46,57,62) 147.74%)" }}
+      >
+        <div
+          style={{
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 24,
+            background: "#343E42", borderRadius: 20, padding: "40px 48px",
+            minWidth: 320,
+          }}
+        >
+          <p className={`${TEXT_TITLE} text-[#f4f5fc] text-[24px]`}>Админ-панель</p>
+          <p className={`${TEXT_BODY} text-[rgba(244,245,252,0.5)] text-[14px]`}>Введите PIN-код</p>
+          <input
+            type="password"
+            value={pinInput}
+            onChange={e => { setPinInput(e.target.value); setPinError(false); }}
+            onKeyDown={e => {
+              if (e.key === "Enter") {
+                if (pinInput === ADMIN_PIN) {
+                  sessionStorage.setItem("admin-authed", "1");
+                  setAuthed(true);
+                } else {
+                  setPinError(true);
+                }
+              }
+            }}
+            placeholder="••••••••"
+            autoFocus
+            style={{
+              width: "100%", height: 48, borderRadius: 12, border: pinError ? "1px solid #FF5D39" : "1px solid rgba(244,245,252,0.15)",
+              background: "rgba(255,255,255,0.06)", color: "#f4f5fc", fontSize: 18,
+              textAlign: "center", letterSpacing: "0.2em", outline: "none", padding: "0 16px",
+              fontFamily: "Roboto Condensed, sans-serif",
+            }}
+          />
+          {pinError && (
+            <p className={`${TEXT_BODY} text-[#FF5D39] text-[13px]`}>Неверный PIN-код</p>
+          )}
+          <button
+            onClick={() => {
+              if (pinInput === ADMIN_PIN) {
+                sessionStorage.setItem("admin-authed", "1");
+                setAuthed(true);
+              } else {
+                setPinError(true);
+              }
+            }}
+            style={{
+              width: "100%", height: 48, borderRadius: 12, border: "none",
+              background: "linear-gradient(135deg, #FF6B21, #994014)",
+              color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer",
+              fontFamily: "Roboto Condensed, sans-serif",
+            }}
+          >
+            Войти
+          </button>
+        </div>
+      </div>
+    );
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "linear-gradient(165.05deg, rgb(44,52,56) 14.367%, rgb(46,57,62) 147.74%)" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46,57,62) 147.74%)" }}>
         <p className={`${TEXT_BODY} text-[#f4f5fc] text-[24px]`}>Загрузка...</p>
       </div>
     );
@@ -136,7 +197,7 @@ export default function AdminHomeworksPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-[20px]" style={{ background: "linear-gradient(165.05deg, rgb(44,52,56) 14.367%, rgb(46,57,62) 147.74%)" }}>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-[20px]" style={{ background: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46,57,62) 147.74%)" }}>
         <p className={`${TEXT_BODY} text-[#ff5d39] text-[24px]`}>Ошибка: {error}</p>
         <button
           onClick={fetchHomeworks}
@@ -149,7 +210,7 @@ export default function AdminHomeworksPage() {
   }
 
   return (
-    <div className="min-h-screen p-[40px]" style={{ background: "linear-gradient(165.05deg, rgb(44,52,56) 14.367%, rgb(46,57,62) 147.74%)" }}>
+    <div className="min-h-screen p-[40px]" style={{ background: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46,57,62) 147.74%)" }}>
       <div className="max-w-[1440px] mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-[40px]">
@@ -233,7 +294,7 @@ export default function AdminHomeworksPage() {
               <tbody>
                 {homeworks.map((hw) => (
                   <tr key={hw.id} className="border-t border-[rgba(244,245,252,0.1)]">
-                    <td className={`${TEXT_BODY} text-[#f4f5fc] text-[14px] px-[24px] py-[20px]`}>
+                    <td className={`${TEXT_BODY} text-[#f4f5fc] text-[14px] px-[24px] py-[20px] max-w-[140px] break-all`}>
                       {hw.user_id}
                     </td>
                     <td className={`${TEXT_BODY} text-[#f4f5fc] text-[14px] px-[24px] py-[20px]`}>
@@ -261,7 +322,21 @@ export default function AdminHomeworksPage() {
                         minute: "2-digit",
                       })}
                     </td>
-                    <td className="px-[24px] py-[20px]">
+                    <td className="px-[24px] py-[20px] min-w-[260px]">
+                      {/* Existing comment */}
+                      {hw.comment && !comments[hw.id] && (
+                        <p className={`${TEXT_BODY} text-[rgba(244,245,252,0.6)] text-[13px] mb-[10px] italic`}>
+                          «{hw.comment}»
+                        </p>
+                      )}
+                      {/* Draft comment textarea */}
+                      <textarea
+                        value={comments[hw.id] ?? ""}
+                        onChange={(e) => setComments((prev) => ({ ...prev, [hw.id]: e.target.value }))}
+                        placeholder="Комментарий для студента..."
+                        rows={2}
+                        className={`${TEXT_BODY} w-full text-[13px] text-[#f4f5fc] bg-[rgba(255,255,255,0.06)] border border-[rgba(244,245,252,0.12)] rounded-[8px] px-[10px] py-[8px] resize-none outline-none focus:border-[rgba(244,245,252,0.3)] placeholder-[#798589] mb-[10px]`}
+                      />
                       <div className="flex gap-[8px]">
                         {hw.status !== "reviewed" && (
                           <button
@@ -269,7 +344,7 @@ export default function AdminHomeworksPage() {
                             className="px-[12px] py-[6px] rounded-[8px] bg-[#00D043] hover:bg-[#00b839] cursor-pointer transition-colors"
                             title="Одобрить"
                           >
-                            <span className={`${TEXT_BODY} text-white text-[12px]`}>✓</span>
+                            <span className={`${TEXT_BODY} text-white text-[12px]`}>✓ Одобрить</span>
                           </button>
                         )}
                         {hw.status !== "rejected" && (
@@ -278,7 +353,7 @@ export default function AdminHomeworksPage() {
                             className="px-[12px] py-[6px] rounded-[8px] bg-[#FF5D39] hover:bg-[#e54d2a] cursor-pointer transition-colors"
                             title="Отклонить"
                           >
-                            <span className={`${TEXT_BODY} text-white text-[12px]`}>✕</span>
+                            <span className={`${TEXT_BODY} text-white text-[12px]`}>✕ Вернуть</span>
                           </button>
                         )}
                         {hw.status !== "pending" && (
