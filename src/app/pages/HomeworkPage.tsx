@@ -634,7 +634,7 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
     return (
       <div className="flex flex-col gap-[16px] w-full">
 
-        {/* Status pill — same style as "переделать" pill */}
+        {/* Status pill */}
         <div
           className="flex gap-[7px] items-center px-[12px] h-[32px] rounded-full self-start"
           style={{ background: "#2E3538" }}
@@ -643,27 +643,51 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
           <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#91969B" }}>Готово</p>
         </div>
 
-        {/* Inner feedback card — same style as "переделать" */}
-        {(serverRecord?.comment || serverRecord?.image_url) && (
-          <div
-            className="rounded-[15px] flex flex-col gap-[14px]"
-            style={{ background: "#424D52", padding: "20px" }}
+        {/* Feedback card — always visible */}
+        <div
+          className="rounded-[15px] flex flex-col gap-[14px]"
+          style={{ background: "#424D52", padding: "20px" }}
+        >
+          {serverRecord?.comment ? (
+            <p className={`${TEXT_BODY} text-[15px] leading-[22px]`} style={{ color: "rgba(244,245,252,0.85)" }}>
+              {serverRecord.comment}
+            </p>
+          ) : (
+            <p className={`${TEXT_BODY} text-[15px] leading-[22px]`} style={{ color: "rgba(244,245,252,0.4)" }}>
+              Проверяющий не оставил комментарий
+            </p>
+          )}
+          {serverRecord?.image_url && (
+            <img
+              src={serverRecord.image_url}
+              alt="Скриншот от проверяющего"
+              className="w-full object-cover"
+              style={{ borderRadius: 10, border: "1px solid #9BA1A7", maxHeight: 240 }}
+            />
+          )}
+        </div>
+
+        {/* Figma link chip */}
+        {url ? (
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-[10px] rounded-[15px] px-[20px] h-[60px] w-full hover:brightness-110 transition-all"
+            style={{ background: "#2E3538", textDecoration: "none" }}
           >
-            {serverRecord?.comment && (
-              <p className={`${TEXT_BODY} text-[15px] leading-[22px]`} style={{ color: "rgba(244,245,252,0.85)" }}>
-                {serverRecord.comment}
-              </p>
-            )}
-            {serverRecord?.image_url && (
-              <img
-                src={serverRecord.image_url}
-                alt="Скриншот от проверяющего"
-                className="w-full object-cover"
-                style={{ borderRadius: 10, border: "1px solid #9BA1A7", maxHeight: 240 }}
-              />
-            )}
-          </div>
-        )}
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className="shrink-0 opacity-50">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <p className={`${TEXT_BODY} text-[14px] leading-[18px] flex-1 min-w-0 truncate`} style={{ color: "rgba(244,245,252,0.5)" }}>{url}</p>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" className="shrink-0 opacity-30">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <polyline points="15 3 21 3 21 9" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <line x1="10" y1="14" x2="21" y2="3" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </a>
+        ) : null}
 
       </div>
     );
