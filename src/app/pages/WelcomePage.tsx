@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import svgPaths from "../../imports/svg-0jdjpvfhdv";
+import { ReportErrorModal } from "./quiz/ReportErrorModal";
 
 // ─── Скиллум Logo ─────────────────────────────────────────────────────────────
 function LogoContainer() {
@@ -128,6 +130,7 @@ function playClick() {
 
 export default function WelcomePage() {
   const navigate = useNavigate();
+  const [reportOpen, setReportOpen] = useState(false);
   const goToMain = () => navigate("/");
   const goToLevel = () => navigate("/level");
 
@@ -178,9 +181,13 @@ export default function WelcomePage() {
       </div>
 
       {/* Report error */}
-      <p className="absolute bottom-[28px] left-[28px] font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#777982] text-[16px] whitespace-nowrap cursor-pointer hover:text-[#a0a3ab] transition-colors duration-150">
+      <button
+        onClick={() => setReportOpen(true)}
+        className="absolute bottom-[28px] left-[28px] font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#777982] text-[16px] whitespace-nowrap cursor-pointer hover:text-[#a0a3ab] transition-colors duration-150 outline-none bg-transparent border-none"
+      >
         Сообщить об ошибке
-      </p>
+      </button>
+      {reportOpen && <ReportErrorModal onClose={() => setReportOpen(false)} />}
     </div>
   );
 }

@@ -5,15 +5,20 @@ import PageTransition from "../components/PageTransition";
 import { BackButton } from "./quiz/BackButton";
 import { CardAMockup, CardBMockup, QuizCard } from "./quiz/QuizCardMockups";
 import {
-  ContinueDisabled,
-  ContinueActive,
-  ContinueCorrect,
-  CorrectFeedback,
-  IncorrectFeedback,
+  ContinueDisabled as OnbContinueDisabled,
+  ContinueActive as OnbContinueActive,
+  ContinueCorrect as OnbContinueCorrect,
+  CorrectFeedback as OnbCorrectFeedback,
+  IncorrectFeedback as OnbIncorrectFeedback,
 } from "./quiz/OnboardingQuizUI";
+import { ContinueDisabled, ContinueActive, ContinueCorrect } from "./quiz/ContinueButtons";
+import { CorrectFeedback, IncorrectFeedback } from "./quiz/QuizFeedback";
+import { FlagReportButton } from "./quiz/FlagReportButton";
 import { ScaledPreview } from "../components/quiz/ScaledPreview";
 import { useWindowWidth } from "../hooks/useWindowWidth";
 import quizSvgPaths from "../../imports/svg-869ttds5wi";
+
+const EXPLANATION = "Основная кнопка имеет высокий контраст и лучше выделяется, поэтому интерфейс читается быстрее.";
 
 type Selection = "A" | "B" | null;
 type Phase = "selecting" | "feedback";
@@ -188,25 +193,31 @@ export default function QuizPage() {
             </div>
           </div>
 
-          {/* Fixed bottom: feedback + button */}
+          {/* Fixed bottom: feedback + button — matches lesson quiz style */}
           <div
             className="fixed left-0 right-0 z-10 px-[16px] pt-[12px]"
             style={{ bottom: "max(40px, env(safe-area-inset-bottom, 40px))", paddingBottom: 12 }}
           >
             {phase === "feedback" && (
               <div className="mb-[10px]">
-                {isCorrect ? <CorrectFeedback showXp={earnedXP > 0} /> : <IncorrectFeedback />}
+                {isCorrect
+                  ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} />
+                  : <IncorrectFeedback correctAnswer="А" explanation={EXPLANATION} />
+                }
               </div>
             )}
-            <div className="w-full">
-              {phase === "selecting"
-                ? selection === null
-                  ? <ContinueDisabled fullWidth />
-                  : <ContinueActive onClick={handleContinue} fullWidth />
-                : isCorrect
-                  ? <ContinueCorrect onClick={handleContinue} fullWidth />
-                  : <ContinueActive onClick={handleContinue} fullWidth />
-              }
+            <div className="flex items-center gap-[20px]">
+              <FlagReportButton />
+              <div className="flex-1">
+                {phase === "selecting"
+                  ? selection === null
+                    ? <ContinueDisabled fullWidth />
+                    : <ContinueActive onClick={handleContinue} fullWidth />
+                  : isCorrect
+                    ? <ContinueCorrect onClick={handleContinue} fullWidth />
+                    : <ContinueActive onClick={handleContinue} fullWidth />
+                }
+              </div>
             </div>
           </div>
         </div>
@@ -281,11 +292,12 @@ export default function QuizPage() {
               <div className="flex-1 flex items-center min-w-0">
                 {phase === "feedback" && (
                   isCorrect
-                    ? <CorrectFeedback showXp={earnedXP > 0} />
-                    : <IncorrectFeedback />
+                    ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} />
+                    : <IncorrectFeedback correctAnswer="А" explanation={EXPLANATION} />
                 )}
               </div>
-              <div className="flex-none">
+              <div className="flex items-center gap-[20px] flex-none">
+                <FlagReportButton />
                 {phase === "selecting"
                   ? selection === null
                     ? <ContinueDisabled />
@@ -335,9 +347,14 @@ export default function QuizPage() {
         <div className="fixed bottom-[20px] left-0 right-0 z-10 flex justify-center">
           <div className="flex gap-[32px] items-center w-[1044px] mx-[0px] mt-[0px] mb-[20px]">
             <div className="w-[506px] flex items-center">
-              {phase === "feedback" && (isCorrect ? <CorrectFeedback showXp={earnedXP > 0} /> : <IncorrectFeedback />)}
+              {phase === "feedback" && (
+                isCorrect
+                  ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} />
+                  : <IncorrectFeedback correctAnswer="А" explanation={EXPLANATION} />
+              )}
             </div>
-            <div className="w-[506px] flex items-center justify-end">
+            <div className="w-[506px] flex items-center justify-end gap-[20px]">
+              <FlagReportButton />
               {phase === "selecting" ? (
                 selection === null ? <ContinueDisabled /> : <ContinueActive onClick={handleContinue} />
               ) : isCorrect ? (
@@ -348,10 +365,6 @@ export default function QuizPage() {
             </div>
           </div>
         </div>
-
-        <p className="fixed bottom-[20px] left-[20px] z-10 font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#798589] text-[16px] whitespace-nowrap cursor-pointer hover:text-[#a0a3ab] transition-colors duration-150">
-          Сообщить об ошибке
-        </p>
       </div>
     </PageTransition>
   );

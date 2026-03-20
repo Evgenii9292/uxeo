@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import svgPaths from "../../imports/svg-nfm2yohg1w";
 import { useUserSafe, type ExperienceLevel } from "../context/UserContext";
+import { ReportErrorModal } from "./quiz/ReportErrorModal";
 
 // ─── Back button (exact from Figma) ──────────────────────────────────────────
 function BackButton({ onClick }: { onClick: () => void }) {
@@ -105,6 +106,7 @@ export default function LevelSelectPage() {
   const navigate = useNavigate();
   const userCtx = useUserSafe();
   const [selected, setSelected] = useState<LevelId | null>(null);
+  const [reportOpen, setReportOpen] = useState(false);
 
   const handleSelect = (id: LevelId) => {
     if (selected) return; // already transitioning
@@ -148,9 +150,13 @@ export default function LevelSelectPage() {
       </div>
 
       {/* Report error */}
-      <p className="absolute bottom-[28px] left-[28px] font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#777982] text-[16px] whitespace-nowrap cursor-pointer hover:text-[#a0a3ab] transition-colors duration-150">
+      <button
+        onClick={() => setReportOpen(true)}
+        className="absolute bottom-[28px] left-[28px] font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#777982] text-[16px] whitespace-nowrap cursor-pointer hover:text-[#a0a3ab] transition-colors duration-150 outline-none bg-transparent border-none"
+      >
         Сообщить об ошибке
-      </p>
+      </button>
+      {reportOpen && <ReportErrorModal onClose={() => setReportOpen(false)} />}
     </div>
   );
 }
