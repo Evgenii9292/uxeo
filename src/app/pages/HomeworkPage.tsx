@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useLocation } from "react-router";
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router";
 import Layout from "../components/Layout";
 import svgPaths from "../../imports/svg-ns2c3tgkyt";
 import svgInitial from "../../imports/svg-tq18tvw1l4";
@@ -11,6 +11,10 @@ import RequirementsIcon from "../../imports/Требования";
 import ExampleIcon from "../../imports/Пример";
 import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 import { useUserSafe } from "../context/UserContext";
+import { useHomeworkSafe } from "../context/HomeworkContext";
+import { useAuthSafe } from "../context/AuthContext";
+import { useAchievementsSafe } from "../context/AchievementsContext";
+import svgCardPaths from "../../imports/svg-u7gh1bm86c";
 
 // ── Shared styles ──────────────────────────────────────────────────────────────
 
@@ -439,24 +443,149 @@ function InfoPopup({ onClose }: { onClose: () => void }) {
   );
 }
 
+// ── Status icons (same as ChallengesPage) ────────────────────────────────────
+
+function IconProcessingTime() {
+  return (
+    <div className="relative shrink-0 size-[18px]">
+      <div className="absolute inset-[-2.78%]">
+        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 19 19">
+          <path d={svgCardPaths.p10e6fc80} fill="#FFB121" />
+          <path d={svgCardPaths.pe9e5cc0} fill="#FFB121" />
+          <path d={svgCardPaths.p2ae2c800} fill="#FFB121" />
+          <path d={svgCardPaths.p8839180} fill="#FFB121" />
+          <path d={svgCardPaths.pb4b6780} fill="#FFB121" />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+function IconGreenCheck() {
+  return (
+    <div className="relative shrink-0 size-[17px]">
+      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 17 17">
+        <path d={svgCardPaths.p9304f00} fill="#5EDD60" />
+        <path d={svgCardPaths.p28422000} fill="white" />
+      </svg>
+    </div>
+  );
+}
+
+// ── useIsMobile ───────────────────────────────────────────────────────────────
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 768);
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  return isMobile;
+}
+
+// ── PendingCard ───────────────────────────────────────────────────────────────
+
+function PendingCard({ url }: { url: string }) {
+  const navigate = useNavigate();
+  return (
+    <div
+      className="rounded-[15px] flex flex-col gap-[14px] w-full"
+      style={{
+        background: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4%, rgb(56, 67, 72) 100%)",
+        border: "1.5px solid rgba(160,163,173,0.2)",
+        padding: "18px 20px 20px",
+      }}
+    >
+      {/* Status badge — pill style matching ChallengesPage */}
+      <div className="bg-[#374348] flex gap-[8px] h-[32px] items-center justify-center px-[12px] rounded-full self-start">
+        <IconProcessingTime />
+        <p className={`${TEXT_TITLE} text-[#ffb121] text-[13px] leading-[18px] whitespace-nowrap`}>На проверке</p>
+      </div>
+
+      {/* Title */}
+      <p className={`${TEXT_TITLE} text-[#f4f5fc] text-[16px] leading-[20px]`}>Работа отправлена</p>
+
+      {/* Description */}
+      <p className={`${TEXT_BODY} leading-[20px] text-[rgba(244,245,252,0.5)] text-[13px]`}>
+        Проверка занимает ~24 часа. Уведомление придёт в разделе Уведомлений.
+      </p>
+
+      {/* Figma URL chip */}
+      {url ? (
+        <div
+          className="flex items-center gap-[8px] rounded-[10px] px-[12px] py-[9px] min-w-0"
+          style={{ background: "#374348" }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="shrink-0 opacity-40">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <p
+            className={`${TEXT_BODY} text-[rgba(244,245,252,0.3)] text-[12px] leading-[16px] truncate`}
+            style={{ minWidth: 0 }}
+          >
+            {url}
+          </p>
+        </div>
+      ) : null}
+
+      {/* Go to notifications */}
+      <button
+        className="flex items-center gap-[6px] self-start opacity-50 hover:opacity-80 transition-opacity"
+        style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
+        onClick={() => navigate("/notifications")}
+      >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="#f4f5fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <p className={`${TEXT_BODY} text-[#f4f5fc] text-[12px] leading-[16px]`}>
+          Перейти в Уведомления
+        </p>
+      </button>
+    </div>
+  );
+}
+
 // ── Compact Submit block ─────────────────────────────────────────────────────
 
 function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: string; lessonName: string }) {
-  const userData = useUserSafe();
-  const [submitted, setSubmitted]       = useState(false);
-  const [url, setUrl]                   = useState("");
+  const userData       = useUserSafe();
+  const hwCtx          = useHomeworkSafe();
+  const auth           = useAuthSafe();
+  const achievementsCtx = useAchievementsSafe();
+
+  // Derive initial state from HomeworkContext (backend status)
+  const serverRecord = hwCtx?.getByLessonId(homeworkLessonId ?? "") ?? hwCtx?.getByLessonName(lessonName);
+  const serverStatus = serverRecord?.status ?? null;
+
+  const [url, setUrl]                   = useState(serverRecord?.figma_link ?? "");
   const [showInfo, setShowInfo]         = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // localSubmitted: true if user just submitted in this session (optimistic)
+  const [localSubmitted, setLocalSubmitted] = useState(false);
+
+  // Keep url in sync if serverRecord loads after mount
+  useEffect(() => {
+    if (serverRecord?.figma_link) setUrl(serverRecord.figma_link);
+  }, [serverRecord?.figma_link]);
+
+  // Mark seen when user opens homework page with a reviewed/rejected status
+  useEffect(() => {
+    if (homeworkLessonId && hwCtx && (serverStatus === "reviewed" || serverStatus === "rejected")) {
+      hwCtx.markSeen(homeworkLessonId);
+    }
+  }, [homeworkLessonId, serverStatus]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const isSubmitted = localSubmitted || serverStatus === "pending";
+  const isReviewed  = serverStatus === "reviewed";
+  const isRejected  = serverStatus === "rejected";
 
   const handleSubmit = async () => {
     if (!url.trim()) {
       alert("Пожалуйста, вставьте ссылку на Figma");
-      return;
-    }
-
-    if (!userData) {
-      alert("Пользователь не авторизован");
       return;
     }
 
@@ -471,7 +600,8 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
         },
         body: JSON.stringify({
           lessonName,
-          userId: userData.email || "anonymous",
+          lessonId: homeworkLessonId ?? "",
+          userId: auth?.userId ?? "anonymous",
           figmaLink: url,
         }),
       });
@@ -485,10 +615,11 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
         return;
       }
 
-      console.log("Homework submitted successfully:", data);
-      setSubmitted(true);
+      setLocalSubmitted(true);
+      hwCtx?.refresh();
       if (homeworkLessonId && userData?.markHomeworkCompleted) {
         userData.markHomeworkCompleted(homeworkLessonId);
+        achievementsCtx?.triggerAchievement("homework_done");
       }
     } catch (error) {
       console.error("Network error submitting homework:", error);
@@ -498,46 +629,84 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
     }
   };
 
-  if (submitted) {
+  // ── Reviewed state ──────────────────────────────────────────────────────────
+  if (isReviewed) {
     return (
-      <div className="flex flex-col gap-[20px] w-full">
-        {/* Input — success state */}
+      <div className="flex flex-col gap-[16px] w-full">
         <div
           className="relative px-[27px] rounded-[15px] h-[84px] flex items-center justify-between w-full"
-          style={{
-            backgroundImage: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)",
-          }}
+          style={{ backgroundImage: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)" }}
         >
           <div aria-hidden="true" className="absolute border-[2px] border-[#5EDD60] border-solid inset-[-2px] pointer-events-none rounded-[15px]" />
           <div className="flex gap-[8px] items-center flex-1 min-w-0">
-            <input
-              type="url"
-              value={url}
-              disabled
-              className={`${TEXT_BODY} bg-transparent text-[16px] leading-[20px] flex-1 min-w-0 outline-none border-none`}
-              style={{ color: "rgba(244,245,252,0.8)" }}
-            />
+            <input type="url" value={url} disabled className={`${TEXT_BODY} bg-transparent text-[16px] leading-[20px] flex-1 min-w-0 outline-none border-none`} style={{ color: "rgba(244,245,252,0.5)" }} />
+          </div>
+          <div className="absolute inset-[-2px] pointer-events-none rounded-[inherit]" style={{ boxShadow: "inset 0 0 16px 0 rgba(94, 221, 96, 0.2), inset -3px 0px 3px 0px #384348" }} />
+        </div>
+        <div className="bg-[#1a3d25] border border-[#5EDD60] flex gap-[10px] h-[84px] items-center justify-center rounded-[15px] w-full">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" fill="#5EDD60" opacity="0.15" />
+            <path d="M7 12l3 3 7-7" stroke="#5EDD60" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <p className={`${TEXT_TITLE} leading-[27.5px] text-[#5EDD60] text-[26px] whitespace-nowrap`}>Проверено ✓</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Rejected state ──────────────────────────────────────────────────────────
+  if (isRejected) {
+    return (
+      <div className="flex flex-col gap-[16px] w-full">
+        <div
+          className="relative px-[27px] rounded-[15px] h-[84px] flex items-center justify-between w-full"
+          style={{ backgroundImage: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)" }}
+        >
+          <div aria-hidden="true" className="absolute border-[2px] border-[#FF5D39] border-solid inset-[-2px] pointer-events-none rounded-[15px]" />
+          <div className="flex gap-[8px] items-center flex-1 min-w-0">
+            <input type="url" value={url} disabled className={`${TEXT_BODY} bg-transparent text-[16px] leading-[20px] flex-1 min-w-0 outline-none border-none`} style={{ color: "rgba(244,245,252,0.5)" }} />
+          </div>
+        </div>
+        <div className="bg-[#3d1a12] border border-[#FF5D39] flex gap-[10px] h-[60px] items-center justify-center rounded-[15px] w-full">
+          <p className={`${TEXT_TITLE} leading-[22px] text-[#FF5D39] text-[20px] whitespace-nowrap`}>Нужно переделать ↩</p>
+        </div>
+        {/* Allow resubmission */}
+        <div className="flex flex-col gap-[16px]">
+          <div
+            className="relative px-[27px] rounded-[15px] h-[84px] flex items-center justify-between w-full"
+            style={{ backgroundImage: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)" }}
+          >
+            <div aria-hidden="true" className="absolute border-[2px] border-[rgba(160,163,173,0.2)] border-solid inset-[-2px] pointer-events-none rounded-[15px]" />
+            <div className="relative z-10 flex gap-[8px] items-center flex-1 min-w-0">
+              <input
+                type="url"
+                value={url}
+                onChange={e => setUrl(e.target.value)}
+                onFocus={() => setInputFocused(true)}
+                onBlur={() => setInputFocused(false)}
+                placeholder="Новая ссылка на Figma"
+                className={`${TEXT_BODY} bg-transparent text-[16px] leading-[20px] flex-1 min-w-0 outline-none border-none`}
+                style={{ color: "rgba(244,245,252,0.8)", caretColor: "rgba(244,245,252,0.8)" }}
+              />
+            </div>
           </div>
           <div
-            className="absolute inset-[-2px] pointer-events-none rounded-[inherit]"
-            style={{ boxShadow: "inset 0 0 16px 0 rgba(94, 221, 96, 0.2), inset -3px 0px 3px 0px #384348" }}
-          />
-        </div>
-
-        {/* Отправлено — compact */}
-        <div className="bg-[#f7f8fc] flex gap-[8px] h-[84px] items-center justify-center relative rounded-[15px] shadow-[0px_1px_0px_0px_#bcbec8] w-full">
-          <p className={`${TEXT_TITLE} leading-[27.5px] text-[#2d373b] text-[26px] whitespace-nowrap`}>Отправлено</p>
-          <div className="relative shrink-0 size-[16px]">
-            <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 18 18">
-              <g clipPath="url(#clip_hw_done)">
-                <path d={svgDone.p2dc71b30} fill="#5EDD60" />
-                <path d={svgDone.p14c44980} fill="white" />
-              </g>
-              <defs><clipPath id="clip_hw_done"><rect fill="white" height="18" width="18" /></clipPath></defs>
-            </svg>
+            className={`group bg-[#f7f8fc] flex h-[84px] items-center justify-center relative rounded-[15px] select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75 w-full ${isSubmitting ? "opacity-50 cursor-wait" : "cursor-pointer"}`}
+            onClick={isSubmitting ? undefined : handleSubmit}
+          >
+            <div aria-hidden="true" className="absolute inset-0 border-[0.835px] border-solid border-transparent pointer-events-none rounded-[15px] shadow-[0px_3px_0px_0px_#bcbec8] group-hover:shadow-[0px_2px_0px_0px_#bcbec8] group-active:shadow-none transition-shadow duration-75" />
+            <p className={`${TEXT_TITLE} leading-[27.5px] text-[#2d373b] text-[26px] whitespace-nowrap`}>
+              {isSubmitting ? "Отправка..." : "Отправить повторно"}
+            </p>
           </div>
         </div>
       </div>
+    );
+  }
+
+  if (isSubmitted) {
+    return (
+      <PendingCard url={url} />
     );
   }
 
@@ -633,6 +802,7 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
 
 export default function HomeworkPage() {
   const location = useLocation();
+  const isMobile = useIsMobile();
   const homeworkLessonId = (location.state as any)?.homeworkId || "homework-1";
   const hw = HOMEWORK_CONTENT[homeworkLessonId] || DEFAULT_HOMEWORK;
 
@@ -711,18 +881,26 @@ export default function HomeworkPage() {
             <ExampleContent hw={hw} />
           </AccordionSection>
 
-          {/* Bottom padding */}
-          <div style={{ height: 160 }} />
+          {/* Bottom padding — extra on mobile for the fixed submit block */}
+          <div style={{ height: isMobile ? 180 : 160 }} />
         </div>
       </Layout>
 
-      {/* Submit block — fixed at bottom right */}
+      {/* Submit block — fixed at bottom (right on desktop, full-width on mobile) */}
       <div
-        style={{
+        style={isMobile ? {
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: "12px 16px calc(env(safe-area-inset-bottom, 0px) + 16px)",
+          zIndex: 50,
+          background: "linear-gradient(to top, #282F33 70%, transparent)",
+        } : {
           position: "fixed",
           bottom: 20,
           right: "max(40px, calc((100vw - 1440px) / 2 + 40px))",
-          width: 280,
+          width: 300,
           zIndex: 50,
         }}
       >

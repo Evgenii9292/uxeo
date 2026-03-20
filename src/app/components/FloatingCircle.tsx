@@ -29,6 +29,8 @@ interface FloatingCircleProps {
   bg?: string;
   /** Hide the orange progress arc (e.g. for the gift/feedback circle). */
   noArc?: boolean;
+  /** Progress 0–1 for the arc fill. Default 0.33. */
+  progress?: number;
 }
 
 export function FloatingCircle({
@@ -41,6 +43,7 @@ export function FloatingCircle({
   className = "",
   bg = "#394144",
   noArc = false,
+  progress,
 }: FloatingCircleProps) {
   const rawId = useId();
   const uid = rawId.replace(/:/g, "");
@@ -59,7 +62,8 @@ export function FloatingCircle({
 
   // Progress arc — ON the same radius as the border (strokeWidth larger so it's visible)
   const circ = 2 * Math.PI * r;
-  const arc = circ * 0.33; // 33% progress
+  const progressVal = noArc ? 0 : Math.max(0, Math.min(1, progress ?? 0.33));
+  const arc = circ * progressVal;
   const arcStroke = 3; // wide enough to overlay the border cleanly
 
   return (
@@ -99,6 +103,7 @@ export function FloatingCircle({
           height={svgSize}
           viewBox={`0 0 ${svgSize} ${svgSize}`}
           fill="none"
+          overflow="visible"
         >
           {/* 1. Dark background circle + border stroke */}
           <circle

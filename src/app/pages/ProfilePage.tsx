@@ -4,9 +4,8 @@ import Layout from "../components/Layout";
 import { useUserSafe } from "../context/UserContext";
 import svgPaths from "../../imports/svg-mo1fvfhy71";
 import imgAvatar from "figma:asset/906790c4d803b2b6f01b6bc1dc6703b587d8a0d9.png";
-import imgAchievement from "figma:asset/12536ecd919bcab752b1c150db2238d93234efa0.png";
-import imgAchievementProgress from "figma:asset/36a2e4d73f3f01b5d859d294bdda209922c3b9fe.png";
 import { ActiveCourseCard, COURSE_DISPLAY } from "../components/CoursesContent";
+import { useAchievementsSafe, ACHIEVEMENTS, ACHIEVEMENT_ORDER, AchievementId } from "../context/AchievementsContext";
 
 // ─── Pencil icon (orange gradient, from Figma) ────────────────────────────────
 function PencilIcon() {
@@ -300,55 +299,122 @@ function StatisticsCard({ streak, xp }: { streak: number; xp: number }) {
   );
 }
 
-// ─── Achievement card (has achievement) ───────────────────────────────────────
-function AchievementCard() {
-  return (
-    <div className="bg-[#343e42] relative rounded-[15px] shrink-0 w-full">
-      <div className="content-stretch flex flex-col items-start justify-center px-[22px] py-[24px] relative w-full">
-        <div className="content-stretch flex gap-[28px] items-center relative shrink-0 w-full">
-          {/* Achievement icon */}
-          <div className="relative shrink-0 size-[72px]">
-            <div className="absolute rounded-full size-[72px] top-0 left-0 overflow-hidden">
-              <img alt="" className="absolute h-[102%] left-0 max-w-none top-0 w-full" src={imgAchievement} />
-            </div>
-          </div>
+// ─── Achievement grid ─────────────────────────────────────────────────────────
 
-          {/* Achievement info */}
-          <div className="content-stretch flex flex-col gap-[14px] items-start flex-1">
-            <div className="content-stretch flex flex-col gap-[4px] items-start w-full">
-              <p className="font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold leading-[21px] relative shrink-0 text-[#c3c6d1] text-[22px]">5 правильных ответов</p>
-              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#798589] text-[15px]">Удержите ударный ритм 5 ответов</p>
-            </div>
-            {/* Progress bar */}
-            <div className="relative rounded-full shrink-0 w-full h-[9px] overflow-hidden" style={{ background: "linear-gradient(178.4deg, rgb(44,52,56) 14%, rgb(46,57,62) 148%)" }}>
-              <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-full size-full" src={imgAchievementProgress} />
-            </div>
-          </div>
-        </div>
+function AchievementBadge({ id, unlockedAt }: { id: AchievementId; unlockedAt?: string }) {
+  const def = ACHIEVEMENTS[id];
+  const isUnlocked = !!unlockedAt;
+
+  const dateStr = unlockedAt
+    ? new Date(unlockedAt).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })
+    : null;
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 10,
+        padding: "18px 12px",
+        background: isUnlocked ? "#343E42" : "#2C3438",
+        borderRadius: 16,
+        border: isUnlocked
+          ? `1px solid ${def.color}33`
+          : "1px solid rgba(255,255,255,0.04)",
+        position: "relative",
+        transition: "border-color 0.3s",
+      }}
+    >
+      {/* Icon circle */}
+      <div
+        style={{
+          width: 60,
+          height: 60,
+          borderRadius: "50%",
+          background: isUnlocked
+            ? `radial-gradient(circle at 35% 35%, ${def.color}55, ${def.colorEnd}22)`
+            : "rgba(255,255,255,0.04)",
+          border: isUnlocked
+            ? `1.5px solid ${def.color}55`
+            : "1.5px solid rgba(255,255,255,0.06)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 28,
+          boxShadow: isUnlocked ? `0 4px 16px ${def.color}22` : "none",
+          filter: isUnlocked ? "none" : "grayscale(1) opacity(0.25)",
+          flexShrink: 0,
+        }}
+      >
+        {def.emoji}
       </div>
+
+      {/* Title */}
+      <p
+        style={{
+          fontFamily: "Roboto Condensed, sans-serif",
+          fontWeight: 700,
+          fontSize: 13,
+          color: isUnlocked ? "#C3C6D1" : "#4A5558",
+          textAlign: "center",
+          lineHeight: 1.25,
+        }}
+      >
+        {def.title}
+      </p>
+
+      {/* Date or locked */}
+      <p
+        style={{
+          fontFamily: "Roboto Condensed, sans-serif",
+          fontWeight: 500,
+          fontSize: 11,
+          color: isUnlocked ? def.color : "#394144",
+          textAlign: "center",
+        }}
+      >
+        {isUnlocked ? dateStr : "Заблокировано"}
+      </p>
+
+      {/* Lock icon for locked achievements */}
+      {!isUnlocked && (
+        <div
+          style={{
+            position: "absolute",
+            top: 10,
+            right: 10,
+            fontSize: 11,
+            opacity: 0.25,
+          }}
+        >
+          🔒
+        </div>
+      )}
     </div>
   );
 }
 
-// ─── Empty achievements card ──────────────────────────────────────────────────
-function EmptyAchievementCard() {
+function AchievementsGrid() {
+  const ctx = useAchievementsSafe();
+  const unlocked = ctx?.unlockedAchievements ?? {};
+
   return (
-    <div className="bg-[#343e42] relative rounded-[15px] shrink-0 w-full">
-      <div className="content-stretch flex flex-col items-start justify-center px-[22px] py-[24px] relative w-full">
-        <div className="content-stretch flex gap-[28px] items-center relative shrink-0 w-full">
-          {/* Placeholder avatar */}
-          <div className="relative shrink-0 size-[72px]">
-            <div
-              className="absolute rounded-full size-[72px]"
-              style={{ backgroundImage: "linear-gradient(149.026deg, rgb(44,52,56) 18.739%, rgb(52,62,66) 178.25%)" }}
-            />
-          </div>
-          {/* Empty text */}
-          <p className="font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold leading-[21px] relative shrink-0 text-[#798589] text-[22px] whitespace-nowrap">
-            Пока нет достижений
-          </p>
-        </div>
-      </div>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+        gap: 12,
+        width: "100%",
+      }}
+    >
+      {ACHIEVEMENT_ORDER.map((id) => (
+        <AchievementBadge
+          key={id}
+          id={id}
+          unlockedAt={unlocked[id]?.unlockedAt}
+        />
+      ))}
     </div>
   );
 }
@@ -420,7 +486,6 @@ export default function ProfilePage() {
 
   const xp = userCtx.xp;
   const streak = userCtx.streak;
-  const hasAchievement = xp > 0;
 
   const activeCourse = COURSE_DISPLAY.find(c => c.isActive)!;
 
@@ -444,7 +509,7 @@ export default function ProfilePage() {
       {/* Achievements */}
       <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full mt-[32px] pb-[40px]">
         <SectionTitle text="Достижения" />
-        {hasAchievement ? <AchievementCard /> : <EmptyAchievementCard />}
+        <AchievementsGrid />
       </div>
     </Layout>
   );

@@ -44,9 +44,13 @@ interface LayoutProps {
   tabletChildrenFixed?: boolean;
   /** Sticky slot above BottomTabBar on mobile (e.g. Continue button) */
   mobileStickyBottom?: React.ReactNode;
+  /** Override page background colour (default: PAGE_BG = #282F33) */
+  bgColor?: string;
+  /** Disable the 20px top padding between header and content on tablet (e.g. roadmap) */
+  noTopPad?: boolean;
 }
 
-const PAGE_BG = "#2D363A";
+const PAGE_BG = "#282F33";
 
 export default function Layout({
   children,
@@ -61,6 +65,8 @@ export default function Layout({
   compactTopContent,
   tabletChildrenFixed,
   mobileStickyBottom,
+  bgColor,
+  noTopPad = false,
 }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -93,7 +99,7 @@ export default function Layout({
     const contentLeft = COMPACT_SIDEBAR_W + (spaceRightOfSidebar - contentW) / 2;
 
     return (
-      <div className="relative size-full overflow-hidden" style={{ background: PAGE_BG }}>
+      <div className="relative size-full overflow-hidden" style={{ background: bgColor ?? PAGE_BG }}>
         <Sidebar activePath={location.pathname} compact />
 
         {/* Flex-column content area: sticky header + scrollable middle + fixed bottom */}
@@ -119,7 +125,7 @@ export default function Layout({
 
           {/* ── Scrollable middle area ── */}
           <div className="flex-1 overflow-y-auto scrollbar-hide">
-            <div className="flex flex-col gap-[36px] items-start w-full pb-[24px]">
+            <div className={`flex flex-col gap-[36px] items-start w-full pb-[24px]${noTopPad ? "" : " pt-[20px]"}`}>
               {compactTopContent && (
                 <div className="w-full">{compactTopContent}</div>
               )}
@@ -143,7 +149,7 @@ export default function Layout({
   const handleBack = () => navigate(backPath);
 
   return (
-    <div className="relative size-full overflow-hidden" style={{ background: PAGE_BG, height: '100vh' }}>
+    <div className="relative size-full overflow-hidden" style={{ background: bgColor ?? PAGE_BG, height: '100vh' }}>
       {/* Sidebar — never changes */}
       <Sidebar activePath={location.pathname} />
 

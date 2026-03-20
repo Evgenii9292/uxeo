@@ -41,6 +41,15 @@ function IconBell() {
   );
 }
 
+function IconPerson() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="8" r="4" stroke="#5B9BD5" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" stroke="#5B9BD5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
 function IconMessage() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -329,6 +338,12 @@ export function MoreSheet({ onClose }: MoreSheetProps) {
 
         {/* Menu items */}
         <div className="flex flex-col gap-[8px]">
+          <MenuItem
+            icon={<IconPerson />}
+            label="Профиль"
+            sublabel="Ваш прогресс и настройки"
+            onClick={() => handleNavigate("/profile")}
+          />
           <MenuItem
             icon={<IconInfo />}
             label="О проекте"

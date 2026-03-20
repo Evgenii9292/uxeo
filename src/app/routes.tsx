@@ -14,13 +14,24 @@ import HomeworkPage from "./pages/HomeworkPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import AdminHomeworksPage from "./pages/AdminHomeworksPage";
 import AboutPage from "./pages/AboutPage";
+import EmailCapturePage from "./pages/EmailCapturePage";
+import LeaguePage from "./pages/LeaguePage";
 import { UserProvider, useUserSafe } from "./context/UserContext";
 import { LessonProvider } from "./context/LessonContext";
+import { HomeworkProvider } from "./context/HomeworkContext";
+import { AuthProvider } from "./context/AuthContext";
+import { AchievementsProvider } from "./context/AchievementsContext";
+import { AchievementOverlay } from "./components/AchievementUnlockedModal";
 
-// ── HomeRedirect: если уже есть прогресс → /lessons, иначе → /courses ──────────
+// ── HomeRedirect: онбординг → /welcome, прогресс → /lessons, иначе → /courses ──
 
 function HomeRedirect() {
   const userCtx = useUserSafe();
+
+  if (userCtx?.level === null || userCtx?.level === undefined) {
+    return <Navigate to="/welcome" replace />;
+  }
+
   const hasProgress =
     userCtx !== null &&
     Object.keys(userCtx.user.lessonProgress).length > 0;
@@ -31,11 +42,18 @@ function HomeRedirect() {
 // Root component that provides UserContext to all routes
 function Root() {
   return (
-    <UserProvider>
-      <LessonProvider>
-        <Outlet />
-      </LessonProvider>
-    </UserProvider>
+    <AuthProvider>
+      <UserProvider>
+        <AchievementsProvider>
+          <LessonProvider>
+            <HomeworkProvider>
+              <Outlet />
+              <AchievementOverlay />
+            </HomeworkProvider>
+          </LessonProvider>
+        </AchievementsProvider>
+      </UserProvider>
+    </AuthProvider>
   );
 }
 
@@ -47,7 +65,7 @@ function ErrorPage() {
       alignItems: "center",
       justifyContent: "center",
       minHeight: "100vh",
-      background: "linear-gradient(163.733deg, rgb(44, 52, 56) 14.367%, rgb(46, 57, 62) 147.74%)",
+      background: "linear-gradient(163.733deg, #282F33 14.367%, rgb(46, 57, 62) 147.74%)",
       color: "#f4f5fc",
       fontFamily: "Roboto Condensed, sans-serif",
       fontSize: "24px",
@@ -151,6 +169,16 @@ export const router = createBrowserRouter([
         // About page
         path: "about",
         Component: AboutPage,
+      },
+      {
+        // Email capture — shown after onboarding quiz (optional)
+        path: "email",
+        Component: EmailCapturePage,
+      },
+      {
+        // League page — leaderboard with rivals
+        path: "league",
+        Component: LeaguePage,
       },
       {
         // Catch-all — redirect to home

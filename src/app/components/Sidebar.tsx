@@ -7,6 +7,9 @@ import FreeIconGift from "../../imports/FreeIconGift81465531";
 import { CompactWidgets } from "./RightWidgets";
 import Group1 from "../../imports/Group481513";
 import imgVector from "figma:asset/fbd1a4de6983385b09d8ab2cc1ccfe34c3361ab2.png";
+import { useHomeworkSafe } from "../context/HomeworkContext";
+import { getLeague } from "../pages/LeaguePage";
+import { useUserSafe } from "../context/UserContext";
 
 /** Скиллум logo — full sidebar (scaled ~131 × 44 px) */
 function SkillumLogo() {
@@ -162,22 +165,27 @@ function NotificationIcon({ hasUnread }: { hasUnread: boolean }) {
 
 function NavItems({ activePath }: { activePath: string }) {
   const navigate = useNavigate();
+  const hwCtx = useHomeworkSafe();
+  const hasUnreadHW = (hwCtx?.unseenCount ?? 0) > 0;
+  const userData = useUserSafe();
+  const currentLeague = getLeague(userData?.xp ?? 0);
 
   const isLearningActive = [
-    "/", "/courses", "/modules", "/lessons", "/theory",
-    "/lesson-quiz", "/quiz", "/welcome",
+    "/lessons", "/modules", "/theory",
+    "/lesson-quiz", "/homework",
   ].includes(activePath);
 
-  const isCoursesActive   = activePath === "/";
+  const isCoursesActive   = activePath === "/" || activePath === "/courses";
   const isProfileActive    = activePath === "/profile";
   const isChallengesActive = activePath === "/challenges";
+  const isLeagueActive     = activePath === "/league";
 
   return (
     <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
       {/* Обучение */}
       <div
-        className={`h-[41px] relative rounded-[15px] shrink-0 w-[205px] cursor-pointer transition-colors ${isLearningActive ? "bg-[#2d363a]" : "hover:bg-[#2d363a]"}`}
-        onClick={() => { if (!isLearningActive) navigate("/lessons"); }}
+        className={`h-[41px] relative rounded-[15px] shrink-0 w-[205px] cursor-pointer transition-colors ${isLearningActive ? "bg-[#282f33]" : "hover:bg-[#282f33]"}`}
+        onClick={() => navigate("/lessons")}
       >
         <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[10px] items-center pl-[12px] relative size-full bg-[#00000000]">
           <div className="relative shrink-0 size-[20px]">
@@ -191,8 +199,8 @@ function NavItems({ activePath }: { activePath: string }) {
 
       {/* Курсы */}
       <div
-        className={`h-[41px] relative rounded-[15px] shrink-0 w-[205px] cursor-pointer transition-colors ${isCoursesActive ? "bg-[#2d363a]" : "hover:bg-[#2d363a]"}`}
-        onClick={() => { if (!isCoursesActive) navigate("/"); }}
+        className={`h-[41px] relative rounded-[15px] shrink-0 w-[205px] cursor-pointer transition-colors ${isCoursesActive ? "bg-[#282f33]" : "hover:bg-[#282f33]"}`}
+        onClick={() => navigate("/courses")}
       >
         <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[10px] items-center pl-[12px] relative size-full bg-[#00000000]">
           <div className="relative shrink-0 size-[20px] flex items-center justify-center">
@@ -209,7 +217,7 @@ function NavItems({ activePath }: { activePath: string }) {
 
       {/* Вызовы */}
       <div
-        className={`h-[41px] relative rounded-[20px] shrink-0 w-[205px] cursor-pointer transition-colors ${isChallengesActive ? "bg-[#2d363a]" : "hover:bg-[#2d363a]"}`}
+        className={`h-[41px] relative rounded-[20px] shrink-0 w-[205px] cursor-pointer transition-colors ${isChallengesActive ? "bg-[#282f33]" : "hover:bg-[#282f33]"}`}
         onClick={() => { if (!isChallengesActive) navigate("/challenges"); }}
       >
         <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[10px] items-center pl-[12px] relative size-full">
@@ -261,9 +269,22 @@ function NavItems({ activePath }: { activePath: string }) {
         </div>
       </div>
 
+      {/* Лига */}
+      <div
+        className={`h-[41px] relative rounded-[20px] shrink-0 w-[205px] cursor-pointer transition-colors ${isLeagueActive ? "bg-[#282f33]" : "hover:bg-[#282f33]"}`}
+        onClick={() => { if (!isLeagueActive) navigate("/league"); }}
+      >
+        <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[10px] items-center pl-[12px] relative size-full">
+          <div className="relative shrink-0 size-[20px] flex items-center justify-center">
+            <img src={currentLeague.trophy} width={20} height={20} style={{ objectFit: "contain" }} />
+          </div>
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[21px] relative shrink-0 text-[#f1f2fb] text-[18px] whitespace-nowrap">Лига</p>
+        </div>
+      </div>
+
       {/* Профиль */}
       <div
-        className={`h-[41px] relative rounded-[20px] shrink-0 w-[205px] cursor-pointer transition-colors ${isProfileActive ? "bg-[#2d363a]" : "hover:bg-[#2d363a]"}`}
+        className={`h-[41px] relative rounded-[20px] shrink-0 w-[205px] cursor-pointer transition-colors ${isProfileActive ? "bg-[#282f33]" : "hover:bg-[#282f33]"}`}
         onClick={() => navigate("/profile")}
       >
         <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[10px] items-center pl-[12px] relative size-full">
@@ -324,11 +345,11 @@ function NavItems({ activePath }: { activePath: string }) {
 
       {/* Fix 3: Уведомления — no background in default state, only on hover/active */}
       <div
-        className={`h-[41px] relative rounded-[20px] shrink-0 w-[205px] cursor-pointer transition-colors ${activePath === "/notifications" ? "bg-[#2d363a]" : "hover:bg-[#2d363a]"}`}
+        className={`h-[41px] relative rounded-[20px] shrink-0 w-[205px] cursor-pointer transition-colors ${activePath === "/notifications" ? "bg-[#282f33]" : "hover:bg-[#282f33]"}`}
         onClick={() => navigate("/notifications")}
       >
         <div className="content-stretch flex gap-[10px] items-center pl-[12px] relative size-full">
-          <NotificationIcon hasUnread={true} />
+          <NotificationIcon hasUnread={hasUnreadHW} />
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[21px] relative shrink-0 text-[#f1f2fb] text-[18px] whitespace-nowrap">Уведомления</p>
         </div>
       </div>
@@ -398,7 +419,7 @@ function SidebarFooter() {
             {" "}бесплатно
           </p>
           {/* "Написать отзыв" button — secondary style: page-bg background, lower visual priority */}
-          <div className="group content-stretch flex h-[36px] items-center justify-center relative rounded-[10px] shrink-0 w-full cursor-pointer select-none hover:translate-y-[1.5px] active:translate-y-[2.5px] transition-transform duration-75" style={{ background: '#2D363A' }}>
+          <div className="group content-stretch flex h-[36px] items-center justify-center relative rounded-[10px] shrink-0 w-full cursor-pointer select-none hover:translate-y-[1.5px] active:translate-y-[2.5px] transition-transform duration-75" style={{ background: '#282F33' }}>
             <div aria-hidden="true" className="absolute border-[#57646a] border-[0.5px] border-solid inset-0 pointer-events-none rounded-[10px] shadow-[0px_2.5px_0px_0px_black] group-hover:shadow-[0px_1px_0px_0px_black] group-active:shadow-none transition-shadow duration-75" />
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[15px] relative shrink-0 text-[#98a0a8] text-[16px] whitespace-nowrap">Написать отзыв</p>
           </div>
@@ -421,12 +442,16 @@ function SidebarFooter() {
 
 function CompactSidebar({ activePath }: { activePath: string }) {
   const navigate = useNavigate();
+  const userData = useUserSafe();
+  const hwCtx = useHomeworkSafe();
+  const hasUnreadHW = (hwCtx?.unseenCount ?? 0) > 0;
+  const currentLeague = getLeague(userData?.xp ?? 0);
 
   const isLearningActive = [
-    "/", "/courses", "/modules", "/lessons", "/theory",
-    "/lesson-quiz", "/quiz", "/welcome",
+    "/lessons", "/modules", "/theory", "/lesson-quiz", "/homework",
   ].includes(activePath);
   const isChallengesActive = activePath === "/challenges";
+  const isLeagueActive     = activePath === "/league";
   const isProfileActive    = activePath === "/profile";
   const isNotifActive      = activePath === "/notifications";
 
@@ -436,7 +461,7 @@ function CompactSidebar({ activePath }: { activePath: string }) {
       title={label}
       onClick={onClick}
       className={`flex items-center justify-center w-[52px] h-[52px] rounded-[10px] cursor-pointer transition-colors ${
-        isActive ? "bg-[#2d363a]" : "hover:bg-white/5"
+        isActive ? "bg-[#282f33]" : "hover:bg-white/5"
       }`}
     >
       {icon}
@@ -505,19 +530,22 @@ function CompactSidebar({ activePath }: { activePath: string }) {
         <div className="absolute inset-[4.76%_19.08%_12.09%_42.41%]"><svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14.8242 32.0117"><path d={svgDivPaths.p1684a400} fill="#FFD845" /></svg></div>
         <div className="absolute inset-[70.24%_42.71%_0_27.53%]"><svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 11.4583 11.4583"><path d={svgDivPaths.p8de4700} fill="#FFD845" /></svg></div>
         <div className="absolute inset-[70.24%_42.71%_0_42.41%]"><svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 5.72917 11.4583"><path d={svgDivPaths.p5d68500} fill="#FF9D21" /></svg></div>
-        <div className="absolute inset-[-0.78%_-4.76%_38.88%_42.86%]">
-          <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 23.8333 23.8333">
-            <circle cx="11.9167" cy="11.9167" fill="#FF3B0A" r="10.5417" stroke="#3D494F" strokeWidth="2.75" />
-          </svg>
-        </div>
+        {/* Red dot — only shown when there are unread notifications */}
+        {hasUnreadHW && (
+          <div className="absolute inset-[-0.78%_-4.76%_38.88%_42.86%]">
+            <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 23.8333 23.8333">
+              <circle cx="11.9167" cy="11.9167" fill="#FF3B0A" r="10.5417" stroke="#3D494F" strokeWidth="2.75" />
+            </svg>
+          </div>
+        )}
       </div>
     </div>
   );
 
   return (
     <div
-      className="absolute left-0 top-0 bottom-0 flex flex-col items-center py-[18px] gap-[0]"
-      style={{ width: '84px', borderRight: '1px solid #394144' }}
+      className="absolute left-0 top-0 bottom-0 flex flex-col items-center gap-[0]"
+      style={{ width: '84px', borderRight: '1px solid #394144', paddingTop: 18, paddingBottom: 12, overflow: 'visible' }}
     >
       {/* Скиллум icon logo */}
       <div className="mb-[24px] flex items-center justify-center">
@@ -526,8 +554,9 @@ function CompactSidebar({ activePath }: { activePath: string }) {
 
       {/* Nav icons — plain, no circular backgrounds */}
       <div className="flex flex-col gap-[10px] items-center w-full">
-        {iconBtn(isLearningActive,   () => navigate("/lessons"),          "Обучение",    bookIcon)}
+        {iconBtn(isLearningActive,   () => navigate("/lessons"),       "Обучение",    bookIcon)}
         {iconBtn(isChallengesActive, () => navigate("/challenges"),    "Вызовы",      medalIcon)}
+        {iconBtn(isLeagueActive,     () => navigate("/league"),        "Лига",        <img src={currentLeague.trophy} width={24} height={24} style={{ objectFit: "contain" }} />)}
         {iconBtn(isProfileActive,    () => navigate("/profile"),       "Профиль",     profileIcon)}
         {iconBtn(isNotifActive,      () => navigate("/notifications"), "Уведомления", notifIcon)}
       </div>

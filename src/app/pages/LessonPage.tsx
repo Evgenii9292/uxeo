@@ -233,10 +233,12 @@ export default function LessonPage() {
   return (
     <Layout
       title="Обучение"
+      bgColor="#282F33"
       showBack={false}
       backPath="/courses"
       rightContent={<RightColumn onContinue={handleContinue} />}
       rightWidth="320px"
+      noTopPad
       mobileStickyBottom={
         isMobile ? <MobileContinueButton onClick={handleContinue} /> : undefined
       }

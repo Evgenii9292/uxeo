@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useRef, ReactNode } from "react";
 import { useUserSafe } from "./UserContext";
+import { useAchievementsSafe } from "./AchievementsContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -28,7 +29,10 @@ LessonContext.displayName = 'LessonContext';
 
 export function LessonProvider({ children }: { children: ReactNode }) {
   const userContext = useUserSafe();
+  const achievementsCtx = useAchievementsSafe();
   const [lessonState, setLessonState] = useState<LessonState | null>(null);
+  // Track consecutive correct answers across a quiz session for quiz_ace achievement
+  const correctStreakRef = useRef(0);
 
   // If UserContext isn't ready yet (hot-reload), provide a no-op context
   if (!userContext) {
@@ -52,6 +56,7 @@ export function LessonProvider({ children }: { children: ReactNode }) {
 
   // Initialize a new lesson
   const initializeLesson = (lessonId: string, totalQuestions: number) => {
+    correctStreakRef.current = 0;
     setLessonState({
       lessonId,
       totalQuestions,
@@ -62,6 +67,16 @@ export function LessonProvider({ children }: { children: ReactNode }) {
   // Handle answering a question
   const answerQuestion = (questionId: string, isCorrect: boolean, xpValue?: number) => {
     if (!lessonState) return 0;
+
+    // Track consecutive streak for quiz_ace achievement
+    if (isCorrect) {
+      correctStreakRef.current += 1;
+      if (correctStreakRef.current >= 5) {
+        achievementsCtx?.triggerAchievement("quiz_ace");
+      }
+    } else {
+      correctStreakRef.current = 0;
+    }
 
     // Update question state in UserContext (single source of truth)
     const result = updateQuestionState(lessonState.lessonId, questionId, isCorrect, xpValue);
@@ -94,6 +109,7 @@ export function LessonProvider({ children }: { children: ReactNode }) {
 
   // Exit lesson without completing
   const exitLesson = () => {
+    correctStreakRef.current = 0;
     setLessonState(null);
   };
 

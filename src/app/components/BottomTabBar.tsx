@@ -7,6 +7,8 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import svgDivPaths from "../../imports/svg-1vbml8i98m";
 import { MoreSheet } from "./MoreSheet";
+import { getLeague } from "../pages/LeaguePage";
+import { useUserSafe } from "../context/UserContext";
 
 // ── Figma icon components ─────────────────────────────────────────────────────
 
@@ -118,6 +120,18 @@ function IconMore({ active }: { active: boolean }) {
   );
 }
 
+// ── League tab icon — shows current trophy ────────────────────────────────────
+
+function IconLeague({ active }: { active: boolean }) {
+  const userData = useUserSafe();
+  const league = getLeague(userData?.xp ?? 0);
+  return (
+    <div style={{ width: 29, height: 29, display: "flex", alignItems: "center", justifyContent: "center", opacity: active ? 1 : 0.6 }}>
+      <img src={league.trophy} width={26} height={26} style={{ objectFit: "contain" }} />
+    </div>
+  );
+}
+
 // ── Tab config ────────────────────────────────────────────────────────────────
 
 const NAV_TABS = [
@@ -140,10 +154,10 @@ const NAV_TABS = [
     Icon: IconVyzovy,
   },
   {
-    key: "profile",
-    path: "/profile",
-    matchPaths: ["/profile"],
-    Icon: IconProfile,
+    key: "league",
+    path: "/league",
+    matchPaths: ["/league"],
+    Icon: IconLeague,
   },
 ] as const;
 
