@@ -2,24 +2,23 @@ import { ReactNode, useEffect, useState } from "react";
 
 interface PageTransitionProps {
   children: ReactNode;
+  /** Duration in ms. Default 900 (page load). Use ~220 for question transitions. */
+  duration?: number;
+  /** Scale start value. Default 0.97. */
+  scaleFrom?: number;
 }
 
 /**
- * Wraps quiz page content with a focused-mode entrance transition.
+ * Wraps content with a fade+scale entrance transition.
  *
  * • Uses requestAnimationFrame to guarantee the browser renders the
- *   initial opacity:0 / scale:0.97 state before animating — this was
- *   the root cause of the "missing transition" bug where React batched
- *   the mount + state-update into a single paint.
- *
- * • Duration: 900ms ease-out — noticeably longer, feels deliberate.
- * • Scale: 0.97 → 1.00 — subtle zoom-in reinforces "entering focus mode".
+ *   initial opacity:0 / scale state before animating.
+ * • duration=900 for page load, duration=220 for question-to-question.
  */
-export default function PageTransition({ children }: PageTransitionProps) {
+export default function PageTransition({ children, duration = 900, scaleFrom = 0.97 }: PageTransitionProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Two rAF frames to ensure the initial state is painted first
     const id = requestAnimationFrame(() => {
       requestAnimationFrame(() => setIsVisible(true));
     });
@@ -30,8 +29,8 @@ export default function PageTransition({ children }: PageTransitionProps) {
     <div
       style={{
         opacity: isVisible ? 1 : 0,
-        transform: isVisible ? "scale(1)" : "scale(0.97)",
-        transition: "opacity 900ms ease-out, transform 900ms ease-out",
+        transform: isVisible ? "scale(1)" : `scale(${scaleFrom})`,
+        transition: `opacity ${duration}ms ease-in-out, transform ${duration}ms ease-in-out`,
         willChange: "opacity, transform",
       }}
     >

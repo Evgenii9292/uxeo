@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 
 const ADMIN_PIN = "uxeo2024";
 
-const TEXT_TITLE = "font-['Roboto_Condensed:Bold',sans-serif] font-medium";
+const TEXT_TITLE = "font-['Roboto_Condensed:Medium',sans-serif] font-medium";
 const TEXT_BODY = "font-['Roboto_Condensed:Regular',sans-serif] font-normal";
 
 interface Homework {

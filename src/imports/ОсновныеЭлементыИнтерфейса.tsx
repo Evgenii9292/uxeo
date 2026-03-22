@@ -1,3 +1,5 @@
+import React from "react";
+
 function Paragraph() {
   return (
     <div className="absolute h-[21px] left-0 top-[8px] w-[9.297px]" data-name="Paragraph">
@@ -86,7 +88,7 @@ function Container1() {
 
 function Lesson4Quiz1VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz1VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz1VariantA">
       <Container1 />
     </div>
   );
@@ -199,7 +201,7 @@ function Container6() {
 
 function Lesson4Quiz1VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz1VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz1VariantB">
       <Container6 />
     </div>
   );
@@ -288,7 +290,7 @@ function Container12() {
 
 function Lesson4Quiz2VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz2VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz2VariantA">
       <Container12 />
     </div>
   );
@@ -369,7 +371,7 @@ function Container17() {
 
 function Lesson4Quiz2VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz2VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz2VariantB">
       <Container17 />
     </div>
   );
@@ -428,7 +430,7 @@ function Container21() {
 
 function Lesson4Quiz3VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz3VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz3VariantA">
       <Container21 />
     </div>
   );
@@ -538,7 +540,7 @@ function Container26() {
 
 function Lesson4Quiz3VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz3VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz3VariantB">
       <Container26 />
     </div>
   );
@@ -1271,7 +1273,7 @@ function Container62() {
 
 function Lesson4Quiz10Card() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-0 pl-[39.344px] pr-[39.352px] rounded-[8px] top-[3910px] w-[130px]" data-name="Lesson4Quiz10Card1">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson4Quiz10Card1">
       <Container62 />
     </div>
   );
@@ -1296,7 +1298,7 @@ function Container63() {
 
 function Lesson4Quiz10Card1() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[154px] px-[25px] rounded-[8px] top-[3910px] w-[130px]" data-name="Lesson4Quiz10Card2">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson4Quiz10Card2">
       <Container63 />
     </div>
   );
@@ -1312,7 +1314,7 @@ function Paragraph66() {
 
 function Lesson4Quiz10Card2() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[308px] px-[28.719px] rounded-[8px] top-[3910px] w-[130px]" data-name="Lesson4Quiz10Card3">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson4Quiz10Card3">
       <Paragraph66 />
     </div>
   );
@@ -1375,7 +1377,7 @@ function Container64() {
 
 function Lesson4Quiz11Card() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-0 px-[58px] rounded-[8px] top-[4161px] w-[130px]" data-name="Lesson4Quiz11Card1">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson4Quiz11Card1">
       <Container64 />
     </div>
   );
@@ -1396,7 +1398,7 @@ function Container66() {
 
 function Lesson4Quiz11Card1() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[154px] px-[58px] rounded-[8px] top-[4161px] w-[130px]" data-name="Lesson4Quiz11Card2">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson4Quiz11Card2">
       <Container66 />
     </div>
   );
@@ -1434,7 +1436,7 @@ function Container68() {
 
 function Lesson4Quiz11Card2() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[308px] px-[38.477px] rounded-[8px] top-[4161px] w-[130px]" data-name="Lesson4Quiz11Card3">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson4Quiz11Card3">
       <Container68 />
     </div>
   );
@@ -1482,7 +1484,7 @@ function Container69() {
 
 function Lesson4Quiz12Card() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-0 pl-[52.523px] pr-[52.531px] rounded-[8px] top-[4412px] w-[130px]" data-name="Lesson4Quiz12Card1">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson4Quiz12Card1">
       <Container69 />
     </div>
   );
@@ -1498,7 +1500,7 @@ function Container70() {
 
 function Lesson4Quiz12Card1() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[154px] px-[30px] rounded-[8px] top-[4412px] w-[130px]" data-name="Lesson4Quiz12Card2">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson4Quiz12Card2">
       <Container70 />
     </div>
   );
@@ -1535,7 +1537,7 @@ function Container71() {
 
 function Lesson4Quiz12Card2() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[308px] px-[54.773px] rounded-[8px] top-[4412px] w-[130px]" data-name="Lesson4Quiz12Card3">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson4Quiz12Card3">
       <Container71 />
     </div>
   );
@@ -1568,23 +1570,127 @@ function Paragraph81() {
 // ─────────────────────────────────────────────────────────────────────────────
 // Named exports for LessonQuizPage (quiz_interface_elements visuals)
 // ─────────────────────────────────────────────────────────────────────────────
+const CW: React.CSSProperties = { position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" };
+const CI: React.CSSProperties = { position: "absolute", inset: 0, padding: "14px 16px", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" };
+
+// Q1A: No visible button — user doesn't know how to interact
 export function CQElemCompare1A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson4Quiz1VariantA /></div>;
+  return (
+    <div style={CW}>
+      <div style={CI}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
+          <div style={{ height: 10, background: "#1f2937", borderRadius: 3, width: "60%" }} />
+          <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "85%" }} />
+          <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "70%" }} />
+          <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "75%" }} />
+          <div style={{ height: 40 }} />
+          <div style={{ height: 7, background: "#e5e7eb", borderRadius: 2, width: "50%" }} />
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// Q1B: Clear action button — obvious what to press
 export function CQElemCompare1B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson4Quiz1VariantB /></div>;
+  return (
+    <div style={CW}>
+      <div style={CI}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
+          <div style={{ height: 10, background: "#1f2937", borderRadius: 3, width: "60%" }} />
+          <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "85%" }} />
+          <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "70%" }} />
+          <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "75%" }} />
+          <div style={{ height: 10 }} />
+          <div style={{ background: "#3b82f6", borderRadius: 8, padding: "10px 0", width: "80%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ height: 8, background: "white", borderRadius: 2, width: 60 }} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// Q2A: Input field without label — unclear what to enter
 export function CQElemCompare2A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson4Quiz2VariantA /></div>;
+  return (
+    <div style={CW}>
+      <div style={CI}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "stretch" }}>
+          <div style={{ height: 36, background: "#f9fafb", border: "1.5px solid #e5e7eb", borderRadius: 8 }} />
+          <div style={{ height: 36, background: "#f9fafb", border: "1.5px solid #e5e7eb", borderRadius: 8 }} />
+          <div style={{ height: 36, background: "#f9fafb", border: "1.5px solid #e5e7eb", borderRadius: 8 }} />
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// Q2B: Input with label "Email" — immediately clear
 export function CQElemCompare2B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson4Quiz2VariantB /></div>;
+  return (
+    <div style={CW}>
+      <div style={CI}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "stretch" }}>
+          {[["Имя", "#d1fae5"], ["Email", "#dbeafe"], ["Пароль", "#fce7f3"]].map(([label, bg]) => (
+            <div key={label}>
+              <div style={{ height: 7, background: "#6b7280", borderRadius: 2, width: 40, marginBottom: 4 }} />
+              <div style={{ height: 28, background: bg as string, border: "1.5px solid #e5e7eb", borderRadius: 6, display: "flex", alignItems: "center", paddingLeft: 8 }}>
+                <div style={{ height: 7, background: "#9ca3af", borderRadius: 2, width: 50 }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// Q3A: Hidden menu — user won't find it
 export function CQElemCompare3A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson4Quiz3VariantA /></div>;
+  return (
+    <div style={CW}>
+      <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 36, background: "#1f2937", display: "flex", alignItems: "center", paddingLeft: 14 }}>
+          <div style={{ width: 22, height: 16, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <div style={{ height: 2, background: "white", borderRadius: 1 }} />
+            <div style={{ height: 2, background: "white", borderRadius: 1 }} />
+            <div style={{ height: 2, background: "white", borderRadius: 1 }} />
+          </div>
+        </div>
+        <div style={{ position: "absolute", top: 56, left: 16, right: 16, display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ height: 10, background: "#d1d5db", borderRadius: 3, width: "70%" }} />
+          <div style={{ height: 7, background: "#e5e7eb", borderRadius: 2, width: "90%" }} />
+          <div style={{ height: 7, background: "#e5e7eb", borderRadius: 2, width: "75%" }} />
+          <div style={{ height: 7, background: "#e5e7eb", borderRadius: 2, width: "80%" }} />
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// Q3B: Visible navigation with sections
 export function CQElemCompare3B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson4Quiz3VariantB /></div>;
+  return (
+    <div style={CW}>
+      <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 44, background: "white", borderTop: "1.5px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "space-around" }}>
+          {["🏠", "🔍", "❤️", "👤"].map((icon) => (
+            <div key={icon} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+              <span style={{ fontSize: 14 }}>{icon}</span>
+              <div style={{ height: 5, background: "#d1d5db", borderRadius: 2, width: 20 }} />
+            </div>
+          ))}
+        </div>
+        <div style={{ position: "absolute", top: 16, left: 16, right: 16, display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ height: 10, background: "#1f2937", borderRadius: 3, width: "55%" }} />
+          <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "85%" }} />
+          <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "70%" }} />
+          <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "78%" }} />
+        </div>
+      </div>
+    </div>
+  );
 }
 export function CQElemSingle1() {
   return <div style={{ position: "relative", background: "white", height: 231, width: 186, overflow: "hidden", paddingTop: 10, paddingLeft: 10, paddingRight: 10, borderRadius: 15 }}><Container32 /></div>;

@@ -18,6 +18,8 @@ interface ScaledPreviewProps {
   naturalHeight: number;
   /** Vertical padding (px) subtracted from available height before scaling. Default 40 */
   paddingY?: number;
+  /** Horizontal padding (px) subtracted from available width before scaling. Default 0 */
+  paddingX?: number;
   /** Maximum allowed scale factor. Default 1 (never upscale). Set > 1 to allow upscaling. */
   maxScale?: number;
   children: React.ReactNode;
@@ -28,6 +30,7 @@ export function ScaledPreview({
   naturalWidth,
   naturalHeight,
   paddingY = 40,
+  paddingX = 0,
   maxScale = 1,
   children,
   className = "",
@@ -41,7 +44,7 @@ export function ScaledPreview({
 
     const compute = () => {
       const availH = el.clientHeight - paddingY * 2;
-      const availW = el.clientWidth;
+      const availW = el.clientWidth - paddingX * 2;
       if (availH <= 0 || availW <= 0) return;
 
       const scaleByH = availH / naturalHeight;

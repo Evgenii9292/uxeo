@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useId, useRef } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Layout from "../components/Layout";
 import svgPaths from "../../imports/svg-ns2c3tgkyt";
@@ -15,10 +15,11 @@ import { useHomeworkSafe } from "../context/HomeworkContext";
 import { useAuthSafe } from "../context/AuthContext";
 import { useAchievementsSafe } from "../context/AchievementsContext";
 import svgCardPaths from "../../imports/svg-u7gh1bm86c";
+import svgMfoan from "../../imports/svg-mfoan0qzpw";
 
 // ── Shared styles ──────────────────────────────────────────────────────────────
 
-const TEXT_TITLE  = "font-['Roboto_Condensed:Bold',sans-serif] font-medium";
+const TEXT_TITLE  = "font-['Roboto_Condensed:Medium',sans-serif] font-medium";
 const TEXT_BODY   = "font-['Roboto_Condensed:Regular',sans-serif] font-normal";
 const TEXT_MEDIUM = "font-['Roboto_Condensed:Medium',sans-serif] font-medium";
 
@@ -145,12 +146,12 @@ const DEFAULT_HOMEWORK: HomeworkData = HOMEWORK_CONTENT["homework-1"];
 
 function ChevronIcon({ isOpen }: { isOpen: boolean }) {
   return (
-    <div className="flex h-[10px] items-center justify-center relative shrink-0 w-[20px]">
+    <div className="flex h-[8px] items-center justify-center relative shrink-0 w-[16px]">
       <div
         className="flex-none"
         style={{ transition: "transform 300ms ease", transform: isOpen ? "rotate(90deg)" : "rotate(-90deg)" }}
       >
-        <div className="h-[20px] relative w-[10px]">
+        <div className="h-[16px] relative w-[8px]">
           <div className="absolute inset-[-5%_-10%_-5%_-1.72%]">
             <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 11.1716 22">
               <path d={svgPaths.p23f95480} stroke="#798589" strokeLinecap="round" strokeWidth="3" />
@@ -177,18 +178,18 @@ function AccordionSection({ icon, title, isOpen, onToggle, children, sectionIdx 
   return (
     <div
       className="flex flex-col rounded-[15px] overflow-hidden w-full"
-      style={{ background: "#404d52" }}
+      style={{ background: "#343e42" }}
       data-accordion-idx={sectionIdx}
     >
-      {/* Header */}
+      {/* Header — no extra background, matches card body */}
       <div
-        className="h-[120px] flex items-center justify-between px-[30px] cursor-pointer select-none"
+        className="h-[96px] flex items-center justify-between px-[20px] cursor-pointer select-none"
         onClick={onToggle}
       >
-        <div className="flex items-center gap-[14px]">
+        <div className="flex items-center gap-[20px]">
           {icon}
           <p
-            className={`${TEXT_TITLE} leading-[27.5px] text-[26px] whitespace-nowrap`}
+            className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[24px] whitespace-nowrap"
             style={{ color: isOpen ? "#f1f2fb" : "#798589", transition: "color 150ms" }}
           >
             {title}
@@ -213,44 +214,13 @@ function AccordionSection({ icon, title, isOpen, onToggle, children, sectionIdx 
 
 function SkillTag({ label }: { label: string }) {
   return (
-    <div className="bg-[#46545b] flex items-center pb-[21px] pt-[20px] px-[20px] rounded-[12px]">
+    <div className="bg-[#394449] flex items-center pb-[21px] pt-[20px] px-[20px] rounded-[12px]">
       <p className={`${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[18px]`}>{label}</p>
     </div>
   );
 }
 
-// ── Description icon (book) ──────────────────────────────────────────────────
-
-function DescriptionIcon() {
-  return (
-    <div className="relative shrink-0" style={{ width: 26, height: 26 }}>
-      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-        <path
-          d="M4 4.5C4 3.67 4.67 3 5.5 3H10C11.1 3 12 3.9 12 5V22C12 21.17 11.33 20.5 10.5 20.5H5.5C4.67 20.5 4 19.83 4 19V4.5Z"
-          fill="#798589"
-        />
-        <path
-          d="M22 4.5C22 3.67 21.33 3 20.5 3H16C14.9 3 14 3.9 14 5V22C14 21.17 14.67 20.5 15.5 20.5H20.5C21.33 20.5 22 19.83 22 19V4.5Z"
-          fill="#798589"
-        />
-      </svg>
-    </div>
-  );
-}
-
 // ── Content sections ──────────────────────────────────────────────────────────
-
-function DescriptionContent({ hw }: { hw: HomeworkData }) {
-  return (
-    <div className="flex flex-col gap-[20px]">
-      <div className="bg-[#46545b] rounded-[12px] px-[27px] py-[20px]">
-        <p className={`${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[18px] opacity-80`}>
-          {hw.description}
-        </p>
-      </div>
-    </div>
-  );
-}
 
 function SkillsContent({ hw }: { hw: HomeworkData }) {
   return (
@@ -265,9 +235,14 @@ function SkillsContent({ hw }: { hw: HomeworkData }) {
 function TaskContent({ hw }: { hw: HomeworkData }) {
   return (
     <div className="flex flex-col gap-[30px]">
+      {hw.description && (
+        <div className="bg-[#394449] rounded-[12px] px-[27px] py-[20px]">
+          <p className={`${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[18px] opacity-80`}>{hw.description}</p>
+        </div>
+      )}
       <div className="flex flex-col gap-[20px]">
         <p className={`${TEXT_TITLE} leading-[22px] text-[#f1f2fb] text-[18px]`}>Контекст:</p>
-        <div className="bg-[#46545b] rounded-[12px] px-[27px] py-[20px]">
+        <div className="bg-[#394449] rounded-[12px] px-[27px] py-[20px]">
           <div className={`${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[18px]`}>
             {hw.context.map((line, i) => (
               <p key={i} className={i < hw.context.length - 1 ? "mb-[8px]" : "mb-0"}>{line}</p>
@@ -277,7 +252,7 @@ function TaskContent({ hw }: { hw: HomeworkData }) {
       </div>
       <div className="flex flex-col gap-[20px]">
         <p className={`${TEXT_TITLE} leading-[22px] text-[#f1f2fb] text-[18px]`}>Ваша задача:</p>
-        <div className="bg-[#46545b] rounded-[12px] px-[27px] py-[20px]">
+        <div className="bg-[#394449] rounded-[12px] px-[27px] py-[20px]">
           <p className={`${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[18px] opacity-80`}>{hw.task}</p>
         </div>
       </div>
@@ -290,7 +265,7 @@ function RequirementsContent({ hw }: { hw: HomeworkData }) {
     <div className="flex flex-col gap-[30px]">
       <div className="flex flex-col gap-[20px]">
         <p className={`${TEXT_TITLE} leading-[22px] text-[#f1f2fb] text-[18px]`}>Экран должен содержать:</p>
-        <div className="bg-[#46545b] rounded-[12px] px-[27px] py-[20px]">
+        <div className="bg-[#394449] rounded-[12px] px-[27px] py-[20px]">
           <ul className={`list-disc ${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[18px]`}>
             {hw.requirements.map((r, i) => (
               <li key={i} className={`${i < hw.requirements.length - 1 ? "mb-0" : ""} ms-[27px]`}>
@@ -302,7 +277,7 @@ function RequirementsContent({ hw }: { hw: HomeworkData }) {
       </div>
       <div className="flex flex-col gap-[20px]">
         <p className={`${TEXT_TITLE} leading-[22px] text-[#f1f2fb] text-[18px]`}>Дополнительно:</p>
-        <div className="bg-[#46545b] rounded-[12px] px-[27px] py-[20px] flex flex-col gap-[21px]">
+        <div className="bg-[#394449] rounded-[12px] px-[27px] py-[20px] flex flex-col gap-[21px]">
           <div className={`${TEXT_BODY} flex items-center justify-between leading-[22px] text-[#f1f2fb] text-[18px] opacity-80`}>
             <span>Размер экрана:</span>
             <span>{hw.screenSize}</span>
@@ -325,32 +300,50 @@ function RequirementsContent({ hw }: { hw: HomeworkData }) {
 
 function ExampleContent({ hw }: { hw: HomeworkData }) {
   return (
-    <div className="bg-[#46545b] rounded-[12px] px-[27px] py-[20px] flex flex-col gap-[16px]">
-      <p className={`${TEXT_TITLE} leading-[22px] text-[#f1f2fb] text-[18px]`}>Рекомендации:</p>
-      <div className={`${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[18px] opacity-80 flex flex-col gap-[8px]`}>
-        <p>Изучите примеры подобных экранов на Dribbble или Behance.</p>
-        <p>Обратите внимание на визуальную иерархию и контраст элементов.</p>
-        {hw.tip && <p>{hw.tip}</p>}
-      </div>
+    <div className={`${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[18px] opacity-80 flex flex-col gap-[8px]`}>
+      <p>Изучите примеры подобных экранов на Dribbble или Behance.</p>
+      <p>Обратите внимание на визуальную иерархию и контраст элементов.</p>
+      {hw.tip && <p>{hw.tip}</p>}
     </div>
   );
 }
 
 // ── Hero card ─────────────────────────────────────────────────────────────────
 
+function LevelIcon() {
+  const uid    = useId().replace(/:/g, "");
+  const maskId = `lv-${uid}`;
+  return (
+    <div className="h-[15px] overflow-clip relative shrink-0 w-[17px]">
+      <div className="absolute inset-[22.57%_5.88%_15.9%_5.88%]">
+        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14.9997 9.23063">
+          <defs>
+            <mask id={maskId}>
+              <rect x="0" y="0" width="5.1" height="9.3" fill="white" />
+              <rect x="5" y="0" width="10"  height="9.3" fill="white" fillOpacity="0.6" />
+            </mask>
+          </defs>
+          <g mask={`url(#${maskId})`}>
+            <path d={svgMfoan.p1f3ddd00} fill="#F1F2FB" />
+            <path d={svgMfoan.p1dcc7b80} fill="#F1F2FB" />
+            <path d={svgMfoan.p36483400} fill="#F1F2FB" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
 function HeroCard({ hw }: { hw: HomeworkData }) {
   return (
     <div className="flex flex-col gap-[20px] w-full">
-      {/* Homework hero — gradient banner instead of phone image */}
+      {/* Homework hero */}
       <div
         className="w-full rounded-[12px] flex items-center justify-center overflow-hidden"
-        style={{
-          height: 200,
-          background: "linear-gradient(135deg, #3d4a50 0%, #4a5960 50%, #384348 100%)",
-        }}
+        style={{ height: 200, background: "#394449" }}
       >
         <div className="flex flex-col items-center gap-[12px]">
-          <div className="size-[64px] rounded-full bg-[#46545b] flex items-center justify-center">
+          <div className="size-[64px] rounded-full bg-[#394449] flex items-center justify-center">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f1f2fb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
               <polyline points="14 2 14 8 20 8" />
@@ -379,13 +372,7 @@ function HeroCard({ hw }: { hw: HomeworkData }) {
             <p className={`${TEXT_MEDIUM} leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap`}>{hw.time}</p>
           </div>
           <div className="flex gap-[5px] items-center">
-            <div className="overflow-clip relative shrink-0 size-[14px]">
-              <div className="absolute inset-[2.08%_0_4.17%_0]">
-                <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14 13.125">
-                  <path d={svgPaths.pf7fd000} fill="#F1F2FB" />
-                </svg>
-              </div>
-            </div>
+            <LevelIcon />
             <p className={`${TEXT_MEDIUM} leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap`}>{hw.level}</p>
           </div>
           <div className="flex gap-[5px] items-center">
@@ -489,18 +476,18 @@ function useIsMobile() {
 function PendingCard() {
   return (
     <div className="flex flex-col gap-[16px] w-full">
-      {/* Outer wrapper — same style as other states */}
+      {/* Outer wrapper — yellow gradient for pending */}
       <div
         className="rounded-[15px] flex flex-col gap-[14px]"
-        style={{ background: "#343e42", border: "2px solid #384348", padding: "20px" }}
+        style={{ background: "linear-gradient(145deg, #3d3820 0%, #343e42 55%)", border: "2px solid #4a4220", padding: "20px" }}
       >
         {/* Status pill */}
         <div
           className="flex gap-[7px] items-center px-[12px] h-[32px] rounded-full self-start"
-          style={{ background: "#2E3538" }}
+          style={{ background: "#2e2c18" }}
         >
           <IconProcessingTime />
-          <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#91969B" }}>На проверке</p>
+          <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#FFB121" }}>На проверке</p>
         </div>
         {/* Inner info card */}
         <div
@@ -511,14 +498,6 @@ function PendingCard() {
             Работа отправлена на проверку. Проверка занимает ~24 часа — уведомление придёт в разделе Уведомлений.
           </p>
         </div>
-      </div>
-      {/* Depressed status button */}
-      <div
-        className="flex h-[56px] items-center justify-center gap-[10px] rounded-[15px] w-full select-none"
-        style={{ background: "#f7f8fc", boxShadow: "inset 0px 4px 0px 0px #d0d2dc" }}
-      >
-        <IconProcessingTime />
-        <p className={`${TEXT_TITLE} leading-[24px] text-[#2d373b] text-[24px] whitespace-nowrap`}>На проверке</p>
       </div>
     </div>
   );
@@ -542,18 +521,33 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
   const [isSubmitting, setIsSubmitting] = useState(false);
   // localSubmitted: true if user just submitted in this session (optimistic)
   const [localSubmitted, setLocalSubmitted] = useState(false);
+  // Popup: show once when homework is reviewed/rejected and user hasn't seen it
+  const [showReviewPopup, setShowReviewPopup] = useState(false);
+  const [popupShownForStatus, setPopupShownForStatus] = useState<string | null>(null);
 
   // Keep url in sync if serverRecord loads after mount
   useEffect(() => {
     if (serverRecord?.figma_link) setUrl(serverRecord.figma_link);
   }, [serverRecord?.figma_link]);
 
-  // Mark seen when user opens homework page with a reviewed/rejected status
+  // Show popup when reviewed/rejected and unseen; mark seen only when popup is closed
   useEffect(() => {
-    if (homeworkLessonId && hwCtx && (serverStatus === "reviewed" || serverStatus === "rejected")) {
-      hwCtx.markSeen(homeworkLessonId);
+    if (!homeworkLessonId || !hwCtx) return;
+    if ((serverStatus === "reviewed" || serverStatus === "rejected") && serverStatus !== popupShownForStatus) {
+      if (hwCtx.isUnseen(homeworkLessonId)) {
+        setShowReviewPopup(true);
+        setPopupShownForStatus(serverStatus);
+      } else {
+        // Already seen — just mark (no popup)
+        hwCtx.markSeen(homeworkLessonId);
+      }
     }
   }, [homeworkLessonId, serverStatus]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleClosePopup = () => {
+    setShowReviewPopup(false);
+    if (homeworkLessonId && hwCtx) hwCtx.markSeen(homeworkLessonId);
+  };
 
   const isReviewed  = serverStatus === "reviewed";
   const isRejected  = serverStatus === "rejected" && !localSubmitted;
@@ -592,6 +586,28 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
       }
 
       setLocalSubmitted(true);
+      // Play submission sound
+      try {
+        const ctx = new AudioContext();
+        const vol = window.innerWidth < 768 ? 0.07 : 0.11;
+        ctx.resume().then(() => {
+          const now = ctx.currentTime + 0.05;
+          // Rising soft two-note: F4 → A4
+          [349, 440].forEach((freq, i) => {
+            const o = ctx.createOscillator();
+            const g = ctx.createGain();
+            o.type = "sine";
+            o.frequency.setValueAtTime(freq, now + i * 0.13);
+            g.gain.setValueAtTime(0, now + i * 0.13);
+            g.gain.linearRampToValueAtTime(vol, now + i * 0.13 + 0.03);
+            g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.13 + 0.22);
+            o.connect(g); g.connect(ctx.destination);
+            o.start(now + i * 0.13);
+            o.stop(now + i * 0.13 + 0.25);
+          });
+          setTimeout(() => ctx.close(), 800);
+        }).catch(() => {});
+      } catch (_) {}
       hwCtx?.refresh();
       if (homeworkLessonId && userData?.markHomeworkCompleted) {
         userData.markHomeworkCompleted(homeworkLessonId);
@@ -610,18 +626,58 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
     return (
       <div className="flex flex-col gap-[16px] w-full">
 
-        {/* Outer wrapper */}
+        {/* ── Review popup overlay ── */}
+        {showReviewPopup && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" style={{ background: "rgba(20,26,28,0.85)", backdropFilter: "blur(6px)" }}>
+            <div className="w-full max-w-[440px] rounded-[20px] flex flex-col gap-0 overflow-hidden" style={{ background: "#2C3538" }}>
+              {/* Header */}
+              <div className="flex items-center gap-[10px] px-[20px] pt-[20px] pb-[14px]">
+                <div className="flex items-center justify-center w-[36px] h-[36px] rounded-full" style={{ background: "rgba(0,208,67,0.15)" }}>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M2 8L6.5 12.5L14 4" stroke="#00D043" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <p className={`${TEXT_TITLE} text-[18px] leading-[1.2] text-[#f4f5fc]`}>Домашка проверена!</p>
+              </div>
+              {/* Divider */}
+              <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "0 20px" }} />
+              {/* Body */}
+              <div className="px-[20px] py-[16px] flex flex-col gap-[12px]">
+                {serverRecord?.comment ? (
+                  <p className={`${TEXT_BODY} text-[15px] leading-[22px] text-[rgba(244,245,252,0.85)]`}>{serverRecord.comment}</p>
+                ) : (
+                  <p className={`${TEXT_BODY} text-[15px] leading-[22px] text-[rgba(244,245,252,0.4)]`}>Проверяющий не оставил комментарий</p>
+                )}
+                {serverRecord?.image_url && (
+                  <img src={serverRecord.image_url} alt="Скриншот" className="w-full object-cover rounded-[10px]" style={{ maxHeight: 200, border: "1px solid rgba(155,161,167,0.4)" }} />
+                )}
+              </div>
+              {/* Button */}
+              <div className="px-[20px] pb-[20px]">
+                <button
+                  onClick={handleClosePopup}
+                  className="w-full h-[52px] rounded-[13px] flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 active:opacity-60"
+                  style={{ background: "#00D043" }}
+                >
+                  <p className={`${TEXT_TITLE} text-[17px] text-[#0e1a10]`}>Отлично, понял!</p>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Outer wrapper — green gradient for reviewed */}
         <div
           className="rounded-[15px] flex flex-col gap-[14px]"
-          style={{ background: "#343e42", border: "2px solid #384348", padding: "20px" }}
+          style={{ background: "linear-gradient(145deg, #1a3022 0%, #343e42 55%)", border: "2px solid #1e4028", padding: "20px" }}
         >
           {/* Status pill */}
           <div
             className="flex gap-[7px] items-center px-[12px] h-[32px] rounded-full self-start"
-            style={{ background: "#2E3538" }}
+            style={{ background: "#162418" }}
           >
             <IconGreenCheck />
-            <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#91969B" }}>Готово</p>
+            <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#00C143" }}>Готово</p>
           </div>
 
           {/* Inner feedback card */}
@@ -649,15 +705,6 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
           </div>
         </div>
 
-        {/* Depressed "Готово" button — no input, just status */}
-        <div
-          className="flex h-[56px] items-center justify-center gap-[10px] rounded-[15px] w-full select-none"
-          style={{ background: "#f7f8fc", boxShadow: "inset 0px 4px 0px 0px #d0d2dc" }}
-        >
-          <IconGreenCheck />
-          <p className={`${TEXT_TITLE} leading-[24px] text-[#2d373b] text-[24px] whitespace-nowrap`}>Готово</p>
-        </div>
-
       </div>
     );
   }
@@ -666,6 +713,46 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
   if (isRejected) {
     return (
       <div className="flex flex-col gap-[16px] w-full">
+
+        {/* ── Review popup overlay ── */}
+        {showReviewPopup && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" style={{ background: "rgba(20,26,28,0.85)", backdropFilter: "blur(6px)" }}>
+            <div className="w-full max-w-[440px] rounded-[20px] flex flex-col gap-0 overflow-hidden" style={{ background: "#2C3538" }}>
+              {/* Header */}
+              <div className="flex items-center gap-[10px] px-[20px] pt-[20px] pb-[14px]">
+                <div className="flex items-center justify-center w-[36px] h-[36px] rounded-full" style={{ background: "rgba(255,93,57,0.15)" }}>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M4 4L12 12M12 4L4 12" stroke="#ff5d39" strokeWidth="2.2" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <p className={`${TEXT_TITLE} text-[18px] leading-[1.2] text-[#f4f5fc]`}>Нужно переделать</p>
+              </div>
+              {/* Divider */}
+              <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "0 20px" }} />
+              {/* Body */}
+              <div className="px-[20px] py-[16px] flex flex-col gap-[12px]">
+                {serverRecord?.comment ? (
+                  <p className={`${TEXT_BODY} text-[15px] leading-[22px] text-[rgba(244,245,252,0.85)]`}>{serverRecord.comment}</p>
+                ) : (
+                  <p className={`${TEXT_BODY} text-[15px] leading-[22px] text-[rgba(244,245,252,0.4)]`}>Проверяющий не оставил комментарий</p>
+                )}
+                {serverRecord?.image_url && (
+                  <img src={serverRecord.image_url} alt="Скриншот" className="w-full object-cover rounded-[10px]" style={{ maxHeight: 200, border: "1px solid rgba(155,161,167,0.4)" }} />
+                )}
+              </div>
+              {/* Button */}
+              <div className="px-[20px] pb-[20px]">
+                <button
+                  onClick={handleClosePopup}
+                  className="w-full h-[52px] rounded-[13px] flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 active:opacity-60"
+                  style={{ background: "#ff5d39" }}
+                >
+                  <p className={`${TEXT_TITLE} text-[17px] text-[#f4f5fc]`}>Понял, переделаю!</p>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Outer wrapper */}
         <div
@@ -818,15 +905,6 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
           </div>
         </div>
 
-        {/* Depressed "На проверке" button */}
-        <div
-          className="flex h-[56px] items-center justify-center gap-[10px] rounded-[15px] w-full select-none"
-          style={{ background: "#f7f8fc", boxShadow: "inset 0px 4px 0px 0px #d0d2dc" }}
-        >
-          <IconProcessingTime />
-          <p className={`${TEXT_TITLE} leading-[24px] text-[#2d373b] text-[24px] whitespace-nowrap`}>На проверке</p>
-        </div>
-
       </div>
     );
   }
@@ -911,7 +989,26 @@ export default function HomeworkPage() {
   const homeworkLessonId = (location.state as any)?.homeworkId || "homework-1";
   const hw = HOMEWORK_CONTENT[homeworkLessonId] || DEFAULT_HOMEWORK;
 
-  const [openSections, setOpenSections] = useState<Set<number>>(new Set([0, 1]));
+  const [openSections, setOpenSections] = useState<Set<number>>(new Set([0]));
+  const [submitVisible, setSubmitVisible] = useState(true);
+  const lastScrollRef = useRef(0);
+
+  // Hide submit block when scrolling down (sync with tab bar behaviour)
+  useEffect(() => {
+    if (!isMobile) return;
+    const scrollEl = document.querySelector<HTMLElement>('.overflow-y-auto.overflow-x-hidden.scrollbar-hide');
+    if (!scrollEl) return;
+    const onScroll = () => {
+      const currentY = scrollEl.scrollTop;
+      const delta = currentY - lastScrollRef.current;
+      if (Math.abs(delta) > 6) {
+        setSubmitVisible(delta < 0);
+        lastScrollRef.current = currentY;
+      }
+    };
+    scrollEl.addEventListener('scroll', onScroll, { passive: true });
+    return () => scrollEl.removeEventListener('scroll', onScroll);
+  }, [isMobile]);
 
   const toggleSection = (i: number) => {
     setOpenSections(prev => {
@@ -931,21 +1028,23 @@ export default function HomeworkPage() {
         rightWidth="320px"
       >
         <div className="flex flex-col gap-[13px] w-full">
-          {/* Hero */}
-          <div className="bg-[#404d52] rounded-[15px] pb-[30px] pt-[20px] px-[20px]">
+          {/* Hero — no background, matches theory style */}
+          <div className="pb-[10px] pt-[0px]">
             <HeroCard hw={hw} />
           </div>
 
+          {/* 1. Задание — первым, включает описание + контекст + задачу */}
           <AccordionSection
-            icon={<DescriptionIcon />}
-            title="Описание задания"
+            icon={<div className="relative shrink-0" style={{ width: 26, height: 26 }}><TaskIcon /></div>}
+            title="Задание"
             isOpen={openSections.has(0)}
             onToggle={() => toggleSection(0)}
             sectionIdx={0}
           >
-            <DescriptionContent hw={hw} />
+            <TaskContent hw={hw} />
           </AccordionSection>
 
+          {/* 2. Что вы прокачаете */}
           <AccordionSection
             icon={<div className="relative shrink-0" style={{ width: 26, height: 26 }}><SkillsIcon /></div>}
             title="Что вы прокачаете"
@@ -956,32 +1055,24 @@ export default function HomeworkPage() {
             <SkillsContent hw={hw} />
           </AccordionSection>
 
+          {/* 3. Требования */}
           <AccordionSection
-            icon={<div className="relative shrink-0" style={{ width: 26, height: 26 }}><TaskIcon /></div>}
-            title="Задание"
+            icon={<div className="relative shrink-0" style={{ width: 26, height: 26 }}><RequirementsIcon /></div>}
+            title="Требования"
             isOpen={openSections.has(2)}
             onToggle={() => toggleSection(2)}
             sectionIdx={2}
           >
-            <TaskContent hw={hw} />
-          </AccordionSection>
-
-          <AccordionSection
-            icon={<div className="relative shrink-0" style={{ width: 26, height: 26 }}><RequirementsIcon /></div>}
-            title="Требования"
-            isOpen={openSections.has(3)}
-            onToggle={() => toggleSection(3)}
-            sectionIdx={3}
-          >
             <RequirementsContent hw={hw} />
           </AccordionSection>
 
+          {/* 4. Пример */}
           <AccordionSection
             icon={<div className="relative shrink-0" style={{ width: 28, height: 28 }}><ExampleIcon /></div>}
-            title="Пример"
-            isOpen={openSections.has(4)}
-            onToggle={() => toggleSection(4)}
-            sectionIdx={4}
+            title="Рекомендации"
+            isOpen={openSections.has(3)}
+            onToggle={() => toggleSection(3)}
+            sectionIdx={3}
           >
             <ExampleContent hw={hw} />
           </AccordionSection>
@@ -995,12 +1086,13 @@ export default function HomeworkPage() {
       <div
         style={isMobile ? {
           position: "fixed",
-          bottom: 0,
+          bottom: submitVisible ? 52 : 4,
           left: 0,
           right: 0,
-          padding: "12px 16px calc(env(safe-area-inset-bottom, 0px) + 16px)",
-          zIndex: 50,
+          padding: "12px 16px 16px",
+          zIndex: 25,
           background: "linear-gradient(to top, #282F33 70%, transparent)",
+          transition: "bottom 0.3s ease",
         } : {
           position: "fixed",
           bottom: 20,

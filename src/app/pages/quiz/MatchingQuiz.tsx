@@ -44,7 +44,7 @@ function TooltipIcon() {
   return (
     <div className="w-[54px] h-[54px] bg-[#2d3c44] rounded-full flex items-center justify-center border-[2px] border-[#4a5c66]">
       <span
-        className="font-['Georgia',serif] font-bold text-[#8a9ba5] text-[28px] select-none"
+        className="font-['Georgia',serif] font-medium text-[#8a9ba5] text-[28px] select-none"
         style={{ lineHeight: 1, marginTop: 2 }}
       >
         i
@@ -161,7 +161,7 @@ export function MatchingQuiz({
   const allConnected = pairs.every((p) => connections[p.id] !== undefined);
   const allCorrect   = pairs.every((p) => connections[p.id] === p.id);
   const vw = useWindowWidth();
-  const isMobile = vw < 768;
+  const isMobile = vw < 1024; // mobile + tablet both use the compact tap-to-connect layout
   const quizW = Math.min(1042, vw - 48);
 
   // ── Helpers ────────────────────────────────────────────────────────────────
@@ -348,7 +348,7 @@ export function MatchingQuiz({
           d={`M ${from.x} ${from.y} C ${from.x} ${cp1y}, ${to.x} ${cp2y}, ${to.x} ${to.y}`}
           stroke={color}
           strokeWidth="2.5"
-          strokeDasharray={checked ? "none" : "8 5"}
+          strokeDasharray="8 5"
           strokeLinecap="round"
           fill="none"
           opacity="0.9"
@@ -464,13 +464,13 @@ export function MatchingQuiz({
   // ── Mobile render — vertical tap-to-connect ────────────────────────────────
   if (isMobile) {
     const topCardW = Math.floor((vw - 48) / pairs.length) - 8;
-    const topCardH = Math.max(80, Math.min(120, topCardW));
+    const topCardH = Math.max(72, Math.min(110, topCardW));
 
     return (
       <>
         {/* Question */}
         <div className="w-full px-[16px] flex justify-center">
-          <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[1.25] text-[#f4f5fc] text-[22px] text-center" style={{ userSelect: "none" }}>
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.25] text-[#f4f5fc] text-[22px] text-center" style={{ userSelect: "none" }}>
             {question}
           </p>
         </div>
@@ -533,7 +533,7 @@ export function MatchingQuiz({
                       transform: isSelected ? "translateY(-3px)" : "translateY(0)",
                     }}
                   >
-                    <p style={{ fontFamily: "'Roboto Condensed', sans-serif", fontWeight: 700, color: "#f4f5fc", fontSize: 13, textAlign: "center", lineHeight: 1.2, padding: "0 8px", pointerEvents: "none" }}>
+                    <p style={{ fontFamily: "'Roboto Condensed', sans-serif", fontWeight: 400, color: "#f4f5fc", fontSize: 14, textAlign: "center", lineHeight: 1.3, padding: "0 8px", pointerEvents: "none", wordBreak: "break-word", overflowWrap: "break-word" }}>
                       {pair.term}
                     </p>
                     <div
@@ -582,17 +582,17 @@ export function MatchingQuiz({
                     }}
                     style={{
                       width: topCardW,
-                      height: 56,
+                      minHeight: 56,
                       borderRadius: 15,
                       backgroundImage: bottomCardBg,
                       boxShadow: ring ? `0 0 0 3px ${ring}` : undefined,
                       display: "flex", alignItems: "center", justifyContent: "center",
                       flexShrink: 0, position: "relative", transition: "box-shadow 0.2s",
-                      cursor: "pointer",
+                      cursor: "pointer", paddingTop: 10, paddingBottom: 10,
                     }}
                   >
                     <div ref={(el) => { bottomDotRefs.current[pair.id] = el; }} style={{ position: "absolute", top: 0, left: "50%", transform: "translate(-50%, -50%)", width: 12, height: 12, borderRadius: "50%", background: dot.bg, border: `2px solid ${dot.border}`, zIndex: 2 }} />
-                    <p style={{ fontFamily: "'Roboto Condensed', sans-serif", fontWeight: 400, color: "#f4f5fc", fontSize: 13, textAlign: "center", lineHeight: 1.3, padding: "0 6px", pointerEvents: "none" }}>
+                    <p style={{ fontFamily: "'Roboto Condensed', sans-serif", fontWeight: 400, color: "#f4f5fc", fontSize: 14, textAlign: "center", lineHeight: 1.3, padding: "0 6px", pointerEvents: "none", wordBreak: "break-word", hyphens: "auto", overflowWrap: "break-word" }}>
                       {pair.translation}
                     </p>
                   </div>
@@ -603,19 +603,9 @@ export function MatchingQuiz({
         </div>
 
         {/* Hint */}
-        {!checked && !selectedId && !selectedBottomId && (
+        {!checked && (
           <p className="text-center text-[#798589] text-[13px] font-['Roboto_Condensed:Regular',sans-serif] px-4">
-            Нажмите любую карточку — сверху или снизу
-          </p>
-        )}
-        {!checked && selectedId && (
-          <p className="text-center text-[#FF6B21] text-[13px] font-['Roboto_Condensed:Medium',sans-serif] px-4">
-            «{pairs.find(p => p.id === selectedId)?.term}» — теперь нажмите нижнюю карточку
-          </p>
-        )}
-        {!checked && selectedBottomId && (
-          <p className="text-center text-[#FF6B21] text-[13px] font-['Roboto_Condensed:Medium',sans-serif] px-4">
-            «{shuffledPairs.find(p => p.id === selectedBottomId)?.translation}» — теперь нажмите верхнюю карточку
+            Нажми или перетащи карточки, чтобы соединить
           </p>
         )}
 
@@ -629,10 +619,11 @@ export function MatchingQuiz({
               {allCorrect ? (
                 <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
               ) : (
-                <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                  <span style={{ fontSize: 24 }}>✊</span>
-                  <p style={{ fontFamily: "'Roboto Condensed', sans-serif", fontWeight: 400, color: "#f4f5fc", fontSize: 15, lineHeight: 1.3 }}>
-                    <span style={{ color: "#ffbaaa", fontWeight: 700 }}>Попробуй ещё раз. </span>
+                <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 4, flexShrink: 0 }}>
+                    <p style={{ fontFamily: "'Roboto Condensed', sans-serif", fontWeight: 700, color: "#ffbaaa", fontSize: 16, lineHeight: 1.2, whiteSpace: "nowrap" }}>Попробуй ещё</p>
+                  </div>
+                  <p style={{ fontFamily: "'Roboto Condensed', sans-serif", fontWeight: 400, color: "#f4f5fc", fontSize: 14, lineHeight: 1.2, flex: 1, minWidth: 0 }}>
                     {explanation}
                   </p>
                 </div>
@@ -676,7 +667,7 @@ export function MatchingQuiz({
       {/* Question */}
       <div className="flex justify-center" style={{ width: quizW }}>
         <p
-          className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[35px] text-[#f4f5fc] text-[32px] text-center"
+          className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[35px] text-[#f4f5fc] text-[32px] text-center"
           style={{ userSelect: "none" }}
         >
           {question}
@@ -729,8 +720,8 @@ export function MatchingQuiz({
                   ref={(el) => { topCardRefs.current[pair.id] = el; }}
                   onMouseDown={(e) => handleTopMouseDown(e, pair.id)}
                   style={{
-                    width: pair.node ? 330 : 300,
-                    height: pair.node ? 280 : 250,
+                    width: 300,
+                    minHeight: 90,
                     borderRadius: 15,
                     backgroundImage: topCardBg,
                     boxShadow: ring
@@ -746,44 +737,22 @@ export function MatchingQuiz({
                     transform: isSelected ? "translateY(-2px)" : "translateY(0)",
                   }}
                 >
-                  {pair.node
-                    ? (
-                      <div
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          overflow: "hidden",
-                          borderRadius: 15,
-                          pointerEvents: "none",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <div style={{ transform: "scale(2.645)", transformOrigin: "center center" }}>
-                          {pair.node}
-                        </div>
-                      </div>
-                    )
-                    : pair.iconType
-                      ? renderIcon(pair.iconType)
-                      : (
-                        <p
-                          style={{
-                            fontFamily: "'Roboto Condensed', sans-serif",
-                            fontWeight: 700,
-                            color: "#f4f5fc",
-                            fontSize: 22,
-                            textAlign: "center",
-                            lineHeight: 1.2,
-                            padding: "0 20px",
-                            pointerEvents: "none",
-                          }}
-                        >
-                          {pair.term}
-                        </p>
-                      )
-                  }
+                  <p
+                    style={{
+                      fontFamily: "'Roboto Condensed', sans-serif",
+                      fontWeight: 400,
+                      color: "#f4f5fc",
+                      fontSize: 18,
+                      textAlign: "center",
+                      lineHeight: 1.3,
+                      padding: "12px 20px",
+                      pointerEvents: "none",
+                      wordBreak: "break-word",
+                      overflowWrap: "break-word",
+                    }}
+                  >
+                    {pair.term}
+                  </p>
                   {/* Connector dot — centered on bottom border */}
                   <div
                     ref={(el) => { topDotRefs.current[pair.id] = el; }}

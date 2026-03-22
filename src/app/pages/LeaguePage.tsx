@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Layout from "../components/Layout";
 import { useUserSafe } from "../context/UserContext";
 import { useAuth } from "../context/AuthContext";
@@ -16,7 +16,7 @@ interface League {
 }
 
 export const LEAGUES: League[] = [
-  { name: "Джун",         trophy: "/trophy-1.svg", color: "#6B7280", tier: 1, minXp: 0,    maxXp: 299  },
+  { name: "Джун",         trophy: "/trophy-1.svg", color: "#798589", tier: 1, minXp: 0,    maxXp: 299  },
   { name: "Мидл",         trophy: "/trophy-2.svg", color: "#CD7F32", tier: 2, minXp: 300,  maxXp: 999  },
   { name: "Сеньор",       trophy: "/trophy-3.svg", color: "#9CA3AF", tier: 3, minXp: 1000, maxXp: 2999 },
   { name: "Арт-директор", trophy: "/trophy-4.svg", color: "#FFB121", tier: 4, minXp: 3000, maxXp: null },
@@ -41,14 +41,141 @@ function seededRandom(seed: string, index: number): number {
   return (h >>> 0) / 0xffffffff;
 }
 
+// ─── Weekly XP helpers ────────────────────────────────────────────────────────
+
+const WEEK_START_KEY = 'skillum_week_start';
+const WEEK_BASE_XP_KEY = 'skillum_week_base_xp';
+
+/** Timestamp of the most recent Monday 00:00:00 local time */
+function getCurrentWeekStart(): number {
+  const now = new Date();
+  const day = now.getDay(); // 0=Sun, 1=Mon, … 6=Sat
+  const diff = day === 0 ? -6 : 1 - day;
+  const monday = new Date(now);
+  monday.setDate(now.getDate() + diff);
+  monday.setHours(0, 0, 0, 0);
+  return monday.getTime();
+}
+
+/** Returns XP earned since the start of the current week; resets base on new week. */
+function getWeeklyXp(totalXp: number): number {
+  try {
+    const weekStart = getCurrentWeekStart();
+    const storedWeekStartRaw = localStorage.getItem(WEEK_START_KEY);
+
+    // First time ever — treat all accumulated XP as earned this week
+    if (!storedWeekStartRaw) {
+      localStorage.setItem(WEEK_START_KEY, String(weekStart));
+      localStorage.setItem(WEEK_BASE_XP_KEY, '0');
+      return totalXp;
+    }
+
+    const storedWeekStart = Number(storedWeekStartRaw);
+    if (storedWeekStart !== weekStart) {
+      // New week — save current XP as base, start fresh
+      localStorage.setItem(WEEK_START_KEY, String(weekStart));
+      localStorage.setItem(WEEK_BASE_XP_KEY, String(totalXp));
+      return 0;
+    }
+
+    const baseXp = Number(localStorage.getItem(WEEK_BASE_XP_KEY) ?? '0');
+    return Math.max(0, totalXp - baseXp);
+  } catch {
+    return totalXp;
+  }
+}
+
+/** Milliseconds until next Monday 00:00 local time */
+function getMsUntilNextMonday(): number {
+  const nextMonday = getCurrentWeekStart() + 7 * 24 * 60 * 60 * 1000;
+  return Math.max(0, nextMonday - Date.now());
+}
+
+function formatCountdown(ms: number): string {
+  if (ms <= 0) return '00:00:00';
+  const totalSec = Math.floor(ms / 1000);
+  const days = Math.floor(totalSec / 86400);
+  if (days >= 1) {
+    if (days === 1) return '1 день';
+    if (days < 5) return `${days} дня`;
+    return `${days} дней`;
+  }
+  const h = Math.floor((totalSec % 86400) / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+// ─── Week timer component ─────────────────────────────────────────────────────
+
+function WeekTimer() {
+  const [info, setInfo] = useState(() => {
+    const ms = getMsUntilNextMonday();
+    return { str: formatCountdown(ms), urgent: ms < 24 * 60 * 60 * 1000 };
+  });
+
+  useEffect(() => {
+    const tick = () => {
+      const ms = getMsUntilNextMonday();
+      setInfo({ str: formatCountdown(ms), urgent: ms < 24 * 60 * 60 * 1000 });
+    };
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '5px',
+        fontFamily: 'Roboto Condensed, sans-serif',
+        fontSize: '14px',
+        fontWeight: 400,
+        color: info.urgent ? '#EF4444' : '#798589',
+      }}
+    >
+      <span style={{ fontSize: '14px', lineHeight: 1 }}>⏱</span>
+      <span>Сброс через {info.str}</span>
+    </div>
+  );
+}
+
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-const NAMES = [
-  "Аня К.", "Макс Д.", "Саша В.", "Лена П.", "Дима Н.",
-  "Катя М.", "Вася Р.", "Оля С.", "Игорь Т.", "Маша Ф.",
-  "Артём Л.", "Настя Б.", "Коля Ж.", "Света Г.", "Паша О.",
-  "Юля Х.", "Миша Ц.", "Тоня Ш.", "Рома Щ.", "Вера Э.",
-  "Боря Ю.", "Галя Я.", "Федя А.", "Зоя И.", "Никита У.",
+// pravatar.cc gender ranges (approximate)
+const FEMALE_IMGS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+const MALE_IMGS = Array.from({ length: 53 }, (_, k) => k + 18); // 18–70
+
+interface BotName { name: string; gender: 'f' | 'm'; }
+
+const BOT_NAMES: BotName[] = [
+  { name: "Александр Новиков", gender: 'm' },
+  { name: "Катя С.",           gender: 'f' },
+  { name: "dmitry_ux",         gender: 'm' },
+  { name: "Наталья К.",        gender: 'f' },
+  { name: "Лёха",              gender: 'm' },
+  { name: "designerMike",      gender: 'm' },
+  { name: "Анастасия",         gender: 'f' },
+  { name: "vlad99",            gender: 'm' },
+  { name: "Ксюша",             gender: 'f' },
+  { name: "Михаил Попов",      gender: 'm' },
+  { name: "alex.proto",        gender: 'm' },
+  { name: "Тёма",              gender: 'm' },
+  { name: "pro_nastya",        gender: 'f' },
+  { name: "Игорь Ш.",          gender: 'm' },
+  { name: "margo",             gender: 'f' },
+  { name: "Степан Б.",         gender: 'm' },
+  { name: "Зоя Белова",        gender: 'f' },
+  { name: "kreativ_dan",       gender: 'm' },
+  { name: "Юлия М.",           gender: 'f' },
+  { name: "Рустам",            gender: 'm' },
+  { name: "anya_draws",        gender: 'f' },
+  { name: "Светлана Р.",       gender: 'f' },
+  { name: "Борис К.",          gender: 'm' },
+  { name: "misha92",           gender: 'm' },
+  { name: "Екатерина Смирнова",gender: 'f' },
 ];
 
 const AVATAR_COLORS = [
@@ -65,46 +192,70 @@ interface Participant {
   isUser: boolean;
   avatarColor: string;
   avatarLetter: string;
+  avatarUrl?: string;      // photo URL (pravatar / user-selected)
+  avatarOverlay?: string;  // CSS color overlay (simulate filter, ~25% of photo bots)
 }
 
 // ─── Generate rivals ──────────────────────────────────────────────────────────
 
-function generateRivals(userId: string, userXp: number, league: League): Participant[] {
+/**
+ * Generate 24 rival bots for the weekly leaderboard.
+ * weekSeed = userId + weekStart string → bots reset each Monday.
+ * Bots' xp here is **weekly XP** (same unit as userWeeklyXp).
+ */
+function generateRivals(userId: string, userWeeklyXp: number, weekSeed: string): Participant[] {
   const rivals: Participant[] = [];
 
-  // Determine XP range for rivals (within the same league)
-  const leagueMin = league.minXp;
-  const leagueMax = league.maxXp ?? 9999;
+  // Weekly XP range for bots: spread around user's weekly XP
+  const botMax = Math.max(userWeeklyXp + 60, 100);
 
-  // Shuffle and pick 24 names deterministically
-  const namesCopy = [...NAMES];
+  // Shuffle bot names deterministically by userId (stable across the week)
+  const namesCopy = [...BOT_NAMES];
   for (let i = 0; i < 24; i++) {
     const maxI = namesCopy.length;
     const swapIdx = Math.floor(seededRandom(userId, i * 100) * maxI);
     [namesCopy[i % maxI], namesCopy[swapIdx]] = [namesCopy[swapIdx], namesCopy[i % maxI]];
   }
 
+  const OVERLAY_PALETTE = [
+    'rgba(255,107,33,0.32)',
+    'rgba(59,130,246,0.30)',
+    'rgba(139,92,246,0.30)',
+    'rgba(16,185,129,0.27)',
+    'rgba(236,72,153,0.27)',
+    'rgba(245,158,11,0.30)',
+  ];
+
   for (let i = 0; i < 24; i++) {
-    // XP: ±40% from user, but within league bounds and at least 5
-    let xpMin: number;
-    let xpMax: number;
+    // Each bot's weekly XP: seeded by weekSeed (changes every Monday)
+    const rivalXp = Math.floor(seededRandom(weekSeed, i * 7 + 3) * (botMax + 1));
 
-    if (userXp === 0) {
-      xpMin = 5;
-      xpMax = 80;
-    } else {
-      xpMin = Math.max(5, Math.max(leagueMin, Math.floor(userXp * 0.6)));
-      xpMax = Math.min(leagueMax, Math.ceil(userXp * 1.4));
-      if (xpMin > xpMax) xpMin = Math.max(5, leagueMin);
-    }
-
-    const rivalXp =
-      xpMin + Math.floor(seededRandom(userId, i * 7 + 3) * (xpMax - xpMin + 1));
-
-    const nameIndex = i % NAMES.length;
-    const name = namesCopy[nameIndex];
+    const botName = namesCopy[i % BOT_NAMES.length];
+    const name = botName.name;
+    const gender = botName.gender;
     const avatarColor = AVATAR_COLORS[Math.floor(seededRandom(userId, i * 13 + 5) * AVATAR_COLORS.length)];
     const avatarLetter = name.charAt(0).toUpperCase();
+
+    // Avatar type: 40% real photo, 35% illustrated DiceBear, 25% colored initials
+    const avatarRoll = seededRandom(userId, i * 17 + 1);
+    let avatarUrl: string | undefined;
+    let avatarOverlay: string | undefined;
+    if (avatarRoll < 0.40) {
+      // Real stock photo (gender-matched)
+      const pool = gender === 'f' ? FEMALE_IMGS : MALE_IMGS;
+      const imgIdx = pool[Math.floor(seededRandom(userId, i * 17 + 2) * pool.length)];
+      avatarUrl = `https://i.pravatar.cc/150?img=${imgIdx}`;
+      // ~25% of photos get a color overlay (Instagram-style filter)
+      const hasOverlay = seededRandom(userId, i * 17 + 3) < 0.25;
+      if (hasOverlay) {
+        const oi = Math.floor(seededRandom(userId, i * 17 + 4) * OVERLAY_PALETTE.length);
+        avatarOverlay = OVERLAY_PALETTE[oi];
+      }
+    } else if (avatarRoll < 0.75) {
+      // Illustrated DiceBear notionists avatar
+      avatarUrl = `https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(name)}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`;
+    }
+    // else: 25% — colored initial circle (no avatarUrl)
 
     rivals.push({
       id: `rival-${i}`,
@@ -113,6 +264,8 @@ function generateRivals(userId: string, userXp: number, league: League): Partici
       isUser: false,
       avatarColor,
       avatarLetter,
+      avatarUrl,
+      avatarOverlay,
     });
   }
 
@@ -166,25 +319,40 @@ function ParticipantRow({ participant, position }: { participant: Participant; p
       </div>
 
       {/* Avatar */}
-      <div
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: "50%",
-          background: participant.avatarColor,
-          flexShrink: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontFamily: "Roboto Condensed, sans-serif",
-          fontWeight: 700,
-          fontSize: "18px",
-          color: "#fff",
-          letterSpacing: "0.02em",
-        }}
-      >
-        {participant.avatarLetter}
-      </div>
+      {participant.avatarUrl ? (
+        <div style={{ position: "relative", width: 40, height: 40, borderRadius: "50%", flexShrink: 0, overflow: "hidden", background: "#3a4549" }}>
+          <img
+            src={participant.avatarUrl}
+            width={40}
+            height={40}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            loading="lazy"
+          />
+          {participant.avatarOverlay && (
+            <div style={{ position: "absolute", inset: 0, background: participant.avatarOverlay, mixBlendMode: "overlay", pointerEvents: "none" }} />
+          )}
+        </div>
+      ) : (
+        <div
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            background: participant.avatarColor,
+            flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontFamily: "Roboto Condensed, sans-serif",
+            fontWeight: 700,
+            fontSize: "18px",
+            color: "#fff",
+            letterSpacing: "0.02em",
+          }}
+        >
+          {participant.avatarLetter}
+        </div>
+      )}
 
       {/* Name */}
       <div
@@ -206,11 +374,11 @@ function ParticipantRow({ participant, position }: { participant: Participant; p
               marginLeft: "6px",
               fontSize: "12px",
               color: "#FF6B21",
-              opacity: 0.8,
+              opacity: 0.6,
               fontWeight: 400,
             }}
           >
-            (ты)
+            (вы)
           </span>
         )}
       </div>
@@ -313,7 +481,7 @@ function LeagueRightWidget({ userPosition, aboveUser, userXp, league }: {
         <div className="flex items-center gap-[10px]">
           <span style={{ fontSize: "28px", lineHeight: 1 }}>{league.emoji}</span>
           <div>
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[22px] leading-[1.2]" style={{ color: league.color }}>
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[22px] leading-[1.2]" style={{ color: league.color }}>
               {league.name}
             </p>
             <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] text-[14px]">
@@ -326,14 +494,14 @@ function LeagueRightWidget({ userPosition, aboveUser, userXp, league }: {
             <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] text-[14px] leading-[1.4]">
               До следующего места
             </p>
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[20px] leading-[1.2]" style={{ color: "#FF6B21" }}>
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[20px] leading-[1.2]" style={{ color: "#FF6B21" }}>
               +{xpToNext} XP
             </p>
           </div>
         )}
         {isFirst && (
           <div className="bg-[#282F33] rounded-[10px] p-[12px]">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[16px]" style={{ color: "#10B981" }}>
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[16px]" style={{ color: "#10B981" }}>
               🔥 Ты лидер! Удерживай позицию
             </p>
           </div>
@@ -358,7 +526,7 @@ function LeagueRightWidget({ userPosition, aboveUser, userXp, league }: {
             </p>
             <div className="flex items-center gap-[10px]">
               <span style={{ fontSize: "24px", lineHeight: 1, opacity: 0.6 }}>{next.emoji}</span>
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[18px]" style={{ color: next.color, opacity: 0.7 }}>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px]" style={{ color: next.color, opacity: 0.7 }}>
                 {next.name}
               </p>
             </div>
@@ -394,28 +562,43 @@ export default function LeaguePage() {
   const userXp = userData?.xp ?? 0;
   const league = getLeague(userXp);
 
-  // Determine user display name
+  // Weekly XP: earned since Monday 00:00 (Duolingo-style)
+  const userWeeklyXp = getWeeklyXp(userXp);
+
+  // Week seed: deterministic per user per week → bots reset each Monday
+  const weekSeed = userId + String(getCurrentWeekStart());
+
+  // Determine user display name — profile name → email → default
   const userName = (() => {
     try {
+      const profileName = localStorage.getItem("uxeo-profile-name");
+      if (profileName) return profileName;
       const email = localStorage.getItem("uxeo-user-email");
       if (email) {
-        const part = email.split("@")[0];
-        return part.charAt(0).toUpperCase() + part.slice(1);
+        const derived = email.split("@")[0];
+        const capitalized = derived.charAt(0).toUpperCase() + derived.slice(1);
+        localStorage.setItem("uxeo-profile-name", capitalized);
+        return capitalized;
       }
     } catch (_) {}
-    return "Ты";
+    // Write default so next read is consistent
+    localStorage.setItem("uxeo-profile-name", "Evgeniy");
+    return "Evgeniy";
   })();
 
-  // Build participants list
-  const rivals = generateRivals(userId, userXp, league);
+  // Build participants list (all xp values = weekly XP)
+  const rivals = generateRivals(userId, userWeeklyXp, weekSeed);
+
+  const userAvatarUrl = (() => { try { return localStorage.getItem("uxeo-profile-avatar") ?? undefined; } catch { return undefined; } })();
 
   const userParticipant: Participant = {
     id: "user",
     name: userName,
-    xp: userXp,
+    xp: userWeeklyXp,
     isUser: true,
     avatarColor: "#FF6B21",
     avatarLetter: userName.charAt(0).toUpperCase(),
+    avatarUrl: userAvatarUrl,
   };
 
   const allParticipants: Participant[] = [userParticipant, ...rivals];
@@ -432,7 +615,7 @@ export default function LeaguePage() {
       return "Ты на первом месте! Удерживай позицию! 🔥";
     }
     const aboveUser = sorted[userPosition - 2]; // person at position userPosition-1
-    const diff = aboveUser.xp - userXp;
+    const diff = aboveUser.xp - userWeeklyXp;
     return `${aboveUser.name} впереди! Заработай ${diff} XP и обойди его!`;
   })();
 
@@ -478,7 +661,7 @@ export default function LeaguePage() {
           gap: 0,
         }}
       >
-        {/* Trophy + league name */}
+        {/* Trophy + league name + timer */}
         <div
           style={{
             display: "flex",
@@ -503,6 +686,7 @@ export default function LeaguePage() {
           >
             {league.name}
           </div>
+          <WeekTimer />
         </div>
 
         {/* Motivational text */}

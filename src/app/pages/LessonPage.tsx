@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import Layout from "../components/Layout";
 import RoadmapPanel from "../components/RoadmapPanel";
 import RightWidgets from "../components/RightWidgets";
@@ -104,7 +104,7 @@ function MobileContinueButton({ onClick }: { onClick: () => void }) {
           <path d={svgPathsLightning.p1c93cf00} fill="#F7F8FC" />
         </svg>
       </div>
-      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[20px]">
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[20px]">
         Продолжить
       </p>
       <div className="bg-black/20 flex h-[24px] items-center justify-center px-[10px] rounded-full">
@@ -205,6 +205,7 @@ export default function LessonPage() {
     return result;
   }, [userData]);
 
+
   // Popup state: which lesson's popup is open
   const [popupLessonId, setPopupLessonId] = useState<number | null>(null);
 
@@ -212,13 +213,13 @@ export default function LessonPage() {
   const [scrollToLessonId, setScrollToLessonId] = useState<number | null>(null);
 
   const handleContinue = useCallback(() => {
+    // If any popup is open (opened via node click or previous continue) — close it
+    if (popupLessonId !== null) {
+      setPopupLessonId(null);
+      return;
+    }
     const currentLesson = lessons.find(l => l.status === "current");
     if (currentLesson) {
-      // If popup for this lesson is already open — close it (toggle)
-      if (popupLessonId === currentLesson.id) {
-        setPopupLessonId(null);
-        return;
-      }
       setScrollToLessonId(currentLesson.id);
     } else {
       const firstLesson = lessons[0];
@@ -244,12 +245,12 @@ export default function LessonPage() {
       }
     >
       <RoadmapPanel
-        lessons={lessons}
-        popupLessonId={popupLessonId}
-        onSelectLesson={setPopupLessonId}
-        scrollToLessonId={scrollToLessonId}
-        onScrollComplete={handleScrollComplete}
-      />
+          lessons={lessons}
+          popupLessonId={popupLessonId}
+          onSelectLesson={setPopupLessonId}
+          scrollToLessonId={scrollToLessonId}
+          onScrollComplete={handleScrollComplete}
+        />
     </Layout>
   );
 }

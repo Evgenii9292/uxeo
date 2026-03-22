@@ -47,7 +47,7 @@ export function FeedbackModal({ onClose }: { onClose: () => void }) {
 
     try {
       const res = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-3691854d/feedback/submit`,
+        `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/feedback/submit`,
         {
           method: "POST",
           headers: {
@@ -64,7 +64,7 @@ export function FeedbackModal({ onClose }: { onClose: () => void }) {
         return;
       }
       setSent(true);
-      setTimeout(handleClose, 1600);
+      setTimeout(handleClose, 4000);
     } catch (err) {
       console.error("Feedback submit error:", err);
       setServerError("Нет соединения — попробуйте позже");
@@ -95,7 +95,7 @@ export function FeedbackModal({ onClose }: { onClose: () => void }) {
       >
         {/* Header */}
         <div className="flex items-center justify-between">
-          <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[22px]">
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px]">
             Обратная связь
           </p>
           <button onClick={handleClose} className="text-[#798589] active:scale-90 transition-transform">
@@ -115,7 +115,7 @@ export function FeedbackModal({ onClose }: { onClose: () => void }) {
                 <path d="M7 12l3 3 7-7" stroke="#FF6B21" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[20px] text-center">
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[20px] text-center">
               Спасибо за отзыв!
             </p>
             <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#798589] text-[15px] text-center leading-[1.4]">
@@ -132,7 +132,7 @@ export function FeedbackModal({ onClose }: { onClose: () => void }) {
               <span style={{ fontSize: 24, lineHeight: 1, flexShrink: 0 }}>🎁</span>
               <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#f4d4c3] text-[14px] leading-[1.45]">
                 Напишите письменный отзыв — и получите{" "}
-                <span className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#FF6B21]">
+                <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#FF6B21]">
                   1 месяц бесплатной подписки
                 </span>{" "}
                 в подарок!
@@ -256,7 +256,7 @@ export function FeedbackModal({ onClose }: { onClose: () => void }) {
               ) : (
                 <span style={{ fontSize: 18 }}>🎁</span>
               )}
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[18px]">
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px]">
                 {sending ? "Отправляем..." : "Отправить и получить подарок"}
               </p>
             </button>

@@ -184,7 +184,7 @@ function LeagueProgress() {
                     </svg>
                   </div>
                 </div>
-                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[0] relative shrink-0 text-[#f1f2fb] text-[0px] text-[18px] whitespace-nowrap">
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[0] relative shrink-0 text-[#f1f2fb] text-[0px] text-[18px] whitespace-nowrap">
                   <span className="leading-[20px] text-[#798589]">{xp} / {LEAGUE_MAX} XP</span>
                 </p>
               </div>
@@ -209,18 +209,14 @@ function LeagueProgress() {
                 <p className="relative shrink-0 text-[#798589]">{LEAGUE_MAX}</p>
               </div>
             </div>
-            {/* Next league trophy (gray) or checkmark if max */}
+            {/* Current league trophy */}
             <div className="content-stretch flex h-[57px] items-center relative shrink-0">
-              {nextLeague ? (
-                <img
-                  src={nextLeague.trophy}
-                  width={32}
-                  height={32}
-                  style={{ objectFit: "contain", opacity: 0.5 }}
-                />
-              ) : (
-                <OrangeCircleCheck />
-              )}
+              <img
+                src={league.trophy}
+                width={29}
+                height={29}
+                style={{ objectFit: "contain" }}
+              />
             </div>
           </div>
         </div>
@@ -389,7 +385,7 @@ function DailyChallenge() {
                   </svg>
                 </div>
               </div>
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[0] relative shrink-0 text-[#f1f2fb] text-[0px] text-[18px] whitespace-nowrap">
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[0] relative shrink-0 text-[#f1f2fb] text-[0px] text-[18px] whitespace-nowrap">
                 <span className="leading-[20px] text-[#798589]">{xp} / {DAILY_MAX} XP</span>
               </p>
             </div>

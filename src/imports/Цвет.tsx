@@ -1,3 +1,5 @@
+import React from "react";
+
 function Paragraph() {
   return (
     <div className="absolute h-[21px] left-0 top-[8px] w-[9.297px]" data-name="Paragraph">
@@ -114,7 +116,7 @@ function Container1() {
 
 function ColorQuiz1VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz1VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz1VariantA">
       <Container1 />
     </div>
   );
@@ -245,7 +247,7 @@ function Container8() {
 
 function ColorQuiz1VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz1VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz1VariantB">
       <Container8 />
     </div>
   );
@@ -339,7 +341,7 @@ function Container15() {
 
 function ColorQuiz2VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz2VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz2VariantA">
       <Container15 />
     </div>
   );
@@ -455,7 +457,7 @@ function Container19() {
 
 function ColorQuiz2VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz2VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz2VariantB">
       <Container19 />
     </div>
   );
@@ -580,7 +582,7 @@ function Container24() {
 
 function ColorQuiz3VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz3VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz3VariantA">
       <Container24 />
     </div>
   );
@@ -705,7 +707,7 @@ function Container33() {
 
 function ColorQuiz3VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz3VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz3VariantB">
       <Container33 />
     </div>
   );
@@ -843,7 +845,7 @@ function Container42() {
 
 function ColorQuiz4VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz4VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz4VariantA">
       <Container42 />
     </div>
   );
@@ -953,7 +955,7 @@ function Container50() {
 
 function ColorQuiz4VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz4VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ColorQuiz4VariantB">
       <Container50 />
     </div>
   );
@@ -2160,34 +2162,99 @@ export default function Component() {
 // Named exports for LessonQuizPage (quiz_color visuals)
 // ─────────────────────────────────────────────────────────────────────────────
 
-// ── Compare UI — Q1 (correct=А=good) ────────────────────────────────────────
-/** Blue + grey Cancel = clear hierarchy = GOOD (А label, correct) */
+const f = "Inter, sans-serif";
+
+// ── Q1A: цветовое разделение на секции — структурировано (good, correct=А) ─
 export function CQColorCompare1A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ColorQuiz1VariantB /></div>;
+  return (
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "#f9fafb", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ background: "#eff6ff", borderRadius: 8, padding: "10px 12px" }}>
+        <span style={{ fontFamily: f, fontSize: 9, fontWeight: 600, color: "#1d4ed8", display: "block", marginBottom: 5 }}>Активные задачи</span>
+        {["Дизайн главной страницы", "Проверить отзывы"].map((t) => (
+          <div key={t} style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 3 }}>
+            <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#3b82f6", flexShrink: 0 }} />
+            <span style={{ fontFamily: f, fontSize: 8, color: "#3b82f6" }}>{t}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{ background: "#f0fdf4", borderRadius: 8, padding: "10px 12px" }}>
+        <span style={{ fontFamily: f, fontSize: 9, fontWeight: 600, color: "#15803d", display: "block", marginBottom: 5 }}>Завершено</span>
+        {["Обновить иконки", "Написать документацию"].map((t) => (
+          <div key={t} style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 3 }}>
+            <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#22c55e", flexShrink: 0 }} />
+            <span style={{ fontFamily: f, fontSize: 8, color: "#16a34a" }}>{t}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
-/** Two blue buttons = no hierarchy = BAD (Б label) */
+
+// ── Q1B: всё в одном блоке без цветового разделения (bad) ─────────────────
 export function CQColorCompare1B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ColorQuiz1VariantA /></div>;
+  return (
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 6 }}>
+      <span style={{ fontFamily: f, fontSize: 9, fontWeight: 600, color: "#9ca3af", marginBottom: 2 }}>Задачи</span>
+      {["Дизайн главной страницы", "Проверить отзывы", "Обновить иконки", "Написать документацию", "Подготовить презентацию", "Согласовать с командой"].map((t) => (
+        <div key={t} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#d1d5db", flexShrink: 0 }} />
+          <span style={{ fontFamily: f, fontSize: 8.5, color: "#9ca3af" }}>{t}</span>
+        </div>
+      ))}
+    </div>
+  );
 }
 
-// ── Compare UI — Q2 (correct=Б=good) ────────────────────────────────────────
-/** Grey error text only = error not prominent = BAD (А label) */
+// ── Q2A: заголовок того же цвета и размера — не выделяется (bad) ───────────
 export function CQColorCompare2A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ColorQuiz2VariantA /></div>;
-}
-/** Red border + red icon error = clearly visible = GOOD (Б label, correct) */
-export function CQColorCompare2B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ColorQuiz2VariantB /></div>;
+  return (
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "18px 20px", display: "flex", flexDirection: "column", gap: 7 }}>
+      <span style={{ fontFamily: f, fontSize: 10, fontWeight: 400, color: "#9ca3af" }}>Что такое цвет в дизайне</span>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#9ca3af", lineHeight: 1.65 }}>Цвет помогает организовать информацию и управлять вниманием пользователя на экране</span>
+      <div style={{ height: 6, borderRadius: 3, background: "#f3f4f6", width: "75%" }} />
+      <div style={{ height: 6, borderRadius: 3, background: "#f3f4f6", width: "55%" }} />
+    </div>
+  );
 }
 
-// ── Compare UI — Q3 (correct=А=good) ────────────────────────────────────────
-/** Unified blue+grey buttons = GOOD (А label, correct) */
-export function CQColorCompare3A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ColorQuiz3VariantB /></div>;
+// ── Q2B: крупный контрастный заголовок — сразу привлекает (good, correct=Б) ─
+export function CQColorCompare2B() {
+  return (
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "18px 20px", display: "flex", flexDirection: "column", gap: 8 }}>
+      <span style={{ fontFamily: f, fontSize: 15, fontWeight: 700, color: "#111827", letterSpacing: -0.4, lineHeight: 1.15 }}>Что такое цвет в дизайне</span>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#6b7280", lineHeight: 1.65 }}>Цвет помогает организовать информацию и управлять вниманием пользователя</span>
+      <div style={{ height: 6, borderRadius: 3, background: "#e5e7eb", width: "75%", marginTop: 2 }} />
+      <div style={{ height: 6, borderRadius: 3, background: "#e5e7eb", width: "55%" }} />
+    </div>
+  );
 }
-/** Chaotic rainbow buttons = BAD (Б label) */
+
+// ── Q3A: одна яркая кнопка — цель понятна (good, correct=А) ───────────────
+export function CQColorCompare3A() {
+  return (
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "18px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+      <span style={{ fontFamily: f, fontSize: 12, fontWeight: 600, color: "#111827", letterSpacing: -0.2 }}>Начнём учиться</span>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#6b7280", textAlign: "center", lineHeight: 1.55 }}>Более 50 уроков по дизайну интерфейсов</span>
+      <div style={{ width: "100%", background: "#3b82f6", borderRadius: 8, padding: "10px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontFamily: f, fontSize: 10, fontWeight: 600, color: "white" }}>Начать обучение</span>
+      </div>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#9ca3af" }}>Уже есть аккаунт? Войти</span>
+    </div>
+  );
+}
+
+// ── Q3B: несколько одинаковых кнопок — непонятно что главное (bad) ─────────
 export function CQColorCompare3B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ColorQuiz3VariantA /></div>;
+  return (
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 7 }}>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#9ca3af", marginBottom: 2 }}>Начнём учиться</span>
+      {["Начать обучение", "Войти", "Попробовать бесплатно", "Узнать больше"].map((label) => (
+        <div key={label} style={{ background: "#f3f4f6", borderRadius: 8, padding: "8px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ fontFamily: f, fontSize: 9, color: "#6b7280" }}>{label}</span>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 // ── Single Choice — Q4 ───────────────────────────────────────────────────────

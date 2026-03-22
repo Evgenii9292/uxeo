@@ -166,7 +166,7 @@ export function ActiveCourseCard({ course }: { course: CourseDisplay }) {
             <div style={{ width: 40, height: 36 }}><Icon /></div>
           </div>
           <div className="flex flex-col gap-[4px] min-w-0">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[22px] leading-[26px] truncate">
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px] leading-[26px] truncate">
               {course.title}
             </p>
             <BadgesRow level={course.level} modules={course.modules} lessons={course.lessons} active={true} />
@@ -198,17 +198,17 @@ export function ActiveCourseCard({ course }: { course: CourseDisplay }) {
                 <div className="flex items-center justify-center w-[20px] h-[20px] rounded-full bg-[#22c55e]">
                   <Check size={12} color="#fff" strokeWidth={3} />
                 </div>
-                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[18px] whitespace-nowrap">
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px] whitespace-nowrap">
                   Курс пройден
                 </p>
               </>
             ) : isStarted ? (
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[18px] whitespace-nowrap">
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px] whitespace-nowrap">
                 Продолжить
               </p>
             ) : (
               <>
-                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[18px] whitespace-nowrap">
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px] whitespace-nowrap">
                   Начать
                 </p>
                 <div className="bg-[#404d52] flex h-[24px] items-center justify-center px-[8px] gap-[4px] rounded-full">
@@ -249,7 +249,7 @@ export function ActiveCourseCard({ course }: { course: CourseDisplay }) {
 
           {/* Top: title + badges */}
           <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[28px] whitespace-nowrap">
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[28px] whitespace-nowrap">
               {course.title}
             </p>
             <BadgesRow level={course.level} modules={course.modules} lessons={course.lessons} active={true} />
@@ -272,17 +272,17 @@ export function ActiveCourseCard({ course }: { course: CourseDisplay }) {
                     <div className="flex items-center justify-center w-[22px] h-[22px] rounded-full bg-[#22c55e]">
                       <Check size={14} color="#fff" strokeWidth={3} />
                     </div>
-                    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
                       Курс пройден
                     </p>
                   </>
                 ) : isStarted ? (
-                  <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
                     Продолжить
                   </p>
                 ) : (
                   <>
-                    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
                       Начать
                     </p>
                     <div className="bg-[#404d52] content-stretch flex h-[28px] items-center justify-center px-[10px] gap-[4px] relative rounded-full shrink-0">
@@ -327,7 +327,7 @@ function LockedCourseCard({ course }: { course: CourseDisplay }) {
             <div style={{ width: 40, height: 36 }}><Icon /></div>
           </div>
           <div className="flex flex-col gap-[4px] min-w-0">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#798489] text-[22px] leading-[26px] truncate">
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798489] text-[22px] leading-[26px] truncate">
               {course.title}
             </p>
             <BadgesRow level={course.level} modules={course.modules} lessons={course.lessons} active={false} />
@@ -338,7 +338,7 @@ function LockedCourseCard({ course }: { course: CourseDisplay }) {
         <div className="bg-[#343e42] h-[44px] relative rounded-[12px] w-full">
           <div aria-hidden="true" className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[12px] shadow-[0px_2px_0px_0px_black]" />
           <div className="flex items-center justify-center size-full">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#798589] text-[18px] whitespace-nowrap">
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[18px] whitespace-nowrap">
               В разработке
             </p>
           </div>
@@ -370,7 +370,7 @@ function LockedCourseCard({ course }: { course: CourseDisplay }) {
 
           {/* Top: title + badges */}
           <div className="content-stretch flex flex-col gap-[19px] items-start relative shrink-0">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#798489] text-[28px] whitespace-nowrap">
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#798489] text-[28px] whitespace-nowrap">
               {course.title}
             </p>
             <BadgesRow level={course.level} modules={course.modules} lessons={course.lessons} active={false} />
@@ -380,7 +380,7 @@ function LockedCourseCard({ course }: { course: CourseDisplay }) {
           <div className="content-stretch flex flex-col items-start relative shrink-0 w-full">
             <div className="bg-[#343e42] content-stretch flex h-[55px] items-center justify-center px-[17px] py-px relative rounded-[15px] shrink-0 w-[210px]">
               <div aria-hidden="true" className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[15px] shadow-[0px_2px_0px_0px_black]" />
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#798589] text-[22px] whitespace-nowrap">
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#798589] text-[22px] whitespace-nowrap">
                 В разработке
               </p>
             </div>

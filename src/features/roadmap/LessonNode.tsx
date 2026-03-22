@@ -395,7 +395,7 @@ function renderVisual(lesson: Lesson, uid: string, hwStatus?: string | null, isU
       if (isUnseenFeedback) return <HomeworkFeedbackEllipse uid={uid} />;
       return <GreenCheckmarkEllipse uid={uid} />;
     }
-    return <HomeworkClockEllipse />;
+    return <GrayLockedEllipse icon="homework" uid={uid} />;
   }
 
   if (lesson.status === "current") {

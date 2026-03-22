@@ -219,7 +219,7 @@ function Container4() {
 
 function Lesson1Quiz1VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz1VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz1VariantA">
       <Container4 />
     </div>
   );
@@ -513,7 +513,7 @@ function Container13() {
 
 function Lesson1Quiz1VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz1VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz1VariantB">
       <Container13 />
     </div>
   );
@@ -659,7 +659,7 @@ function Container32() {
 
 function Lesson1Quiz2VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz2VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz2VariantA">
       <Container32 />
     </div>
   );
@@ -779,7 +779,7 @@ function Container39() {
 
 function Lesson1Quiz2VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz2VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz2VariantB">
       <Container39 />
     </div>
   );
@@ -961,7 +961,7 @@ function Container48() {
 
 function Lesson1Quiz3VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz3VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz3VariantA">
       <Container48 />
     </div>
   );
@@ -1158,7 +1158,7 @@ function Container58() {
 
 function Lesson1Quiz3VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz3VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz3VariantB">
       <Container58 />
     </div>
   );
@@ -3320,24 +3320,128 @@ export default function Component1UiKit() {
 // Named exports for LessonQuizPage (quiz_what_is_ui_kit — Урок 1, Модуль 3)
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Compare UI (Q1–Q3): VariantA = "А" (bad), VariantB = "Б" (good/correct)
+// ─── Quiz 1: Где используется UI Kit? ───────────────────────────────────────
 export function CQWhKitCompare1A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson1Quiz1VariantA /></div>;
+  // Плохо: кнопки разных цветов и стилей — нет системы
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, padding: "14px 16px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 9, overflow: "hidden" }}>
+        <div style={{ background: "#3b82f6", borderRadius: 4, height: 28, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ color: "white", fontSize: 10, fontFamily: "Inter, sans-serif" }}>Купить</span>
+        </div>
+        <div style={{ background: "#22c55e", borderRadius: 10, height: 24, width: "75%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ color: "white", fontSize: 10, fontFamily: "Inter, sans-serif" }}>Заказать</span>
+        </div>
+        <div style={{ background: "#8b5cf6", borderRadius: 6, height: 26, width: "85%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ color: "white", fontSize: 10, fontFamily: "Inter, sans-serif" }}>Смотреть</span>
+        </div>
+      </div>
+    </div>
+  );
 }
 export function CQWhKitCompare1B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson1Quiz1VariantB /></div>;
+  // Хорошо: единая система — Buttons / Inputs / Cards
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, padding: "12px 16px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 8, overflow: "hidden" }}>
+        <div>
+          <div style={{ color: "#8e9199", fontSize: 9, fontFamily: "Inter, sans-serif", marginBottom: 5 }}>Buttons</div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ background: "#3b82f6", borderRadius: 5, height: 28, flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ color: "white", fontSize: 10, fontFamily: "Inter, sans-serif" }}>Primary</span>
+            </div>
+            <div style={{ border: "1.5px solid #3b82f6", borderRadius: 5, height: 28, flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ color: "#3b82f6", fontSize: 10, fontFamily: "Inter, sans-serif" }}>Secondary</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style={{ color: "#8e9199", fontSize: 9, fontFamily: "Inter, sans-serif", marginBottom: 5 }}>Inputs</div>
+          <div style={{ border: "1px solid #d1d3db", borderRadius: 5, height: 28, display: "flex", alignItems: "center", padding: "0 10px" }}>
+            <span style={{ color: "#8e9199", fontSize: 10, fontFamily: "Inter, sans-serif" }}>Email</span>
+          </div>
+        </div>
+        <div>
+          <div style={{ color: "#8e9199", fontSize: 9, fontFamily: "Inter, sans-serif", marginBottom: 5 }}>Cards</div>
+          <div style={{ background: "#f7f8fc", borderRadius: 5, height: 28, display: "flex", alignItems: "center", padding: "0 10px" }}>
+            <span style={{ color: "#364146", fontSize: 10, fontFamily: "Inter, sans-serif" }}>Товар</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// ─── Quiz 2: Где компоненты единообразны? ───────────────────────────────────
 export function CQWhKitCompare2A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson1Quiz2VariantA /></div>;
+  // Плохо: одна и та же кнопка нарисована по-разному
+  const btns = [
+    { bg: "#3b82f6", r: 4,  w: "100%", h: 26 },
+    { bg: "#2563eb", r: 10, w: "80%",  h: 22 },
+    { bg: "#60a5fa", r: 6,  w: "90%",  h: 28 },
+  ];
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, padding: "14px 16px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 10, overflow: "hidden" }}>
+        {btns.map((b, i) => (
+          <div key={i} style={{ background: b.bg, borderRadius: b.r, height: b.h, width: b.w, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ color: "white", fontSize: 10, fontFamily: "Inter, sans-serif" }}>Купить</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 export function CQWhKitCompare2B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson1Quiz2VariantB /></div>;
+  // Хорошо: единый стиль кнопки — один компонент
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, padding: "14px 16px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 10, overflow: "hidden" }}>
+        {[0, 1, 2].map((i) => (
+          <div key={i} style={{ background: "#3b82f6", borderRadius: 6, height: 26, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ color: "white", fontSize: 10, fontFamily: "Inter, sans-serif" }}>Купить</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
+
+// ─── Quiz 3: Где элементы переиспользуются? ─────────────────────────────────
 export function CQWhKitCompare3A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson1Quiz3VariantA /></div>;
+  // Плохо: каждая карточка нарисована отдельно — разная структура
+  const cards = [
+    { imgColor: "#fca5a5", w: "100%", r: 4  },
+    { imgColor: "#86efac", w: "85%",  r: 8  },
+    { imgColor: "#fde68a", w: "92%",  r: 4  },
+  ];
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, padding: "14px 16px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 8, overflow: "hidden" }}>
+        {cards.map((c, i) => (
+          <div key={i} style={{ background: "#f7f8fc", borderRadius: c.r, height: 32, width: c.w, display: "flex", alignItems: "center", padding: "0 10px", gap: 8 }}>
+            <div style={{ width: 20, height: 20, background: c.imgColor, borderRadius: 3, flexShrink: 0 }} />
+            <span style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "#364146" }}>Товар {i + 1}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 export function CQWhKitCompare3B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson1Quiz3VariantB /></div>;
+  // Хорошо: один компонент — одинаковые копии
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, padding: "14px 16px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 8, overflow: "hidden" }}>
+        {[{ name: "Товар 1", color: "#fca5a5" }, { name: "Товар 2", color: "#86efac" }, { name: "Товар 3", color: "#fde68a" }].map((item) => (
+          <div key={item.name} style={{ background: "#f7f8fc", borderRadius: 6, height: 32, display: "flex", alignItems: "center", padding: "0 10px", gap: 8 }}>
+            <div style={{ width: 20, height: 20, background: item.color, borderRadius: 3, flexShrink: 0 }} />
+            <span style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "#364146" }}>{item.name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 // Single Choice (Q4–Q6)

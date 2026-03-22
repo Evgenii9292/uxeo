@@ -16,20 +16,34 @@ import AdminHomeworksPage from "./pages/AdminHomeworksPage";
 import AboutPage from "./pages/AboutPage";
 import EmailCapturePage from "./pages/EmailCapturePage";
 import LeaguePage from "./pages/LeaguePage";
+import AuthCallbackPage from "./pages/AuthCallbackPage";
+import OnboardingGoalPage from "./pages/OnboardingGoalPage";
+import OnboardingTimePage from "./pages/OnboardingTimePage";
 import { UserProvider, useUserSafe } from "./context/UserContext";
 import { LessonProvider } from "./context/LessonContext";
 import { HomeworkProvider } from "./context/HomeworkContext";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuthSafe } from "./context/AuthContext";
 import { AchievementsProvider } from "./context/AchievementsContext";
 import { AchievementOverlay } from "./components/AchievementUnlockedModal";
+import { useNotificationWatcher } from "./hooks/useNotificationWatcher";
 
-// ── HomeRedirect: онбординг → /welcome, прогресс → /lessons, иначе → /courses ──
+// ── HomeRedirect: нет auth → /welcome, нет level → /level (онбординг), иначе → courses/lessons ──
 
 function HomeRedirect() {
+  const auth = useAuthSafe();
   const userCtx = useUserSafe();
 
-  if (userCtx?.level === null || userCtx?.level === undefined) {
+  // Ждём загрузку auth
+  if (auth?.loading) return null;
+
+  // Не авторизован → страница входа
+  if (!auth?.isAuthenticated) {
     return <Navigate to="/welcome" replace />;
+  }
+
+  // Авторизован, но не прошёл онбординг → выбор уровня
+  if (!userCtx?.level) {
+    return <Navigate to="/level" replace />;
   }
 
   const hasProgress =
@@ -37,6 +51,12 @@ function HomeRedirect() {
     Object.keys(userCtx.user.lessonProgress).length > 0;
 
   return <Navigate to={hasProgress ? "/lessons" : "/courses"} replace />;
+}
+
+// Inner watcher — must be inside all context providers
+function NotificationWatcher() {
+  useNotificationWatcher();
+  return null;
 }
 
 // Root component that provides UserContext to all routes
@@ -47,6 +67,7 @@ function Root() {
         <AchievementsProvider>
           <LessonProvider>
             <HomeworkProvider>
+              <NotificationWatcher />
               <Outlet />
               <AchievementOverlay />
             </HomeworkProvider>
@@ -101,9 +122,19 @@ export const router = createBrowserRouter([
         Component: WelcomePage,
       },
       {
-        // Experience level selection — between welcome and first quiz
+        // Experience level selection — step 1 of onboarding
         path: "level",
         Component: LevelSelectPage,
+      },
+      {
+        // Onboarding: goal selection — step 2
+        path: "onboarding-goal",
+        Component: OnboardingGoalPage,
+      },
+      {
+        // Onboarding: daily time — step 3
+        path: "onboarding-time",
+        Component: OnboardingTimePage,
       },
       {
         // Quiz screen — after level selection
@@ -179,6 +210,11 @@ export const router = createBrowserRouter([
         // League page — leaderboard with rivals
         path: "league",
         Component: LeaguePage,
+      },
+      {
+        // OAuth / magic-link callback
+        path: "auth/callback",
+        Component: AuthCallbackPage,
       },
       {
         // Catch-all — redirect to home

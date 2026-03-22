@@ -3,6 +3,111 @@ import { useRef, useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import RightWidgets from "../components/RightWidgets";
 import uxeoLogo from "../../assets/uxeo-logo.svg";
+import { projectId, publicAnonKey } from "../../../utils/supabase/info";
+import { isValidEmail } from "../components/FeedbackModal";
+
+// ─── MessageModal ─────────────────────────────────────────────────────────────
+function MessageModal({ onClose }: { onClose: () => void }) {
+  const [text, setText] = useState("");
+  const [email, setEmail] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    requestAnimationFrame(() => requestAnimationFrame(() => setVisible(true)));
+  }, []);
+
+  const handleClose = () => { setVisible(false); setTimeout(onClose, 300); };
+
+  const handleSend = async () => {
+    if (!text.trim() || sending) return;
+    setSending(true); setError("");
+    try {
+      const res = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/message/send`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${publicAnonKey}` },
+          body: JSON.stringify({ text: text.trim(), email: email.trim() }),
+        }
+      );
+      if (!res.ok) throw new Error();
+      setSent(true);
+      setTimeout(handleClose, 2500);
+    } catch {
+      setError("Не удалось отправить — попробуйте ещё раз");
+      setSending(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[120] flex items-end justify-center" onClick={handleClose}>
+      <div className="absolute inset-0 bg-black/60 transition-opacity duration-300" style={{ opacity: visible ? 1 : 0 }} />
+      <div
+        className="relative w-full flex flex-col gap-[16px] p-[24px]"
+        style={{
+          background: "#2C3438",
+          borderRadius: "24px 24px 0 0",
+          maxWidth: 560,
+          paddingBottom: "max(32px, env(safe-area-inset-bottom, 32px))",
+          transform: visible ? "translateY(0)" : "translateY(100%)",
+          transition: "transform 0.32s cubic-bezier(0.32,0.72,0,1)",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[20px]">Написать нам</p>
+          <button onClick={handleClose} className="text-[#798589] active:scale-90 transition-transform">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+          </button>
+        </div>
+
+        {sent ? (
+          <div className="flex flex-col items-center gap-[12px] py-[20px]">
+            <div className="w-[60px] h-[60px] rounded-full flex items-center justify-center" style={{ background: "rgba(0,147,47,0.15)" }}>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M7 12l3 3 7-7" stroke="rgba(0,147,47,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </div>
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px] text-center">Сообщение отправлено!</p>
+            <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] text-[14px] text-center">Мы свяжемся с вами в ближайшее время.</p>
+          </div>
+        ) : (
+          <>
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Ваш вопрос или предложение..."
+              rows={5}
+              className="w-full rounded-[12px] px-[14px] py-[12px] text-[#f1f2fb] resize-none"
+              style={{ background: "#374348", border: "none", outline: "none", fontFamily: "Roboto Condensed, sans-serif", fontSize: 15, lineHeight: "1.4" }}
+            />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email для ответа (необязательно)"
+              className="w-full rounded-[12px] px-[14px] text-[#f1f2fb]"
+              style={{ background: "#374348", border: "none", outline: "none", fontFamily: "Roboto Condensed, sans-serif", fontSize: 15, height: 46 }}
+            />
+            {error && <p className="text-[#ff6b6b] text-[13px] font-['Roboto_Condensed:Regular',sans-serif]">{error}</p>}
+            <button
+              onClick={handleSend}
+              disabled={!text.trim() || sending}
+              className="w-full rounded-[14px] flex items-center justify-center gap-[8px] relative"
+              style={{ height: 52, background: text.trim() && !sending ? "#111718" : "#1E2628", opacity: text.trim() && !sending ? 1 : 0.5, cursor: text.trim() && !sending ? "pointer" : "default", boxShadow: text.trim() && !sending ? "0px 5px 0px 0px #060809" : "none", border: "1px solid #2A3438" }}
+            >
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[17px]">
+                {sending ? "Отправляем..." : "Отправить"}
+              </p>
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
 
 // ─── Stroke SVG icons (для "Что есть в Скиллум") ────────────────────────────────
 const S = { stroke: "#9ba3a8", fill: "none", strokeWidth: 1.6, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
@@ -146,7 +251,7 @@ function HeroAbout() {
 // ─── Section Title ────────────────────────────────────────────────────────────
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[22px] text-[#f4f5fc] leading-snug">
+    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[22px] text-[#f4f5fc] leading-snug">
       {children}
     </p>
   );
@@ -160,7 +265,7 @@ function ProblemCard({ icon, title, text }: { icon: string; title: string; text:
       style={{ background: "#343e42" }}
     >
       <div className="text-[26px] leading-none">{icon}</div>
-      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[16px] text-[#f4f5fc] leading-snug">{title}</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[16px] text-[#f4f5fc] leading-snug">{title}</p>
       <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[14px] text-[#798589] leading-[1.3]">{text}</p>
     </div>
   );
@@ -177,7 +282,7 @@ function FeatureRow({ icon, iconBg, title, text }: { icon: string; iconBg: strin
         {icon}
       </div>
       <div className="flex flex-col gap-[3px] pt-[2px]">
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[16px] text-[#f4f5fc]">{title}</p>
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[16px] text-[#f4f5fc]">{title}</p>
         <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[14px] text-[#798589] leading-[1.3]">{text}</p>
       </div>
     </div>
@@ -196,7 +301,7 @@ function PrimaryButton({ label, onClick }: { label: string; onClick: () => void 
           aria-hidden="true"
           className="absolute border-[#ff390d] border border-solid inset-0 pointer-events-none rounded-[14px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none"
         />
-        <span className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[20px] text-white relative">{label}</span>
+        <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[20px] text-white relative">{label}</span>
       </div>
     </button>
   );
@@ -205,9 +310,11 @@ function PrimaryButton({ label, onClick }: { label: string; onClick: () => void 
 // ─── Content ──────────────────────────────────────────────────────────────────
 function AboutContent() {
   const navigate = useNavigate();
+  const [showMessage, setShowMessage] = useState(false);
 
   return (
     <div className="flex flex-col gap-[44px] w-full">
+      {showMessage && <MessageModal onClose={() => setShowMessage(false)} />}
 
       {/* ── Hero image ── */}
       <HeroAbout />
@@ -222,14 +329,13 @@ function AboutContent() {
           <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[13px] text-[#9ba3a8]">Открытая бета</span>
         </div>
 
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[28px] text-[#f4f5fc] leading-[1.2]">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[28px] text-[#f4f5fc] leading-[1.2]">
           Скиллум — платформа, где дизайнеры прокачивают навыки через практику
         </p>
         <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[17px] text-[#798589] leading-[1.3]">
           Не просто теория, а <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">реальные задания</span>, челленджи и обратная связь от менторов
         </p>
 
-        <PrimaryButton label="Начать обучение" onClick={() => navigate("/level")} />
       </div>
 
       {/* ── Problem cards ── */}
@@ -268,7 +374,7 @@ function AboutContent() {
                 {item.icon}
               </div>
               <div>
-                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[15px] text-[#f4f5fc]">{item.title}</p>
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[15px] text-[#f4f5fc]">{item.title}</p>
                 <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[13px] text-[#798589]">{item.text}</p>
               </div>
             </div>
@@ -292,7 +398,7 @@ function AboutContent() {
               style={{ background: "#343e42" }}
             >
               <div
-                className="flex items-center justify-center w-[34px] h-[34px] rounded-full font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[16px]"
+                className="flex items-center justify-center w-[34px] h-[34px] rounded-full font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[16px]"
                 style={{ background: "#2C3438", color: "#9ba3a8" }}
               >
                 {num}
@@ -352,7 +458,7 @@ function AboutContent() {
           👨‍🏫
         </div>
         <div>
-          <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[16px] text-[#f4f5fc] mb-[4px]">Команда с опытом в образовании</p>
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[16px] text-[#f4f5fc] mb-[4px]">Команда с опытом в образовании</p>
           <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[14px] text-[#798589] leading-[1.3]">
             В команде <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">методолог</span> и преподаватель с опытом в образовательных проектах.
             Контент построен так, чтобы знания действительно закреплялись.
@@ -365,10 +471,18 @@ function AboutContent() {
         <SectionTitle>Скоро в Скиллум</SectionTitle>
         <div className="flex flex-wrap gap-[8px]">
           {[
-            { icon: <IconChatFill />,  label: "Чат сообщества" },
-            { icon: <IconMedalFill />, label: "Лиги" },
-            { icon: <IconUsersFill />, label: "Парные задания" },
-            { icon: <IconBellFill />,  label: "Уведомления" },
+            {
+              icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="#9ba3a8"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>,
+              label: "Новые курсы",
+            },
+            {
+              icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ba3a8" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+              label: "Ежедневные задачи",
+            },
+            {
+              icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="#9ba3a8"><path d="M12 2a5 5 0 100 10A5 5 0 0012 2zM12 14c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg>,
+              label: "Ментор-ревью",
+            },
           ].map(({ icon, label }) => (
             <span
               key={label}
@@ -386,17 +500,64 @@ function AboutContent() {
       <div className="flex flex-col gap-[12px]">
         <SectionTitle>Есть вопросы?</SectionTitle>
         <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[15px] text-[#798589]">
-          Напишите нам — ответим быстро
+          Ждём ваши предложения и обратную связь
         </p>
-        <div className="flex gap-[12px] flex-wrap">
+        <div className="flex gap-[10px] flex-wrap">
+          {/* Email */}
           <a
-            href="mailto:hello@uxeo.app"
-            className="flex items-center justify-center h-[46px] px-[24px] rounded-[14px] transition-colors duration-150"
+            href="mailto:Pavlov-evgenii@list.ru"
+            className="flex items-center gap-[8px] h-[46px] px-[20px] rounded-[14px] transition-colors duration-150 hover:opacity-80"
             style={{ background: "#343e42" }}
           >
-            <span className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[16px] text-[#f4f5fc]">Написать</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ba3a8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[16px] text-[#f4f5fc]">Email</span>
           </a>
-          <PrimaryButton label="Начать бесплатно" onClick={() => navigate("/level")} />
+          {/* Telegram */}
+          <a
+            href="https://t.me/Evgeniy9292"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-[8px] h-[46px] px-[20px] rounded-[14px] transition-colors duration-150 hover:opacity-80"
+            style={{ background: "#343e42" }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#9ba3a8">
+              <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/>
+            </svg>
+            <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[16px] text-[#f4f5fc]">Telegram</span>
+          </a>
+          {/* Write here */}
+          <button
+            onClick={() => setShowMessage(true)}
+            className="flex items-center gap-[8px] h-[46px] px-[20px] rounded-[14px] transition-colors duration-150 hover:opacity-80 active:opacity-70"
+            style={{ background: "#FF6B21" }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+            </svg>
+            <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[16px] text-white">Написать нам</span>
+          </button>
+        </div>
+      </div>
+
+      {/* ── Соцсети ── */}
+      <div className="flex flex-col gap-[12px]">
+        <SectionTitle>Мы в соцсетях</SectionTitle>
+        <div className="flex gap-[10px] flex-wrap">
+          {/* TG канал */}
+          <a
+            href="https://t.me/smart_des"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-[8px] h-[46px] px-[20px] rounded-[14px] transition-colors duration-150 hover:opacity-80"
+            style={{ background: "#343e42" }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#9ba3a8">
+              <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/>
+            </svg>
+            <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[16px] text-[#f4f5fc]">TG канал</span>
+          </a>
         </div>
       </div>
 
@@ -410,8 +571,6 @@ export default function AboutPage() {
     <div className="about-page size-full">
       <Layout
         title="О проекте"
-        showBack
-        backPath="/courses"
         rightContent={<RightWidgets />}
         leftWidth="660px"
         rightWidth="320px"

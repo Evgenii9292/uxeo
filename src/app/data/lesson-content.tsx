@@ -116,7 +116,7 @@ interface TextSectionProps {
 function TextSection({ emoji, title, children }: TextSectionProps) {
   return (
     <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 text-[#f1f2fb] text-[18px] w-full">
-      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium min-h-[24px] leading-[24px] relative shrink-0">
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium min-h-[24px] leading-[24px] relative shrink-0">
         {emoji} {title}
       </p>
       <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[24px] min-w-full opacity-80 relative shrink-0 flex flex-col gap-[8px]">

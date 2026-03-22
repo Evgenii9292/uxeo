@@ -1,5 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { ReactNode } from "react";
+
+// ─── Shared notification count (localStorage) ─────────────────────────────────
+export const NOTIF_COUNT_KEY = "skillum_notif_unread_count";
+export const NOTIF_INITIAL_UNREAD = 8; // DATA items with isRead: false
+
+import {
+  getEvents,
+  markEventRead,
+  markEventUnread,
+  deleteEvent,
+  clearAllEvents,
+  formatNotifTime,
+  type NotifEvent,
+} from "../utils/notificationStore";
+import {
+  fetchServerNotifs,
+  markServerNotifRead,
+  deleteServerNotif,
+  type ServerNotif,
+} from "../utils/serverNotifications";
 import { useNavigate } from "react-router";
 import Layout from "../components/Layout";
 import { useHomeworkSafe } from "../context/HomeworkContext";
@@ -45,28 +65,11 @@ const DATA: NotifData[] = [
   { id: 25, date: "earlier",   isRead: true,  hasAction: true  },
 ];
 
-// ─── Description text style — opacity reduced to 60% for visual hierarchy ─────
-const T = "font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[20px] opacity-60 relative shrink-0 text-[#f1f7fb] text-[16px]";
-
-// ─── Title style helper — unread: 22px Medium, read: 22px Regular ─────────────
-const titleFont = (isRead: boolean) =>
-  isRead
-    ? "font-['Roboto_Condensed:Regular',sans-serif] font-normal"
-    : "font-['Roboto_Condensed:Medium',sans-serif] font-medium";
-const TITLE_SIZE = "leading-[26px] text-[22px]";
-const TITLE_EMOJI = "leading-[26px] text-[20px]";
-
 // ─── Shared: dot indicator (visual only) ─────────────────────────────────────
 
 function DotIndicator({ isRead }: { isRead: boolean }) {
   return (
-    <div className="h-[25px] relative shrink-0 w-[11px]">
-      <div className="absolute inset-[0_-9.09%_-4%_-9.09%]">
-        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 13 26">
-          <circle cx="6.5" cy="19.5" fill={isRead ? "#2D3539" : "#FE6B21"} r="6.5" />
-        </svg>
-      </div>
-    </div>
+    <div style={{ width: 9, height: 9, borderRadius: '50%', background: isRead ? '#2D3539' : '#FE6B21' }} />
   );
 }
 
@@ -77,73 +80,31 @@ function ChevronRight() {
     <div className="h-[14px] relative shrink-0 w-[6px]">
       <div className="absolute inset-[0_0_0_-12.5%]">
         <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 6.75 14">
-          <path d={svgPaths.p8df6480} stroke="#91989B" strokeLinecap="round" strokeWidth="1.5" />
+          <path d={svgPaths.p8df6480} stroke="#596367" strokeLinecap="round" strokeWidth="1.5" />
         </svg>
       </div>
     </div>
   );
 }
 
-// ─── Shared: action link row ─────────────────────────────────────────────────
-
-function ActionRow({ text, onPress }: { text: string; onPress: () => void }) {
-  return (
-    <div
-      className="content-stretch flex flex-wrap gap-y-[5px] items-center justify-between relative shrink-0 w-full cursor-pointer"
-      onClick={e => { e.stopPropagation(); onPress(); }}
-    >
-      <div className="h-[20px] shrink-0 w-[29px]" />
-      <div className="content-stretch flex gap-[7px] items-center justify-end relative shrink-0">
-        <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[20px] opacity-80 relative shrink-0 text-[#f1f7fb] text-[16px] whitespace-nowrap">
-          {text}
-        </p>
-        <ChevronRight />
-      </div>
-    </div>
-  );
-}
 
 // ─── Inline icons ─────────────────────────────────────────────────────────────
 
 function ZapGradient() {
   return (
-    <div className="h-[22.727px] relative shrink-0 w-[20px]">
-      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 20 22.7273">
-        <path d={svgPaths.p1a019900} fill="url(#zap_g_notif)" />
-        <defs>
-          <linearGradient gradientUnits="userSpaceOnUse" id="zap_g_notif" x1="8.41731" x2="-2.65802" y1="9.74135" y2="25.2763">
-            <stop stopColor="#FF6B21" />
-            <stop offset="1" stopColor="#994014" />
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
+    <img src="/zap-icon.svg" width={16} height={18} className="shrink-0" style={{ display: 'block', objectFit: 'contain', filter: 'brightness(0) saturate(100%) invert(49%) sepia(79%) saturate(1117%) hue-rotate(348deg) brightness(103%)' }} />
   );
 }
 
 function ZapWhite() {
   return (
-    <div className="h-[22.727px] relative shrink-0 w-[20px]">
-      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 20 22.7273">
-        <path d={svgPaths.p1a019900} fill="#F4F5FC" />
-      </svg>
-    </div>
+    <img src="/zap-icon.svg" width={16} height={18} className="shrink-0" style={{ display: 'block', objectFit: 'contain', filter: 'brightness(0) saturate(100%) invert(49%) sepia(79%) saturate(1117%) hue-rotate(348deg) brightness(103%)' }} />
   );
 }
 
 function FireInline() {
   return (
-    <div className="h-[24.432px] relative shrink-0 w-[16.765px]">
-      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16.7655 24.4324">
-        <path d={svgPaths.p33094f0} fill="url(#fire_g_notif)" />
-        <defs>
-          <linearGradient gradientUnits="userSpaceOnUse" id="fire_g_notif" x1="8.38273" x2="8.38273" y1="0" y2="24.4324">
-            <stop stopColor="#FFB121" />
-            <stop offset="1" stopColor="#BB8116" />
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
+    <img src="/fire-icon.svg" width={16} height={18} className="shrink-0" style={{ display: 'block', objectFit: 'contain', filter: 'brightness(0) saturate(100%) invert(72%) sepia(76%) saturate(751%) hue-rotate(357deg) brightness(102%)' }} />
   );
 }
 
@@ -251,10 +212,12 @@ function FilterBar({
   active,
   unreadCount,
   onChange,
+  onDeleteAll,
 }: {
   active: Filter;
   unreadCount: number;
   onChange: (f: Filter) => void;
+  onDeleteAll: () => void;
 }) {
   const tab = (f: Filter, label: string, badge?: ReactNode) => (
     <div
@@ -263,7 +226,7 @@ function FilterBar({
       style={{ background: active === f ? "#404d52" : "#323d41" }}
       onClick={() => onChange(f)}
     >
-      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[18px] whitespace-nowrap" style={{ color: "rgba(244,245,252,0.7)" }}>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[18px] whitespace-nowrap" style={{ color: "rgba(244,245,252,0.7)" }}>
         {label}
       </p>
       {badge}
@@ -273,7 +236,7 @@ function FilterBar({
   const badge = unreadCount > 0 ? (
     <div className="bg-[#fe6b21] h-[24px] relative rounded-[12296925px] shrink-0">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex h-full items-center justify-center px-[6px] relative">
-        <p className="font-['Inter:Extra_Bold',sans-serif] font-extrabold leading-[15.392px] not-italic relative shrink-0 text-[#2c3538] text-[12px] whitespace-nowrap">
+        <p className="font-['Inter:Extra_Bold',sans-serif] font-medium leading-[15.392px] not-italic relative shrink-0 text-[#2c3538] text-[12px] whitespace-nowrap">
           {unreadCount}
         </p>
       </div>
@@ -281,17 +244,28 @@ function FilterBar({
   ) : undefined;
 
   return (
-    // Horizontal scroll — tabs don't fit on narrow mobile screens
-    <div
-      className="flex gap-[10px] h-[40px] items-start w-full"
-      style={{ overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
-    >
-      <style>{`.notif-filter-bar::-webkit-scrollbar { display: none; }`}</style>
-      {tab("all", "Все")}
-      {tab("unread", "Непрочитанные", badge)}
-      {tab("action", "Требуют действия", <WarningIcon />)}
+    <div className="flex gap-[10px] h-[40px] items-center w-full">
+      {/* Scrollable tabs */}
+      <div
+        className="flex gap-[10px] h-full items-start flex-1 min-w-0"
+        style={{ overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
+      >
+        {tab("all", "Все")}
+        {tab("unread", "Непрочитанные", badge)}
+        {tab("action", "Требуют действия", <WarningIcon />)}
+      </div>
+      {/* Delete all button */}
+      <button
+        onClick={onDeleteAll}
+        className="shrink-0 flex items-center justify-center rounded-[13.846px] cursor-pointer transition-opacity hover:opacity-70 active:opacity-50"
+        style={{ width: 40, height: 40, background: "#323d41", border: "none" }}
+        title="Удалить все"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="#798589" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
     </div>
-    // Divider removed (was below tabs)
   );
 }
 
@@ -304,33 +278,58 @@ interface CardShellProps {
   hasAction?: boolean;
   onToggleRead: () => void;
   onOpen: () => void;
-  children: ReactNode;
+  time: string;
+  subtitle?: string;
+  actionText?: string;
+  onAction?: () => void;
+  children: ReactNode; // title content
 }
 
-function CardShell({ isRead, hasAction = true, onToggleRead, onOpen, children }: CardShellProps) {
-  const bg = isRead ? "bg-[#343e42]" : "bg-[#404d52]";
-  const clickStyle = hasAction
-    ? "cursor-pointer hover:brightness-105 active:brightness-95"
-    : "cursor-default";
+function CardShell({ isRead, hasAction = true, onToggleRead, onOpen, time, subtitle, actionText, onAction, children }: CardShellProps) {
+  const MUTED = "#596367";
   return (
     <div
-      className={`${bg} content-stretch flex flex-col items-center p-[20px] relative rounded-[15px] shrink-0 w-full transition-all ${clickStyle}`}
-      onClick={onOpen}
+      className={`group relative w-full ${hasAction ? 'cursor-pointer' : ''}`}
+      onClick={hasAction ? onOpen : undefined}
     >
-      <div className="content-stretch flex gap-[16px] items-center justify-center relative shrink-0 w-full">
-        {/* Clickable status dot — aligns to top (Fix #13) */}
+      {hasAction && (
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: '#2A3236' }} />
+      )}
+      <div className="relative flex items-stretch py-[20px]">
+        {/* Status dot */}
         <button
-          className="shrink-0 outline-none bg-transparent border-none cursor-pointer self-start mt-[4px]"
+          className="shrink-0 outline-none bg-transparent border-none cursor-pointer"
+          style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }}
           onClick={e => { e.stopPropagation(); onToggleRead(); }}
-          aria-label={isRead ? "Отметить как непрочитанное" : "Отметить как прочитанное"}
-          title={isRead ? "Отметить как непрочитанное" : "Отметить как прочитанное"}
+          aria-label={isRead ? 'Отметить как непрочитанное' : 'Отметить как прочитанное'}
+          title={isRead ? 'Отметить как непрочитанное' : 'Отметить как прочитанное'}
         >
           <DotIndicator isRead={isRead} />
         </button>
-
-        {/* Card body */}
-        <div className="content-stretch flex flex-col gap-[20px] items-start relative self-stretch shrink-0 flex-1 min-w-0">
-          {children}
+        {/* Left: title + subtitle */}
+        <div className="flex-1 min-w-0 flex flex-col gap-[5px]">
+          <div style={{ opacity: isRead ? 0.5 : 1 }}>
+            {children}
+          </div>
+          {subtitle && (
+            <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[16px] leading-[20px]" style={{ color: MUTED }}>
+              {subtitle}
+            </p>
+          )}
+        </div>
+        {/* Right: time + action */}
+        <div className="shrink-0 self-stretch flex flex-col justify-between items-end" style={{ marginLeft: 16 }}>
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[14px] leading-[20px] whitespace-nowrap" style={{ color: MUTED }}>{time}</p>
+          {actionText && (
+            <button
+              className="flex items-center gap-[6px] border-none bg-transparent outline-none cursor-pointer shrink-0"
+              style={{ color: MUTED }}
+              onClick={e => { e.stopPropagation(); onAction?.(); }}
+            >
+              <span className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[14px] whitespace-nowrap">{actionText}</span>
+              <ChevronRight />
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -350,18 +349,14 @@ interface CardProps {
 // Card 1 — Проверена ваша работа 📝
 function Card1({ isRead, onToggleRead, onOpen, onAction, hasAction }: CardProps) {
   return (
-    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}>
-      <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
-        <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-          <p className={`${titleFont(isRead)} leading-[0] relative shrink-0 text-[#f4f5fc] text-[0px] whitespace-nowrap`}>
-            <span className={TITLE_SIZE}>Проверена ваша работа </span>
-            <span className={TITLE_EMOJI}>📝</span>
-          </p>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">9:14</p>
-        </div>
-        <p className={`${T} w-full`}>Мы оставили фидбек по заданию «Интерфейс приложения здоровья»</p>
-      </div>
-      {onAction && <ActionRow text="Смотреть фидбек" onPress={onAction} />}
+    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}
+      time="9:14"
+      subtitle="Мы оставили фидбек по заданию «Интерфейс приложения здоровья»"
+      actionText={onAction ? "Смотреть фидбек" : undefined} onAction={onAction}>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[0] text-[#f4f5fc] text-[0px] whitespace-nowrap">
+        <span className="leading-[22px] text-[18px]">Проверена ваша работа </span>
+        <span className="leading-[22px] text-[20px]">📝</span>
+      </p>
     </CardShell>
   );
 }
@@ -369,21 +364,14 @@ function Card1({ isRead, onToggleRead, onOpen, onAction, hasAction }: CardProps)
 // Card 2 — Новые 🎨 недельные вызовы
 function Card2({ isRead, onToggleRead, onOpen, onAction, hasAction }: CardProps) {
   return (
-    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}>
-      <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
-        <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-          <div className="content-stretch flex gap-[12px] items-center relative shrink-0">
-            <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[#f4f5fc] whitespace-nowrap`}>Новые </p>
-            <div className="content-stretch flex gap-[9px] items-center relative shrink-0">
-              <PencilInline />
-              <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[#f1f7fb] whitespace-nowrap`}>недельные вызовы</p>
-            </div>
-          </div>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">18:15</p>
-        </div>
-        <p className={`${T} w-full`}>Доступны 3 новых задания</p>
+    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}
+      time="18:15" subtitle="Доступны 3 новых задания"
+      actionText={onAction ? "Смотреть задания" : undefined} onAction={onAction}>
+      <div className="flex gap-[5px] items-center">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc] whitespace-nowrap">Новые </p>
+        <PencilInline />
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f1f7fb] whitespace-nowrap">недельные вызовы</p>
       </div>
-      {onAction && <ActionRow text="Смотреть здания" onPress={onAction} />}
     </CardShell>
   );
 }
@@ -391,19 +379,12 @@ function Card2({ isRead, onToggleRead, onOpen, onAction, hasAction }: CardProps)
 // Card 3 — Вы получили ⚡ 1250 XP (no action link — not clickable, Fix #14)
 function Card3({ isRead, onToggleRead, onOpen, hasAction }: CardProps) {
   return (
-    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}>
-      <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
-        <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-          <div className="content-stretch flex gap-[9px] items-center relative shrink-0">
-            <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[#f4f5fc] whitespace-nowrap`}>Вы получили </p>
-            <ZapGradient />
-            <p className={`bg-clip-text ${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[transparent] whitespace-nowrap`} style={{ backgroundImage: "linear-gradient(193.285deg, rgb(255,107,33) 48.665%, rgb(153,64,20) 112.02%)" }}>
-              1250 XP
-            </p>
-          </div>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">17:15</p>
-        </div>
-        <p className={`${T} w-full`}>Отличная работа!</p>
+    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}
+      time="17:15" subtitle="Отличная работа!">
+      <div className="flex gap-[5px] items-center">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc] whitespace-nowrap">Вы получили </p>
+        <ZapGradient />
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] whitespace-nowrap" style={{ background: "linear-gradient(193deg,#ff6b21 49%,#994014 112%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>1250 XP</p>
       </div>
     </CardShell>
   );
@@ -412,21 +393,14 @@ function Card3({ isRead, onToggleRead, onOpen, hasAction }: CardProps) {
 // Card 4 — Вы перешли в ⭐ лигу Silver
 function Card4({ isRead, onToggleRead, onOpen, onAction, hasAction }: CardProps) {
   return (
-    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}>
-      <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
-        <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-          <div className="content-stretch flex gap-[9px] items-center relative shrink-0">
-            <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[#f4f5fc] whitespace-nowrap`}>Вы перешли в </p>
-            <div className="content-stretch flex gap-[9px] items-center relative shrink-0">
-              <LeagueStarIcon />
-              <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[#f4f5fc] whitespace-nowrap`}>лигу Silver</p>
-            </div>
-          </div>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">3 мар</p>
-        </div>
-        <p className={`${T} w-full`}>Продолжайте обучение!</p>
+    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}
+      time="3 мар" subtitle="Продолжайте обучение!"
+      actionText={onAction ? "Продолжить обучение" : undefined} onAction={onAction}>
+      <div className="flex gap-[5px] items-center">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc] whitespace-nowrap">Вы перешли в </p>
+        <LeagueStarIcon />
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc] whitespace-nowrap">лигу Silver</p>
       </div>
-      {onAction && <ActionRow text="Продолжить обучение" onPress={onAction} />}
     </CardShell>
   );
 }
@@ -434,19 +408,12 @@ function Card4({ isRead, onToggleRead, onOpen, onAction, hasAction }: CardProps)
 // Card 5 — Вы не занимались 🔥 сегодня (no action link — not clickable, Fix #14)
 function Card5({ isRead, onToggleRead, onOpen, hasAction }: CardProps) {
   return (
-    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}>
-      <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
-        <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-          <div className="content-stretch flex gap-[9px] items-center relative shrink-0">
-            <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[#f4f5fc] whitespace-nowrap`}>Вы не занимались</p>
-            <div className="content-stretch flex gap-[9px] items-center relative shrink-0">
-              <FireInline />
-              <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[#f4f5fc] whitespace-nowrap`}>сегодня</p>
-            </div>
-          </div>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">3 мар</p>
-        </div>
-        <p className={`${T} w-full`}>Серия из 5 дней может прерваться</p>
+    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}
+      time="3 мар" subtitle="Серия из 5 дней может прерваться">
+      <div className="flex gap-[5px] items-center">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc] whitespace-nowrap">Вы не занимались</p>
+        <FireInline />
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc] whitespace-nowrap">сегодня</p>
       </div>
     </CardShell>
   );
@@ -455,29 +422,12 @@ function Card5({ isRead, onToggleRead, onOpen, hasAction }: CardProps) {
 // Card 6 — Доступен новый модуль UX-исследования
 function Card6({ isRead, onToggleRead, onOpen, onAction }: CardProps) {
   return (
-    <CardShell isRead={isRead} onToggleRead={onToggleRead} onOpen={onOpen}>
-      <div className="content-stretch flex flex-col items-start relative shrink-0 w-full">
-        <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-          <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[#f4f5fc] flex-1 min-w-0 pr-[8px]`}>
-            Доступен новый модуль UX-исследования
-          </p>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">2 мар</p>
-        </div>
-      </div>
-      <div
-        className="content-end flex flex-wrap gap-y-[5px] items-end justify-between relative shrink-0 w-full cursor-pointer"
-        onClick={e => { e.stopPropagation(); onAction?.(); }}
-      >
-        <div className="content-stretch flex items-end relative shrink-0">
-          <ModuleThumb />
-        </div>
-        <div className="content-stretch flex gap-[7px] items-center justify-end relative shrink-0">
-          <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] opacity-80 relative shrink-0 text-[#f1f7fb] text-[18px] whitespace-nowrap">
-            Начать модуль
-          </p>
-          <ChevronRight />
-        </div>
-      </div>
+    <CardShell isRead={isRead} onToggleRead={onToggleRead} onOpen={onOpen}
+      time="2 мар"
+      actionText={onAction ? "Начать модуль" : undefined} onAction={onAction}>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc]">
+        Доступен новый модуль UX-исследования
+      </p>
     </CardShell>
   );
 }
@@ -485,21 +435,14 @@ function Card6({ isRead, onToggleRead, onOpen, onAction }: CardProps) {
 // Card 7 — Вы начали задание ⚡
 function Card7({ isRead, onToggleRead, onOpen, onAction }: CardProps) {
   return (
-    <CardShell isRead={isRead} onToggleRead={onToggleRead} onOpen={onOpen}>
-      <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
-        <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-          <div className="content-stretch flex gap-[9px] items-center relative shrink-0">
-            <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[#f4f5fc] whitespace-nowrap`}>Вы начали задание</p>
-            <ZapWhite />
-          </div>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">2 мар</p>
-        </div>
-        <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] opacity-60 relative shrink-0 text-[#f1f7fb] text-[18px] w-full">
-          <p className="mb-0">«Интерфейс приложения здоровья».</p>
-          <p>Не забудьте закончить его</p>
-        </div>
+    <CardShell isRead={isRead} onToggleRead={onToggleRead} onOpen={onOpen}
+      time="2 мар"
+      subtitle="«Интерфейс приложения здоровья». Не забудьте закончить его"
+      actionText={onAction ? "Продолжить задание" : undefined} onAction={onAction}>
+      <div className="flex gap-[5px] items-center">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc] whitespace-nowrap">Вы начали задание</p>
+        <ZapWhite />
       </div>
-      {onAction && <ActionRow text="Продолжить задание" onPress={onAction} />}
     </CardShell>
   );
 }
@@ -510,19 +453,11 @@ function Card7({ isRead, onToggleRead, onOpen, onAction }: CardProps) {
 // XP reward card (parameterized amount)
 function CardXP({ isRead, onToggleRead, onOpen, hasAction, amount, description, time }: CardProps & { amount: number; description: string; time: string }) {
   return (
-    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}>
-      <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
-        <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-          <div className="content-stretch flex gap-[9px] items-center relative shrink-0">
-            <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[#f4f5fc] whitespace-nowrap`}>Вы получили </p>
-            <ZapGradient />
-            <p className={`bg-clip-text ${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[transparent] whitespace-nowrap`} style={{ backgroundImage: "linear-gradient(193.285deg, rgb(255,107,33) 48.665%, rgb(153,64,20) 112.02%)" }}>
-              {amount} XP
-            </p>
-          </div>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">{time}</p>
-        </div>
-        <p className={`${T} w-full`}>{description}</p>
+    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen} time={time} subtitle={description}>
+      <div className="flex gap-[5px] items-center">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc] whitespace-nowrap">Вы получили </p>
+        <ZapGradient />
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] whitespace-nowrap" style={{ background: "linear-gradient(193deg,#ff6b21 49%,#994014 112%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{amount} XP</p>
       </div>
     </CardShell>
   );
@@ -531,16 +466,12 @@ function CardXP({ isRead, onToggleRead, onOpen, hasAction, amount, description, 
 // Answer streak card (parameterized streak count)
 function CardStreak({ isRead, onToggleRead, onOpen, hasAction, count, description, time }: CardProps & { count: number; description: string; time: string }) {
   return (
-    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}>
-      <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
-        <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-          <div className="content-stretch flex gap-[9px] items-center relative min-w-0 flex-1 pr-[8px]">
-            <FireInline />
-            <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[#f4f5fc] min-w-0 overflow-hidden`} style={{ whiteSpace: "nowrap", textOverflow: "ellipsis" }}>Серия {count} правильных ответов</p>
-          </div>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">{time}</p>
-        </div>
-        <p className={`${T} w-full`}>{description}</p>
+    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen} time={time} subtitle={description}>
+      <div className="flex gap-[5px] items-center min-w-0">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc] whitespace-nowrap shrink-0">Серия</p>
+        <FireInline />
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] whitespace-nowrap shrink-0" style={{ background: 'linear-gradient(193deg,#FFB121 49%,#BB8116 112%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{count}</p>
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc] whitespace-nowrap overflow-hidden text-ellipsis">правильных ответов</p>
       </div>
     </CardShell>
   );
@@ -549,18 +480,13 @@ function CardStreak({ isRead, onToggleRead, onOpen, hasAction, count, descriptio
 // Lesson completion card (parameterized lesson name)
 function CardLessonComplete({ isRead, onToggleRead, onOpen, onAction, hasAction, lessonName, time }: CardProps & { lessonName: string; time: string }) {
   return (
-    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}>
-      <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
-        <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-          <p className={`${titleFont(isRead)} leading-[0] relative shrink-0 text-[#f4f5fc] text-[0px]`}>
-            <span className={TITLE_SIZE}>Вы завершили урок «{lessonName}» </span>
-            <span className={TITLE_EMOJI}>🎓</span>
-          </p>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">{time}</p>
-        </div>
-        <p className={`${T} w-full`}>Отличная работа! Продолжайте обучение</p>
-      </div>
-      {onAction && <ActionRow text="Следующий урок" onPress={onAction} />}
+    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}
+      time={time} subtitle="Отличная работа! Продолжайте обучение"
+      actionText={onAction ? "Следующий урок" : undefined} onAction={onAction}>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[0] text-[#f4f5fc] text-[0px]">
+        <span className="leading-[22px] text-[18px]">Вы завершили урок «{lessonName}» </span>
+        <span className="leading-[22px] text-[20px]">🎓</span>
+      </p>
     </CardShell>
   );
 }
@@ -568,15 +494,10 @@ function CardLessonComplete({ isRead, onToggleRead, onOpen, onAction, hasAction,
 // Reminder card (parameterized title + description)
 function CardReminder({ isRead, onToggleRead, onOpen, onAction, hasAction, title, description, time }: CardProps & { title: string; description: string; time: string }) {
   return (
-    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}>
-      <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
-        <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-          <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[#f4f5fc] flex-1 min-w-0`}>{title}</p>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">{time}</p>
-        </div>
-        <p className={`${T} w-full`}>{description}</p>
-      </div>
-      {onAction && <ActionRow text="Продолжить обучение" onPress={onAction} />}
+    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}
+      time={time} subtitle={description}
+      actionText={onAction ? "Продолжить обучение" : undefined} onAction={onAction}>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc]">{title}</p>
     </CardShell>
   );
 }
@@ -584,18 +505,13 @@ function CardReminder({ isRead, onToggleRead, onOpen, onAction, hasAction, title
 // New content card (parameterized title)
 function CardNewContent({ isRead, onToggleRead, onOpen, onAction, hasAction, title, description, time }: CardProps & { title: string; description?: string; time: string }) {
   return (
-    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}>
-      <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
-        <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-          <div className="content-stretch flex gap-[9px] items-center relative shrink-0">
-            <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[#f4f5fc] whitespace-nowrap`}>{title}</p>
-            <PencilInline />
-          </div>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">{time}</p>
-        </div>
-        {description && <p className={`${T} w-full`}>{description}</p>}
+    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}
+      time={time} subtitle={description}
+      actionText={onAction ? "Посмотреть" : undefined} onAction={onAction}>
+      <div className="flex gap-[5px] items-center">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc] whitespace-nowrap">{title}</p>
+        <PencilInline />
       </div>
-      {onAction && <ActionRow text="Посмотреть" onPress={onAction} />}
     </CardShell>
   );
 }
@@ -603,18 +519,13 @@ function CardNewContent({ isRead, onToggleRead, onOpen, onAction, hasAction, tit
 // Task card (parameterized)
 function CardTask({ isRead, onToggleRead, onOpen, onAction, hasAction, title, description, time }: CardProps & { title: string; description?: string; time: string }) {
   return (
-    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}>
-      <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
-        <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-          <p className={`${titleFont(isRead)} leading-[0] relative shrink-0 text-[#f4f5fc] text-[0px]`}>
-            <span className={TITLE_SIZE}>{title} </span>
-            <span className={TITLE_EMOJI}>📝</span>
-          </p>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">{time}</p>
-        </div>
-        {description && <p className={`${T} w-full`}>{description}</p>}
-      </div>
-      {onAction && <ActionRow text="Посмотреть" onPress={onAction} />}
+    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}
+      time={time} subtitle={description}
+      actionText={onAction ? "Посмотреть" : undefined} onAction={onAction}>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[0] text-[#f4f5fc] text-[0px]">
+        <span className="leading-[22px] text-[18px]">{title} </span>
+        <span className="leading-[22px] text-[20px]">📝</span>
+      </p>
     </CardShell>
   );
 }
@@ -622,14 +533,8 @@ function CardTask({ isRead, onToggleRead, onOpen, onAction, hasAction, title, de
 // Social card (parameterized)
 function CardSocial({ isRead, onToggleRead, onOpen, hasAction, title, description, time }: CardProps & { title: string; description?: string; time: string }) {
   return (
-    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}>
-      <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
-        <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-          <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[#f4f5fc] flex-1 min-w-0`}>{title}</p>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">{time}</p>
-        </div>
-        {description && <p className={`${T} w-full`}>{description}</p>}
-      </div>
+    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen} time={time} subtitle={description}>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc]">{title}</p>
     </CardShell>
   );
 }
@@ -637,18 +542,13 @@ function CardSocial({ isRead, onToggleRead, onOpen, hasAction, title, descriptio
 // ─── Module completion card ───────────────────────────────────────────────────
 function CardModuleComplete({ isRead, onToggleRead, onOpen, onAction, hasAction, moduleName, time }: CardProps & { moduleName: string; time: string }) {
   return (
-    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}>
-      <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
-        <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-          <div className="content-stretch flex gap-[9px] items-center relative shrink-0">
-            <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 text-[#f4f5fc] whitespace-nowrap`}>Вы завершили модуль</p>
-            <LeagueStarIcon />
-          </div>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">{time}</p>
-        </div>
-        <p className={`${T} w-full`}>{moduleName}</p>
+    <CardShell isRead={isRead} hasAction={hasAction} onToggleRead={onToggleRead} onOpen={onOpen}
+      time={time} subtitle={moduleName}
+      actionText={onAction ? "Следующий модуль →" : undefined} onAction={onAction}>
+      <div className="flex gap-[5px] items-center">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc] whitespace-nowrap">Вы завершили модуль</p>
+        <LeagueStarIcon />
       </div>
-      {onAction && <ActionRow text="Следующий модуль →" onPress={onAction} />}
     </CardShell>
   );
 }
@@ -678,14 +578,465 @@ function EmptyState() {
 
 function DateGroup({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="content-stretch flex flex-col gap-[15px] items-start relative shrink-0 w-full">
-      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#798589] text-[16px] whitespace-nowrap">
-        {label}
-      </p>
-      <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 w-full">
+    <div className="flex flex-col w-full">
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[16px] leading-[20px] mb-[8px]">{label}</p>
+      <div className="flex flex-col divide-y divide-[#31393D]">
         {children}
       </div>
     </div>
+  );
+}
+
+// ─── Real events hook (localStorage) ─────────────────────────────────────────
+
+function useNotifEvents() {
+  const [events, setEvents] = useState<NotifEvent[]>(() => getEvents());
+  useEffect(() => {
+    const refresh = () => setEvents(getEvents());
+    window.addEventListener('notif-events-change', refresh);
+    return () => window.removeEventListener('notif-events-change', refresh);
+  }, []);
+  return { events, refresh: () => setEvents(getEvents()) };
+}
+
+// ─── Server notifications hook (Supabase) ────────────────────────────────────
+
+function useServerNotifications() {
+  const userId = typeof localStorage !== "undefined"
+    ? (localStorage.getItem("uxeo-user-id") ?? "")
+    : "";
+  const [notifs, setNotifs] = useState<ServerNotif[]>([]);
+
+  useEffect(() => {
+    if (!userId) return;
+    fetchServerNotifs(userId).then(setNotifs);
+  }, [userId]);
+
+  const markRead = (id: string) => {
+    setNotifs(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    markServerNotifRead(id, userId);
+  };
+
+  const remove = (id: string) => {
+    setNotifs(prev => prev.filter(n => n.id !== id));
+    deleteServerNotif(id, userId);
+  };
+
+  return { notifs, markRead, remove };
+}
+
+// ─── Server notification card ─────────────────────────────────────────────────
+
+function ServerNotifCard({
+  notif,
+  filter,
+  onRead,
+  onDelete,
+}: {
+  notif: ServerNotif;
+  filter: string;
+  onRead: (id: string) => void;
+  onDelete: (id: string) => void;
+}) {
+  const navigate = useNavigate();
+  const MUTED = "#596367";
+  const timeStr = formatNotifTime(new Date(notif.created_at).getTime());
+
+  if (filter === "unread" && notif.read) return null;
+  if (filter === "action") return null; // daily reminders require no action
+
+  const toggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onRead(notif.id);
+  };
+
+  if (notif.type === "daily_reminder") {
+    return (
+      <SwipeToDelete onDelete={() => onDelete(notif.id)}>
+        <div
+          className="group relative w-full cursor-pointer"
+          onClick={() => { onRead(notif.id); navigate("/lessons"); }}
+        >
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: '#2A3236' }} />
+          <div className="relative flex items-stretch py-[20px]">
+            <button
+              className="shrink-0 outline-none bg-transparent border-none cursor-pointer"
+              style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }}
+              onClick={toggle}
+            >
+              <div style={{ width: 9, height: 9, borderRadius: '50%', background: notif.read ? '#2D3539' : '#FE6B21' }} />
+            </button>
+            <div className="flex-1 min-w-0 flex flex-col gap-[5px]">
+              <div style={{ opacity: notif.read ? 0.5 : 1 }}>
+                <div className="flex gap-[5px] items-center">
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc]">
+                    {notif.title}
+                  </p>
+                </div>
+              </div>
+              {notif.body ? (
+                <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[16px] leading-[20px]" style={{ color: MUTED }}>
+                  {notif.body}
+                </p>
+              ) : null}
+            </div>
+            <div className="shrink-0 self-stretch flex flex-col justify-between items-end" style={{ marginLeft: 16 }}>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[14px] leading-[20px] whitespace-nowrap" style={{ color: MUTED }}>{timeStr}</p>
+              <button
+                className="flex items-center gap-[6px] border-none bg-transparent outline-none cursor-pointer"
+                style={{ color: MUTED }}
+                onClick={e => { e.stopPropagation(); onRead(notif.id); navigate("/lessons"); }}
+              >
+                <span className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[14px] whitespace-nowrap">Продолжить</span>
+                <ChevronRight />
+              </button>
+            </div>
+          </div>
+        </div>
+      </SwipeToDelete>
+    );
+  }
+
+  // Fallback for unknown server notif types
+  return (
+    <SwipeToDelete onDelete={() => onDelete(notif.id)}>
+      <div className="group relative w-full">
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: '#2A3236' }} />
+        <div className="relative flex items-stretch py-[20px]">
+          <button
+            className="shrink-0 outline-none bg-transparent border-none cursor-pointer"
+            style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }}
+            onClick={toggle}
+          >
+            <div style={{ width: 9, height: 9, borderRadius: '50%', background: notif.read ? '#2D3539' : '#FE6B21' }} />
+          </button>
+          <div className="flex-1 min-w-0 flex flex-col gap-[5px]">
+            <div style={{ opacity: notif.read ? 0.5 : 1 }}>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc]">
+                {notif.title}
+              </p>
+            </div>
+            {notif.body ? (
+              <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[16px] leading-[20px]" style={{ color: MUTED }}>
+                {notif.body}
+              </p>
+            ) : null}
+          </div>
+          <div className="shrink-0 self-stretch flex flex-col justify-start items-end" style={{ marginLeft: 16 }}>
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[14px] leading-[20px] whitespace-nowrap" style={{ color: MUTED }}>{timeStr}</p>
+          </div>
+        </div>
+      </div>
+    </SwipeToDelete>
+  );
+}
+
+// ─── Swipe-to-delete wrapper ──────────────────────────────────────────────────
+
+function SwipeToDelete({ children, onDelete }: { children: React.ReactNode; onDelete: () => void }) {
+  const DELETE_W  = 80;   // delete button width px
+  const SNAP_AT   = 34;   // snap open after this drag distance
+  const FAST_VEL  = 0.45; // px/ms — flick velocity threshold
+  const FULL_DEL  = 160;  // drag distance for immediate delete
+
+  const [offset, setOffset]       = useState(0);
+  const [animating, setAnimating] = useState(false);
+  const [gone, setGone]           = useState(false);
+  const [fastBg, setFastBg]       = useState(false);
+
+  const startX  = useRef(0);
+  const startY  = useRef(0);
+  const startT  = useRef(0);
+  const base    = useRef(0); // 0 = closed, -DELETE_W = open
+  const isH     = useRef<boolean | null>(null);
+  const active  = useRef(false);
+
+  if (gone) return null;
+
+  const snapTo = (target: number) => {
+    base.current = target;
+    setAnimating(true);
+    setOffset(target);
+  };
+
+  const doDelete = () => {
+    setFastBg(true);
+    setAnimating(true);
+    setOffset(-window.innerWidth);
+    setTimeout(() => { onDelete(); setGone(true); }, 300);
+  };
+
+  const beginDrag = (clientX: number, clientY: number) => {
+    startX.current = clientX;
+    startY.current = clientY;
+    startT.current = Date.now();
+    isH.current    = null;
+    active.current = true;
+    setAnimating(false);
+    setFastBg(false);
+  };
+
+  const moveDrag = (clientX: number, clientY: number) => {
+    if (!active.current) return;
+    const dx = clientX - startX.current;
+    const dy = clientY - startY.current;
+    if (isH.current === null) {
+      if (Math.abs(dx) < 5 && Math.abs(dy) < 5) return;
+      isH.current = Math.abs(dx) > Math.abs(dy);
+    }
+    if (!isH.current) return;
+    const raw = base.current + dx;
+    setOffset(Math.min(0, Math.max(-DELETE_W - 40, raw)));
+  };
+
+  const endDrag = (clientX: number) => {
+    if (!active.current) return;
+    active.current = false;
+    const dx  = clientX - startX.current;
+    const dt  = Math.max(Date.now() - startT.current, 1);
+    const vel = Math.abs(dx) / dt;
+
+    if ((vel > FAST_VEL && dx < -30) || dx < -FULL_DEL) { doDelete(); return; }
+
+    const projected = base.current + dx;
+    if (projected < -SNAP_AT) snapTo(-DELETE_W);
+    else snapTo(0);
+  };
+
+  const onTouchStart = (e: React.TouchEvent) => beginDrag(e.touches[0].clientX, e.touches[0].clientY);
+  const onTouchMove  = (e: React.TouchEvent) => moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+  const onTouchEnd   = (e: React.TouchEvent) => endDrag(e.changedTouches[0].clientX);
+
+  const onMouseDown  = (e: React.MouseEvent) => { e.preventDefault(); beginDrag(e.clientX, e.clientY); };
+  const onMouseMove  = (e: React.MouseEvent) => moveDrag(e.clientX, e.clientY);
+  const onMouseUp    = (e: React.MouseEvent) => endDrag(e.clientX);
+  const onMouseLeave = () => { if (active.current) endDrag(startX.current); };
+
+  const isOpen = base.current !== 0;
+  // Red panel width tracks the drag: hidden at rest, grows as you swipe
+  const redWidth = fastBg ? undefined : Math.max(0, -offset);
+
+  return (
+    <div
+      style={{ position: 'relative', overflow: 'hidden' }}
+      onClick={isOpen ? () => snapTo(0) : undefined}
+    >
+      {/* Red background — only visible when swiped */}
+      <div style={{
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        bottom: 0,
+        left: fastBg ? 0 : 'auto',
+        width: fastBg ? undefined : redWidth,
+        background: '#C0392B',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        transition: animating && !fastBg ? 'width 0.28s ease' : fastBg ? 'left 0.28s ease' : 'none',
+      }}>
+        {!fastBg && redWidth >= DELETE_W && (
+          <button
+            onClick={(e) => { e.stopPropagation(); doDelete(); }}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'white',
+              fontSize: 13,
+              fontFamily: "'Roboto Condensed', sans-serif",
+              fontWeight: 500,
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 4,
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Удалить
+          </button>
+        )}
+      </div>
+
+      {/* Sliding content */}
+      <div
+        style={{
+          transform: `translateX(${offset}px)`,
+          transition: animating ? 'transform 0.28s ease' : 'none',
+          touchAction: 'pan-y',
+        }}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseLeave}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ─── Real event card ──────────────────────────────────────────────────────────
+
+function RealNotifCard({ event, filter }: { event: NotifEvent; filter: string }) {
+  const navigate = useNavigate();
+  const { type, data, timestamp, read } = event;
+
+  const toggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (read) markEventUnread(event.id);
+    else markEventRead(event.id);
+  };
+
+  const open = (path: string) => () => {
+    markEventRead(event.id);
+    navigate(path);
+  };
+
+  const MUTED = "#596367";
+  const timeStr = formatNotifTime(timestamp);
+
+  if (filter === "unread" && read) return null;
+  if (filter === "action" && type !== "lesson_completed") return null;
+
+  const renderContent = () => {
+    if (type === "lesson_completed") {
+      const xp = Number(data.xpEarned ?? 0);
+      return (
+        <div
+          className="group relative w-full cursor-pointer"
+          onClick={open("/lessons")}
+        >
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: '#2A3236' }} />
+          <div className="relative flex items-stretch py-[20px]">
+            <button className="shrink-0 outline-none bg-transparent border-none cursor-pointer" style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }} onClick={toggle}>
+              <div style={{ width: 9, height: 9, borderRadius: '50%', background: read ? '#2D3539' : '#FE6B21' }} />
+            </button>
+            <div className="flex-1 min-w-0 flex flex-col gap-[5px]">
+              <div style={{ opacity: read ? 0.5 : 1 }}>
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc]">
+                  Вы завершили урок «{String(data.lessonTitle ?? data.lessonId)}» 🎓
+                </p>
+              </div>
+              {xp > 0 && (
+                <div className="flex gap-[5px] items-center">
+                  <ZapGradient />
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[16px] leading-[20px] whitespace-nowrap"
+                    style={{ background: 'linear-gradient(193deg,#FF6B21 49%,#994014 112%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                    +{xp} XP
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className="shrink-0 self-stretch flex flex-col justify-between items-end" style={{ marginLeft: 16 }}>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[14px] leading-[20px] whitespace-nowrap" style={{ color: MUTED }}>{timeStr}</p>
+              <button className="flex items-center gap-[6px] border-none bg-transparent outline-none cursor-pointer" style={{ color: MUTED }}
+                onClick={open("/lessons")}>
+                <span className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[14px] whitespace-nowrap">Следующий урок</span>
+                <ChevronRight />
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (type === "streak_extended") {
+      const streak = Number(data.streak ?? 1);
+      return (
+        <div className="group relative w-full">
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: '#2A3236' }} />
+          <div className="relative flex items-stretch py-[20px]">
+            <button className="shrink-0 outline-none bg-transparent border-none cursor-pointer" style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }} onClick={toggle}>
+              <div style={{ width: 9, height: 9, borderRadius: '50%', background: read ? '#2D3539' : '#FE6B21' }} />
+            </button>
+            <div className="flex-1 min-w-0 flex flex-col gap-[5px]">
+              <div style={{ opacity: read ? 0.5 : 1 }}>
+                <div className="flex gap-[5px] items-center min-w-0">
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc] whitespace-nowrap shrink-0">Серия</p>
+                  <FireInline />
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] whitespace-nowrap shrink-0"
+                    style={{ background: 'linear-gradient(193deg,#FFB121 49%,#BB8116 112%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{streak}</p>
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc] whitespace-nowrap overflow-hidden text-ellipsis">{streak === 1 ? 'день!' : streak < 5 ? 'дня!' : 'дней!'}</p>
+                </div>
+              </div>
+              <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[16px] leading-[20px]" style={{ color: MUTED }}>Отличная работа! Продолжайте заниматься</p>
+            </div>
+            <div className="shrink-0 self-stretch flex flex-col justify-start items-end" style={{ marginLeft: 16 }}>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[14px] leading-[20px] whitespace-nowrap" style={{ color: MUTED }}>{timeStr}</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (type === "league_promoted") {
+      return (
+        <div className="group relative w-full cursor-pointer" onClick={open("/league")}>
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: '#2A3236' }} />
+          <div className="relative flex items-stretch py-[20px]">
+            <button className="shrink-0 outline-none bg-transparent border-none cursor-pointer" style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }} onClick={toggle}>
+              <div style={{ width: 9, height: 9, borderRadius: '50%', background: read ? '#2D3539' : '#FE6B21' }} />
+            </button>
+            <div className="flex-1 min-w-0 flex flex-col gap-[5px]">
+              <div style={{ opacity: read ? 0.5 : 1 }}>
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc]">
+                  Вы перешли в лигу {String(data.name)} ⭐
+                </p>
+              </div>
+              <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[16px] leading-[20px]" style={{ color: MUTED }}>Поздравляем с повышением!</p>
+            </div>
+            <div className="shrink-0 self-stretch flex flex-col justify-between items-end" style={{ marginLeft: 16 }}>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[14px] leading-[20px] whitespace-nowrap" style={{ color: MUTED }}>{timeStr}</p>
+              <button className="flex items-center gap-[6px] border-none bg-transparent outline-none cursor-pointer" style={{ color: MUTED }} onClick={open("/league")}>
+                <span className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[14px] whitespace-nowrap">Смотреть лигу</span>
+                <ChevronRight />
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (type === "achievement_unlocked") {
+      return (
+        <div className="group relative w-full">
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: '#2A3236' }} />
+          <div className="relative flex items-stretch py-[20px]">
+            <button className="shrink-0 outline-none bg-transparent border-none cursor-pointer" style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }} onClick={toggle}>
+              <div style={{ width: 9, height: 9, borderRadius: '50%', background: read ? '#2D3539' : '#FE6B21' }} />
+            </button>
+            <div className="flex-1 min-w-0 flex flex-col gap-[5px]">
+              <div style={{ opacity: read ? 0.5 : 1 }}>
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc]">
+                  {String(data.emoji)} {String(data.title)}
+                </p>
+              </div>
+              <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[16px] leading-[20px]" style={{ color: MUTED }}>{String(data.desc)}</p>
+            </div>
+            <div className="shrink-0 self-stretch flex flex-col justify-start items-end" style={{ marginLeft: 16 }}>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[14px] leading-[20px] whitespace-nowrap" style={{ color: MUTED }}>{timeStr}</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  const content = renderContent();
+  if (content === null) return null;
+
+  return (
+    <SwipeToDelete onDelete={() => deleteEvent(event.id)}>
+      {content}
+    </SwipeToDelete>
   );
 }
 
@@ -695,13 +1046,28 @@ export default function NotificationsPage() {
   const navigate = useNavigate();
   const hwCtx = useHomeworkSafe();
   const [filter, setFilter] = useState<Filter>("all");
+  const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
 
-  // Mutable read state — toggled when user clicks the status dot
-  const [readState, setReadState] = useState<Record<number, boolean>>(
-    () => Object.fromEntries(DATA.map(d => [d.id, d.isRead]))
-  );
-  // Deleted notifications
-  const [deleted, setDeleted] = useState<Set<number>>(new Set());
+  // ── Real events from notificationStore (localStorage) ───────────────────────
+  const { events } = useNotifEvents();
+
+  // ── Server notifications (Supabase) ──────────────────────────────────────────
+  const { notifs: serverNotifs, markRead: markServerRead, remove: removeServer } = useServerNotifications();
+
+  // Group localStorage events by date label
+  const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
+  const yesterdayStart = new Date(todayStart); yesterdayStart.setDate(yesterdayStart.getDate() - 1);
+  const realToday     = events.filter(e => e.timestamp >= todayStart.getTime());
+  const realYesterday = events.filter(e => e.timestamp >= yesterdayStart.getTime() && e.timestamp < todayStart.getTime());
+  const realEarlier   = events.filter(e => e.timestamp < yesterdayStart.getTime());
+
+  // Group server notifications by date label
+  const srvToday     = serverNotifs.filter(n => new Date(n.created_at).getTime() >= todayStart.getTime());
+  const srvYesterday = serverNotifs.filter(n => { const t = new Date(n.created_at).getTime(); return t >= yesterdayStart.getTime() && t < todayStart.getTime(); });
+  const srvEarlier   = serverNotifs.filter(n => new Date(n.created_at).getTime() < yesterdayStart.getTime());
+
+  const realUnread   = events.filter(e => !e.read).length;
+  const serverUnread = serverNotifs.filter(n => !n.read).length;
 
   // Homework notifications (reviewed/rejected)
   const hwNotifs = (hwCtx?.homeworks ?? []).filter(
@@ -720,53 +1086,40 @@ export default function NotificationsPage() {
     setHwRead(init);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const toggleRead  = (id: number) => setReadState(p => ({ ...p, [id]: !p[id] }));
-  const markRead    = (id: number) => setReadState(p => ({ ...p, [id]: true }));
-  const deleteNotif = (id: number) => setDeleted(p => new Set([...p, id]));
-
   const hwUnreadCount = hwNotifs.filter(hw => !hwRead[hw.id]).length;
-  const unreadCount = DATA.filter(d => !deleted.has(d.id) && !readState[d.id]).length + hwUnreadCount;
+  const unreadCount = realUnread + serverUnread + hwUnreadCount;
 
-  const visible = (id: number): boolean => {
-    if (deleted.has(id)) return false;
-    const n = DATA.find(d => d.id === id)!;
-    const isRead = readState[id];
-    if (filter === "unread") return !isRead;
-    if (filter === "action") return n.hasAction;
-    return true;
+  // Sync count to localStorage so Sidebar badge can read it
+  const prevCountRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (prevCountRef.current !== unreadCount) {
+      prevCountRef.current = unreadCount;
+      localStorage.setItem(NOTIF_COUNT_KEY, String(unreadCount));
+      window.dispatchEvent(new CustomEvent("notif-count-change", { detail: unreadCount }));
+    }
+  }, [unreadCount]);
+
+  const listEmpty =
+    hwNotifs.length === 0 &&
+    events.length === 0 &&
+    serverNotifs.length === 0;
+
+  const handleDeleteAll = () => {
+    // Clear localStorage events
+    clearAllEvents();
+    // Clear server notifications
+    for (const n of serverNotifs) removeServer(n.id);
+    setShowDeleteAllConfirm(false);
   };
-
-  const hasDate = (date: "today" | "yesterday" | "earlier") =>
-    DATA.some(n => n.date === date && visible(n.id));
-
-  const listEmpty = DATA.every(d => !visible(d.id));
-
-  // Helper: open card → mark as read + navigate
-  const open = (id: number, path: string) => () => {
-    markRead(id);
-    navigate(path);
-  };
-
-  const cp = (id: number) => ({
-    isRead: readState[id],
-    onToggleRead: () => toggleRead(id),
-  });
 
   return (
-    <Layout title="Уведомления" rightWidth="320px">
-      {/* Sticky filter bar — sticks inside Layout's scroll container */}
+    <Layout title="Уведомления" rightWidth="320px" stickyBar={<FilterBar active={filter} unreadCount={unreadCount} onChange={setFilter} onDeleteAll={() => setShowDeleteAllConfirm(true)} />}>
       <div className="flex flex-col gap-[25px] w-full">
-        <div
-          className="sticky top-[0] z-20 mx-[-16px] px-[16px] pt-[12px] pb-[8px]"
-          style={{ background: "#282F33" }}
-        >
-          <FilterBar active={filter} unreadCount={unreadCount} onChange={setFilter} />
-        </div>
 
         {/* Notification list */}
-        <div className="content-stretch flex flex-col gap-[37px] items-start relative shrink-0 w-full pb-[40px]">
+        <div className="content-stretch flex flex-col gap-[30px] items-start relative shrink-0 w-full pb-[40px]">
 
-          {listEmpty && hwNotifs.length === 0 && <EmptyState />}
+          {listEmpty && <EmptyState />}
 
           {/* ── Homework status notifications (real, from backend) ── */}
           {hwNotifs.length > 0 && (filter === "all" || filter === "action" || filter === "unread") && (
@@ -778,68 +1131,59 @@ export default function NotificationsPage() {
                   ? `Мы проверили задание «${hw.lesson_name}». Посмотрите результат.`
                   : `Задание «${hw.lesson_name}» требует доработки.`;
                 const color = hw.status === "reviewed" ? "#5EDD60" : "#FF5D39";
-                const bg    = isRead ? "bg-[#343e42]" : "bg-[#404d52]";
                 const lessonId = hw.lesson_id || hw.lesson_name;
                 if (filter === "unread" && isRead) return null;
                 return (
                   <div
                     key={hw.id}
-                    className={`${bg} content-stretch flex flex-col items-center p-[20px] relative rounded-[15px] shrink-0 w-full cursor-pointer hover:brightness-105 active:brightness-95 transition-all`}
+                    className="group relative w-full cursor-pointer"
                     onClick={() => {
                       setHwRead(p => ({ ...p, [hw.id]: true }));
                       navigate("/homework", { state: { homeworkId: lessonId } });
                     }}
                   >
-                    <div className="content-stretch flex gap-[16px] items-center relative shrink-0 w-full">
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: '#2A3236' }} />
+                    <div className="relative flex items-stretch py-[20px]">
+                      {/* Dot */}
                       <button
-                        className="shrink-0 outline-none bg-transparent border-none cursor-pointer self-start mt-[4px]"
+                        className="shrink-0 outline-none bg-transparent border-none cursor-pointer"
+                        style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }}
                         onClick={e => { e.stopPropagation(); setHwRead(p => ({ ...p, [hw.id]: !p[hw.id] })); }}
                       >
-                        <DotIndicator isRead={isRead} />
+                        <div style={{ width: 9, height: 9, borderRadius: '50%', background: isRead ? '#2D3539' : '#FE6B21' }} />
                       </button>
-                      <div className="content-stretch flex flex-col gap-[20px] items-start relative self-stretch shrink-0 flex-1 min-w-0">
-                        <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
-                          <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
-                            <p className={`${titleFont(isRead)} ${TITLE_SIZE} relative shrink-0 whitespace-nowrap`} style={{ color }}>
-                              {label}
-                            </p>
-                            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] shrink-0 text-[#798589] text-[16px] whitespace-nowrap">
-                              {new Date(hw.created_at).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}
-                            </p>
-                          </div>
-                          <p className={`${T} w-full`}>{desc}</p>
-                          {hw.comment && (
-                            <div
-                              className="w-full mt-[8px] px-[12px] py-[10px] rounded-[10px]"
-                              style={{ background: hw.status === "reviewed" ? "rgba(94,221,96,0.08)" : "rgba(255,93,57,0.08)", borderLeft: `3px solid ${hw.status === "reviewed" ? "#5EDD60" : "#FF5D39"}` }}
-                            >
-                              <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[14px] text-[rgba(244,245,252,0.85)] leading-[20px]">
-                                {hw.comment}
-                              </p>
-                            </div>
-                          )}
-                          {hw.image_url && (
-                            <img
-                              src={hw.image_url}
-                              alt="Скриншот от проверяющего"
-                              className="w-full rounded-[10px] object-cover mt-[8px]"
-                              style={{ maxHeight: 200 }}
-                              onClick={e => e.stopPropagation()}
-                            />
-                          )}
+                      {/* Left */}
+                      <div className="flex-1 min-w-0 flex flex-col gap-[10px]">
+                        <div style={{ opacity: isRead ? 0.5 : 1 }}>
+                          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] whitespace-nowrap" style={{ color }}>
+                            {label}
+                          </p>
                         </div>
-                        <div
-                          className="content-stretch flex flex-wrap gap-y-[5px] items-center justify-between relative shrink-0 w-full cursor-pointer"
+                        <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[16px] leading-[20px]" style={{ color: "#596367" }}>{desc}</p>
+                        {hw.comment && (
+                          <div className="px-[12px] py-[10px] rounded-[10px]" style={{ background: hw.status === "reviewed" ? "rgba(94,221,96,0.08)" : "rgba(255,93,57,0.08)", borderLeft: `3px solid ${hw.status === "reviewed" ? "#5EDD60" : "#FF5D39"}` }}>
+                            <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[14px] text-[rgba(244,245,252,0.85)] leading-[20px]">{hw.comment}</p>
+                          </div>
+                        )}
+                        {hw.image_url && (
+                          <img src={hw.image_url} alt="Скриншот от проверяющего" className="w-full rounded-[10px] object-cover" style={{ maxHeight: 200 }} onClick={e => e.stopPropagation()} />
+                        )}
+                      </div>
+                      {/* Right */}
+                      <div className="shrink-0 self-stretch flex flex-col justify-between items-end" style={{ marginLeft: 16 }}>
+                        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[14px] leading-[20px] whitespace-nowrap" style={{ color: "#596367" }}>
+                          {new Date(hw.created_at).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}
+                        </p>
+                        <button
+                          className="flex items-center gap-[6px] border-none bg-transparent outline-none cursor-pointer"
+                          style={{ color: "#596367" }}
                           onClick={e => { e.stopPropagation(); setHwRead(p => ({ ...p, [hw.id]: true })); navigate("/homework", { state: { homeworkId: lessonId } }); }}
                         >
-                          <div className="h-[20px] shrink-0 w-[29px]" />
-                          <div className="content-stretch flex gap-[7px] items-center justify-end relative shrink-0">
-                            <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[20px] opacity-80 relative shrink-0 text-[#f1f7fb] text-[16px] whitespace-nowrap">
-                              {hw.status === "reviewed" ? "Смотреть результат" : "Переделать работу"}
-                            </p>
-                            <ChevronRight />
-                          </div>
-                        </div>
+                          <span className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[14px] whitespace-nowrap">
+                            {hw.status === "reviewed" ? "Смотреть результат" : "Переделать работу"}
+                          </span>
+                          <ChevronRight />
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -848,100 +1192,70 @@ export default function NotificationsPage() {
             </DateGroup>
           )}
 
-          {/* Сегодня */}
-          {hasDate("today") && (
+          {/* ── Today: localStorage + server notifications ───────────────────── */}
+          {(realToday.length > 0 || srvToday.length > 0) && (filter === "all" || filter === "unread" || filter === "action") && (
             <DateGroup label="Сегодня">
-              {visible(1) && (
-                <Card1 {...cp(1)} onOpen={open(1, "/")} onAction={() => navigate("/")} />
-              )}
-              {visible(2) && (
-                <CardXP {...cp(2)} onOpen={() => {}} hasAction={false} amount={25} description="За прохождение квиза «Контраст»" time="10:32" />
-              )}
-              {visible(3) && (
-                <CardStreak {...cp(3)} onOpen={() => {}} hasAction={false} count={10} description="Вы отвечаете без ошибок. Продолжайте!" time="10:30" />
-              )}
-              {visible(4) && (
-                <CardLessonComplete {...cp(4)} onOpen={open(4, "/lessons")} onAction={() => navigate("/lessons")} lessonName="Контраст" time="10:28" />
-              )}
-              {visible(5) && (
-                <CardStreak {...cp(5)} onOpen={() => {}} hasAction={false} count={3} description="Невероятно! Серия правильных ответов растёт." time="10:15" />
-              )}
+              {srvToday.map(n => (
+                <ServerNotifCard key={n.id} notif={n} filter={filter} onRead={markServerRead} onDelete={removeServer} />
+              ))}
+              {realToday.map(e => <RealNotifCard key={e.id} event={e} filter={filter} />)}
             </DateGroup>
           )}
 
-          {/* Вчера */}
-          {hasDate("yesterday") && (
+          {/* ── Yesterday: localStorage + server notifications ───────────────── */}
+          {(realYesterday.length > 0 || srvYesterday.length > 0) && (filter === "all" || filter === "unread" || filter === "action") && (
             <DateGroup label="Вчера">
-              {visible(6) && (
-                <Card2 {...cp(6)} onOpen={open(6, "/challenges")} onAction={() => navigate("/challenges")} />
-              )}
-              {visible(7) && (
-                <CardXP {...cp(7)} onOpen={() => {}} hasAction={false} amount={50} description="Отличная работа! Вы прошли урок" time="18:45" />
-              )}
-              {visible(8) && (
-                <CardReminder {...cp(8)} onOpen={() => {}} hasAction={false} title="Продолжите обучение" description="Вы почти завершили урок" time="14:00" />
-              )}
-              {visible(9) && (
-                <CardTask {...cp(9)} onOpen={open(9, "/challenges")} onAction={() => navigate("/challenges")} title="Доступны 3 новх задания" description="Проверьте раздел вызовов" time="12:30" />
-              )}
-              {visible(10) && (
-                <CardXP {...cp(10)} onOpen={() => {}} hasAction={false} amount={125} description="За завершение модуля «Основы UX»" time="11:20" />
-              )}
-              {visible(11) && (
-                <CardSocial {...cp(11)} onOpen={() => {}} hasAction={false} title="Вашу работу лайкнули ❤️" description="Задание «Дизайн карточки товара» понравилось 3 пользователям" time="09:15" />
-              )}
+              {srvYesterday.map(n => (
+                <ServerNotifCard key={n.id} notif={n} filter={filter} onRead={markServerRead} onDelete={removeServer} />
+              ))}
+              {realYesterday.map(e => <RealNotifCard key={e.id} event={e} filter={filter} />)}
             </DateGroup>
           )}
 
-          {/* Ранее */}
-          {hasDate("earlier") && (
+          {/* ── Earlier: localStorage + server notifications ─────────────────── */}
+          {(realEarlier.length > 0 || srvEarlier.length > 0) && (filter === "all" || filter === "unread" || filter === "action") && (
             <DateGroup label="Ранее">
-              {visible(12) && (
-                <Card6 {...cp(12)} onOpen={open(12, "/modules")} onAction={() => navigate("/modules")} />
-              )}
-              {visible(13) && (
-                <CardStreak {...cp(13)} onOpen={() => {}} hasAction={false} count={20} description="Невероятно! Серия правильных ответов растёт." time="5 мар" />
-              )}
-              {visible(14) && (
-                <CardLessonComplete {...cp(14)} onOpen={open(14, "/lessons")} onAction={() => navigate("/lessons")} lessonName="Цвет" time="5 мар" />
-              )}
-              {visible(15) && (
-                <CardXP {...cp(15)} onOpen={() => {}} hasAction={false} amount={250} description="Вы завершили модуль" time="4 мар" />
-              )}
-              {visible(16) && (
-                <Card5 {...cp(16)} onOpen={() => {}} hasAction={false} />
-              )}
-              {visible(17) && (
-                <CardModuleComplete {...cp(17)} onOpen={open(17, "/lessons")} onAction={() => navigate("/lessons")} moduleName="Основы UX" time="3 мар" />
-              )}
-              {visible(18) && (
-                <CardSocial {...cp(18)} onOpen={() => {}} hasAction={false} title="Вы получили фидбек на задание" description="Преподаватель оставил комментарий к вашей работе" time="3 мар" />
-              )}
-              {visible(19) && (
-                <CardNewContent {...cp(19)} onOpen={open(19, "/lessons")} onAction={() => navigate("/lessons")} title="Доступен новый урок" description="Урок «Иерархия» теперь доступен для прохождения" time="2 мар" />
-              )}
-              {visible(20) && (
-                <CardStreak {...cp(20)} onOpen={() => {}} hasAction={false} count={30} description="Вы отвечаете без ошибок. Продолжайте!" time="2 мар" />
-              )}
-              {visible(21) && (
-                <CardSocial {...cp(21)} onOpen={() => {}} hasAction={false} title="Новый комментарий к вашей работе 💬" description="Кто-то прокомментировал задание «Интерфейс приложения здоровья»" time="1 мар" />
-              )}
-              {visible(22) && (
-                <CardTask {...cp(22)} onOpen={() => {}} hasAction={false} title="Ваша работа принята" description="Практическое задание «Дизайн карточки товара» успешно завершено" time="28 фев" />
-              )}
-              {visible(23) && (
-                <Card4 {...cp(23)} onOpen={open(23, "/")} onAction={() => navigate("/")} />
-              )}
-              {visible(24) && (
-                <CardReminder {...cp(24)} onOpen={() => {}} hasAction={false} title="Осталось всего 2 вопроса до завершения урока" description="Вы почти у цели!" time="27 фев" />
-              )}
-              {visible(25) && (
-                <Card7 {...cp(25)} onOpen={open(25, "/")} onAction={() => navigate("/")} />
-              )}
+              {srvEarlier.map(n => (
+                <ServerNotifCard key={n.id} notif={n} filter={filter} onRead={markServerRead} onDelete={removeServer} />
+              ))}
+              {realEarlier.map(e => <RealNotifCard key={e.id} event={e} filter={filter} />)}
             </DateGroup>
           )}
+
         </div>
       </div>
+
+      {/* ── Delete all confirmation popup ── */}
+      {showDeleteAllConfirm && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center px-[24px]" style={{ background: 'rgba(0,0,0,0.6)' }} onClick={() => setShowDeleteAllConfirm(false)}>
+          <div
+            className="w-full max-w-[380px] flex flex-col gap-[18px] p-[24px]"
+            style={{ background: '#2C3438', borderRadius: '24px' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex flex-col gap-[8px]">
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px]">Удалить все уведомления?</p>
+              <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#798589] text-[16px] leading-[1.4]">Все уведомления будут удалены безвозвратно.</p>
+            </div>
+            <div className="flex flex-col gap-[10px]">
+              <button
+                onClick={handleDeleteAll}
+                className="w-full h-[52px] rounded-[13px] flex items-center justify-center cursor-pointer border-none active:scale-95 transition-transform duration-75"
+                style={{ background: '#C0392B', boxShadow: '0 4px 0 #7d1e12' }}
+              >
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px]">Да, удалить все</p>
+              </button>
+              <button
+                onClick={() => setShowDeleteAllConfirm(false)}
+                className="w-full h-[52px] rounded-[13px] flex items-center justify-center cursor-pointer border-none active:scale-95 transition-transform duration-75"
+                style={{ background: '#374348' }}
+              >
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[18px]">Отмена</p>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }

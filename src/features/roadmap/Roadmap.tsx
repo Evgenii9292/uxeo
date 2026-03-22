@@ -2,7 +2,7 @@
 // Main roadmap container.
 // Orchestrates: path, nodes, popups, annotations, module dividers.
 
-import React, { useRef, useEffect, useCallback } from "react";
+import React, { useRef, useEffect, useCallback, useState } from "react";
 import svgAnnotations from "../../imports/svg-jywxuurbpc";
 import svgMySToboi    from "../../imports/svg-1m1v14av0g";
 import svgFigmaNote   from "../../imports/svg-mfpv5bbouj";
@@ -156,12 +156,20 @@ export function Roadmap({
   const nodeRefs     = useRef<Map<number, HTMLDivElement>>(new Map());
   const anchorRefs   = useRef<Map<number, React.RefObject<HTMLDivElement | null>>>(new Map());
 
+  // Animate only once per session
+  const [shouldAnimate] = useState<boolean>(() => {
+    if (sessionStorage.getItem("roadmap-entered")) return false;
+    sessionStorage.setItem("roadmap-entered", "1");
+    return true;
+  });
+
+
   const roadmapW = mobile ? ROADMAP_W_MOBILE : ROADMAP_W;
   const MOBILE_SCALE = 0.88;
 
   // Compute positions algorithmically
   const layout       = generateRoadmapLayout(lessons, mobile);
-  const totalHeight  = layout.length > 0 ? layout[layout.length - 1].y + NODE_H + 250 : 1000;
+  const totalHeight  = layout.length > 0 ? layout[layout.length - 1].y + NODE_H + 450 : 1000;
   const roadPath     = generateRoadPath(layout);
 
   // Group lessons by module for divider placement
@@ -222,6 +230,13 @@ export function Roadmap({
 
   return (
     <div className="w-full flex justify-center relative">
+      {/* ── Node entrance animation keyframes ── */}
+      <style>{`
+        @keyframes rmNodeIn {
+          from { opacity: 0; transform: translateY(20px) scale(0.94); }
+          to   { opacity: 1; transform: translateY(0)    scale(1); }
+        }
+      `}</style>
       {/* Module labels — positioned absolutely */}
       <div className="absolute left-0 w-full" style={{ pointerEvents: "none" }}>
         {modules.map((module, idx) => {
@@ -231,8 +246,8 @@ export function Roadmap({
           }
           if (moduleStartIdx >= layout.length) return null;
           const labelY = idx === 0
-            ? (mobile ? Math.round(10 * MOBILE_SCALE) - 7 : 30)
-            : Math.round((layout[moduleStartIdx].y - (mobile ? 40 : 20)) * (mobile ? MOBILE_SCALE : 1)) - (mobile ? 30 : 0);
+            ? (mobile ? Math.round(10 * MOBILE_SCALE) - 7 : 0)
+            : Math.round((layout[moduleStartIdx].y - (mobile ? 40 : 20)) * (mobile ? MOBILE_SCALE : 1)) - (mobile ? 30 : 60);
           return (
             <div key={module.moduleId} style={{ position: "absolute", left: 0, top: labelY }}>
               <div
@@ -298,7 +313,7 @@ export function Roadmap({
             <div
               className="absolute pointer-events-none"
               style={{
-                left: roadmapW / 2 - 50 - 108 - (mobile ? 30 : 0),
+                left: roadmapW / 2 + 25,
                 top: dividers[0].y + 20,
               }}
             >
@@ -424,7 +439,7 @@ export function Roadmap({
                     transformOrigin: "top left",
                   }}
                 >
-                  <img src={plus800} width={60} height={27} alt="" />
+                  <img src={plus800} width={90} height={41} alt="" />
                 </div>
               );
             });
@@ -475,18 +490,6 @@ export function Roadmap({
             </div>
           )}
 
-          {/* "dont give up" — after Основные UI элементы (idx 11), LEFT */}
-          {layout.length > 12 && (
-            <div
-              className="absolute pointer-events-none"
-              style={{
-                left: roadmapW / 2 - 30 - 50 - (mobile ? 60 : 0),
-                top: Math.round((layout[11].y + NODE_H + layout[12].y) / 2) - 22,
-              }}
-            >
-              <img src={dontGiveUp} width={50} height={44} alt="" />
-            </div>
-          )}
 
           {/* "Стрелка 1" — after Состояния элементов (idx 12), RIGHT, normal orientation */}
           {layout.length > 13 && (
@@ -535,7 +538,15 @@ export function Roadmap({
             const anchorRef  = getAnchorRef(lesson.id);
 
             return (
-              <div key={lesson.id} className="absolute" style={{ left: pos.x, top: pos.y }}>
+              <div
+                key={lesson.id}
+                className="absolute"
+                style={{
+                  left: pos.x,
+                  top: pos.y,
+                  animation: shouldAnimate ? `rmNodeIn 0.8s ease-in-out ${idx * 140}ms both` : undefined,
+                }}
+              >
                 <div ref={(el) => { setNodeRef(lesson.id, el); (anchorRef as React.MutableRefObject<HTMLDivElement | null>).current = el; }}>
                   <LessonNode
                     lesson={lesson}

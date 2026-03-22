@@ -69,23 +69,26 @@ export default function TheoryPage() {
 
   return (
     <div className="theory-page size-full">
-      <Layout title={lessonData.title.split(' ')[0]} showBack backPath="/lessons" rightContent={<RightWidgets />} leftWidth="660px" rightWidth="320px">
-        <div className="flex flex-col gap-[20px] w-full px-[20px]">
+      <Layout title={lessonData.title} showBack backPath="/lessons" rightContent={<RightWidgets />} leftWidth="660px" rightWidth="320px">
+        <div className="flex flex-col gap-[20px] w-full">
           {/* Hero block */}
-          <div className="w-full flex flex-col gap-[14px]">
-            <div className="rounded-[15px] overflow-hidden relative" style={{ height: '220px' }}>
-              <div className="absolute inset-0">
+          <div className="bg-[#404d52] rounded-[15px] p-[20px] w-full">
+            <div className="content-stretch flex gap-[20px] items-stretch relative shrink-0 w-full">
+              {/* Left: image */}
+              <div className="shrink-0 rounded-[15px] overflow-hidden self-stretch" style={{ width: '300px' }}>
                 <HeroImage />
               </div>
-            </div>
-            <div className="flex items-center justify-between gap-[12px]">
-              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[28px]">
-                {lessonData.title}
-              </p>
-              <div className="flex gap-[16px] items-center shrink-0">
-                <div className="flex gap-[5px] items-center">
-                  <TimeIcon />
-                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap">{lessonData.duration}</p>
+              {/* Right: title + meta */}
+              <div className="flex flex-col gap-[14px] flex-1 py-[10px]">
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[32px]">
+                  {lessonData.title}
+                </p>
+                <div className="flex-1" />
+                <div className="content-stretch flex gap-[20px] items-center relative shrink-0 justify-end">
+                  <div className="flex gap-[5px] items-center">
+                    <TimeIcon />
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap">{lessonData.duration}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -104,6 +107,7 @@ export default function TheoryPage() {
                 onToggle={() => handleToggle(index)}
                 onAnswerSelect={(answer, isCorrect) => handleAnswerSelect(index, answer, isCorrect)}
                 onContinue={() => handleContinue(index)}
+                isLastSection={index === lessonData.sections.length - 1}
               />
             ))}
           </div>

@@ -14,8 +14,8 @@ export function ExitConfirmationModal({
       />
 
       {/* Modal */}
-      <div className="relative bg-[#f7f8fc] rounded-[24px] shadow-[0_10px_40px_rgba(0,0,0,0.3)] w-[520px] p-[40px] flex flex-col gap-[28px]">
-        <h2 className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#323c41] text-[32px] leading-[1.2] text-center">
+      <div className="relative bg-[#f7f8fc] rounded-[24px] shadow-[0_10px_40px_rgba(0,0,0,0.3)] w-[520px] max-w-[calc(100vw-40px)] p-[40px] flex flex-col gap-[28px]">
+        <h2 className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#323c41] text-[32px] leading-[1.2] text-center">
           Выйти из урока?
         </h2>
 
@@ -47,7 +47,7 @@ export function ExitConfirmationModal({
               aria-hidden="true"
               className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_4px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none"
             />
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[24px] whitespace-nowrap">
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[24px] whitespace-nowrap">
               Продолжить урок
             </p>
           </button>
@@ -75,7 +75,7 @@ export function ExitConfirmationModal({
               aria-hidden="true"
               className="absolute inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_4px_0px_0px_#c5c8d3] group-hover:shadow-[0px_2px_0px_0px_#c5c8d3] group-active:shadow-none"
             />
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#5a6569] text-[24px] whitespace-nowrap">
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#5a6569] text-[24px] whitespace-nowrap">
               Выйти из урока
             </p>
           </button>

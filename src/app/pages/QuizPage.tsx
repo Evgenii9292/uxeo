@@ -2,23 +2,16 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useUser } from "../context/UserContext";
 import PageTransition from "../components/PageTransition";
-import { BackButton } from "./quiz/BackButton";
+import { CloseButton } from "./quiz/CloseButton";
 import { CardAMockup, CardBMockup, QuizCard } from "./quiz/QuizCardMockups";
-import {
-  ContinueDisabled as OnbContinueDisabled,
-  ContinueActive as OnbContinueActive,
-  ContinueCorrect as OnbContinueCorrect,
-  CorrectFeedback as OnbCorrectFeedback,
-  IncorrectFeedback as OnbIncorrectFeedback,
-} from "./quiz/OnboardingQuizUI";
 import { ContinueDisabled, ContinueActive, ContinueCorrect } from "./quiz/ContinueButtons";
 import { CorrectFeedback, IncorrectFeedback } from "./quiz/QuizFeedback";
 import { FlagReportButton } from "./quiz/FlagReportButton";
 import { ScaledPreview } from "../components/quiz/ScaledPreview";
 import { useWindowWidth } from "../hooks/useWindowWidth";
-import quizSvgPaths from "../../imports/svg-869ttds5wi";
+import XpCounter from "../components/XpCounter";
 
-const EXPLANATION = "Основная кнопка имеет высокий контраст и лучше выделяется, поэтому интерфейс читается быстрее.";
+const EXPLANATION = "Основная кнопка выделяется контрастом — интерфейс читается быстрее.";
 
 type Selection = "A" | "B" | null;
 type Phase = "selecting" | "feedback";
@@ -45,7 +38,7 @@ function getBorderColor(state: CardState): string | undefined {
 
 export default function QuizPage() {
   const navigate = useNavigate();
-  const { xp, getLessonProgress, updateQuestionState } = useUser();
+  const { getLessonProgress, updateQuestionState } = useUser();
   const [selection, setSelection] = useState<Selection>(null);
   const [phase, setPhase] = useState<Phase>("selecting");
   const [earnedXP, setEarnedXP] = useState(0);
@@ -89,7 +82,7 @@ export default function QuizPage() {
         o.start(); o.stop(ctx.currentTime + 0.3);
       } catch (_) {}
     } else {
-      navigate("/email");
+      navigate("/courses");
     }
   };
 
@@ -117,17 +110,10 @@ export default function QuizPage() {
   const isMobile = vw < 768;
   const isTablet = vw >= 768 && vw < 1280;
 
-  // Shared XP indicator JSX
+  // Shared XP indicator
   const xpIndicator = (
-    <div className="fixed top-[32px] right-[23px] z-10 content-stretch flex gap-[4px] items-center">
-      <div className="relative shrink-0 size-[24px]">
-        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
-          <g id="Zap">
-            <path d={quizSvgPaths.p9530000} fill="var(--fill-0, #798589)" stroke="var(--stroke-0, #798589)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-          </g>
-        </svg>
-      </div>
-      <p className="font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold leading-[21px] relative shrink-0 text-[#798589] text-[24px] whitespace-nowrap">{xp}</p>
+    <div className="fixed top-[20px] right-[20px] z-10">
+      <XpCounter />
     </div>
   );
 
@@ -152,7 +138,7 @@ export default function QuizPage() {
         >
           {xpIndicator}
           <div className="fixed top-[20px] left-[20px] z-10">
-            <BackButton onClick={() => navigate("/welcome")} />
+            <CloseButton onClick={() => navigate("/welcome")} />
           </div>
 
           {/* Content */}
@@ -160,8 +146,8 @@ export default function QuizPage() {
             className="absolute inset-0 px-[16px] flex flex-col"
             style={{ paddingTop: 76, gap: 10 }}
           >
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[1.25] text-[#f4f5fc] text-[22px] text-center w-full">
-              Какой экран лучше?
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.25] text-[#f4f5fc] text-[20px] text-center w-full whitespace-nowrap">
+              Что лучше?
             </p>
 
             <div className="flex flex-col" style={{ gap: 10 }}>
@@ -175,7 +161,7 @@ export default function QuizPage() {
                     onClick={isClickable ? () => { handleSelect(id); playSelectSound(); } : undefined}
                     className={`relative rounded-[15px] overflow-hidden flex-shrink-0 transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.99]" : ""}`}
                     style={{
-                      height: `calc((100dvh - 296px) / 2)`,
+                      height: `calc((100dvh - 356px) / 2)`,
                       minHeight: containerH,
                       background: BG_GRADIENT[state],
                       boxShadow: borderColor ? `0 0 0 3px ${borderColor}` : undefined,
@@ -246,7 +232,7 @@ export default function QuizPage() {
         >
           {xpIndicator}
           <div className="fixed top-[20px] left-[20px] z-10">
-            <BackButton onClick={() => navigate("/welcome")} />
+            <CloseButton onClick={() => navigate("/welcome")} />
           </div>
 
           {/* Content centered */}
@@ -254,8 +240,8 @@ export default function QuizPage() {
             className="absolute inset-0 flex flex-col items-center justify-center"
             style={{ paddingBottom: 140, paddingTop: 80 }}
           >
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] text-[#f4f5fc] text-[28px] text-center mb-[28px]">
-              Какой экран лучше?
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[28px] text-center mb-[28px]">
+              Что лучше?
             </p>
             <div className="flex items-start" style={{ gap }}>
               {cards.map(({ id, Mockup }) => {
@@ -325,13 +311,13 @@ export default function QuizPage() {
 
         {/* Back button */}
         <div className="fixed top-[20px] left-[20px] z-10">
-          <BackButton onClick={() => navigate("/welcome")} />
+          <CloseButton onClick={() => navigate("/welcome")} />
         </div>
 
         {/* Cards */}
         <div className="flex flex-col items-center justify-center gap-[24px] min-h-screen pb-[160px] pt-[80px]">
-          <p className="text-center font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] text-[#f4f5fc] text-[32px] mx-[0px] mt-[0px] mb-[40px]">
-            Какой экран лучше?
+          <p className="text-center font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[32px] mx-[0px] mt-[0px] mb-[40px]">
+            Что лучше?
           </p>
           <div className="flex items-start justify-center gap-[32px]">
             <QuizCard state={getCardState("A")} onClick={() => { handleSelect("A"); playSelectSound(); }}>

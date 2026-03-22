@@ -597,7 +597,7 @@ function Frame2() {
 
 function Container2() {
   return (
-    <div className="bg-[#38444a] h-[217px] relative rounded-[15px] shrink-0 w-full flex items-center justify-center" data-name="Container">
+    <div className="h-[217px] relative rounded-[15px] shrink-0 w-full flex items-center justify-center" data-name="Container">
       <div className="flex items-center justify-center">
         <Frame2 />
       </div>

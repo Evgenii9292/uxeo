@@ -24,7 +24,7 @@ const CARD_W = 333;
 const CARD_H = 415;
 
 // Natural pixel dimensions of Figma contrast-quiz cards
-const FIGMA_COMPARE_W = 207;
+const FIGMA_COMPARE_W = 186;
 const FIGMA_COMPARE_H = 231;
 const FIGMA_SINGLE_W  = 186;
 const FIGMA_SINGLE_H  = 231;
@@ -38,6 +38,8 @@ function CompareCard({
   cardMinHeight,
   figmaMaxScale,
   cardWidth,
+  figmaNaturalW,
+  figmaNaturalH,
 }: {
   option: CompareUIOption;
   state: CompareCardState;
@@ -45,6 +47,8 @@ function CompareCard({
   cardMinHeight?: number;
   figmaMaxScale?: number;
   cardWidth?: number;
+  figmaNaturalW?: number;
+  figmaNaturalH?: number;
 }) {
   return (
     <QuizCard
@@ -54,7 +58,13 @@ function CompareCard({
       style={{ width: cardWidth ?? 506, ...(cardMinHeight ? { minHeight: cardMinHeight } : {}) }}
     >
       {option.content ? (
-        <ScaledPreview naturalWidth={FIGMA_COMPARE_W} naturalHeight={FIGMA_COMPARE_H} paddingY={40} maxScale={figmaMaxScale ?? 1.15}>
+        <ScaledPreview
+          naturalWidth={figmaNaturalW ?? FIGMA_COMPARE_W}
+          naturalHeight={figmaNaturalH ?? FIGMA_COMPARE_H}
+          paddingY={figmaNaturalW ? 30 : 40}
+          paddingX={figmaNaturalW ? 30 : 0}
+          maxScale={figmaMaxScale ?? 1.15}
+        >
           {option.content}
         </ScaledPreview>
       ) : (
@@ -116,6 +126,10 @@ type QuizLeftBlockProps =
       compareMaxScale?: number;
       /** Explicit card width — for responsive tablet/laptop layouts */
       cardWidth?: number;
+      /** Override natural width of Figma content (for lesson-specific card sizes) */
+      figmaNaturalW?: number;
+      /** Override natural height of Figma content (for lesson-specific card sizes) */
+      figmaNaturalH?: number;
     };
 
 export function QuizLeftBlock(props: QuizLeftBlockProps) {
@@ -131,6 +145,8 @@ export function QuizLeftBlock(props: QuizLeftBlockProps) {
             cardMinHeight={props.compareCardMinHeight}
             figmaMaxScale={props.compareMaxScale}
             cardWidth={props.cardWidth}
+            figmaNaturalW={props.figmaNaturalW}
+            figmaNaturalH={props.figmaNaturalH}
           />
         ))}
       </div>

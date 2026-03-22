@@ -5,7 +5,8 @@
 
 import React, { useRef, useState, useCallback } from "react";
 import { useNavigate } from "react-router";
-import { Flame, Zap } from "lucide-react";
+const FIRE_FILTER = "brightness(0) saturate(100%) invert(72%) sepia(76%) saturate(751%) hue-rotate(357deg) brightness(102%)";
+const ZAP_FILTER  = "brightness(0) saturate(100%) invert(49%) sepia(79%) saturate(1117%) hue-rotate(348deg) brightness(103%)";
 import svgPaths from "../../imports/svg-ns2c3tgkyt";
 import { useUserSafe } from "../context/UserContext";
 import BottomTabBar from "./BottomTabBar";
@@ -22,6 +23,8 @@ interface MobileShellProps {
   headerRight?: React.ReactNode;
   /** Sticky content rendered above BottomTabBar (e.g. Continue button) */
   stickyBottom?: React.ReactNode;
+  /** Content rendered between the header and the scroll area (never scrolls) */
+  stickyTop?: React.ReactNode;
 }
 
 // ── Back chevron (same Figma SVG used in Theory header) ─────────────────────
@@ -85,9 +88,9 @@ export function MobileHeader({
             <>
               {/* Streak */}
               <div className="flex gap-[3px] items-center">
-                <Flame size={20} color="#FFB121" fill="#FFB121" />
+                <img src="/fire-icon.svg" width={20} height={22} style={{ objectFit: "contain", filter: FIRE_FILTER }} />
                 <span
-                  className="font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold text-[20px]"
+                  className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[20px]"
                   style={{
                     backgroundImage: "linear-gradient(180deg, #ffb121 0%, #bb8116 100%)",
                     WebkitBackgroundClip: "text",
@@ -99,9 +102,9 @@ export function MobileHeader({
               </div>
               {/* XP */}
               <div className="flex gap-[4px] items-center">
-                <Zap size={20} color="#FF6B21" fill="#FF6B21" strokeWidth={0} />
+                <img src="/zap-icon.svg" width={20} height={20} style={{ objectFit: "contain", filter: ZAP_FILTER }} />
                 <span
-                  className="font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold text-[20px]"
+                  className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[20px]"
                   style={{
                     backgroundImage: "linear-gradient(195.05deg, #FF6B21 48.665%, #994014 112.02%)",
                     WebkitBackgroundClip: "text",
@@ -129,6 +132,7 @@ export default function MobileShell({
   noScroll = false,
   headerRight,
   stickyBottom,
+  stickyTop,
 }: MobileShellProps) {
   const navigate = useNavigate();
   const userData = useUserSafe();
@@ -172,6 +176,13 @@ export default function MobileShell({
         headerRight={headerRight}
       />
 
+      {/* Sticky top bar — between header and scroll area */}
+      {stickyTop && (
+        <div className="flex-none px-[16px] pt-[12px] pb-[8px]" style={{ background: "#282F33" }}>
+          {stickyTop}
+        </div>
+      )}
+
       {/* Scrollable content */}
       {noScroll ? (
         <div className="flex-1 overflow-hidden min-h-0">
@@ -179,7 +190,7 @@ export default function MobileShell({
         </div>
       ) : (
         <div
-          className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide px-[16px] py-[16px]"
+          className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide px-[16px] py-[16px] isolate"
           style={{ paddingBottom: scrollPadBottom }}
           onScroll={handleScroll}
         >

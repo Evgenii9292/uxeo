@@ -58,7 +58,7 @@ export default function XpCounter() {
     >
       <ZapIcon isActive={xp > 0} />
       <p
-        className="font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold leading-[21px] relative shrink-0 text-[24px] whitespace-nowrap"
+        className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[21px] relative shrink-0 text-[24px] whitespace-nowrap"
         style={{
           color: xp > 0 ? "#FF6B21" : "#798589",
           backgroundImage: xp > 0 ? "linear-gradient(to bottom, #FF6B21, #C15C2A)" : "none",

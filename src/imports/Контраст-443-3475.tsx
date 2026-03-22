@@ -42,7 +42,7 @@ function Container1() {
 
 function ContrastQuiz4VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz4VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz4VariantA">
       <Container1 />
     </div>
   );
@@ -109,7 +109,7 @@ function Container3() {
 
 function ContrastQuiz4VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz4VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz4VariantB">
       <Container3 />
     </div>
   );
@@ -232,7 +232,7 @@ function Container5() {
 
 function ContrastQuiz3VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz3VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz3VariantA">
       <Container5 />
     </div>
   );
@@ -355,7 +355,7 @@ function Container12() {
 
 function ContrastQuiz3VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz3VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz3VariantB">
       <Container12 />
     </div>
   );
@@ -414,7 +414,7 @@ function Container19() {
 
 function ContrastQuiz2VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz2VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz2VariantA">
       <Container19 />
     </div>
   );
@@ -473,7 +473,7 @@ function Container21() {
 
 function ContrastQuiz2VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz2VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz2VariantB">
       <Container21 />
     </div>
   );

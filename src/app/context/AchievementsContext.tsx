@@ -13,12 +13,17 @@ import { useUserSafe } from "./UserContext";
 export type AchievementId =
   | "first_answer"
   | "quiz_ace"
+  | "combo_3"
+  | "combo_7"
   | "first_lesson"
   | "lessons_3"
+  | "lessons_5"
+  | "perfect_quiz"
   | "streak_3"
   | "streak_7"
   | "xp_100"
   | "xp_500"
+  | "xp_1000"
   | "homework_done"
   | "challenge_week";
 
@@ -39,6 +44,22 @@ export const ACHIEVEMENTS: Record<AchievementId, AchievementDef> = {
     color: "#FF6B21",
     colorEnd: "#994014",
     emoji: "🎯",
+  },
+  combo_3: {
+    id: "combo_3",
+    title: "3 подряд!",
+    desc: "Три правильных ответа подряд",
+    color: "#FFB121",
+    colorEnd: "#BB8116",
+    emoji: "✨",
+  },
+  combo_7: {
+    id: "combo_7",
+    title: "7 подряд!",
+    desc: "Семь правильных ответов подряд — огонь!",
+    color: "#9333ea",
+    colorEnd: "#5b21b6",
+    emoji: "⚡",
   },
   quiz_ace: {
     id: "quiz_ace",
@@ -63,6 +84,22 @@ export const ACHIEVEMENTS: Record<AchievementId, AchievementDef> = {
     color: "#5B9BD5",
     colorEnd: "#2D6FA0",
     emoji: "🏅",
+  },
+  lessons_5: {
+    id: "lessons_5",
+    title: "5 уроков!",
+    desc: "Завершили пять уроков",
+    color: "#06B6D4",
+    colorEnd: "#0284C7",
+    emoji: "🚀",
+  },
+  perfect_quiz: {
+    id: "perfect_quiz",
+    title: "Идеально!",
+    desc: "Прошли квиз без единой ошибки",
+    color: "#FFB121",
+    colorEnd: "#BB8116",
+    emoji: "⭐",
   },
   streak_3: {
     id: "streak_3",
@@ -96,6 +133,14 @@ export const ACHIEVEMENTS: Record<AchievementId, AchievementDef> = {
     colorEnd: "#0284C7",
     emoji: "💎",
   },
+  xp_1000: {
+    id: "xp_1000",
+    title: "1000 XP",
+    desc: "Набрали 1000 очков опыта",
+    color: "#A855F7",
+    colorEnd: "#7C3AED",
+    emoji: "👑",
+  },
   homework_done: {
     id: "homework_done",
     title: "Сдал ДЗ!",
@@ -119,11 +164,14 @@ export const ACHIEVEMENT_ORDER: AchievementId[] = [
   "first_answer",
   "first_lesson",
   "lessons_3",
+  "lessons_5",
+  "perfect_quiz",
   "quiz_ace",
   "streak_3",
   "streak_7",
   "xp_100",
   "xp_500",
+  "xp_1000",
   "homework_done",
   "challenge_week",
 ];
@@ -220,12 +268,14 @@ export function AchievementsProvider({ children }: { children: ReactNode }) {
     if (totalCorrectAnswers >= 1) unlock("first_answer");
     if (completedLessons >= 1)   unlock("first_lesson");
     if (completedLessons >= 3)   unlock("lessons_3");
+    if (completedLessons >= 5)   unlock("lessons_5");
     if (streak >= 3)             unlock("streak_3");
     if (streak >= 7)             unlock("streak_7");
     if (xp >= 100)               unlock("xp_100");
     if (xp >= 500)               unlock("xp_500");
+    if (xp >= 1000)              unlock("xp_1000");
     if (weeklyChallengesCompleted >= 3) unlock("challenge_week");
-    // homework_done + quiz_ace triggered explicitly from feature code
+    // homework_done + quiz_ace + perfect_quiz triggered explicitly from feature code
   }, [
     userCtx?.xp,
     userCtx?.streak,

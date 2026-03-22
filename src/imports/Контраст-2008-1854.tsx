@@ -1,3 +1,4 @@
+import React from "react";
 import contrastQ1A from "../assets/contrast-q1-a.svg";
 import contrastQ1B from "../assets/contrast-q1-b.svg";
 
@@ -45,7 +46,7 @@ function Container1() {
 
 function ContrastQuiz4VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz4VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz4VariantA">
       <Container1 />
     </div>
   );
@@ -112,7 +113,7 @@ function Container3() {
 
 function ContrastQuiz4VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz4VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz4VariantB">
       <Container3 />
     </div>
   );
@@ -235,7 +236,7 @@ function Container5() {
 
 function ContrastQuiz3VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz3VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz3VariantA">
       <Container5 />
     </div>
   );
@@ -358,7 +359,7 @@ function Container12() {
 
 function ContrastQuiz3VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz3VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz3VariantB">
       <Container12 />
     </div>
   );
@@ -417,7 +418,7 @@ function Container19() {
 
 function ContrastQuiz2VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz2VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz2VariantA">
       <Container19 />
     </div>
   );
@@ -476,7 +477,7 @@ function Container21() {
 
 function ContrastQuiz2VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz2VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="ContrastQuiz2VariantB">
       <Container21 />
     </div>
   );
@@ -951,16 +952,16 @@ function Paragraph54() {
 
 function Paragraph55() {
   return (
-    <div className="h-[12px] relative shrink-0 w-full" data-name="Paragraph">
-      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[12px] left-0 not-italic text-[8px] text-white top-0 tracking-[-0.1px] whitespace-nowrap">Яркая кнопка</p>
+    <div className="h-[16px] shrink-0 w-full flex items-center justify-center" data-name="Paragraph">
+      <p className="font-['Inter:Regular',sans-serif] font-normal leading-[16px] not-italic text-[11px] text-white tracking-[-0.1px] whitespace-nowrap">Кнопка</p>
     </div>
   );
 }
 
 function Container40() {
   return (
-    <div className="bg-[#3b82f6] h-[24px] relative rounded-[6px] shrink-0 w-[75.781px]" data-name="Container">
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[6px] px-[12px] relative size-full">
+    <div className="bg-[#3b82f6] h-[28px] relative rounded-[6px] shrink-0 w-[75px]" data-name="Container">
+      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-center justify-center px-[12px] relative size-full">
         <Paragraph55 />
       </div>
     </div>
@@ -979,10 +980,8 @@ function ContrastQuiz14Card() {
 
 function Paragraph56() {
   return (
-    <div className="h-[16.5px] relative shrink-0 w-[102.688px]" data-name="Paragraph">
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
-        <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[16.5px] left-0 not-italic text-[#101828] text-[11px] top-[0.5px] tracking-[-0.14px] whitespace-nowrap">Крупный заголовок</p>
-      </div>
+    <div className="shrink-0 w-full flex items-center" data-name="Paragraph">
+      <p className="font-['Inter:Regular',sans-serif] font-normal leading-[16.5px] not-italic text-[#e1e4ee] text-[11px] tracking-[-0.14px] text-center whitespace-normal w-full">Крупный заголовок</p>
     </div>
   );
 }
@@ -990,7 +989,7 @@ function Paragraph56() {
 function ContrastQuiz14Card1() {
   return (
     <div className="h-[80px] relative rounded-[8px] shrink-0 w-[130px]" data-name="ContrastQuiz14Card2">
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center px-[13.656px] relative size-full">
+      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center px-[22px] relative size-full">
         <Paragraph56 />
       </div>
     </div>
@@ -1150,16 +1149,16 @@ function Paragraph63() {
 
 function Paragraph64() {
   return (
-    <div className="h-[12px] relative shrink-0 w-full" data-name="Paragraph">
-      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[12px] left-0 not-italic text-[8px] text-white top-0 tracking-[-0.1px] whitespace-nowrap">Контрастная кнопка</p>
+    <div className="h-[16px] shrink-0 w-full flex items-center justify-center" data-name="Paragraph">
+      <p className="font-['Inter:Regular',sans-serif] font-normal leading-[16px] not-italic text-[11px] text-white text-center tracking-[-0.1px]">Кнопка</p>
     </div>
   );
 }
 
 function Container46() {
   return (
-    <div className="bg-[#3b82f6] h-[24px] relative rounded-[6px] shrink-0 w-[101.555px]" data-name="Container">
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[6px] px-[12px] relative size-full">
+    <div className="bg-[#3b82f6] h-[28px] relative rounded-[6px] shrink-0 w-[75px]" data-name="Container">
+      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-center justify-center px-[12px] relative size-full">
         <Paragraph64 />
       </div>
     </div>
@@ -1200,7 +1199,7 @@ function Paragraph66() {
   return (
     <div className="h-[10px] relative shrink-0 w-[97.75px]" data-name="Paragraph">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-start relative size-full">
-        <p className="font-['Inter:Regular',sans-serif] font-normal leading-[10px] not-italic relative shrink-0 text-[#364146] text-[8px] text-center tracking-[-0.1px] whitespace-nowrap">Высокий контраст текста</p>
+        <p className="font-['Inter:Regular',sans-serif] font-normal leading-[10px] not-italic relative shrink-0 text-[#e1e4ee] text-[8px] text-center tracking-[-0.1px] whitespace-nowrap">Высокий контраст текста</p>
       </div>
     </div>
   );
@@ -1263,28 +1262,94 @@ export default function Component() {
 // Named exports for LessonQuizPage (quiz_contrast visuals)
 // ─────────────────────────────────────────────────────────────────────────────
 
-// ── Compare UI — Q1 ──────────────────────────────────────────────────────────
+const f = "Inter, sans-serif";
+
+// ── Q1A: синяя кнопка на синем фоне — низкий контраст (bad) ───────────────
 export function CQCompare1A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><img src={contrastQ1A} style={{ width: "100%", height: "100%", objectFit: "contain" }} /></div>;
+  return (
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "#1e40af", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "18px 20px", display: "flex", flexDirection: "column" }}>
+      <span style={{ fontFamily: f, fontSize: 11, fontWeight: 600, color: "#60a5fa", letterSpacing: -0.2, marginBottom: 6 }}>Оформить доступ</span>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#3b82f6", lineHeight: 1.6, marginBottom: 4 }}>Откройте все уроки и материалы курса прямо сейчас</span>
+      <div style={{ height: 6, borderRadius: 3, background: "#2563eb", width: "70%", marginBottom: 3 }} />
+      <div style={{ height: 6, borderRadius: 3, background: "#2563eb", width: "50%", marginBottom: 3 }} />
+      <div style={{ flex: 1 }} />
+      <div style={{ background: "#2563eb", borderRadius: 8, padding: "9px 0", display: "flex", alignItems: "center", justifyContent: "center", border: "1.5px solid #3b82f6" }}>
+        <span style={{ fontFamily: f, fontSize: 10, fontWeight: 600, color: "#93c5fd" }}>Купить доступ</span>
+      </div>
+    </div>
+  );
 }
+
+// ── Q1B: синяя кнопка на белом фоне — высокий контраст (good) ─────────────
 export function CQCompare1B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><img src={contrastQ1B} style={{ width: "100%", height: "100%", objectFit: "contain" }} /></div>;
+  return (
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "18px 20px", display: "flex", flexDirection: "column" }}>
+      <span style={{ fontFamily: f, fontSize: 11, fontWeight: 600, color: "#111827", letterSpacing: -0.2, marginBottom: 6 }}>Оформить доступ</span>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#6b7280", lineHeight: 1.6, marginBottom: 4 }}>Откройте все уроки и материалы курса прямо сейчас</span>
+      <div style={{ height: 6, borderRadius: 3, background: "#e5e7eb", width: "70%", marginBottom: 3 }} />
+      <div style={{ height: 6, borderRadius: 3, background: "#e5e7eb", width: "50%", marginBottom: 3 }} />
+      <div style={{ flex: 1 }} />
+      <div style={{ background: "#3b82f6", borderRadius: 8, padding: "9px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontFamily: f, fontSize: 10, fontWeight: 600, color: "white" }}>Купить доступ</span>
+      </div>
+    </div>
+  );
 }
 
-// ── Compare UI — Q2 ──────────────────────────────────────────────────────────
+// ── Q2A: светло-серый текст на белом — плохая читаемость (bad) ─────────────
 export function CQCompare2A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ContrastQuiz2VariantA /></div>;
-}
-export function CQCompare2B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ContrastQuiz2VariantB /></div>;
+  return (
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "18px 20px", display: "flex", flexDirection: "column", gap: 7 }}>
+      <span style={{ fontFamily: f, fontSize: 13, fontWeight: 600, color: "#d1d5db", letterSpacing: -0.3 }}>Добро пожаловать</span>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#e5e7eb", lineHeight: 1.65 }}>Войдите, чтобы продолжить работу с вашими проектами и задачами команды</span>
+      <div style={{ height: 6, borderRadius: 3, background: "#f3f4f6", width: "80%" }} />
+      <div style={{ height: 6, borderRadius: 3, background: "#f3f4f6", width: "60%" }} />
+    </div>
+  );
 }
 
-// ── Compare UI — Q3 ──────────────────────────────────────────────────────────
-export function CQCompare3A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ContrastQuiz3VariantA /></div>;
+// ── Q2B: тёмный текст на белом — хорошая читаемость (good) ────────────────
+export function CQCompare2B() {
+  return (
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "18px 20px", display: "flex", flexDirection: "column", gap: 7 }}>
+      <span style={{ fontFamily: f, fontSize: 13, fontWeight: 600, color: "#111827", letterSpacing: -0.3 }}>Добро пожаловать</span>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#4b5563", lineHeight: 1.65 }}>Войдите, чтобы продолжить работу с вашими проектами и задачами команды</span>
+      <div style={{ height: 6, borderRadius: 3, background: "#e5e7eb", width: "80%" }} />
+      <div style={{ height: 6, borderRadius: 3, background: "#e5e7eb", width: "60%" }} />
+    </div>
+  );
 }
+
+// ── Q3A: все кнопки одного цвета — нет акцента (bad) ──────────────────────
+export function CQCompare3A() {
+  return (
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#9ca3af", marginBottom: 2 }}>Выберите действие</span>
+      {["Войти", "Создать аккаунт", "Войти как гость"].map((label) => (
+        <div key={label} style={{ background: "#9ca3af", borderRadius: 8, padding: "9px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ fontFamily: f, fontSize: 10, fontWeight: 500, color: "white" }}>{label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Q3B: основная кнопка выделена — есть акцент (good) ────────────────────
 export function CQCompare3B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><ContrastQuiz3VariantB /></div>;
+  return (
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#6b7280", marginBottom: 2 }}>Выберите действие</span>
+      <div style={{ background: "#3b82f6", borderRadius: 8, padding: "10px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontFamily: f, fontSize: 10, fontWeight: 600, color: "white" }}>Войти</span>
+      </div>
+      <div style={{ background: "#f3f4f6", borderRadius: 8, padding: "9px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontFamily: f, fontSize: 10, color: "#374151" }}>Создать аккаунт</span>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", paddingTop: 2 }}>
+        <span style={{ fontFamily: f, fontSize: 9, color: "#9ca3af" }}>Войти как гость</span>
+      </div>
+    </div>
+  );
 }
 
 // ── Single Choice — Q4 ───────────────────────────────────────────────────────

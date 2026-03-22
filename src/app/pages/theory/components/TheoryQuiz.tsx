@@ -1,6 +1,6 @@
 /**
  * TheoryQuiz - Quiz card components for interactive theory questions
- * 
+ *
  * These components render the left/right quiz cards with visual feedback
  * for correct/incorrect answers.
  */
@@ -26,8 +26,8 @@ function QuizVariantSlot({ node }: { node: React.ReactNode }) {
   useEffect(() => {
     const el = wrapperRef.current;
     if (!el) return;
-    // Use less horizontal padding (16px total) for bigger content, 10px vertical padding
-    const compute = (w: number) => setScale((w - 16) / 172);
+    // 20px padding on each side (40px total)
+    const compute = (w: number) => setScale((w - 40) / 186);
     compute(el.offsetWidth);
     const ro = new ResizeObserver(entries => {
       for (const e of entries) compute(e.contentRect.width);
@@ -45,8 +45,7 @@ function QuizVariantSlot({ node }: { node: React.ReactNode }) {
       style={{
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
-        padding: '10px 8px',   // 10px top/bottom, 8px sides
+        padding: '50px 20px 50px 20px',
       }}
     >
       <div style={{ width: scaledW, height: scaledH, overflow: 'hidden', flexShrink: 0 }}>
@@ -63,23 +62,13 @@ export function QuizCardLeft({ isSelected, isCorrect, showFeedback, onClick, dis
   return (
     <div
       onClick={disabled ? undefined : onClick}
-      className={`flex-[1_0_0] min-h-px min-w-px relative rounded-[15px] transition-all overflow-hidden ${
+      className={`flex-[1_0_0] min-h-px min-w-px relative rounded-[24px] transition-all border-2 overflow-hidden ${
         showFeedback ? "cursor-default" : "cursor-pointer hover:scale-[1.01]"
       } ${disabled ? "pointer-events-none" : ""}`}
-      style={
-        isSelected
-          ? isCorrect
-            ? {
-                background: `linear-gradient(134.18deg, rgba(58,81,67,0.5) 2.42%, rgba(56,72,62,0.5) 98.53%, rgba(45,56,44,0.5) 116.25%)`,
-                border: "2px solid #00932F",
-                boxShadow: "inset -3px 0px 3px #384348, inset 0px -4px 3px rgba(0,0,0,0.25), inset 0px 3px 3px rgba(0,0,0,0.25)",
-              }
-            : {
-                background: `linear-gradient(134.18deg, rgba(67,40,37,0.6) 2.42%, rgba(58,35,34,0.6) 98.53%)`,
-                border: "2px solid #932E00",
-              }
-          : { background: "#404d52", border: "2px solid transparent" }
-      }
+      style={isSelected ? isCorrect
+        ? { background: `linear-gradient(#2D3B36, #2D3B36) padding-box, linear-gradient(to bottom, #00932F, #002D0E) border-box`, borderColor: "transparent" }
+        : { background: `linear-gradient(#3B3736, #3B3736) padding-box, linear-gradient(to bottom, #932E00, #2D0000) border-box`, borderColor: "transparent" }
+        : { background: "#282F33", borderColor: "#282F33" }}
     >
       {contentNode ? (
         <QuizVariantSlot node={contentNode} />
@@ -99,23 +88,13 @@ export function QuizCardRight({ isSelected, isCorrect, showFeedback, onClick, di
   return (
     <div
       onClick={disabled ? undefined : onClick}
-      className={`flex-[1_0_0] min-h-px min-w-px relative rounded-[15px] transition-all overflow-hidden ${
+      className={`flex-[1_0_0] min-h-px min-w-px relative rounded-[24px] transition-all border-2 overflow-hidden ${
         showFeedback ? "cursor-default" : "cursor-pointer hover:scale-[1.01]"
       } ${disabled ? "pointer-events-none" : ""}`}
-      style={
-        isSelected
-          ? isCorrect
-            ? {
-                background: `linear-gradient(134.18deg, rgba(58,81,67,0.5) 2.42%, rgba(56,72,62,0.5) 98.53%, rgba(45,56,44,0.5) 116.25%)`,
-                border: "2px solid #00932F",
-                boxShadow: "inset -3px 0px 3px #384348, inset 0px -4px 3px rgba(0,0,0,0.25), inset 0px 3px 3px rgba(0,0,0,0.25)",
-              }
-            : {
-                background: `linear-gradient(134.18deg, rgba(67,40,37,0.6) 2.42%, rgba(58,35,34,0.6) 98.53%)`,
-                border: "2px solid #932E00",
-              }
-          : { background: "#404d52", border: "2px solid transparent" }
-      }
+      style={isSelected ? isCorrect
+        ? { background: `linear-gradient(#2D3B36, #2D3B36) padding-box, linear-gradient(to bottom, #00932F, #002D0E) border-box`, borderColor: "transparent" }
+        : { background: `linear-gradient(#3B3736, #3B3736) padding-box, linear-gradient(to bottom, #932E00, #2D0000) border-box`, borderColor: "transparent" }
+        : { background: "#282F33", borderColor: "#282F33" }}
     >
       {contentNode ? (
         <QuizVariantSlot node={contentNode} />

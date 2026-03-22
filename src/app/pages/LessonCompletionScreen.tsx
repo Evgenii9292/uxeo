@@ -1,5 +1,6 @@
 // ─── Lesson Completion Screen ─────────────────────────────────────────────────
 
+import { useEffect } from "react";
 import correctSvgPaths from "../../imports/svg-1n8b0v1b3s";
 import { useWindowWidth } from "../hooks/useWindowWidth";
 
@@ -72,7 +73,7 @@ function OrangeButton({ label, onClick, isMobile }: { label: string; onClick: ()
         transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
     >
       <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
-      <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[1.2] text-[#f4f5fc] whitespace-nowrap ${isMobile ? "text-[20px]" : "text-[26px]"}`}>{label}</p>
+      <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.2] text-[#f4f5fc] whitespace-nowrap ${isMobile ? "text-[20px]" : "text-[26px]"}`}>{label}</p>
     </button>
   );
 }
@@ -86,7 +87,7 @@ function SecondaryButton({ label, onClick }: { label: string; onClick: () => voi
         transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
     >
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[15px] border border-[#57646a] border-solid transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
-      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[22.955px] text-[#c8ccd4] text-[26px] whitespace-nowrap">{label}</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] text-[#c8ccd4] text-[26px] whitespace-nowrap">{label}</p>
     </button>
   );
 }
@@ -119,6 +120,49 @@ export default function LessonCompletionScreen({
   const vw = useWindowWidth();
   const isMobile = vw < 768;
 
+  useEffect(() => {
+    const ctx = new AudioContext();
+    const vol = window.innerWidth < 768 ? 0.08 : 0.12;
+    const play = () => {
+      const now = ctx.currentTime + 0.05; // tiny offset avoids pop on resume
+      if (passed) {
+        // Triumph: C5 E5 G5 + held C6
+        const sequence = [
+          { freq: 523,  t: 0,    dur: 0.15 },
+          { freq: 659,  t: 0.14, dur: 0.15 },
+          { freq: 784,  t: 0.28, dur: 0.15 },
+          { freq: 1047, t: 0.42, dur: 0.55 },
+        ];
+        sequence.forEach(({ freq, t, dur }) => {
+          const o = ctx.createOscillator();
+          const g = ctx.createGain();
+          o.type = "sine";
+          o.frequency.setValueAtTime(freq, now + t);
+          g.gain.setValueAtTime(0, now + t);
+          g.gain.linearRampToValueAtTime(vol, now + t + 0.03);
+          g.gain.exponentialRampToValueAtTime(0.001, now + t + dur);
+          o.connect(g); g.connect(ctx.destination);
+          o.start(now + t);
+          o.stop(now + t + dur + 0.05);
+        });
+      } else {
+        // Fail: descending two-tone (gain starts from 0 to avoid click)
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(380, now);
+        o.frequency.exponentialRampToValueAtTime(240, now + 0.4);
+        g.gain.setValueAtTime(0, now);
+        g.gain.linearRampToValueAtTime(vol, now + 0.03);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(now); o.stop(now + 0.45);
+      }
+    };
+    ctx.resume().then(play).catch(() => {});
+    return () => { ctx.close().catch(() => {}); };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div
       className="relative min-h-screen w-full overflow-hidden flex items-center justify-center"
@@ -133,7 +177,7 @@ export default function LessonCompletionScreen({
             <PartyPopperIcon />
 
             <div className="flex flex-col items-center gap-[16px]">
-              <h1 className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium text-[#cdf6db] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[28px]" : "text-[48px]"}`}>
+              <h1 className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#cdf6db] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[28px]" : "text-[48px]"}`}>
                 Поздравляем!
               </h1>
               <p className={`font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#f4f5fc] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[17px]" : "text-[24px]"}`}>
@@ -146,7 +190,7 @@ export default function LessonCompletionScreen({
 
             {/* XP reward */}
             <div className="flex items-center gap-[12px]">
-              <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#00d043] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[24px]" : "text-[36px]"}`}>
+              <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#00d043] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[24px]" : "text-[36px]"}`}>
                 +{earnedXP} XP
               </p>
               <LightningIcon size={isMobile ? 22 : 32} />
@@ -164,7 +208,7 @@ export default function LessonCompletionScreen({
                   <path d="M13.5956 6.34462C13.4294 6.06951 13.1002 5.93905 12.7908 6.02528C12.4813 6.11155 12.2672 6.39348 12.2672 6.71478C12.2672 7.58838 11.5564 8.29907 10.6828 8.29907C9.80926 8.29907 9.09857 7.58833 9.09857 6.71478V0.715745C9.09857 0.426229 8.9242 0.16525 8.65668 0.0544453C8.38931 -0.0562166 8.08133 0.00491231 7.87661 0.20963C7.7963 0.289942 5.88751 2.20985 3.95372 5.11054C2.81341 6.821 1.90344 8.51763 1.24916 10.1534C0.420315 12.2256 0 14.2094 0 16.0497C0 20.6719 3.7605 24.4324 8.38273 24.4324C13.005 24.4324 16.7655 20.6719 16.7655 16.0497C16.7655 13.091 15.699 9.82582 13.5956 6.34462Z" fill="url(#csfg)" />
                 </svg>
                 <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[15px]" : "text-[20px]"}`}>
-                  Лучшая серия: <span className="text-[#FFB121] font-bold">{bestStreak}</span>
+                  Лучшая серия: <span className="text-[#FFB121] font-medium">{bestStreak}</span>
                 </p>
               </div>
             )}
@@ -175,7 +219,7 @@ export default function LessonCompletionScreen({
           /* ── STATE B: FAILED ────────────────────────────────────────────── */
           <>
             <div className="flex flex-col items-center gap-[16px]">
-              <h1 className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium text-[#ffbaaa] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[28px]" : "text-[48px]"}`}>
+              <h1 className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#ffbaaa] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[28px]" : "text-[48px]"}`}>
                 Попробуйте ещё раз
               </h1>
               <p className={`font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#f4f5fc] leading-[1.4] text-center max-w-[480px] ${isMobile ? "text-[15px] px-[24px]" : "text-[22px]"}`}>
@@ -187,7 +231,7 @@ export default function LessonCompletionScreen({
             {/* Partial XP (if any) */}
             {earnedXP > 0 && (
               <div className="flex items-center gap-[12px]">
-                <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium text-[#798589] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[20px]" : "text-[28px]"}`}>
+                <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[20px]" : "text-[28px]"}`}>
                   +{earnedXP} XP
                 </p>
                 <LightningIcon size={isMobile ? 18 : 26} />

@@ -22,19 +22,27 @@ interface User {
   lessonProgress: Record<string, LessonProgress>;
   streak: number;
   lastStreakDate: string | null;
-  level: ExperienceLevel | null; // Selected experience level during onboarding
-  weeklyChallengesCompleted: number; // Track weekly challenge progress (0-3)
+  level: ExperienceLevel | null;
+  goal: OnboardingGoal | null;
+  dailyTime: DailyTime | null;
+  weeklyChallengesCompleted: number;
 }
 
 export type ExperienceLevel = "beginner" | "some_experience" | "designer";
+export type OnboardingGoal = "change_career" | "improve_skills" | "work_use";
+export type DailyTime = "5min" | "15min" | "30min";
 
 interface UserContextValue {
   user: User;
   xp: number;
   streak: number;
   level: ExperienceLevel | null;
+  goal: OnboardingGoal | null;
+  dailyTime: DailyTime | null;
   weeklyChallengesCompleted: number;
   setLevel: (level: ExperienceLevel) => void;
+  setGoal: (goal: OnboardingGoal) => void;
+  setDailyTime: (dailyTime: DailyTime) => void;
   getLessonProgress: (lessonId: string) => LessonProgress;
   updateQuestionState: (lessonId: string, questionId: string, isCorrect: boolean, xpValue?: number) => { xpEarned: number };
   saveBestScore: (lessonId: string, runCorrect: number, totalQuestions: number) => void;
@@ -66,6 +74,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
           streak: typeof parsed.streak === 'number' ? parsed.streak : 0,
           lastStreakDate: parsed.lastStreakDate || null,
           level: parsed.level || null,
+          goal: parsed.goal || null,
+          dailyTime: parsed.dailyTime || null,
           weeklyChallengesCompleted: typeof parsed.weeklyChallengesCompleted === 'number' ? parsed.weeklyChallengesCompleted : 0,
         };
       }
@@ -73,7 +83,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       // If localStorage fails, use defaults
       console.error('Failed to load user data from localStorage:', e);
     }
-    return { lessonProgress: {}, streak: 0, lastStreakDate: null, level: null, weeklyChallengesCompleted: 0 };
+    return { lessonProgress: {}, streak: 0, lastStreakDate: null, level: null, goal: null, dailyTime: null, weeklyChallengesCompleted: 0 };
   });
 
   const { userId } = useAuthSafe() ?? { userId: null };
@@ -100,6 +110,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
           streak: d.streak ?? prev.streak,
           lastStreakDate: d.last_streak_date || prev.lastStreakDate,
           level: d.level || prev.level,
+          goal: d.goal || prev.goal,
+          dailyTime: d.daily_time || prev.dailyTime,
           weeklyChallengesCompleted: d.weekly_challenges ?? prev.weeklyChallengesCompleted,
         }));
       })
@@ -132,6 +144,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
             streak: user.streak,
             lastStreakDate: user.lastStreakDate ?? "",
             level: user.level ?? "",
+            goal: user.goal ?? "",
+            dailyTime: user.dailyTime ?? "",
             lessonProgress: user.lessonProgress,
             weeklyChallenges: user.weeklyChallengesCompleted,
           }),
@@ -152,6 +166,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
         streak: user.streak,
         lastStreakDate: user.lastStreakDate,
         level: user.level,
+        goal: user.goal,
+        dailyTime: user.dailyTime,
         weeklyChallengesCompleted: user.weeklyChallengesCompleted,
       };
       localStorage.setItem('uxeo-user-data', JSON.stringify(toSave));
@@ -311,7 +327,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   // Reset all progress
   const resetProgress = () => {
-    setUser({ lessonProgress: {}, streak: 0, lastStreakDate: null, level: null, weeklyChallengesCompleted: 0 });
+    setUser({ lessonProgress: {}, streak: 0, lastStreakDate: null, level: null, goal: null, dailyTime: null, weeklyChallengesCompleted: 0 });
   };
 
   // Increment streak once per day — returns true if actually awarded, false if already done today
@@ -344,20 +360,29 @@ export function UserProvider({ children }: { children: ReactNode }) {
   };
 
   const setLevel = (level: ExperienceLevel) => {
-    setUser((prev) => ({
-      ...prev,
-      level,
-    }));
+    setUser((prev) => ({ ...prev, level }));
+  };
+
+  const setGoal = (goal: OnboardingGoal) => {
+    setUser((prev) => ({ ...prev, goal }));
+  };
+
+  const setDailyTime = (dailyTime: DailyTime) => {
+    setUser((prev) => ({ ...prev, dailyTime }));
   };
 
   return (
-    <UserContext.Provider value={{ 
-      user, 
+    <UserContext.Provider value={{
+      user,
       xp,
       streak: user.streak,
       level: user.level,
+      goal: user.goal,
+      dailyTime: user.dailyTime,
       weeklyChallengesCompleted: user.weeklyChallengesCompleted,
       setLevel,
+      setGoal,
+      setDailyTime,
       getLessonProgress, 
       updateQuestionState,
       saveBestScore,

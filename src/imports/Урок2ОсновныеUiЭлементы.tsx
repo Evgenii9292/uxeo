@@ -79,7 +79,7 @@ function Container4() {
 
 function Lesson2Quiz1VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz1VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz1VariantA">
       <Container4 />
     </div>
   );
@@ -132,7 +132,7 @@ function Container7() {
 
 function Lesson2Quiz1VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz1VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz1VariantB">
       <Container7 />
     </div>
   );
@@ -201,7 +201,7 @@ function Container12() {
 
 function Lesson2Quiz2VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz2VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz2VariantA">
       <Container12 />
     </div>
   );
@@ -274,7 +274,7 @@ function Container15() {
 
 function Lesson2Quiz2VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz2VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz2VariantB">
       <Container15 />
     </div>
   );
@@ -353,7 +353,7 @@ function Container21() {
 
 function Lesson2Quiz3VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz3VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz3VariantA">
       <Container21 />
     </div>
   );
@@ -432,7 +432,7 @@ function Container24() {
 
 function Lesson2Quiz3VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz3VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz3VariantB">
       <Container24 />
     </div>
   );
@@ -2107,23 +2107,87 @@ function Container76() {
 
 // Named exports for LessonQuizPage (quiz_ui_elements — Basic UI Elements)
 // ─────────────────────────────────────────────────────────────────────────────
+// ─── Quiz 1: Где кнопка лучше? ──────────────────────────────────────────────
 export function CQUiElemCompare1A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson2Quiz1VariantA /></div>;
+  // Плохо: невзрачная кнопка — серая, маленькая, неясная
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+        <div style={{ background: "#e5e7eb", borderRadius: 4, height: 24, width: 100, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ color: "#9ca3af", fontSize: 10, fontFamily: "Inter, sans-serif" }}>действие</span>
+        </div>
+      </div>
+    </div>
+  );
 }
 export function CQUiElemCompare1B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson2Quiz1VariantB /></div>;
+  // Хорошо: заметная кнопка — синяя, крупная, чёткий текст
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+        <div style={{ background: "#3b82f6", borderRadius: 8, height: 40, width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ color: "white", fontSize: 13, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>Начать</span>
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// ─── Quiz 2: Где поле ввода лучше? ──────────────────────────────────────────
 export function CQUiElemCompare2A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson2Quiz2VariantA /></div>;
+  // Плохо: поле без лейбла и плейсхолдера
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+        <div style={{ border: "1px solid #d1d3db", borderRadius: 5, height: 36, width: "100%", background: "#f7f8fc" }} />
+      </div>
+    </div>
+  );
 }
 export function CQUiElemCompare2B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson2Quiz2VariantB /></div>;
+  // Хорошо: поле с лейблом и плейсхолдером
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, padding: "14px 24px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 5, overflow: "hidden" }}>
+        <span style={{ fontSize: 10, fontFamily: "Inter, sans-serif", color: "#364146", fontWeight: 600 }}>Email</span>
+        <div style={{ border: "1.5px solid #3b82f6", borderRadius: 6, height: 36, display: "flex", alignItems: "center", padding: "0 12px" }}>
+          <span style={{ color: "#8e9199", fontSize: 10, fontFamily: "Inter, sans-serif" }}>example@mail.com</span>
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// ─── Quiz 3: Где карточка лучше? ────────────────────────────────────────────
 export function CQUiElemCompare3A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson2Quiz3VariantA /></div>;
+  // Плохо: текст без структуры и иерархии
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+        <div style={{ background: "#f7f8fc", borderRadius: 8, padding: "12px 14px" }}>
+          <span style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "#364146", lineHeight: 1.5 }}>
+            Это текст карточки без структуры и заголовка описание идет просто текстом без разделения и непонятно где что находится
+          </span>
+        </div>
+      </div>
+    </div>
+  );
 }
 export function CQUiElemCompare3B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson2Quiz3VariantB /></div>;
+  // Хорошо: карточка с заголовком, описанием и кнопкой
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+        <div style={{ background: "#f7f8fc", borderRadius: 8, padding: "12px 14px", display: "flex", flexDirection: "column", gap: 7, width: "100%" }}>
+          <span style={{ fontSize: 12, fontFamily: "Inter, sans-serif", fontWeight: 700, color: "#101828" }}>UX Дизайн</span>
+          <span style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "#364146", lineHeight: 1.4 }}>Изучите основы проектирования пользовательских интерфейсов</span>
+          <div style={{ background: "#3b82f6", borderRadius: 5, height: 26, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ color: "white", fontSize: 10, fontFamily: "Inter, sans-serif" }}>Подробнее</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 export function CQUiElemSingle1() {
   return <div style={{ height: 231, width: 186, overflow: "hidden", borderRadius: 15 }}><Lesson2Quiz /></div>;

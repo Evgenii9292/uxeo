@@ -5,7 +5,7 @@ import svgPaths from "../../imports/svg-pt1cecsedx";
 // ─── UXEO Fire icon (same path used in AppHeader) ─────────────────────────────
 function FireIcon() {
   return (
-    <div className="relative shrink-0" style={{ width: 52, height: 76 }}>
+    <div className="relative shrink-0" style={{ width: 36, height: 52 }}>
       <svg
         className="absolute block size-full"
         fill="none"
@@ -36,7 +36,7 @@ function FireIcon() {
 // ─── Green check indicator (replaces yellow dot) ──────────────────────────────
 function GreenCheck() {
   return (
-    <div className="relative shrink-0 size-[32px]">
+    <div className="relative shrink-0 size-[24px]">
       <svg className="absolute block size-full" fill="none" viewBox="0 0 32 32">
         <circle cx="16" cy="16" r="16" fill="url(#gc_streak)" />
         <path
@@ -59,13 +59,13 @@ function GreenCheck() {
 
 function DayIndicator({ day, active }: { day: number; active: boolean }) {
   return (
-    <div className="flex flex-col items-center gap-[8px]">
+    <div className="flex flex-col items-center gap-[5px]">
       {active ? (
         <GreenCheck />
       ) : (
-        <div className="size-[32px] rounded-full bg-[#3d494f] border border-[#636670] border-solid" />
+        <div className="size-[24px] rounded-full bg-[#3d494f] border border-[#636670] border-solid" />
       )}
-      <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#f4f5fc] text-[14px] leading-[1.2]">
+      <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#798589] text-[12px] leading-[1.2]">
         День {day}
       </p>
     </div>
@@ -97,7 +97,7 @@ function ContinueButton({ onClick }: { onClick: () => void }) {
       "
     >
       <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
-      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[22.955px] text-[#f4f5fc] text-[26px] whitespace-nowrap">Продолжить</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] text-[#f4f5fc] text-[26px] whitespace-nowrap">Продолжить</p>
     </button>
   );
 }
@@ -113,31 +113,29 @@ export default function StreakScreen({ onContinue, currentStreak = 1 }: StreakSc
       className="relative min-h-screen w-full overflow-hidden flex items-center justify-center"
       style={{ backgroundImage: "#282F33" }}
     >
-      <div className="flex flex-col items-center gap-[48px]">
+      <div className="flex flex-col items-center gap-[20px]">
         {/* UXEO Fire icon */}
         <FireIcon />
 
         {/* Streak started text */}
-        <div className="flex flex-col items-center gap-[16px]">
-          <h1 className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#fdc70e] text-[48px] leading-[1.2] whitespace-nowrap">
+        <div className="flex flex-col items-center gap-[8px]">
+          <h1 className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#fdc70e] text-[32px] leading-[1.2] whitespace-nowrap">
             {currentStreak === 1 ? 'Серия началась!' : `Серия: ${currentStreak} ${currentStreak === 1 ? 'день' : currentStreak < 5 ? 'дня' : 'дней'}!`}
           </h1>
-          <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#f4f5fc] text-[20px] leading-[1.2] text-center max-w-[400px]">
+          <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#798589] text-[15px] leading-[1.3] text-center max-w-[320px]">
             Продолжайте учиться каждый день, чтобы сохранить серию
           </p>
         </div>
 
         {/* Day indicators — green check on completed days */}
-        <div className="flex items-center gap-[32px]">
+        <div className="flex items-center gap-[24px]">
           {[1, 2, 3].map((day) => (
             <DayIndicator key={day} day={day} active={day <= currentStreak} />
           ))}
         </div>
 
         {/* Continue button */}
-        <div className="mt-[24px]">
-          <ContinueButton onClick={onContinue} />
-        </div>
+        <ContinueButton onClick={onContinue} />
       </div>
     </div>
   );

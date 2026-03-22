@@ -3,12 +3,14 @@
  * The "···" tab opens the MoreSheet bottom drawer.
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
 import { useLocation, useNavigate } from "react-router";
 import svgDivPaths from "../../imports/svg-1vbml8i98m";
 import { MoreSheet } from "./MoreSheet";
 import { getLeague } from "../pages/LeaguePage";
 import { useUserSafe } from "../context/UserContext";
+import { NOTIF_COUNT_KEY, NOTIF_INITIAL_UNREAD } from "../pages/NotificationsPage";
 
 // ── Figma icon components ─────────────────────────────────────────────────────
 
@@ -120,14 +122,72 @@ function IconMore({ active }: { active: boolean }) {
   );
 }
 
+// ── Notifications icon with unread dot ───────────────────────────────────────
+
+function useNotifCount() {
+  const [count, setCount] = useState<number>(() => {
+    const v = localStorage.getItem(NOTIF_COUNT_KEY);
+    return v !== null ? Number(v) : NOTIF_INITIAL_UNREAD;
+  });
+  useEffect(() => {
+    const onCustom = (e: Event) => setCount((e as CustomEvent<number>).detail);
+    window.addEventListener("notif-count-change", onCustom);
+    return () => window.removeEventListener("notif-count-change", onCustom);
+  }, []);
+  return count;
+}
+
+function IconNotifications({ active: _active }: { active: boolean }) {
+  const notifCount = useNotifCount();
+  const hasUnread = notifCount > 0;
+  return (
+    <div className="relative shrink-0" style={{ width: 26, height: 26 }}>
+      <div className="overflow-clip relative rounded-[inherit] size-full">
+        <div className="absolute inset-[4.76%_19.08%_12.09%_3.91%]">
+          <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 29.6484 32.0117">
+            <path d={svgDivPaths.p352d5680} fill="url(#notif_tab_grad)" />
+            <defs>
+              <linearGradient id="notif_tab_grad" gradientUnits="userSpaceOnUse" x1="14.8242" x2="14.8242" y1="0" y2="32.0117">
+                <stop stopColor="#FFB121" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div className="absolute inset-[4.76%_19.08%_12.09%_42.41%]">
+          <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14.8242 32.0117">
+            <path d={svgDivPaths.p1684a400} fill="#FFD845" />
+          </svg>
+        </div>
+        <div className="absolute inset-[70.24%_42.71%_0_27.53%]">
+          <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 11.4583 11.4583">
+            <path d={svgDivPaths.p8de4700} fill="#FFD845" />
+          </svg>
+        </div>
+        <div className="absolute inset-[70.24%_42.71%_0_42.41%]">
+          <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 5.72917 11.4583">
+            <path d={svgDivPaths.p5d68500} fill="#FF9D21" />
+          </svg>
+        </div>
+        {hasUnread && (
+          <div className="absolute inset-[-0.78%_-4.76%_38.88%_42.86%]">
+            <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 23.8333 23.8333">
+              <circle cx="11.9167" cy="11.9167" fill="#FF6B21" r="10.5417" stroke="#2C353A" strokeWidth="2.75" />
+            </svg>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── League tab icon — shows current trophy ────────────────────────────────────
 
 function IconLeague({ active }: { active: boolean }) {
   const userData = useUserSafe();
   const league = getLeague(userData?.xp ?? 0);
   return (
-    <div style={{ width: 29, height: 29, display: "flex", alignItems: "center", justifyContent: "center", opacity: active ? 1 : 0.6 }}>
-      <img src={league.trophy} width={26} height={26} style={{ objectFit: "contain" }} />
+    <div style={{ width: 29, height: 29, display: "flex", alignItems: "center", justifyContent: "center", opacity: active ? 1 : 0.85 }}>
+      <img src={league.trophy} width={21} height={21} style={{ objectFit: "contain", filter: "brightness(1.6) saturate(1.4)" }} />
     </div>
   );
 }
@@ -142,10 +202,10 @@ const NAV_TABS = [
     Icon: IconObuchenie,
   },
   {
-    key: "courses",
-    path: "/courses",
-    matchPaths: ["/courses", "/modules"],
-    Icon: IconKursy,
+    key: "notifications",
+    path: "/notifications",
+    matchPaths: ["/notifications"],
+    Icon: IconNotifications,
   },
   {
     key: "challenges",
@@ -226,8 +286,11 @@ export default function BottomTabBar() {
         </button>
       </nav>
 
-      {/* MoreSheet */}
-      {showMore && <MoreSheet onClose={() => setShowMore(false)} />}
+      {/* MoreSheet — rendered via portal to escape transform stacking context */}
+      {showMore && ReactDOM.createPortal(
+        <MoreSheet onClose={() => setShowMore(false)} />,
+        document.body
+      )}
     </>
   );
 }

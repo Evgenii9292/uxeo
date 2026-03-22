@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import svgPaths from "../../imports/svg-0jdjpvfhdv";
+import svgNotif from "../../imports/svg-r42rgjsncr";
 import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 import { useAuth } from "../context/AuthContext";
 import PageTransition from "../components/PageTransition";
@@ -18,16 +18,45 @@ function LogoContainer() {
   );
 }
 
-// ─── Bell icon ────────────────────────────────────────────────────────────────
+// ─── Notification bell icon (from Sidebar/tab bar) scaled up ─────────────────
 
-function BellIcon() {
+function NotifIcon() {
+  const S = 3.2; // scale factor — base icon is 20×20
   return (
-    <svg width="56" height="56" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"
-        fill="#ff5d39"
-      />
-    </svg>
+    <div style={{ width: 20 * S, height: 20 * S, position: "relative" }}>
+      <div style={{ transform: `scale(${S})`, transformOrigin: "top left", position: "absolute", width: 20, height: 20 }}>
+        {/* Clapper left */}
+        <div className="absolute inset-[68.75%_44.84%_0_23.91%]">
+          <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 6.25 6.25">
+            <path d={svgNotif.p2ba58980} fill="#FFD845" />
+          </svg>
+        </div>
+        {/* Clapper right */}
+        <div className="absolute inset-[68.75%_44.84%_0_39.53%]">
+          <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 3.125 6.25">
+            <path d={svgNotif.p26e5800} fill="#FF9D21" />
+          </svg>
+        </div>
+        {/* Bell body left */}
+        <div className="absolute inset-[0_20.04%_12.7%_-0.9%]">
+          <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16.1719 17.4609">
+            <defs>
+              <linearGradient gradientUnits="userSpaceOnUse" id="notif_bell_email" x1="8.08594" x2="8.08594" y1="0" y2="17.4609">
+                <stop stopColor="#FFB121" />
+                <stop offset="1" stopColor="#FF6B21" />
+              </linearGradient>
+            </defs>
+            <path d={svgNotif.p444ce00} fill="url(#notif_bell_email)" />
+          </svg>
+        </div>
+        {/* Bell body right */}
+        <div className="absolute inset-[0_20.04%_12.7%_39.53%]">
+          <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 8.08594 17.4609">
+            <path d={svgNotif.p1ca20b00} fill="#FFD845" />
+          </svg>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -49,7 +78,7 @@ function PrimaryButton({ onClick, label, loading }: { onClick: () => void; label
     >
       <div className="bg-[#ff5d39] content-stretch flex items-center justify-center px-[25.835px] py-[0.835px] relative rounded-[15px] size-full">
         <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-[0px_0px_0px_0px_#c24226]" />
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[22.955px] relative shrink-0 text-[26px] text-[rgba(247,248,252,0.9)] whitespace-nowrap">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] relative shrink-0 text-[26px] text-[rgba(247,248,252,0.9)] whitespace-nowrap">
           {loading ? "Сохраняем..." : label}
         </p>
       </div>
@@ -138,49 +167,53 @@ export default function EmailCapturePage() {
         <div className="flex-1 flex items-center justify-center px-4">
           <div className="flex flex-col gap-[32px] items-center w-full max-w-[374px]">
 
-            {/* Bell icon */}
-            <BellIcon />
+            {/* Notification icon */}
+            <NotifIcon />
 
             {/* Text */}
-            <div className="flex flex-col gap-[16px] items-start w-full">
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[37px] text-[32px] text-[rgba(244,245,252,0.9)]">
-                Узнайте первым о проверке
+            <div className="flex flex-col gap-[16px] items-center w-full text-center">
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[37px] text-[32px] text-[rgba(244,245,252,0.9)]">
+                Узнайте о проверке ДЗ
               </p>
-              <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[24px] text-[#e0e2e8] text-[18px]">
+              <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[24px] text-[#798589] text-[18px]">
                 Пришлём email, когда преподаватель проверит вашу домашку. Никакого спама.
               </p>
             </div>
 
-            {/* Email input */}
-            <div className="flex flex-col gap-[8px] w-full">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => { setEmail(e.target.value); setError(""); }}
-                onKeyDown={(e) => e.key === "Enter" && handleSave()}
-                placeholder="ваш@email.com"
-                autoFocus
-                className="
-                  w-full h-[59px] rounded-[15px] px-[20px]
-                  bg-[rgba(255,255,255,0.06)] border border-[rgba(244,245,252,0.12)]
-                  font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[20px] text-[#f4f5fc]
-                  placeholder-[#798589]
-                  outline-none
-                  focus:border-[#ff5d39]
-                  transition-colors duration-150
-                "
-              />
-              {error && (
-                <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#ff5d39] text-[16px] pl-[4px]">
-                  {error}
-                </p>
-              )}
-            </div>
+            {/* Input + Buttons (20px gap between them) */}
+            <div className="flex flex-col gap-[20px] w-full">
+              {/* Email input */}
+              <div className="flex flex-col gap-[8px] w-full">
+                <div
+                  className="relative px-[20px] rounded-[15px] h-[56px] flex items-center w-full"
+                  style={{ backgroundImage: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)" }}
+                >
+                  <div aria-hidden="true" className="absolute border-[2px] border-[rgba(160,163,173,0.2)] border-solid inset-[-2px] pointer-events-none rounded-[15px]" />
+                  <input
+                    type="email"
+                    autoComplete="email"
+                    name="email"
+                    value={email}
+                    onChange={(e) => { setEmail(e.target.value); setError(""); }}
+                    onKeyDown={(e) => e.key === "Enter" && handleSave()}
+                    placeholder="ваш@email.com"
+                    autoFocus
+                    className="bg-transparent flex-1 min-w-0 outline-none border-none font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[18px] placeholder-[#798589]"
+                    style={{ color: "rgba(244,245,252,0.8)", caretColor: "rgba(244,245,252,0.8)" }}
+                  />
+                </div>
+                {error && (
+                  <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#ff5d39] text-[16px] pl-[4px]">
+                    {error}
+                  </p>
+                )}
+              </div>
 
-            {/* Buttons */}
-            <div className="flex flex-col gap-[4px] w-full items-center">
-              <PrimaryButton onClick={handleSave} label="Сохранить и продолжить" loading={loading} />
-              <SkipButton onClick={handleSkip} />
+              {/* Buttons */}
+              <div className="flex flex-col gap-[4px] w-full items-center">
+                <PrimaryButton onClick={handleSave} label="Сохранить и продолжить" loading={loading} />
+                <SkipButton onClick={handleSkip} />
+              </div>
             </div>
 
           </div>

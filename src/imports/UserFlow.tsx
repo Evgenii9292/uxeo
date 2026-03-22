@@ -1,3 +1,4 @@
+import React from "react";
 import imgImageWithFallback from "figma:asset/6862391585b9ab05c2f2188634e09ea4f619e979.png";
 
 function Paragraph() {
@@ -118,7 +119,7 @@ function Container1() {
 
 function Lesson2Quiz1VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz1VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz1VariantA">
       <Container1 />
     </div>
   );
@@ -222,7 +223,7 @@ function Container9() {
 
 function Lesson2Quiz1VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start justify-between left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz1VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start justify-between left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz1VariantB">
       <Container9 />
     </div>
   );
@@ -348,7 +349,7 @@ function Container14() {
 
 function Lesson2Quiz2VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz2VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz2VariantA">
       <Container14 />
     </div>
   );
@@ -480,7 +481,7 @@ function Container21() {
 
 function Lesson2Quiz2VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz2VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz2VariantB">
       <Container21 />
     </div>
   );
@@ -572,7 +573,7 @@ function Container28() {
 
 function Lesson2Quiz3VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz3VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz3VariantA">
       <Container28 />
     </div>
   );
@@ -688,7 +689,7 @@ function Container33() {
 
 function Lesson2Quiz3VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz3VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson2Quiz3VariantB">
       <Container33 />
     </div>
   );
@@ -1486,7 +1487,7 @@ function Container72() {
 
 function Lesson2Quiz10Card() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-0 px-[50px] rounded-[8px] top-[3910px] w-[130px]" data-name="Lesson2Quiz10Card1">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson2Quiz10Card1">
       <Container72 />
     </div>
   );
@@ -1530,7 +1531,7 @@ function Container73() {
 
 function Lesson2Quiz10Card1() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[154px] px-[35.563px] rounded-[8px] top-[3910px] w-[130px]" data-name="Lesson2Quiz10Card2">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson2Quiz10Card2">
       <Container73 />
     </div>
   );
@@ -1556,7 +1557,7 @@ function Container76() {
 
 function Lesson2Quiz10Card2() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[308px] px-[50px] rounded-[8px] top-[3910px] w-[130px]" data-name="Lesson2Quiz10Card3">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson2Quiz10Card3">
       <Container76 />
     </div>
   );
@@ -1604,7 +1605,7 @@ function Container77() {
 
 function Lesson2Quiz11Card() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-0 pl-[28.672px] pr-[28.68px] rounded-[8px] top-[4161px] w-[130px]" data-name="Lesson2Quiz11Card1">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson2Quiz11Card1">
       <Container77 />
     </div>
   );
@@ -1644,7 +1645,7 @@ function Container79() {
 
 function Lesson2Quiz11Card1() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex flex-col gap-[3px] h-[80px] items-start justify-center left-[154px] pl-[8px] py-[23.5px] rounded-[8px] top-[4161px] w-[130px]" data-name="Lesson2Quiz11Card2">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson2Quiz11Card2">
       <Container78 />
       <Container79 />
     </div>
@@ -1671,7 +1672,7 @@ function Container80() {
 
 function Lesson2Quiz11Card2() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[308px] px-[50px] rounded-[8px] top-[4161px] w-[130px]" data-name="Lesson2Quiz11Card3">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson2Quiz11Card3">
       <Container80 />
     </div>
   );
@@ -1763,7 +1764,7 @@ function Paragraph92() {
 
 function Lesson2Quiz12Card() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex flex-col gap-[2px] h-[80px] items-start justify-center left-0 pl-[8px] py-[29.25px] rounded-[8px] top-[4412px] w-[130px]" data-name="Lesson2Quiz12Card1">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson2Quiz12Card1">
       <Container81 />
       <Paragraph92 />
     </div>
@@ -1812,7 +1813,7 @@ function Paragraph94() {
 
 function Lesson2Quiz12Card1() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex flex-col gap-[2px] h-[80px] items-start justify-center left-[154px] pl-[8px] py-[29.25px] rounded-[8px] top-[4412px] w-[130px]" data-name="Lesson2Quiz12Card2">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson2Quiz12Card2">
       <Container85 />
       <Paragraph94 />
     </div>
@@ -1840,7 +1841,7 @@ function Container88() {
 
 function Lesson2Quiz12Card2() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[308px] px-[40px] rounded-[8px] top-[4412px] w-[130px]" data-name="Lesson2Quiz12Card3">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson2Quiz12Card3">
       <Container88 />
     </div>
   );
@@ -1873,23 +1874,136 @@ function Paragraph98() {
 // ─────────────────────────────────────────────────────────────────────────────
 // Named exports for LessonQuizPage (quiz_user_flow visuals)
 // ─────────────────────────────────────────────────────────────────────────────
+const CW: React.CSSProperties = { position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" };
+const CI: React.CSSProperties = { position: "absolute", inset: 0, padding: "14px 16px", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" };
+
+function Step({ n, label, active }: { n: number; label: string; active?: boolean }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: 1 }}>
+      <div style={{ width: 28, height: 28, borderRadius: "50%", background: active ? "#3b82f6" : "#e5e7eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontSize: 10, fontFamily: "Inter, sans-serif", color: active ? "white" : "#9ca3af", fontWeight: 600 }}>{n}</span>
+      </div>
+      <span style={{ fontSize: 7, fontFamily: "Inter, sans-serif", color: "#8e9199", textAlign: "center" }}>{label}</span>
+    </div>
+  );
+}
+function StepLine({ active }: { active?: boolean }) {
+  return <div style={{ height: 2, flex: 1, background: active ? "#3b82f6" : "#e5e7eb", alignSelf: "flex-start", marginTop: 13 }} />;
+}
+
+// ─── Quiz 1: Где сценарий проще? ────────────────────────────────────────────
 export function CQFlowCompare1A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson2Quiz1VariantA /></div>;
+  // Плохо: 6 шагов — длинный путь
+  const steps = ["Главная", "Каталог", "Товар", "Корзина", "Оплата", "Готово"];
+  return (
+    <div style={CW}><div style={{ ...CI, gap: 14 }}>
+      <div style={{ display: "flex", alignItems: "flex-start" }}>
+        {steps.map((s, i) => (
+          <React.Fragment key={i}>
+            <Step n={i + 1} label={s} />
+            {i < steps.length - 1 && <StepLine />}
+          </React.Fragment>
+        ))}
+      </div>
+    </div></div>
+  );
 }
 export function CQFlowCompare1B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson2Quiz1VariantB /></div>;
+  // Хорошо: 3 шага — минимум усилий
+  const steps = ["Товар", "Оплата", "Готово"];
+  return (
+    <div style={CW}><div style={{ ...CI, gap: 14 }}>
+      <div style={{ display: "flex", alignItems: "flex-start" }}>
+        {steps.map((s, i) => (
+          <React.Fragment key={i}>
+            <Step n={i + 1} label={s} active />
+            {i < steps.length - 1 && <StepLine active />}
+          </React.Fragment>
+        ))}
+      </div>
+    </div></div>
+  );
 }
+
+// ─── Quiz 2: Где путь проще? ─────────────────────────────────────────────────
 export function CQFlowCompare2A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson2Quiz2VariantA /></div>;
+  // Плохо: шаги идут хаотично — стрелки туда-сюда
+  return (
+    <div style={CW}><div style={{ ...CI, gap: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <div style={{ background: "#f7f8fc", borderRadius: 5, padding: "5px 8px" }}><span style={{ fontSize: 8, fontFamily: "Inter, sans-serif", color: "#364146" }}>Шаг 1</span></div>
+        <span style={{ color: "#9ca3af", fontSize: 10 }}>→</span>
+        <div style={{ background: "#f7f8fc", borderRadius: 5, padding: "5px 8px" }}><span style={{ fontSize: 8, fontFamily: "Inter, sans-serif", color: "#364146" }}>Шаг 3</span></div>
+        <span style={{ color: "#f87171", fontSize: 10 }}>←</span>
+        <div style={{ background: "#f7f8fc", borderRadius: 5, padding: "5px 8px" }}><span style={{ fontSize: 8, fontFamily: "Inter, sans-serif", color: "#364146" }}>Шаг 2</span></div>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <span style={{ color: "#f87171", fontSize: 10 }}>↙</span>
+        <div style={{ background: "#f7f8fc", borderRadius: 5, padding: "5px 8px" }}><span style={{ fontSize: 8, fontFamily: "Inter, sans-serif", color: "#364146" }}>Шаг 5</span></div>
+        <span style={{ color: "#f87171", fontSize: 10 }}>←</span>
+        <div style={{ background: "#f7f8fc", borderRadius: 5, padding: "5px 8px" }}><span style={{ fontSize: 8, fontFamily: "Inter, sans-serif", color: "#364146" }}>Шаг 4</span></div>
+        <span style={{ color: "#9ca3af", fontSize: 10 }}>→</span>
+        <div style={{ background: "#f7f8fc", borderRadius: 5, padding: "5px 8px" }}><span style={{ fontSize: 8, fontFamily: "Inter, sans-serif", color: "#364146" }}>Шаг 6</span></div>
+      </div>
+    </div></div>
+  );
 }
 export function CQFlowCompare2B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson2Quiz2VariantB /></div>;
+  // Хорошо: шаги последовательно — логичный путь
+  const steps = ["Шаг 1", "Шаг 2", "Шаг 3", "Шаг 4"];
+  return (
+    <div style={CW}><div style={{ ...CI, gap: 10 }}>
+      {steps.map((s, i) => (
+        <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ width: 20, height: 20, borderRadius: "50%", background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <span style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "white", fontWeight: 600 }}>{i + 1}</span>
+          </div>
+          <div style={{ flex: 1, background: "#f7f8fc", borderRadius: 5, height: 22, display: "flex", alignItems: "center", padding: "0 8px" }}>
+            <span style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "#364146" }}>{s}</span>
+          </div>
+        </div>
+      ))}
+    </div></div>
+  );
 }
+
+// ─── Quiz 3: Где цель достичь легче? ────────────────────────────────────────
 export function CQFlowCompare3A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson2Quiz3VariantA /></div>;
+  // Плохо: путь с возвратами назад
+  return (
+    <div style={CW}><div style={{ ...CI, gap: 8 }}>
+      {[["Шаг 1", "→", "Шаг 2"], ["↙ назад", "", "↓"], ["Шаг 3", "→", "Шаг 4"]].map((row, i) => (
+        <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          {row.map((cell, j) => (
+            <div key={j} style={cell.includes("Шаг") ? { background: "#f7f8fc", borderRadius: 5, padding: "5px 10px" } : {}}>
+              <span style={{ fontSize: cell.includes("Шаг") ? 9 : 12, fontFamily: "Inter, sans-serif", color: cell.includes("назад") ? "#f87171" : "#364146" }}>{cell}</span>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div></div>
+  );
 }
 export function CQFlowCompare3B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson2Quiz3VariantB /></div>;
+  // Хорошо: прямой линейный путь без возвратов
+  const steps = ["Начало", "Действие", "Результат"];
+  return (
+    <div style={CW}><div style={{ ...CI, alignItems: "center", gap: 6 }}>
+      <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+        {steps.map((s, i) => (
+          <React.Fragment key={i}>
+            <div style={{ flex: 1, background: "#dbeafe", borderRadius: 6, height: 32, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ fontSize: 8, fontFamily: "Inter, sans-serif", color: "#1d4ed8", fontWeight: 600 }}>{s}</span>
+            </div>
+            {i < steps.length - 1 && <span style={{ color: "#3b82f6", fontSize: 14, margin: "0 4px" }}>→</span>}
+          </React.Fragment>
+        ))}
+      </div>
+      <div style={{ background: "#22c55e", borderRadius: 6, height: 28, width: "60%", display: "flex", alignItems: "center", justifyContent: "center", marginTop: 8 }}>
+        <span style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "white", fontWeight: 600 }}>✓ Цель достигнута</span>
+      </div>
+    </div></div>
+  );
 }
 export function CQFlowSingle1() {
   return <div style={{ position: "relative", background: "white", height: 231, width: 186, overflow: "hidden", paddingTop: 10, paddingLeft: 10, paddingRight: 10, borderRadius: 15 }}><Container38 /></div>;

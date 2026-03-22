@@ -36,6 +36,7 @@ export function MobileFloatingCircles({
         <FloatingCircle
           size={56}
           noArc
+          bg="#282F33"
           onClick={() => setShowFeedback(true)}
           title="Написать отзыв"
         >

@@ -41,10 +41,10 @@ export function QuizOptionCard({
   const isClickable = state === "idle" || state === "selected";
 
   // FIXED sizes per spec:
-  //   small  (<440px): 50px
-  //   large  (≥440px mobile): 60px
-  //   desktop: 64px
-  const defaultH = isMobile ? (isLargePhone ? 60 : 50) : 64;
+  //   small  (<440px): 64px
+  //   large  (≥440px mobile): 72px
+  //   desktop: 80px
+  const defaultH = isMobile ? (isLargePhone ? 72 : 64) : 80;
   const h = fixedHeight ?? defaultH;
 
   return (
@@ -64,7 +64,7 @@ export function QuizOptionCard({
         />
       )}
       {/* Text + label — centered vertically (height is fixed) */}
-      <div className={`flex items-center justify-between leading-[20px] ${isMobile ? "px-[16px]" : "px-[40px]"} w-full gap-3`}>
+      <div className="flex items-center justify-between leading-[20px] px-[20px] w-full gap-3">
         <p className={`font-['Roboto_Condensed:Regular',sans-serif] font-normal relative shrink-0 text-[#f4f5fc] flex-1 min-w-0 ${isMobile ? "text-[16px]" : "text-[18px]"}`}>
           {text}
         </p>

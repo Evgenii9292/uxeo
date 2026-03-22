@@ -6,6 +6,7 @@ import svgPaths from "../../imports/svg-mo1fvfhy71";
 import imgAvatar from "figma:asset/906790c4d803b2b6f01b6bc1dc6703b587d8a0d9.png";
 import { ActiveCourseCard, COURSE_DISPLAY } from "../components/CoursesContent";
 import { useAchievementsSafe, ACHIEVEMENTS, ACHIEVEMENT_ORDER, AchievementId } from "../context/AchievementsContext";
+import { getLeague } from "./LeaguePage";
 
 // ─── Pencil icon (orange gradient, from Figma) ────────────────────────────────
 function PencilIcon() {
@@ -26,39 +27,27 @@ function PencilIcon() {
   );
 }
 
-// ─── Fire icon (yellow gradient) ─────────────────────────────────────────────
+// ─── Fire icon (matches AppHeader) ───────────────────────────────────────────
 function FireStatIcon() {
   return (
-    <div className="overflow-clip relative shrink-0 size-[22px]">
-      <div className="absolute inset-[0_15%]">
-        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16.7655 24.4324">
-          <path d={svgPaths.p33094f0} fill="url(#fire_stat_grad)" />
-          <defs>
-            <linearGradient gradientUnits="userSpaceOnUse" id="fire_stat_grad" x1="8.38" x2="8.38" y1="0" y2="24.4">
-              <stop stopColor="#FFB121" />
-              <stop offset="1" stopColor="#BB8116" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-    </div>
+    <img
+      src="/fire-icon.svg"
+      width={22}
+      height={24}
+      style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(76%) saturate(751%) hue-rotate(357deg) brightness(102%)", flexShrink: 0 }}
+    />
   );
 }
 
-// ─── Zap icon (orange gradient) ───────────────────────────────────────────────
+// ─── Zap icon (matches AppHeader) ────────────────────────────────────────────
 function ZapStatIcon() {
   return (
-    <div className="relative shrink-0 size-[22px]">
-      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
-        <path d={svgPaths.p3b6e5180} fill="url(#zap_stat_grad)" stroke="url(#zap_stat_grad)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.333" />
-        <defs>
-          <linearGradient gradientUnits="userSpaceOnUse" id="zap_stat_grad" x1="10.57" x2="0.9" y1="10.57" y2="24.45">
-            <stop stopColor="#FF6B21" />
-            <stop offset="1" stopColor="#994014" />
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
+    <img
+      src="/zap-icon.svg"
+      width={22}
+      height={22}
+      style={{ filter: "brightness(0) saturate(100%) invert(49%) sepia(79%) saturate(1117%) hue-rotate(348deg) brightness(103%)", flexShrink: 0 }}
+    />
   );
 }
 
@@ -134,15 +123,154 @@ function AvatarEditOverlay({ onClick }: { onClick: () => void }) {
   );
 }
 
-// ─── Profile card ─────────────────────────────────────────────────────────────
+// ─── Image resize helper (handles large iPhone HEIC/JPEG files) ───────────────
+function resizeImageToDataUrl(file: File, maxSize = 400, quality = 0.88): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = (ev) => {
+      try {
+        const srcDataUrl = ev.target?.result as string;
+        const img = new Image();
+        img.onerror = () => resolve(srcDataUrl); // fallback: store original
+        img.onload = () => {
+          try {
+            const scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
+            const w = Math.round(img.width * scale) || maxSize;
+            const h = Math.round(img.height * scale) || maxSize;
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) { resolve(srcDataUrl); return; }
+            ctx.drawImage(img, 0, 0, w, h);
+            const result = canvas.toDataURL('image/jpeg', quality);
+            resolve(result);
+          } catch {
+            resolve(srcDataUrl); // fallback if canvas fails
+          }
+        };
+        img.src = srcDataUrl;
+      } catch (e) {
+        reject(e);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ─── Avatar picker ────────────────────────────────────────────────────────────
+const PROFILE_NAME_KEY  = "uxeo-profile-name";
+const PROFILE_TITLE_KEY = "uxeo-profile-title";
+const PROFILE_AVATAR_KEY = "uxeo-profile-avatar";
+
+// Illustrated DiceBear avatar collection (notionists style)
+const DICEBEAR_SEEDS = [
+  'alex', 'maria', 'dan', 'kate', 'mike', 'anna', 'vlad', 'olga',
+  'max', 'nina', 'igor', 'lena', 'artem', 'julia', 'boris', 'vera',
+  'dima', 'tanya', 'sergei', 'natasha', 'andrei', 'ksenia', 'roman', 'sveta',
+];
+const PICKER_PHOTOS = DICEBEAR_SEEDS.map(
+  s => `https://api.dicebear.com/9.x/notionists/svg?seed=${s}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`
+);
+
+function AvatarPickerModal({ current, onSelect, onClose }: {
+  current?: string;
+  onSelect: (url: string) => void;
+  onClose: () => void;
+}) {
+  return (
+    <div
+      onClick={onClose}
+      style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.75)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{ background: "#2C3538", borderRadius: 20, padding: 24, width: 320, maxHeight: "80vh", overflow: "auto" }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <p style={{ fontFamily: "Roboto Condensed, sans-serif", fontWeight: 700, fontSize: 18, color: "#F4F5FC", margin: 0 }}>
+            Выбрать аватар
+          </p>
+          <button onClick={onClose} style={{ background: "none", border: "none", color: "#798589", cursor: "pointer", fontSize: 22, lineHeight: 1, padding: 0 }}>✕</button>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
+          {PICKER_PHOTOS.map(url => (
+            <button
+              key={url}
+              onClick={() => { onSelect(url); onClose(); }}
+              style={{
+                padding: 0,
+                border: current === url ? "3px solid #FF6B21" : "3px solid transparent",
+                borderRadius: "50%",
+                cursor: "pointer",
+                background: "none",
+                overflow: "hidden",
+                width: 60,
+                height: 60,
+                flexShrink: 0,
+              }}
+            >
+              <img src={url} width={60} height={60} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%", display: "block" }} loading="lazy" />
+            </button>
+          ))}
+        </div>
+        <p style={{ fontFamily: "Roboto Condensed, sans-serif", fontSize: 13, color: "#798589", textAlign: "center", marginTop: 12, marginBottom: 0 }}>
+          или{" "}
+          <label style={{ color: "#FF6B21", cursor: "pointer", textDecoration: "underline" }}>
+            загрузить своё фото
+            <input type="file" accept="image/*,image/heic,image/heif" style={{ display: "none" }} onChange={async e => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const isHeic = file.type === 'image/heic' || file.type === 'image/heif'
+                || /\.(heic|heif)$/i.test(file.name);
+              if (isHeic) {
+                alert('Формат не поддерживается. Доступные форматы: JPG, PNG, GIF, WebP.');
+                e.target.value = '';
+                return;
+              }
+              try {
+                const dataUrl = await resizeImageToDataUrl(file);
+                onSelect(dataUrl);
+                onClose();
+              } catch (err) {
+                console.error('avatar upload error:', err);
+                alert('Не удалось загрузить фото. Попробуйте другой файл или формат.');
+              }
+              e.target.value = '';
+            }} />
+          </label>
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function ProfileCard() {
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState("Evgeniy");
-  const [title, setTitle] = useState("Дизайнер мидл");
+  const [name, setName] = useState(() => {
+    const saved = localStorage.getItem(PROFILE_NAME_KEY);
+    if (saved) return saved;
+    // First time — persist default so LeaguePage can read it
+    localStorage.setItem(PROFILE_NAME_KEY, "Evgeniy");
+    return "Evgeniy";
+  });
+  const [title, setTitle] = useState(() => {
+    const saved = localStorage.getItem(PROFILE_TITLE_KEY);
+    if (saved) return saved;
+    localStorage.setItem(PROFILE_TITLE_KEY, "Дизайнер мидл");
+    return "Дизайнер мидл";
+  });
   const [editName, setEditName] = useState(name);
   const [editTitle, setEditTitle] = useState(title);
-  const [avatarSrc, setAvatarSrc] = useState<string | null>(null);
+  const [avatarSrc, setAvatarSrc] = useState<string | null>(() => localStorage.getItem(PROFILE_AVATAR_KEY));
+  const [showPicker, setShowPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarSelect = (url: string) => {
+    setAvatarSrc(url);
+    localStorage.setItem(PROFILE_AVATAR_KEY, url);
+  };
 
   const handleEdit = () => {
     setEditName(name);
@@ -150,22 +278,41 @@ function ProfileCard() {
     setIsEditing(true);
   };
   const handleSave = () => {
-    setName(editName.trim() || name);
-    setTitle(editTitle.trim() || title);
+    const newName = editName.trim() || name;
+    const newTitle = editTitle.trim() || title;
+    setName(newName);
+    setTitle(newTitle);
+    localStorage.setItem(PROFILE_NAME_KEY, newName);
+    localStorage.setItem(PROFILE_TITLE_KEY, newTitle);
     setIsEditing(false);
   };
   const handleCancel = () => setIsEditing(false);
 
-  const handleAvatarClick = () => fileInputRef.current?.click();
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarClick = () => setShowPicker(true);
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setAvatarSrc(url);
+    if (!file) return;
+    // Detect HEIC/HEIF (iPhone default format) — Chrome on PC cannot decode it
+    const isHeic = file.type === 'image/heic' || file.type === 'image/heif'
+      || /\.(heic|heif)$/i.test(file.name);
+    if (isHeic) {
+      alert('Формат не поддерживается. Доступные форматы: JPG, PNG, GIF, WebP.');
+      e.target.value = '';
+      return;
     }
+    try {
+      const dataUrl = await resizeImageToDataUrl(file);
+      setAvatarSrc(dataUrl);
+      try { localStorage.setItem(PROFILE_AVATAR_KEY, dataUrl); } catch { /* quota exceeded */ }
+    } catch {
+      alert('Не удалось загрузить фото. Попробуйте другой файл или формат.');
+    }
+    e.target.value = '';
   };
 
   return (
+    <>
+    {showPicker && <AvatarPickerModal current={avatarSrc ?? undefined} onSelect={handleAvatarSelect} onClose={() => setShowPicker(false)} />}
     <div className="bg-[#343e42] relative rounded-[15px] shrink-0 w-full">
       <div className="content-stretch flex flex-col items-start p-[22px] relative w-full">
         <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
@@ -176,7 +323,7 @@ function ProfileCard() {
                 <input
                   value={editName}
                   onChange={e => setEditName(e.target.value)}
-                  className="bg-[#2c3539] border border-[#57646a] rounded-[10px] px-[12px] py-[6px] text-[#f4f5fc] font-['Roboto_Condensed:Bold',sans-serif] text-[22px] outline-none w-[260px]"
+                  className="bg-[#2c3539] border border-[#57646a] rounded-[10px] px-[12px] py-[6px] text-[#f4f5fc] font-['Roboto_Condensed:Medium',sans-serif] text-[22px] outline-none w-[260px]"
                   placeholder="Имя"
                 />
                 <input
@@ -188,7 +335,7 @@ function ProfileCard() {
                 <div className="flex gap-[10px]">
                   <button
                     onClick={handleSave}
-                    className="bg-[#ff6b21] text-[#f4f5fc] font-['Roboto_Condensed:Bold',sans-serif] text-[16px] px-[18px] py-[8px] rounded-[12px] cursor-pointer border-0 shadow-[0px_3px_0px_#c54a0a] hover:translate-y-[1px] hover:shadow-[0px_2px_0px_#c54a0a] active:translate-y-[2px] active:shadow-none transition-all duration-75"
+                    className="bg-[#ff6b21] text-[#f4f5fc] font-['Roboto_Condensed:Medium',sans-serif] text-[16px] px-[18px] py-[8px] rounded-[12px] cursor-pointer border-0 shadow-[0px_3px_0px_#c54a0a] hover:translate-y-[1px] hover:shadow-[0px_2px_0px_#c54a0a] active:translate-y-[2px] active:shadow-none transition-all duration-75"
                   >
                     Сохранить
                   </button>
@@ -203,7 +350,7 @@ function ProfileCard() {
             ) : (
               <div className="content-stretch flex flex-col gap-[55px] items-start">
                 <div className="content-stretch flex flex-col gap-[8px] items-start">
-                  <p className="font-['Roboto_Condensed:Bold',sans-serif] leading-[27.5px] text-[rgba(244,245,252,0.9)] text-[26px]">{name}</p>
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] leading-[27.5px] text-[rgba(244,245,252,0.9)] text-[26px]">{name}</p>
                   <p className="font-['Roboto_Condensed:Medium',sans-serif] leading-[20px] text-[#798589] text-[16px]">{title}</p>
                 </div>
                 <EditButton onClick={handleEdit} />
@@ -212,8 +359,7 @@ function ProfileCard() {
           </div>
 
           {/* Right: avatar */}
-          <div className="relative shrink-0 size-[126px]">
-            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+          <div className="relative shrink-0 size-[126px] cursor-pointer" onClick={handleAvatarClick}>
             <div className="absolute left-0 overflow-clip rounded-full size-[126px] top-0" style={{ background: avatarSrc ? "white" : "#2C3539" }}>
               {avatarSrc ? (
                 <img alt="avatar" className="absolute inset-0 size-full object-cover rounded-full" src={avatarSrc} />
@@ -250,11 +396,15 @@ function ProfileCard() {
         </div>
       </div>
     </div>
+    {/* hidden file input for custom photo upload */}
+    <input ref={fileInputRef} type="file" accept="image/*,image/heic,image/heif" className="hidden" onChange={handleFileChange} />
+    </>
   );
 }
 
 // ─── Statistics card ──────────────────────────────────────────────────────────
 function StatisticsCard({ streak, xp }: { streak: number; xp: number }) {
+  const league = getLeague(xp);
   return (
     <div className="bg-[#343e42] relative rounded-[15px] shrink-0 w-full">
       <div className="content-stretch flex flex-col items-center justify-between px-[20px] py-[24px] relative w-full gap-[16px]">
@@ -262,7 +412,7 @@ function StatisticsCard({ streak, xp }: { streak: number; xp: number }) {
         <div className="content-stretch flex items-end justify-between relative shrink-0 w-full">
           <div className="content-stretch flex gap-[8px] items-center relative shrink-0">
             <FireStatIcon />
-            <p className="bg-clip-text font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold leading-[22px] relative shrink-0 text-[22px] text-[transparent] whitespace-nowrap"
+            <p className="bg-clip-text font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22px] relative shrink-0 text-[22px] text-[transparent] whitespace-nowrap"
               style={{ backgroundImage: "linear-gradient(to bottom, #FFB121, #BB8116)" }}>
               {streak}
             </p>
@@ -276,7 +426,7 @@ function StatisticsCard({ streak, xp }: { streak: number; xp: number }) {
         <div className="content-stretch flex items-end justify-between relative shrink-0 w-full">
           <div className="content-stretch flex gap-[8px] items-center relative shrink-0">
             <ZapStatIcon />
-            <p className="bg-clip-text font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold leading-[22px] relative shrink-0 text-[22px] text-[transparent] whitespace-nowrap"
+            <p className="bg-clip-text font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22px] relative shrink-0 text-[22px] text-[transparent] whitespace-nowrap"
               style={{ backgroundImage: "linear-gradient(195.05deg, rgb(255, 107, 33) 48.665%, rgb(153, 64, 20) 112.02%)" }}>
               {xp}
             </p>
@@ -289,8 +439,11 @@ function StatisticsCard({ streak, xp }: { streak: number; xp: number }) {
         {/* League row */}
         <div className="content-stretch flex items-end justify-between relative shrink-0 w-full">
           <div className="content-stretch flex gap-[8px] items-center relative shrink-0">
-            <LeagueEmblemMuted />
-            <p className="font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold leading-[22px] relative shrink-0 text-[#798589] text-[22px] whitespace-nowrap">Недоступно</p>
+            <img src={league.trophy} width={28} height={28} style={{ flexShrink: 0 }} />
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22px] relative shrink-0 text-[22px] whitespace-nowrap"
+              style={{ color: league.color }}>
+              {league.name}
+            </p>
           </div>
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#798589] text-[16px] whitespace-nowrap">Лига</p>
         </div>
@@ -422,7 +575,7 @@ function AchievementsGrid() {
 // ─── Section title ────────────────────────────────────────────────────────────
 function SectionTitle({ text }: { text: string }) {
   return (
-    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[22px] relative shrink-0 text-[20px] text-[rgba(244,245,252,0.9)] w-full">
+    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22px] relative shrink-0 text-[20px] text-[rgba(244,245,252,0.9)] w-full">
       {text}
     </p>
   );
@@ -478,7 +631,7 @@ export default function ProfilePage() {
   // Show skeleton while UserContext isn't ready yet (e.g. first render, hot-reload)
   if (!userCtx) {
     return (
-      <Layout title="Профиль" showBack backPath="/" rightWidth="320px">
+      <Layout title="Профиль" rightWidth="320px">
         <ProfileSkeleton />
       </Layout>
     );
@@ -490,7 +643,7 @@ export default function ProfilePage() {
   const activeCourse = COURSE_DISPLAY.find(c => c.isActive)!;
 
   return (
-    <Layout title="Профиль" showBack backPath="/" rightWidth="320px">
+    <Layout title="Профиль" rightWidth="320px">
       {/* Profile card */}
       <ProfileCard />
 

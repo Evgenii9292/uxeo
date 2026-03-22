@@ -48,6 +48,8 @@ interface LayoutProps {
   bgColor?: string;
   /** Disable the 20px top padding between header and content on tablet (e.g. roadmap) */
   noTopPad?: boolean;
+  /** Rendered between header and scroll area — stays fixed while content scrolls */
+  stickyBar?: React.ReactNode;
 }
 
 const PAGE_BG = "#282F33";
@@ -67,6 +69,7 @@ export default function Layout({
   mobileStickyBottom,
   bgColor,
   noTopPad = false,
+  stickyBar,
 }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -83,6 +86,7 @@ export default function Layout({
         showBack={showBack}
         backPath={backPath}
         stickyBottom={mobileStickyBottom}
+        stickyTop={stickyBar}
       >
         {children}
       </MobileShell>
@@ -122,6 +126,13 @@ export default function Layout({
               }}
             />
           </div>
+
+          {/* ── Sticky bar (below header, above scroll area) ── */}
+          {stickyBar && (
+            <div className="shrink-0 px-0 pt-[12px] pb-[8px]" style={{ background: bgColor ?? PAGE_BG }}>
+              {stickyBar}
+            </div>
+          )}
 
           {/* ── Scrollable middle area ── */}
           <div className="flex-1 overflow-y-auto scrollbar-hide">
@@ -186,7 +197,7 @@ export default function Layout({
         </div>
 
         {/* Content wrapper: flex row, centered, max-width constrained */}
-        <div 
+        <div
           className="flex-1 flex overflow-hidden min-h-0"
           style={{
             maxWidth: `${MAX_CONTENT_ZONE}px`,
@@ -195,16 +206,34 @@ export default function Layout({
             width: '100%',
           }}
         >
-          {/* Scroll container - center column only */}
-          <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide min-h-0">
-            <div
-              className="flex flex-col gap-[36px] items-start w-full pt-[36px] pb-[40px]"
-              style={{
-                paddingLeft: `${SIDE_PAD}px`,
-                paddingRight: `${ZONE_GAP}px`,
-              }}
-            >
-              {children}
+          {/* Left column: stickyBar + scroll container */}
+          <div className="flex-1 flex flex-col min-h-0 min-w-0">
+            {/* Sticky bar — inside left column only, right widgets unaffected */}
+            {stickyBar && (
+              <div
+                className="shrink-0 pb-[8px]"
+                style={{
+                  background: bgColor ?? PAGE_BG,
+                  paddingLeft: `${SIDE_PAD}px`,
+                  paddingRight: `${ZONE_GAP}px`,
+                  paddingTop: '36px',
+                }}
+              >
+                {stickyBar}
+              </div>
+            )}
+            {/* Scroll container - center column only */}
+            <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide min-h-0">
+              <div
+                className="flex flex-col gap-[36px] items-start w-full pb-[40px]"
+                style={{
+                  paddingLeft: `${SIDE_PAD}px`,
+                  paddingRight: `${ZONE_GAP}px`,
+                  paddingTop: stickyBar ? '16px' : '36px',
+                }}
+              >
+                {children}
+              </div>
             </div>
           </div>
 

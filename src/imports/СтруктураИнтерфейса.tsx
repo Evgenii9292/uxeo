@@ -1,3 +1,4 @@
+import React from "react";
 import imgImageWithFallback from "figma:asset/6f7e376dde074dfceb9b836cc0f7afe457acee6c.png";
 
 function Paragraph() {
@@ -50,7 +51,7 @@ function Container3() {
 
 function Lesson3Quiz1VariantA() {
   return (
-    <div className="absolute bg-white h-[231px] left-[21.3px] overflow-clip rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz1VariantA">
+    <div className="absolute bg-white h-[231px] left-0 overflow-clip rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz1VariantA">
       <Container1 />
       <Paragraph1 />
       <Container2 />
@@ -152,7 +153,7 @@ function Container5() {
 
 function Lesson3Quiz1VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz1VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz1VariantB">
       <Container5 />
     </div>
   );
@@ -219,7 +220,7 @@ function Container10() {
 
 function Lesson3Quiz2VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz2VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz2VariantA">
       <Container10 />
     </div>
   );
@@ -296,7 +297,7 @@ function Container13() {
 
 function Lesson3Quiz2VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz2VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz2VariantB">
       <Container13 />
     </div>
   );
@@ -339,7 +340,7 @@ function Container17() {
 
 function Lesson3Quiz3VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz3VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz3VariantA">
       <Container17 />
     </div>
   );
@@ -407,7 +408,7 @@ function Container19() {
 
 function Lesson3Quiz3VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz3VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz3VariantB">
       <Container19 />
     </div>
   );
@@ -1054,7 +1055,7 @@ function Container46() {
 
 function Lesson3Quiz10Card() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-0 px-[42px] rounded-[8px] top-[3910px] w-[130px]" data-name="Lesson3Quiz10Card1">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson3Quiz10Card1">
       <Container46 />
     </div>
   );
@@ -1079,7 +1080,7 @@ function Container49() {
 
 function Lesson3Quiz10Card1() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[154px] px-[35px] rounded-[8px] top-[3910px] w-[130px]" data-name="Lesson3Quiz10Card2">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson3Quiz10Card2">
       <Container49 />
     </div>
   );
@@ -1112,7 +1113,7 @@ function Container52() {
 
 function Lesson3Quiz10Card2() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[308px] px-[45px] rounded-[8px] top-[3910px] w-[130px]" data-name="Lesson3Quiz10Card3">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson3Quiz10Card3">
       <Container52 />
     </div>
   );
@@ -1152,7 +1153,7 @@ function Paragraph63() {
 
 function Lesson3Quiz11Card() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-0 pl-[40.039px] pr-[40.047px] rounded-[8px] top-[4161px] w-[130px]" data-name="Lesson3Quiz11Card1">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson3Quiz11Card1">
       <Paragraph63 />
     </div>
   );
@@ -1168,7 +1169,7 @@ function Paragraph64() {
 
 function Lesson3Quiz11Card1() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[154px] px-[36.539px] rounded-[8px] top-[4161px] w-[130px]" data-name="Lesson3Quiz11Card2">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson3Quiz11Card2">
       <Paragraph64 />
     </div>
   );
@@ -1184,7 +1185,7 @@ function Container55() {
 
 function Lesson3Quiz11Card2() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[308px] px-[35px] rounded-[8px] top-[4161px] w-[130px]" data-name="Lesson3Quiz11Card3">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson3Quiz11Card3">
       <Container55 />
     </div>
   );
@@ -1248,7 +1249,7 @@ function Container57() {
 
 function Lesson3Quiz12Card() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex flex-col gap-[2px] h-[80px] items-start justify-center left-0 pl-[8px] py-[27.5px] rounded-[8px] top-[4412px] w-[130px]" data-name="Lesson3Quiz12Card1">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson3Quiz12Card1">
       <Container56 />
       <Container57 />
     </div>
@@ -1291,7 +1292,7 @@ function Container58() {
 
 function Lesson3Quiz12Card1() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[154px] px-[8px] rounded-[8px] top-[4412px] w-[130px]" data-name="Lesson3Quiz12Card2">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson3Quiz12Card2">
       <Container58 />
     </div>
   );
@@ -1321,7 +1322,7 @@ function Container59() {
 
 function Lesson3Quiz12Card2() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[308px] px-[40.5px] rounded-[8px] top-[4412px] w-[130px]" data-name="Lesson3Quiz12Card3">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson3Quiz12Card3">
       <Container59 />
     </div>
   );
@@ -1354,23 +1355,139 @@ function Paragraph75() {
 // ─────────────────────────────────────────────────────────────────────────────
 // Named exports for LessonQuizPage (quiz_interface_structure visuals)
 // ─────────────────────────────────────────────────────────────────────────────
+const CW: React.CSSProperties = { position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" };
+const CI: React.CSSProperties = { position: "absolute", inset: 0, padding: "14px 16px", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" };
+
+// Q1A: No structure — all elements in one block
 export function CQStructCompare1A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson3Quiz1VariantA /></div>;
+  return (
+    <div style={CW}>
+      <div style={CI}>
+        <div style={{ background: "#f3f4f6", borderRadius: 8, padding: "10px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ height: 10, background: "#9ca3af", borderRadius: 3, width: "80%" }} />
+          <div style={{ height: 8, background: "#d1d5db", borderRadius: 3, width: "60%" }} />
+          <div style={{ height: 8, background: "#d1d5db", borderRadius: 3, width: "90%" }} />
+          <div style={{ height: 8, background: "#d1d5db", borderRadius: 3, width: "50%" }} />
+          <div style={{ height: 8, background: "#9ca3af", borderRadius: 3, width: "70%" }} />
+          <div style={{ height: 8, background: "#d1d5db", borderRadius: 3, width: "85%" }} />
+          <div style={{ height: 8, background: "#d1d5db", borderRadius: 3, width: "55%" }} />
+          <div style={{ height: 8, background: "#9ca3af", borderRadius: 3, width: "75%" }} />
+          <div style={{ height: 8, background: "#d1d5db", borderRadius: 3, width: "65%" }} />
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// Q1B: Structured — divided into logical sections
 export function CQStructCompare1B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson3Quiz1VariantB /></div>;
+  return (
+    <div style={CW}>
+      <div style={CI}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ background: "#eff6ff", borderRadius: 8, padding: "8px 10px" }}>
+            <div style={{ height: 9, background: "#3b82f6", borderRadius: 3, width: "50%", marginBottom: 5 }} />
+            <div style={{ height: 7, background: "#bfdbfe", borderRadius: 3, width: "80%" }} />
+            <div style={{ height: 7, background: "#bfdbfe", borderRadius: 3, width: "65%", marginTop: 3 }} />
+          </div>
+          <div style={{ background: "#f0fdf4", borderRadius: 8, padding: "8px 10px" }}>
+            <div style={{ height: 9, background: "#16a34a", borderRadius: 3, width: "45%", marginBottom: 5 }} />
+            <div style={{ height: 7, background: "#bbf7d0", borderRadius: 3, width: "75%" }} />
+            <div style={{ height: 7, background: "#bbf7d0", borderRadius: 3, width: "60%", marginTop: 3 }} />
+          </div>
+          <div style={{ background: "#fafafa", borderRadius: 8, padding: "8px 10px" }}>
+            <div style={{ height: 9, background: "#6b7280", borderRadius: 3, width: "40%", marginBottom: 5 }} />
+            <div style={{ height: 7, background: "#e5e7eb", borderRadius: 3, width: "70%" }} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// Q2A: Wall of text — hard to read
 export function CQStructCompare2A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson3Quiz2VariantA /></div>;
+  return (
+    <div style={CW}>
+      <div style={CI}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          {[90, 85, 78, 92, 70, 88, 75, 82, 68, 95, 72, 80].map((w, i) => (
+            <div key={i} style={{ height: 7, background: i % 4 === 0 ? "#9ca3af" : "#d1d5db", borderRadius: 2, width: `${w}%` }} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// Q2B: Text broken into blocks with headings
 export function CQStructCompare2B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson3Quiz2VariantB /></div>;
+  return (
+    <div style={CW}>
+      <div style={CI}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div>
+            <div style={{ height: 10, background: "#1f2937", borderRadius: 3, width: "55%", marginBottom: 5 }} />
+            <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "90%", marginBottom: 3 }} />
+            <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "75%" }} />
+          </div>
+          <div>
+            <div style={{ height: 10, background: "#1f2937", borderRadius: 3, width: "45%", marginBottom: 5 }} />
+            <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "85%", marginBottom: 3 }} />
+            <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "70%" }} />
+          </div>
+          <div>
+            <div style={{ height: 10, background: "#1f2937", borderRadius: 3, width: "50%", marginBottom: 5 }} />
+            <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "80%" }} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// Q3A: Elements placed chaotically
 export function CQStructCompare3A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson3Quiz3VariantA /></div>;
+  return (
+    <div style={CW}>
+      <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 20, left: 140, width: 80, height: 22, background: "#3b82f6", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ height: 7, background: "white", borderRadius: 2, width: 40 }} />
+        </div>
+        <div style={{ position: "absolute", top: 60, left: 10, width: 100, height: 8, background: "#1f2937", borderRadius: 3 }} />
+        <div style={{ position: "absolute", top: 100, left: 80, width: 70, height: 8, background: "#d1d5db", borderRadius: 3 }} />
+        <div style={{ position: "absolute", top: 30, left: 20, width: 55, height: 18, background: "#f3f4f6", borderRadius: 4, border: "1px solid #e5e7eb" }} />
+        <div style={{ position: "absolute", top: 120, left: 30, width: 85, height: 8, background: "#d1d5db", borderRadius: 3 }} />
+        <div style={{ position: "absolute", top: 140, left: 120, width: 60, height: 18, background: "#fef9c3", borderRadius: 4 }} />
+        <div style={{ position: "absolute", top: 75, left: 150, width: 75, height: 8, background: "#9ca3af", borderRadius: 3 }} />
+      </div>
+    </div>
+  );
 }
+
+// Q3B: Elements grouped by meaning
 export function CQStructCompare3B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson3Quiz3VariantB /></div>;
+  return (
+    <div style={CW}>
+      <div style={CI}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "stretch" }}>
+          <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ flex: 1, background: "#f3f4f6", borderRadius: 8, padding: "8px 10px" }}>
+              <div style={{ height: 8, background: "#6b7280", borderRadius: 3, width: "70%", marginBottom: 4 }} />
+              <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "90%" }} />
+            </div>
+            <div style={{ flex: 1, background: "#f3f4f6", borderRadius: 8, padding: "8px 10px" }}>
+              <div style={{ height: 8, background: "#6b7280", borderRadius: 3, width: "60%", marginBottom: 4 }} />
+              <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "80%" }} />
+            </div>
+          </div>
+          <div style={{ background: "#eff6ff", borderRadius: 8, padding: "8px 12px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ height: 8, background: "#3b82f6", borderRadius: 3, width: 60 }} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 export function CQStructSingle1() {
   return <div style={{ position: "relative", background: "white", height: 231, width: 186, overflow: "hidden", paddingTop: 10, paddingLeft: 10, paddingRight: 10, borderRadius: 15 }}><Container21 /></div>;

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useId } from "react";
 import { useLocation } from "react-router";
 import Layout from "../components/Layout";
 import { HeroPhoneCard, ExampleContent } from "../../imports/Frame-185-621";
@@ -13,10 +13,36 @@ import ExampleIcon from "../../imports/Пример";
 import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 import { useUserSafe } from "../context/UserContext";
 import { useAuthSafe } from "../context/AuthContext";
+import svgMfoan from "../../imports/svg-mfoan0qzpw";
+
+// ── Level icon (staircase) ────────────────────────────────────────────────────
+function LevelIcon() {
+  const uid = useId().replace(/:/g, "");
+  const maskId = `lv-${uid}`;
+  return (
+    <div className="h-[15px] overflow-clip relative shrink-0 w-[17px]">
+      <div className="absolute inset-[22.57%_5.88%_15.9%_5.88%]">
+        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14.9997 9.23063">
+          <defs>
+            <mask id={maskId}>
+              <rect x="0" y="0" width="5.1" height="9.3" fill="white" />
+              <rect x="5" y="0" width="10"  height="9.3" fill="white" fillOpacity="0.6" />
+            </mask>
+          </defs>
+          <g mask={`url(#${maskId})`}>
+            <path d={svgMfoan.p1f3ddd00} fill="#F1F2FB" />
+            <path d={svgMfoan.p1dcc7b80} fill="#F1F2FB" />
+            <path d={svgMfoan.p36483400} fill="#F1F2FB" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  );
+}
 
 // ── Shared styles ──────────────────────────────────────────────────────────────
 
-const TEXT_TITLE  = "font-['Roboto_Condensed:Bold',sans-serif] font-medium";
+const TEXT_TITLE  = "font-['Roboto_Condensed:Medium',sans-serif] font-medium";
 const TEXT_BODY   = "font-['Roboto_Condensed:Regular',sans-serif] font-normal";
 const TEXT_MEDIUM = "font-['Roboto_Condensed:Medium',sans-serif] font-medium";
 
@@ -24,12 +50,12 @@ const TEXT_MEDIUM = "font-['Roboto_Condensed:Medium',sans-serif] font-medium";
 
 function ChevronIcon({ isOpen }: { isOpen: boolean }) {
   return (
-    <div className="flex h-[10px] items-center justify-center relative shrink-0 w-[20px]">
+    <div className="flex h-[8px] items-center justify-center relative shrink-0 w-[16px]">
       <div
         className="flex-none"
         style={{ transition: "transform 300ms ease", transform: isOpen ? "rotate(90deg)" : "rotate(-90deg)" }}
       >
-        <div className="h-[20px] relative w-[10px]">
+        <div className="h-[16px] relative w-[8px]">
           <div className="absolute inset-[-5%_-10%_-5%_-1.72%]">
             <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 11.1716 22">
               <path d={svgPaths.p23f95480} stroke="#798589" strokeLinecap="round" strokeWidth="3" />
@@ -56,18 +82,18 @@ function AccordionSection({ icon, title, isOpen, onToggle, children, sectionIdx 
   return (
     <div
       className="flex flex-col rounded-[15px] overflow-hidden w-full"
-      style={{ background: "#404d52" }}
+      style={{ background: "#343e42" }}
       data-accordion-idx={sectionIdx}
     >
-      {/* Header */}
+      {/* Header — no extra background, matches card body */}
       <div
-        className="h-[120px] flex items-center justify-between px-[30px] cursor-pointer select-none"
+        className="h-[120px] flex items-center justify-between px-[20px] cursor-pointer select-none"
         onClick={onToggle}
       >
-        <div className="flex items-center gap-[14px]">
+        <div className="flex items-center gap-[20px]">
           {icon}
           <p
-            className={`${TEXT_TITLE} leading-[27.5px] text-[26px] whitespace-nowrap`}
+            className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[24px] whitespace-nowrap"
             style={{ color: isOpen ? "#f1f2fb" : "#798589", transition: "color 150ms" }}
           >
             {title}
@@ -92,7 +118,7 @@ function AccordionSection({ icon, title, isOpen, onToggle, children, sectionIdx 
 
 function SkillTag({ label }: { label: string }) {
   return (
-    <div className="bg-[#46545b] flex items-center pb-[21px] pt-[20px] px-[20px] rounded-[12px]">
+    <div className="bg-[#394449] flex items-center pb-[21px] pt-[20px] px-[20px] rounded-[12px]">
       <p className={`${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[18px]`}>{label}</p>
     </div>
   );
@@ -116,7 +142,7 @@ function TaskContent() {
     <div className="flex flex-col gap-[30px]">
       <div className="flex flex-col gap-[20px]">
         <p className={`${TEXT_TITLE} leading-[22px] text-[#f1f2fb] text-[18px]`}>Контекст:</p>
-        <div className="bg-[#46545b] rounded-[12px] px-[27px] py-[20px]">
+        <div className="bg-[#394449] rounded-[12px] px-[27px] py-[20px]">
           <div className={`${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[18px]`}>
             <p className="mb-0">Вы дизайнер в стартапе здоровья.</p>
             <p className="mb-0">&nbsp;</p>
@@ -132,7 +158,7 @@ function TaskContent() {
       </div>
       <div className="flex flex-col gap-[20px]">
         <p className={`${TEXT_TITLE} leading-[22px] text-[#f1f2fb] text-[18px]`}>Ваша задача:</p>
-        <div className="bg-[#46545b] rounded-[12px] px-[27px] py-[20px]">
+        <div className="bg-[#394449] rounded-[12px] px-[27px] py-[20px]">
           <p className={`${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[18px] opacity-80`}>Создать главный экран приложения.</p>
         </div>
       </div>
@@ -145,7 +171,7 @@ function RequirementsContent() {
     <div className="flex flex-col gap-[30px]">
       <div className="flex flex-col gap-[20px]">
         <p className={`${TEXT_TITLE} leading-[22px] text-[#f1f2fb] text-[18px]`}>Экран должен содержать:</p>
-        <div className="bg-[#46545b] rounded-[12px] px-[27px] py-[20px]">
+        <div className="bg-[#394449] rounded-[12px] px-[27px] py-[20px]">
           <ul className={`list-disc ${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[18px]`}>
             <li className="mb-0 ms-[27px]"><span>количество шагов</span></li>
             <li className="mb-0 ms-[27px]"><span>пульс</span></li>
@@ -156,7 +182,7 @@ function RequirementsContent() {
       </div>
       <div className="flex flex-col gap-[20px]">
         <p className={`${TEXT_TITLE} leading-[22px] text-[#f1f2fb] text-[18px]`}>Дополнительно:</p>
-        <div className="bg-[#46545b] rounded-[12px] px-[27px] py-[20px] flex flex-col gap-[21px]">
+        <div className="bg-[#394449] rounded-[12px] px-[27px] py-[20px] flex flex-col gap-[21px]">
           <div className={`${TEXT_BODY} flex items-center justify-between leading-[22px] text-[#f1f2fb] text-[18px] opacity-80`}>
             <span>Размер экрана:</span>
             <span>375 x 812</span>
@@ -272,13 +298,7 @@ function HeroCard() {
             <p className={`${TEXT_MEDIUM} leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap`}>25 мин</p>
           </div>
           <div className="flex gap-[5px] items-center">
-            <div className="overflow-clip relative shrink-0 size-[14px]">
-              <div className="absolute inset-[2.08%_0_4.17%_0]">
-                <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14 13.125">
-                  <path d={svgPaths.pf7fd000} fill="#F1F2FB" />
-                </svg>
-              </div>
-            </div>
+            <LevelIcon />
             <p className={`${TEXT_MEDIUM} leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap`}>Джун</p>
           </div>
           <div className="flex gap-[5px] items-center">
@@ -361,14 +381,15 @@ function SubmitBlock({ homeworkLessonId }: { homeworkLessonId?: string }) {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/homework/submit`, {
+      // Challenges use a separate endpoint → separate Supabase table (challenge_submissions)
+      const response = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/challenge/submit`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${publicAnonKey}`,
         },
         body: JSON.stringify({
-          lessonName: "Интерфейс приложения здоровья",
+          challengeName: "Интерфейс приложения здоровья",
           userId: auth?.userId ?? userData?.email ?? "anonymous",
           figmaLink: url,
         }),
@@ -399,50 +420,34 @@ function SubmitBlock({ homeworkLessonId }: { homeworkLessonId?: string }) {
 
   if (submitted) {
     return (
-      <div className="flex flex-col gap-[20px] w-full">
-        {/* Input card — success state with green border and highlight */}
+      <div className="flex flex-col gap-[16px] w-full">
+        {/* Status card — same style as HomeworkPage */}
         <div
-          className="relative px-[27px] rounded-[15px] h-[84px] flex items-center justify-between w-full"
-          style={{ 
-            backgroundImage: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)",
-          }}
+          className="rounded-[15px] flex flex-col gap-[14px]"
+          style={{ background: "#343e42", border: "2px solid #5EDD60", padding: "20px" }}
         >
-          {/* Green border for success */}
-          <div aria-hidden="true" className="absolute border-[2px] border-[#5EDD60] border-solid inset-[-2px] pointer-events-none rounded-[15px]" />
-          
-          <div className="flex gap-[8px] items-center flex-1 min-w-0">
-            {/* No icon — removed as requested */}
-            <input
-              type="url"
-              value={url}
-              disabled
-              className={`${TEXT_BODY} bg-transparent text-[16px] leading-[20px] flex-1 min-w-0 outline-none border-none`}
-              style={{
-                color: "rgba(244,245,252,0.8)",
-              }}
-            />
+          <div
+            className="flex gap-[7px] items-center px-[12px] h-[32px] rounded-full self-start"
+            style={{ background: "#2E3538" }}
+          >
+            <div className="relative shrink-0 size-[14px]">
+              <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 18 18">
+                <g clipPath="url(#clip_done_check)">
+                  <path d={svgDone.p2dc71b30} fill="#5EDD60" />
+                  <path d={svgDone.p14c44980} fill="white" />
+                </g>
+                <defs><clipPath id="clip_done_check"><rect fill="white" height="18" width="18" /></clipPath></defs>
+              </svg>
+            </div>
+            <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#91969B" }}>Отправлено</p>
           </div>
-          
-          {/* Green highlight glow */}
-          <div 
-            className="absolute inset-[-2px] pointer-events-none rounded-[inherit]" 
-            style={{ 
-              boxShadow: "inset 0 0 16px 0 rgba(94, 221, 96, 0.2), inset -3px 0px 3px 0px #384348"
-            }} 
-          />
-        </div>
-
-        {/* Отправлено — white secondary style */}
-        <div className="bg-[#f7f8fc] flex gap-[8px] h-[84px] items-center justify-center relative rounded-[15px] shadow-[0px_1px_0px_0px_#bcbec8] w-full">
-          <p className={`${TEXT_TITLE} leading-[27.5px] text-[#2d373b] text-[26px] whitespace-nowrap`}>Отправлено</p>
-          <div className="relative shrink-0 size-[16px]">
-            <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 18 18">
-              <g clipPath="url(#clip_done_check)">
-                <path d={svgDone.p2dc71b30} fill="#5EDD60" />
-                <path d={svgDone.p14c44980} fill="white" />
-              </g>
-              <defs><clipPath id="clip_done_check"><rect fill="white" height="18" width="18" /></clipPath></defs>
-            </svg>
+          <div
+            className="rounded-[12px]"
+            style={{ background: "#394449", padding: "20px" }}
+          >
+            <p className={`${TEXT_BODY} text-[15px] leading-[22px]`} style={{ color: "rgba(244,245,252,0.4)" }}>
+              Работа отправлена на проверку. Проверка занимает ~24 часа.
+            </p>
           </div>
         </div>
       </div>
@@ -450,28 +455,23 @@ function SubmitBlock({ homeworkLessonId }: { homeworkLessonId?: string }) {
   }
 
   return (
-    <div className="flex flex-col gap-[20px] w-full">
-      {/* Input card */}
+    <div className="flex flex-col gap-[16px] w-full">
+      {/* Input — same style as HomeworkPage (h-56, px-20) */}
       <div
-        className="relative px-[27px] rounded-[15px] h-[84px] flex items-center justify-between w-full"
-        style={{ 
-          backgroundImage: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)",
-        }}
+        className="relative px-[20px] rounded-[15px] h-[56px] flex items-center justify-between w-full"
+        style={{ backgroundImage: "linear-gradient(171.89deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)" }}
       >
         <div aria-hidden="true" className="absolute border-[2px] border-[rgba(160,163,173,0.2)] border-solid inset-[-2px] pointer-events-none rounded-[15px]" />
         <div className="relative z-10 flex gap-[8px] items-center flex-1 min-w-0">
-          {/* Link icon — dims on focus */}
           <div
-            className="overflow-clip relative shrink-0 size-[17px]"
+            className="overflow-clip relative shrink-0 size-[16px]"
             style={{ opacity: inputFocused ? 0.5 : 1, transition: "opacity 150ms" }}
           >
-            <div className="absolute inset-[0.02%_0_0.01%_0]">
-              <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 19.0001 18.9956">
-                <path d={svgInitial.p19febe00} fill="#92979D" />
-                <path d={svgInitial.p1c506830} fill="#92979D" />
-                <path d={svgInitial.p1f263800} fill="#92979D" />
-              </svg>
-            </div>
+            <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 19.0001 18.9956">
+              <path d={svgInitial.p19febe00} fill="#92979D" />
+              <path d={svgInitial.p1c506830} fill="#92979D" />
+              <path d={svgInitial.p1f263800} fill="#92979D" />
+            </svg>
           </div>
           <input
             type="url"
@@ -480,44 +480,31 @@ function SubmitBlock({ homeworkLessonId }: { homeworkLessonId?: string }) {
             onFocus={() => setInputFocused(true)}
             onBlur={() => setInputFocused(false)}
             placeholder="Вставьте ссылку"
-            className={`${TEXT_BODY} bg-transparent text-[16px] leading-[20px] flex-1 min-w-0 outline-none border-none`}
-            style={{
-              color: "rgba(244,245,252,0.8)",
-              caretColor: "rgba(244,245,252,0.8)",
-            }}
+            className={`${TEXT_BODY} bg-transparent text-[15px] leading-[20px] flex-1 min-w-0 outline-none border-none`}
+            style={{ color: "rgba(244,245,252,0.8)", caretColor: "rgba(244,245,252,0.8)" }}
           />
-          <style>{`
-            input[data-focused="true"]::placeholder { opacity: 0.5; }
-            input[data-focused="false"]::placeholder { opacity: 0.8; }
-          `}</style>
         </div>
-        {/* Info icon with popup — dims on focus */}
         <div className="relative z-10" style={{ opacity: inputFocused ? 0.5 : 1, transition: "opacity 150ms" }}>
           <div
-            className="overflow-clip relative shrink-0 size-[18px] cursor-pointer"
+            className="overflow-clip relative shrink-0 size-[16px] cursor-pointer"
             onClick={() => setShowInfo(v => !v)}
           >
-            <div className="absolute inset-[10%_0%_10%_20%]">
-              <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
-                <path d={svgInitial.p2c4b1e00} fill="#93999E" fillOpacity="0.6" />
-              </svg>
-            </div>
+            <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
+              <path d={svgInitial.p2c4b1e00} fill="#93999E" fillOpacity="0.6" />
+            </svg>
           </div>
           {showInfo && <InfoPopup onClose={() => setShowInfo(false)} />}
         </div>
         <div className="absolute inset-[-2px] pointer-events-none rounded-[inherit] shadow-[inset_-3px_0px_3px_0px_#384348]" />
       </div>
 
-      {/* Submit button — white secondary style, same dimensions as input */}
+      {/* Submit button — same style as HomeworkPage (h-56, text-24) */}
       <div
-        className={`group bg-[#f7f8fc] flex h-[84px] items-center justify-center relative rounded-[15px] select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75 w-full ${isSubmitting ? 'opacity-50 cursor-wait' : 'cursor-pointer'}`}
+        className={`group bg-[#f7f8fc] flex h-[56px] items-center justify-center relative rounded-[15px] select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75 w-full ${isSubmitting ? "opacity-50 cursor-wait" : "cursor-pointer"}`}
         onClick={isSubmitting ? undefined : handleSubmit}
       >
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 border-[0.835px] border-solid border-transparent pointer-events-none rounded-[15px] shadow-[0px_3px_0px_0px_#bcbec8] group-hover:shadow-[0px_2px_0px_0px_#bcbec8] group-active:shadow-none transition-shadow duration-75"
-        />
-        <p className={`${TEXT_TITLE} leading-[27.5px] text-[#2d373b] text-[26px] whitespace-nowrap`}>
+        <div aria-hidden="true" className="absolute inset-0 border-[0.835px] border-solid border-transparent pointer-events-none rounded-[15px] shadow-[0px_3px_0px_0px_#bcbec8] group-hover:shadow-[0px_2px_0px_0px_#bcbec8] group-active:shadow-none transition-shadow duration-75" />
+        <p className={`${TEXT_TITLE} leading-[24px] text-[#2d373b] text-[24px] whitespace-nowrap`}>
           {isSubmitting ? "Отправка..." : "Отправить работу"}
         </p>
       </div>
@@ -562,13 +549,11 @@ export default function ChallengeDetailPage() {
       {/* Layout with default RightWidgets in the right column */}
       <Layout
         title="Интерфейс приложения здоровья"
-        showBack
-        backPath="/challenges"
         rightWidth="320px"
       >
         <div className="flex flex-col gap-[13px] w-full">
-          {/* Hero — no fade overlays */}
-          <div className="bg-[#404d52] rounded-[15px] pb-[30px] pt-[20px] px-[20px]">
+          {/* Hero — no background, matches theory style */}
+          <div className="pb-[10px] pt-[0px]">
             <HeroCard />
           </div>
 

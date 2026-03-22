@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { useUser } from "../context/UserContext";
 import { useLesson } from "../context/LessonContext";
+import { useAchievementsSafe } from "../context/AchievementsContext";
 import { useWindowWidth } from "../hooks/useWindowWidth";
 import LessonCompletionScreen from "./LessonCompletionScreen";
 import StreakScreen from "./StreakScreen";
@@ -140,11 +141,17 @@ import svgPaths from "../../imports/svg-869ttds5wi";
 type Selection = "А" | "Б" | "В" | "Г" | null;
 type Phase = "selecting" | "feedback";
 
+/** Mobile speakers clip at high gain — reduce on mobile */
+function gainFor(base: number) {
+  return window.innerWidth < 768 ? base * 0.4 : base;
+}
+
 export default function LessonQuizPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { xp, getLessonProgress, incrementStreak, streak, saveBestScore } = useUser();
   const { lessonState, initializeLesson, answerQuestion, nextQuestion, completeLesson, exitLesson } = useLesson();
+  const achievementsCtx = useAchievementsSafe();
 
   // Parse URL search params directly from location.search (useSearchParams may not work)
   const urlParams = new URLSearchParams(location.search || window.location.search);
@@ -277,7 +284,7 @@ export default function LessonQuizPage() {
         className="relative min-h-screen w-full overflow-hidden flex items-center justify-center"
         style={{ background: "#282F33" }}
       >
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[24px]">Загрузка...</p>
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[24px]">Загрузка...</p>
       </div>
     );
   }
@@ -290,7 +297,7 @@ export default function LessonQuizPage() {
         style={{ background: "#282F33" }}
       >
         <div className="flex flex-col items-center gap-[16px]">
-          <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[24px]">Квиз не найден</p>
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[24px]">Квиз не найден</p>
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[18px]">quizId: {quizId}</p>
           <button
             onClick={() => navigate("/lessons")}
@@ -882,6 +889,10 @@ export default function LessonQuizPage() {
         setBestStreak((prev) => Math.max(prev, newStreak));
         setStreakBump(true);
         setTimeout(() => setStreakBump(false), 350);
+        // Trigger achievement popup at streak milestones
+        if (newStreak === 3) achievementsCtx?.triggerAchievement("combo_3");
+        else if (newStreak === 5) achievementsCtx?.triggerAchievement("quiz_ace");
+        else if (newStreak === 7) achievementsCtx?.triggerAchievement("combo_7");
       } else {
         setCurrentStreak(0);
       }
@@ -914,14 +925,14 @@ export default function LessonQuizPage() {
           o.frequency.setValueAtTime(523, ctx.currentTime);
           o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
           o.frequency.setValueAtTime(topFreq, ctx.currentTime + 0.2);
-          g.gain.setValueAtTime(0.15 + (newStreak >= 3 ? 0.03 : 0), ctx.currentTime);
+          g.gain.setValueAtTime(gainFor(0.15 + (newStreak >= 3 ? 0.03 : 0)), ctx.currentTime);
           g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
           o.connect(g); g.connect(ctx.destination);
           o.start(); o.stop(ctx.currentTime + dur);
         } else {
           o.frequency.setValueAtTime(280, ctx.currentTime);
           o.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.15);
-          g.gain.setValueAtTime(0.08, ctx.currentTime);
+          g.gain.setValueAtTime(gainFor(0.08), ctx.currentTime);
           g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
           o.connect(g); g.connect(ctx.destination);
           o.start(); o.stop(ctx.currentTime + 0.15);
@@ -951,6 +962,9 @@ export default function LessonQuizPage() {
         const wasAlreadyPassed = lessonProgress?.isCompleted || false;
         const isNowPassed = finalRunCorrect >= Math.ceil(totalQuestions * 0.5);
         if (isNowPassed && !wasAlreadyPassed) { completeLesson(); }
+        if (finalRunCorrect === totalQuestions && totalQuestions > 0) {
+          achievementsCtx?.triggerAchievement("perfect_quiz");
+        }
         setShowCompletionOverlay(true);
         setQuizFinished(true);
       }
@@ -969,6 +983,10 @@ export default function LessonQuizPage() {
       setBestStreak((prev) => Math.max(prev, newStreak));
       setStreakBump(true);
       setTimeout(() => setStreakBump(false), 350);
+        // Trigger achievement popup at streak milestones
+        if (newStreak === 3) achievementsCtx?.triggerAchievement("combo_3");
+        else if (newStreak === 5) achievementsCtx?.triggerAchievement("quiz_ace");
+        else if (newStreak === 7) achievementsCtx?.triggerAchievement("combo_7");
     } else {
       setCurrentStreak(0);
     }
@@ -994,7 +1012,7 @@ export default function LessonQuizPage() {
         o.frequency.setValueAtTime(523, ctx.currentTime);
         o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
         o.frequency.setValueAtTime(topFreq, ctx.currentTime + 0.2);
-        g.gain.setValueAtTime(0.15 + (newStreak >= 3 ? 0.03 : 0), ctx.currentTime);
+        g.gain.setValueAtTime(gainFor(0.15 + (newStreak >= 3 ? 0.03 : 0)), ctx.currentTime);
         g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
         o.connect(g); g.connect(ctx.destination);
         o.start(); o.stop(ctx.currentTime + dur);
@@ -1033,6 +1051,9 @@ export default function LessonQuizPage() {
       const wasAlreadyPassed = lessonProgress?.isCompleted || false;
       const isNowPassed = finalRunCorrect >= Math.ceil(totalQuestions * 0.5);
       if (isNowPassed && !wasAlreadyPassed) { completeLesson(); }
+      if (finalRunCorrect === totalQuestions && totalQuestions > 0) {
+        achievementsCtx?.triggerAchievement("perfect_quiz");
+      }
       setShowCompletionOverlay(true);
       setQuizFinished(true);
     }
@@ -1077,19 +1098,17 @@ export default function LessonQuizPage() {
               <div className="absolute left-0 right-0 overflow-hidden" style={{ top: "calc(100% + 5px)", height: 11, opacity: currentStreak >= 2 && !quizFinished ? 1 : 0, transition: "opacity 400ms ease" }}>
                 <div className="absolute inset-y-0 left-0 flex items-start justify-end" style={{ width: `${runProgressPercent}%`, minWidth: 0, transition: "width 300ms ease" }}>
                   <span
-                    className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[10px] whitespace-nowrap leading-none"
-                    style={{ color: streakTextColor, textShadow: currentStreak >= 3 ? `0 0 6px ${streakTextColor}` : "none", transform: `scale(${streakBump ? 1.12 : 1})`, transformOrigin: "right top", transition: "transform 200ms ease, text-shadow 500ms ease" }}
-                  >{currentStreak} подряд</span>
+                    className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[10px] whitespace-nowrap leading-none"
+                    style={{ color: streakTextColor, transform: `scale(${streakBump ? 1.12 : 1})`, transformOrigin: "right top", transition: "transform 200ms ease" }}
+                  >{currentStreak} подряд{currentStreak >= 3 ? <span style={{ color: '#798589' }}> +{currentStreak >= 7 ? '50' : currentStreak >= 5 ? '25' : '10'}%</span> : ''}</span>
                 </div>
               </div>
             </div>
             <div className="flex gap-[4px] items-center shrink-0">
               <div className="relative shrink-0 size-[18px]">
-                <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
-                  <g id="Zap"><path d={svgPaths.p9530000} fill="#798589" stroke="#798589" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" /></g>
-                </svg>
+                <img src="/zap-icon.svg" style={{ width: "100%", height: "100%", objectFit: "contain", filter: "brightness(0) saturate(0%) invert(55%) brightness(85%)" }} />
               </div>
-              <p className="font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold leading-[21px] text-[#798589] whitespace-nowrap text-[18px]">{totalXp}</p>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[21px] text-[#798589] whitespace-nowrap text-[18px]">{totalXp}</p>
             </div>
           </div>
         ) : (
@@ -1106,9 +1125,9 @@ export default function LessonQuizPage() {
                 <div className="absolute left-0 right-0 overflow-hidden" style={{ top: 22, height: 15, opacity: currentStreak >= 2 && !quizFinished ? 1 : 0, transition: "opacity 400ms ease" }}>
                   <div className="absolute inset-y-0 left-0 flex items-start justify-end" style={{ width: `${runProgressPercent}%`, minWidth: 0, transition: "width 300ms ease" }}>
                     <span
-                      className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[13px] whitespace-nowrap leading-none"
-                      style={{ color: streakTextColor, textShadow: currentStreak >= 3 ? `0 0 6px ${streakTextColor}` : "none", transform: `scale(${streakBump ? 1.12 : 1})`, transformOrigin: "right top", transition: "transform 200ms ease, text-shadow 500ms ease" }}
-                    >{currentStreak} подряд</span>
+                      className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[13px] whitespace-nowrap leading-none"
+                      style={{ color: streakTextColor, transform: `scale(${streakBump ? 1.12 : 1})`, transformOrigin: "right top", transition: "transform 200ms ease" }}
+                    >{currentStreak} подряд{currentStreak >= 3 ? <span style={{ color: '#798589' }}> +{currentStreak >= 7 ? '50' : currentStreak >= 5 ? '25' : '10'}%</span> : ''}</span>
                   </div>
                 </div>
               </div>
@@ -1118,7 +1137,7 @@ export default function LessonQuizPage() {
                     <g id="Zap"><path d={svgPaths.p9530000} fill="#798589" stroke="#798589" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" /></g>
                   </svg>
                 </div>
-                <p className="font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold leading-[21px] text-[#798589] whitespace-nowrap text-[24px]">{totalXp}</p>
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[21px] text-[#798589] whitespace-nowrap text-[24px]">{totalXp}</p>
               </div>
             </div>
           </>
@@ -1127,8 +1146,9 @@ export default function LessonQuizPage() {
 
         {/* ZONE 2+3 — conditional on question type */}
         {questionType === "multiple_select" ? (
+          <PageTransition key={currentQuestionIndex} duration={220} scaleFrom={0.99}>
           <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : "pt-[80px] pb-[120px]"}`}>
-            <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-start pt-[10px]" : "justify-center gap-[52px]"}`}>
+            <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-center" : "justify-center gap-[52px]"}`}>
               <MultipleChoiceQuiz
                 key={currentQuestionIndex}
                 question={(currentQuestion as any).question}
@@ -1146,7 +1166,9 @@ export default function LessonQuizPage() {
               />
             </div>
           </div>
+          </PageTransition>
         ) : questionType === "matching" ? (
+          <PageTransition key={currentQuestionIndex} duration={220} scaleFrom={0.99}>
           <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : "pt-[80px] pb-[120px]"}`}>
             <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-start pt-[10px] gap-[10px]" : "justify-center gap-[52px]"}`}>
               <MatchingQuiz
@@ -1160,7 +1182,9 @@ export default function LessonQuizPage() {
               />
             </div>
           </div>
+          </PageTransition>
         ) : questionType === "compare_ui" ? (
+          <PageTransition key={currentQuestionIndex} duration={220} scaleFrom={0.99}>
           <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : "pt-[80px] pb-[120px]"}`}>
             <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-start pt-[10px]" : "justify-center gap-[52px]"}`}>
               <CompareUIQuiz
@@ -1173,100 +1197,64 @@ export default function LessonQuizPage() {
                 onContinue={handleProceedNewType}
                 earnedXP={earnedXP}
                 isReplay={xpAlreadyAwarded}
-                compareCardMinHeight={430}
+                compareCardMinHeight={["quiz_contrast","quiz_color","quiz_hierarchy","quiz_creating_ui_kit","quiz_figma_components","quiz_element_states","quiz_what_is_ui_kit","quiz_ui_elements","quiz_what_is_ux","quiz_user_flow","quiz_interface_structure","quiz_interface_elements","quiz_ux_errors"].includes(quizId) ? 366 : 430}
                 compareMaxScale={1.7}
+                mobileCardMinHeight={["quiz_contrast","quiz_color","quiz_hierarchy","quiz_creating_ui_kit","quiz_figma_components","quiz_element_states","quiz_what_is_ui_kit","quiz_ui_elements","quiz_what_is_ux","quiz_user_flow","quiz_interface_structure","quiz_interface_elements","quiz_ux_errors"].includes(quizId) ? 255 : undefined}
+                mobileNaturalW={["quiz_contrast","quiz_color","quiz_hierarchy","quiz_creating_ui_kit","quiz_figma_components","quiz_element_states","quiz_what_is_ui_kit","quiz_ui_elements","quiz_what_is_ux","quiz_user_flow","quiz_interface_structure","quiz_interface_elements","quiz_ux_errors"].includes(quizId) ? 260 : undefined}
+                mobileNaturalH={["quiz_contrast","quiz_color","quiz_hierarchy","quiz_creating_ui_kit","quiz_figma_components","quiz_element_states","quiz_what_is_ui_kit","quiz_ui_elements","quiz_what_is_ux","quiz_user_flow","quiz_interface_structure","quiz_interface_elements","quiz_ux_errors"].includes(quizId) ? 180 : undefined}
               />
             </div>
           </div>
+          </PageTransition>
         ) : (
           <>
             {/* ZONE 2 — Center: question + options */}
             <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : "pt-[80px] pb-[120px]"}`}>
-              <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-start pt-[10px]" : "justify-center gap-[52px]"}`}>
+              <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-center" : "justify-center gap-[52px]"}`}>
 
                 {isMobile ? (
                   /* ── MOBILE fixed-pixel layout ── */
-                  <div className="w-full px-[16px] flex flex-col" style={{ gap: 10 }}>
+                  <div className="w-full px-[16px] flex flex-col" style={{ gap: 20 }}>
 
-                    {/* Title — 10px below via parent gap */}
-                    <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[22px] leading-[1.25] text-[#f4f5fc] text-center w-full">
+                    {/* Title — 20px below via parent gap */}
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[22px] leading-[1.25] text-[#f4f5fc] text-center w-full">
                       {currentQuestion.question}
                     </p>
 
-                    {/* Image card + options block — gap 10px between card and options */}
+                    {/* Options — 70px (small) / 84px (large), gap 10px */}
                     <div className="w-full flex flex-col" style={{ gap: 10 }}>
-
-                      {/* Image card — 185px (small) / 215px (large) */}
-                      <div
-                        className="relative rounded-[15px] overflow-hidden flex-shrink-0 w-full"
-                        style={{
-                          height: isLargePhone ? 215 : 185,
-                          maxHeight: isLargePhone ? "calc(100dvh - 608px)" : "calc(100dvh - 568px)",
-                          background: "linear-gradient(172deg, rgb(44,53,56) 2%, rgb(56,67,72) 99%)",
-                        }}
-                      >
-                        {singleLeftCard ? (
-                          <ScaledPreview
-                            naturalWidth={186}
-                            naturalHeight={231}
-                            paddingY={isLargePhone ? 13 : 13}
-                            maxScale={1}
-                          >
-                            {singleLeftCard}
-                          </ScaledPreview>
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <div
-                              className="bg-[#3a4649] rounded-[12px]"
-                              style={{ width: "80%", height: isLargePhone ? 190 : 160 }}
-                            />
-                          </div>
-                        )}
-                        <div className="absolute inset-0 pointer-events-none rounded-[inherit] shadow-[inset_-4px_0px_4px_0px_#384348,inset_4px_0px_4px_0px_#384348,inset_0px_-5px_4px_0px_rgba(0,0,0,0.25),inset_0px_4px_4px_0px_rgba(0,0,0,0.25)]" />
-                      </div>
-
-                      {/* Options — 50px (small) / 60px (large), gap 10px */}
-                      <div className="w-full flex flex-col" style={{ gap: 10 }}>
-                        {((currentQuestion as any).options ?? []).map((option: { label: string; text: string }) => (
-                          <QuizOptionCard
-                            key={option.label}
-                            state={getCardState(option.label as "А" | "Б" | "В" | "Г")}
-                            fixedHeight={isLargePhone ? 60 : 50}
-                            onClick={() => {
-                              handleSelect(option.label as "А" | "Б" | "В" | "Г");
-                              try { const ctx = new AudioContext(); const o = ctx.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(520, ctx.currentTime); o.frequency.exponentialRampToValueAtTime(340, ctx.currentTime + 0.05); const g = ctx.createGain(); g.gain.setValueAtTime(0.1, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05); o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.05); } catch (_) {}
-                            }}
-                            text={option.text}
-                            label={option.label}
-                          />
-                        ))}
-                      </div>
-
+                      {((currentQuestion as any).options ?? []).map((option: { label: string; text: string }) => (
+                        <QuizOptionCard
+                          key={option.label}
+                          state={getCardState(option.label as "А" | "Б" | "В" | "Г")}
+                          fixedHeight={isLargePhone ? 84 : 70}
+                          onClick={() => {
+                            handleSelect(option.label as "А" | "Б" | "В" | "Г");
+                            try { const ctx = new AudioContext(); const o = ctx.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(520, ctx.currentTime); o.frequency.exponentialRampToValueAtTime(340, ctx.currentTime + 0.05); const g = ctx.createGain(); g.gain.setValueAtTime(gainFor(0.1), ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05); o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.05); } catch (_) {}
+                          }}
+                          text={option.text}
+                          label={option.label}
+                        />
+                      ))}
                     </div>
                   </div>
                 ) : (
                   /* ── DESKTOP layout ── */
                   <>
                     <div className="px-[150px] min-h-[70px] flex items-center justify-center" style={{ width: quizW }}>
-                      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-center leading-[35px] text-[32px]">
+                      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-center leading-[35px] text-[32px]">
                         {currentQuestion.question}
                       </p>
                     </div>
-                    <div className="content-stretch flex gap-[18px] items-stretch" style={{ width: quizW }}>
-                      <QuizLeftBlock
-                        type="static"
-                        content={singleLeftCard}
-                        singleMaxScale={quizId === "quiz_ui_elements" ? 2.0 : undefined}
-                        singleCardMinHeight={quizId === "quiz_ui_elements" ? 460 : undefined}
-                      />
-                      <div className="content-stretch flex flex-col gap-[19px] items-start relative shrink-0 w-[528px]">
+                    <div className="flex justify-center" style={{ width: quizW }}>
+                      <div className="content-stretch flex flex-col gap-[10px] items-start w-full max-w-[600px]">
                         {((currentQuestion as any).options ?? []).map((option: { label: string; text: string }) => (
                           <QuizOptionCard
                             key={option.label}
                             state={getCardState(option.label as "А" | "Б" | "В" | "Г")}
                             onClick={() => {
                               handleSelect(option.label as "А" | "Б" | "В" | "Г");
-                              try { const ctx = new AudioContext(); const o = ctx.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(520, ctx.currentTime); o.frequency.exponentialRampToValueAtTime(340, ctx.currentTime + 0.05); const g = ctx.createGain(); g.gain.setValueAtTime(0.1, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05); o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.05); } catch (_) {}
+                              try { const ctx = new AudioContext(); const o = ctx.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(520, ctx.currentTime); o.frequency.exponentialRampToValueAtTime(340, ctx.currentTime + 0.05); const g = ctx.createGain(); g.gain.setValueAtTime(gainFor(0.1), ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05); o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.05); } catch (_) {}
                             }}
                             text={option.text}
                             label={option.label}
@@ -1286,7 +1274,7 @@ export default function LessonQuizPage() {
                   <div className="mb-[10px]">
                     {isCorrect
                       ? <CorrectFeedback explanation={(currentQuestion as any).explanation} showXp={earnedXP > 0} />
-                      : <IncorrectFeedback correctAnswer={(currentQuestion as any).correctAnswer ?? ""} explanation={(currentQuestion as any).explanation} isReplay={xpAlreadyAwarded} />
+                      : <IncorrectFeedback correctAnswer={(currentQuestion as any).correctAnswer ?? ""} explanation={(currentQuestion as any).explanation} isReplay={xpAlreadyAwarded} hideAnswer />
                     }
                   </div>
                 )}
@@ -1307,7 +1295,7 @@ export default function LessonQuizPage() {
                     {phase === "feedback" && (
                       isCorrect
                         ? <CorrectFeedback explanation={(currentQuestion as any).explanation} showXp={earnedXP > 0} />
-                        : <IncorrectFeedback correctAnswer={(currentQuestion as any).correctAnswer ?? ""} explanation={(currentQuestion as any).explanation} isReplay={xpAlreadyAwarded} />
+                        : <IncorrectFeedback correctAnswer={(currentQuestion as any).correctAnswer ?? ""} explanation={(currentQuestion as any).explanation} isReplay={xpAlreadyAwarded} hideAnswer />
                     )}
                   </div>
                   <div className="flex-none flex items-center gap-[20px] justify-end">

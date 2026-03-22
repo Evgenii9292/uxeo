@@ -134,6 +134,7 @@ export function TheoryMobileLayout({
               onToggle={() => handleToggle(index)}
               onAnswerSelect={(answer, isCorrect) => handleAnswerSelect(index, answer, isCorrect)}
               onContinue={() => handleContinue(index)}
+              isLastSection={index === lessonData.sections.length - 1}
             />
           ))}
         </div>
@@ -160,7 +161,7 @@ export function TheoryMobileLayout({
             boxShadow: "0 4px 0 #b83a1f",
           }}
         >
-          <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[20px]">Начать квиз</p>
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[20px]">Начать квиз</p>
           <div className="bg-black/20 flex h-[24px] items-center justify-center px-[10px] rounded-full">
             <p className="font-['Inter:Semi_Bold',sans-serif] font-medium text-[#eef5ff] text-[10px]">+125 XP</p>
           </div>
@@ -190,7 +191,7 @@ export function TheoryMobileLayout({
             style={{ background: '#2C3438', borderRadius: '24px 24px 0 0', maxHeight: '80vh', overflowY: 'auto' }}
           >
             <div className="flex items-center justify-between">
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[22px]">Обратная связь</p>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px]">Обратная связь</p>
               <button onClick={() => setShowFeedbackModal(false)} className="text-[#798589] active:scale-90 transition-transform">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
               </button>
@@ -203,7 +204,7 @@ export function TheoryMobileLayout({
                   <button key={n} onClick={() => setFeedbackRating(n)}
                     className="flex-1 h-[44px] rounded-[12px] flex items-center justify-center transition-all active:scale-90"
                     style={{ background: feedbackRating >= n ? '#FF6B21' : '#374348', border: feedbackRating >= n ? 'none' : '1px solid #4B595E' }}>
-                    <span className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f1f2fb] text-[18px]">{n}</span>
+                    <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f1f2fb] text-[18px]">{n}</span>
                   </button>
                 ))}
               </div>
@@ -229,7 +230,7 @@ export function TheoryMobileLayout({
               <div aria-hidden="true" className="absolute border border-[#FF6B21]/40 border-solid inset-0 pointer-events-none rounded-[13px] shadow-[0px_4px_0px_0px_#1B2428] group-hover:shadow-[0px_2px_0px_0px_#1B2428] group-active:shadow-none transition-shadow duration-75" />
               <div className="flex items-center justify-center size-full gap-[8px]" style={{ background: '#1B2428', borderRadius: 13 }}>
                 <span style={{ fontSize: 18 }}>🎁</span>
-                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[18px]">Отправить отзыв</p>
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px]">Отправить отзыв</p>
               </div>
             </div>
           </div>

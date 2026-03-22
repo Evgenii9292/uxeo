@@ -1,3 +1,5 @@
+import React from "react";
+
 function Paragraph() {
   return (
     <div className="absolute h-[21px] left-0 top-[139px] w-[9.297px]" data-name="Paragraph">
@@ -59,7 +61,7 @@ function Container() {
 
 function HierarchyQuiz1VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-[131px] w-[186px]" data-name="HierarchyQuiz1VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-[131px] w-[186px]" data-name="HierarchyQuiz1VariantA">
       <Container />
     </div>
   );
@@ -176,7 +178,7 @@ function Container2() {
 
 function HierarchyQuiz2VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-[436px] w-[186px]" data-name="HierarchyQuiz2VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-[436px] w-[186px]" data-name="HierarchyQuiz2VariantA">
       <Container2 />
     </div>
   );
@@ -330,7 +332,7 @@ function Container6() {
 
 function HierarchyQuiz3VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-[741px] w-[186px]" data-name="HierarchyQuiz3VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-[741px] w-[186px]" data-name="HierarchyQuiz3VariantA">
       <Container6 />
     </div>
   );
@@ -517,7 +519,7 @@ function Container14() {
 
 function HierarchyQuiz4VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-[1046px] w-[186px]" data-name="HierarchyQuiz4VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-[1046px] w-[186px]" data-name="HierarchyQuiz4VariantA">
       <Container14 />
     </div>
   );
@@ -1463,67 +1465,94 @@ function Container45() {
 // Named exports for LessonQuizPage (quiz_hierarchy visuals)
 // ─────────────────────────────────────────────────────────────────────────────
 
-// ── Compare UI — Q1 (correct=Б=good) ────────────────────────────────────────
-/** All same-size text = no hierarchy = BAD (А label) */
+const f = "Inter, sans-serif";
+
+// ── Q1A: весь текст одного размера — нет иерархии (bad) ───────────────────
 export function CQHierCompare1A() {
   return (
-    <div style={{ position: "relative", width: 207, height: 231 }}>
-      <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start overflow-clip pt-[10px] px-[10px] rounded-[14.99px] w-[186px]" style={{ left: 21.3, top: 0 }}>
-        <Container />
-      </div>
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 6 }}>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#9ca3af" }}>Основы типографики</span>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#9ca3af" }}>Типографика — это способ организации текста в интерфейсе</span>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#9ca3af" }}>Выбор шрифта</span>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#9ca3af" }}>Шрифт задаёт характер и тон всего интерфейса</span>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#9ca3af" }}>Размеры и отступы</span>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#9ca3af" }}>Правильные интервалы улучшают читаемость</span>
     </div>
   );
 }
-/** Clear typographic hierarchy = GOOD (Б label, correct) */
+
+// ── Q1B: чёткая типографическая иерархия (good, correct=Б) ───────────────
 export function CQHierCompare1B() {
   return (
-    <div style={{ position: "relative", width: 207, height: 231 }}>
-      <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start overflow-clip pt-[10px] px-[10px] rounded-[14.99px] w-[186px]" style={{ left: 21.3, top: 0 }}>
-        <Container1 />
-      </div>
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "14px 16px", display: "flex", flexDirection: "column" }}>
+      <span style={{ fontFamily: f, fontSize: 14, fontWeight: 700, color: "#111827", letterSpacing: -0.4, marginBottom: 4 }}>Основы типографики</span>
+      <span style={{ fontFamily: f, fontSize: 10, fontWeight: 600, color: "#374151", marginBottom: 5 }}>Выбор шрифта</span>
+      <span style={{ fontFamily: f, fontSize: 8.5, color: "#9ca3af", lineHeight: 1.6, marginBottom: 10 }}>Шрифт задаёт характер и тон всего интерфейса. Не более 2–3 гарнитур.</span>
+      <span style={{ fontFamily: f, fontSize: 10, fontWeight: 600, color: "#374151", marginBottom: 5 }}>Размеры и отступы</span>
+      <span style={{ fontFamily: f, fontSize: 8.5, color: "#9ca3af", lineHeight: 1.6 }}>Правильные интервалы улучшают читаемость и ритм страницы.</span>
     </div>
   );
 }
 
-// ── Compare UI — Q2 (correct=Б=good) ────────────────────────────────────────
-/** Heading same size as body = BAD (А label) */
+// ── Q2A: заголовок того же размера что и текст — не выделяется (bad) ───────
 export function CQHierCompare2A() {
   return (
-    <div style={{ position: "relative", width: 207, height: 231 }}>
-      <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start overflow-clip pt-[10px] px-[10px] rounded-[14.99px] w-[186px]" style={{ left: 21.3, top: 0 }}>
-        <Container2 />
-      </div>
-    </div>
-  );
-}
-/** Large prominent heading = GOOD (Б label, correct) */
-export function CQHierCompare2B() {
-  return (
-    <div style={{ position: "relative", width: 207, height: 231 }}>
-      <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start overflow-clip pt-[10px] px-[10px] rounded-[14.99px] w-[186px]" style={{ left: 21.3, top: 0 }}>
-        <Container4 />
-      </div>
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "16px 18px", display: "flex", flexDirection: "column" }}>
+      <span style={{ fontFamily: f, fontSize: 9, fontWeight: 400, color: "#9ca3af", marginBottom: 8 }}>Последние новости</span>
+      <div style={{ height: 1, background: "#f3f4f6", marginBottom: 8 }} />
+      {["Обновление дизайн-системы", "Новые компоненты для форм", "Гайдлайны по типографике"].map((t) => (
+        <div key={t} style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 7 }}>
+          <div style={{ width: 3, height: 3, borderRadius: "50%", background: "#d1d5db", flexShrink: 0 }} />
+          <span style={{ fontFamily: f, fontSize: 9, color: "#9ca3af" }}>{t}</span>
+        </div>
+      ))}
     </div>
   );
 }
 
-// ── Compare UI — Q3 (correct=Б=good) ────────────────────────────────────────
-/** Small/equal-weight CTA = BAD (А label) */
-export function CQHierCompare3A() {
+// ── Q2B: крупный заголовок — чёткая иерархия (good, correct=Б) ────────────
+export function CQHierCompare2B() {
   return (
-    <div style={{ position: "relative", width: 207, height: 231 }}>
-      <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start overflow-clip pt-[10px] px-[10px] rounded-[14.99px] w-[186px]" style={{ left: 21.3, top: 0 }}>
-        <Container6 />
-      </div>
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "16px 18px", display: "flex", flexDirection: "column" }}>
+      <span style={{ fontFamily: f, fontSize: 15, fontWeight: 700, color: "#111827", letterSpacing: -0.4, marginBottom: 10 }}>Последние новости</span>
+      <div style={{ height: 1, background: "#f3f4f6", marginBottom: 10 }} />
+      {["Обновление дизайн-системы", "Новые компоненты для форм", "Гайдлайны по типографике"].map((t) => (
+        <div key={t} style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 7 }}>
+          <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#3b82f6", flexShrink: 0 }} />
+          <span style={{ fontFamily: f, fontSize: 9, color: "#374151" }}>{t}</span>
+        </div>
+      ))}
     </div>
   );
 }
-/** Large prominent blue CTA = GOOD (Б label, correct) */
+
+// ── Q3A: несколько одинаковых CTA — нет главного действия (bad) ───────────
+export function CQHierCompare3A() {
+  return (
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#9ca3af", marginBottom: 2 }}>Что хотите сделать?</span>
+      {["Продолжить", "Сохранить черновик", "Посмотреть позже"].map((label) => (
+        <div key={label} style={{ background: "#f3f4f6", borderRadius: 8, padding: "10px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ fontFamily: f, fontSize: 10, color: "#6b7280" }}>{label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Q3B: одна главная кнопка + второстепенные — всё понятно (good, correct=Б)
 export function CQHierCompare3B() {
   return (
-    <div style={{ position: "relative", width: 207, height: 231 }}>
-      <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start overflow-clip pt-[10px] px-[10px] rounded-[14.99px] w-[186px]" style={{ left: 21.3, top: 0 }}>
-        <Container10 />
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "white", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#6b7280", marginBottom: 2 }}>Что хотите сделать?</span>
+      <div style={{ background: "#3b82f6", borderRadius: 8, padding: "11px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontFamily: f, fontSize: 10, fontWeight: 600, color: "white" }}>Продолжить</span>
+      </div>
+      <div style={{ background: "#f3f4f6", borderRadius: 8, padding: "9px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontFamily: f, fontSize: 9, color: "#374151" }}>Сохранить черновик</span>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontFamily: f, fontSize: 9, color: "#9ca3af" }}>Посмотреть позже</span>
       </div>
     </div>
   );

@@ -69,7 +69,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     },
     {
       type: "compare_ui",
-      question: "Где легче заметить главное действие?",
+      question: "Где выделено главное?",
       compareOptions: [
         { label: "А", description: "Все кнопки одного цвета — взгляд не понимает, что важнее", badge: "Нет акцента", previewType: "bad" },
         { label: "Б", description: "Основная кнопка ярче остальных — мгновенно привлекает внимание", badge: "Есть акцент", previewType: "good" },
@@ -191,7 +191,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     // ── 3 × Compare UI ────────────────────────────────────────────────────────
     {
       type: "compare_ui",
-      question: "Где структура информации читается легче?",
+      question: "Где структура понятнее?",
       compareOptions: [
         { label: "А", description: "Информация разбита на блоки с заголовками — легко сканировать", badge: "Структурировано", previewType: "good" },
         { label: "Б", description: "Весь контент в одном блоке без разделения — сложно ориентироваться", badge: "Без структуры", previewType: "bad" },
@@ -211,7 +211,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     },
     {
       type: "compare_ui",
-      question: "Где пользователь быстрее поймёт, куда нажимать?",
+      question: "Где понятнее, куда нажать?",
       compareOptions: [
         { label: "А", description: "Одна яркая кнопка на экране — главное действие мгновенно понятно", badge: "Понятно", previewType: "good" },
         { label: "Б", description: "Несколько одинаковых по виду кнопок — непонятно, что главное", badge: "Непонятно", previewType: "bad" },
@@ -224,7 +224,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
       type: "single_choice",
       question: "Что помогает пользователю понять порядок информации на экране?",
       options: [
-        { label: "А", text: "Контраст" },
+        { label: "А", text: "Цвет" },
         { label: "Б", text: "Визуальная иерархия" },
         { label: "В", text: "Сетка" },
         { label: "Г", text: "Анимация" },
@@ -333,7 +333,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     // ── 3 × Compare UI ────────────────────────────────────────────────────────
     {
       type: "compare_ui",
-      question: "Где структура информации читается легче?",
+      question: "Где структура понятнее?",
       compareOptions: [
         { label: "А", description: "Весь контент в одном блоке без разделения — сложно ориентироваться", badge: "Без структуры", previewType: "bad" },
         { label: "Б", description: "Информация разбита на блоки с заголовками — легко сканировать", badge: "Структурировано", previewType: "good" },
@@ -353,7 +353,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     },
     {
       type: "compare_ui",
-      question: "Где пользователь быстрее поймёт, куда нажимать?",
+      question: "Где понятнее, куда нажать?",
       compareOptions: [
         { label: "А", description: "Несколько одинаковых по виду кнопок — непонятно, что главное", badge: "Непонятно", previewType: "bad" },
         { label: "Б", description: "Одна яркая кнопка на экране — главное действие мгновенно понятно", badge: "Понятно", previewType: "good" },
@@ -366,7 +366,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
       type: "single_choice",
       question: "Что помогает пользователю понять порядок информации на экране?",
       options: [
-        { label: "А", text: "Контраст" },
+        { label: "А", text: "Цвет" },
         { label: "Б", text: "Визуальная иерархия" },
         { label: "В", text: "Сетка" },
         { label: "Г", text: "Анимация" },
@@ -478,7 +478,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     // ── 3 × Compare UI ───────────────────────────────────────────────────────
     {
       type: "compare_ui",
-      question: "Где пользователю понятнее, что делать?",
+      question: "Где действие понятнее?",
       compareOptions: [
         { label: "А", description: "Экран с большим текстом без действий — непонятно, что делать дальше", badge: "Без действий", previewType: "bad" },
         { label: "Б", description: "Экран с кнопкой «Start» — сразу понятно, как начать", badge: "Понятно", previewType: "good" },
@@ -498,7 +498,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     },
     {
       type: "compare_ui",
-      question: "Где пользователь быстрее достигает цели?",
+      question: "Где цель достичь легче?",
       compareOptions: [
         { label: "А", description: "Несколько непонятных кнопок — пользователь не знает, что нажать", badge: "Непонятно", previewType: "bad" },
         { label: "Б", description: "Одна понятная кнопка действия — путь к цели очевиден", badge: "Понятно", previewType: "good" },
@@ -620,7 +620,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     // ── 3 × Compare UI ───────────────────────────────────────────────────────
     {
       type: "compare_ui",
-      question: "Где пользовательский сценарий проще?",
+      question: "Где сценарий проще?",
       compareOptions: [
         { label: "А", description: "6 шагов до покупки — длинный и утомительный путь", badge: "Сложно", previewType: "bad" },
         { label: "Б", description: "3 шага до покупки — минимум усилий для пользователя", badge: "Просто", previewType: "good" },
@@ -630,7 +630,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     },
     {
       type: "compare_ui",
-      question: "Где пользователю легче пройти путь?",
+      question: "Где путь проще?",
       compareOptions: [
         { label: "А", description: "Шаги идут хаотично — непонятно, куда идти дальше", badge: "Хаотично", previewType: "bad" },
         { label: "Б", description: "Шаги идут в логической последовательности — всё понятно", badge: "Логично", previewType: "good" },
@@ -640,7 +640,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     },
     {
       type: "compare_ui",
-      question: "Где пользователь быстрее достигает цели?",
+      question: "Где цель достичь легче?",
       compareOptions: [
         { label: "А", description: "Нужно возвращаться назад между шагами — путь не линеен", badge: "Неудобно", previewType: "bad" },
         { label: "Б", description: "Путь идёт последовательно без возвратов — прямо к цели", badge: "Удобно", previewType: "good" },
@@ -782,7 +782,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     },
     {
       type: "compare_ui",
-      question: "Где пользователь быстрее найдёт нужную информацию?",
+      question: "Где нужное найти легче?",
       compareOptions: [
         { label: "А", description: "Элементы расположены хаотично — нет логики размещения", badge: "Хаотично", previewType: "bad" },
         { label: "Б", description: "Элементы сгруппированы по смыслу — быстро понятно, где что искать", badge: "Логично", previewType: "good" },
@@ -904,7 +904,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     // ── 3 × Compare UI ───────────────────────────────────────────────────────
     {
       type: "compare_ui",
-      question: "Где пользователю понятнее, что можно сделать?",
+      question: "Где возможности понятнее?",
       compareOptions: [
         { label: "А", description: "Нет явных кнопок — пользователь не знает, как взаимодействовать", badge: "Непонятно", previewType: "bad" },
         { label: "Б", description: "Есть заметная кнопка действия — сразу понятно, что нажать", badge: "Понятно", previewType: "good" },
@@ -1056,7 +1056,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     },
     {
       type: "compare_ui",
-      question: "Где пользователь быстрее понимает, что делать?",
+      question: "Где яснее, что делать?",
       compareOptions: [
         { label: "А", description: "Несколько равнозначных кнопок — непонятно, что главное", badge: "Непонятно", previewType: "bad" },
         { label: "Б", description: "Одна главная кнопка действия — цель очевидна", badge: "Понятно", previewType: "good" },
@@ -1197,7 +1197,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     },
     {
       type: "compare_ui",
-      question: "Где интерфейс выглядит более системным?",
+      question: "Где интерфейс системнее?",
       compareOptions: [
         { label: "А", description: "Кнопки и карточки отличаются по стилю — хаотично", badge: "Хаотично", previewType: "bad" },
         { label: "Б", description: "Все элементы одинаковые и повторяются — единый стиль", badge: "Системно", previewType: "good" },
@@ -1328,7 +1328,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     // ── 3 × Compare UI ───────────────────────────────────────────────────────
     {
       type: "compare_ui",
-      question: "Где кнопки организованы правильнее?",
+      question: "Где кнопки правильнее?",
       compareOptions: [
         { label: "А", description: "Кнопки разного размера и стиля — нет единства", badge: "Хаотично", previewType: "bad" },
         { label: "Б", description: "Кнопки одного стиля и размера — системно и аккуратно", badge: "Системно", previewType: "good" },
@@ -1348,7 +1348,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     },
     {
       type: "compare_ui",
-      question: "Где карточки выглядят более системно?",
+      question: "Где карточки системнее?",
       compareOptions: [
         { label: "А", description: "Карточки отличаются по структуре — каждая выглядит по-своему", badge: "Непоследовательно", previewType: "bad" },
         { label: "Б", description: "Карточки имеют одинаковую структуру — информация воспринимается легко", badge: "Системно", previewType: "good" },
@@ -1620,7 +1620,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     },
     {
       type: "compare_ui",
-      question: "Где используются варианты компонентов?",
+      question: "Где варианты компонентов?",
       compareOptions: [
         { label: "А", description: "Каждая кнопка сделана отдельно — много файлов, нет системы", badge: "Без вариантов", previewType: "bad" },
         { label: "Б", description: "Один компонент с разными состояниями — удобно переключать", badge: "С вариантами", previewType: "good" },
@@ -1630,7 +1630,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     },
     {
       type: "compare_ui",
-      question: "Где элементы проще переиспользовать?",
+      question: "Где компоненты гибче?",
       compareOptions: [
         { label: "А", description: "Каждый элемент нарисован заново — долго и непоследовательно", badge: "Без системы", previewType: "bad" },
         { label: "Б", description: "Используются компоненты и instances — быстро и согласованно", badge: "С компонентами", previewType: "good" },
@@ -1751,7 +1751,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     // ── 3 × Compare UI ───────────────────────────────────────────────────────
     {
       type: "compare_ui",
-      question: "Где кнопки подготовлены для UI Kit правильнее?",
+      question: "Где кнопки для UI Kit лучше?",
       compareOptions: [
         { label: "А", description: "Кнопки разного размера и стиля — нет системы", badge: "Без системы", previewType: "bad" },
         { label: "Б", description: "Кнопки одного размера и оформлены как система — готово к переиспользованию", badge: "Системно", previewType: "good" },
@@ -1771,7 +1771,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
     },
     {
       type: "compare_ui",
-      question: "Где карточки подготовлены для UI Kit?",
+      question: "Где карточки для UI Kit лучше?",
       compareOptions: [
         { label: "А", description: "Карточки отличаются по структуре — нельзя переиспользовать", badge: "Без компонента", previewType: "bad" },
         { label: "Б", description: "Используется один компонент карточки — легко дублировать", badge: "Компонент", previewType: "good" },

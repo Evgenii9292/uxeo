@@ -76,7 +76,26 @@ const POPUP_H = 318;
 
 // ─── Popup background SVG ────────────────────────────────────────────────────
 
-function PopupBackground() {
+const MOBILE_POPUP_PATH = "M410 303V30.8489C410 22.5646 403.284 15.8489 395 15.8489H201.926C198.726 15.8489 195.61 14.8254 193.033 12.9281L178.473 2.20849C176.693 0.898006 174.264 0.911701 172.499 2.24216L158.457 12.8271C155.855 14.7881 152.686 15.8489 149.428 15.8489H15C6.71573 15.8489 0 22.5646 0 30.8489V303C0 311.284 6.71574 318 15 318H395C403.284 318 410 311.284 410 303Z";
+
+function PopupBackground({ isMobile }: { isMobile: boolean }) {
+  if (isMobile) {
+    return (
+      <div className="absolute" style={{ inset: "0.39% 0 0 0" }}>
+        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 410 318">
+          <defs>
+            <linearGradient gradientUnits="userSpaceOnUse" id="paint_popup_bg" x1="84.36" x2="311.03" y1="35.25" y2="336.31">
+              <stop stopColor="#C0C3D0" />
+              <stop offset="0.168" stopColor="#CEC4BB" />
+              <stop offset="1" stopColor="#9699A5" />
+            </linearGradient>
+          </defs>
+          <path d={MOBILE_POPUP_PATH} fill="url(#paint_popup_bg)" />
+        </svg>
+      </div>
+    );
+  }
+
   return (
     <div className="absolute" style={{ inset: "0.39% 0 0 0" }}>
       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox={`0 0 ${POPUP_W} 316.765`}>
@@ -193,9 +212,31 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
     };
   }, [anchorRef]);
 
-  // Trigger fade-in on the frame after position is known
+  // Trigger fade-in + scroll to popup on the frame after position is known
   useEffect(() => {
-    if (pos) requestAnimationFrame(() => setVisible(true));
+    if (!pos) return;
+    requestAnimationFrame(() => {
+      setVisible(true);
+      // Scroll the nearest scrollable container (not window) so popup is fully visible
+      const anchor = anchorRef.current;
+      if (!anchor) return;
+      // Find nearest scrollable ancestor
+      let container: Element | null = anchor.parentElement;
+      while (container && container !== document.documentElement) {
+        const style = window.getComputedStyle(container);
+        if (style.overflowY === "auto" || style.overflowY === "scroll") break;
+        container = container.parentElement;
+      }
+      if (!container || container === document.documentElement) return;
+      const scale = pos.scale ?? 1;
+      const neededBelow = NODE_H + 15 + POPUP_H * scale + 60;
+      const anchorRect = anchor.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const spaceBelow = containerRect.bottom - anchorRect.bottom;
+      if (spaceBelow < neededBelow) {
+        container.scrollBy({ top: neededBelow - spaceBelow, behavior: "smooth" });
+      }
+    });
   }, [pos !== null]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Close on outside click — but NOT when clicking a lesson node (let node's onClick handle toggle)
@@ -234,6 +275,9 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
 
   if (!pos) return null;
 
+  const isMobile = window.innerWidth < 768;
+  const transitionDuration = isMobile ? "0.12s" : "0.18s";
+
   return ReactDOM.createPortal(
     <div
       ref={popupRef}
@@ -248,12 +292,13 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
         // CSS transition instead of keyframe — re-triggers on each mount, even during rapid taps
         opacity:         visible ? 1 : 0,
         transform:       `${pos.scale < 1 ? `scale(${pos.scale})` : ""} translateY(${visible ? 0 : -8}px)`.trim(),
-        transition:      "opacity 0.18s ease-out, transform 0.18s ease-out",
+        transition:      `opacity ${transitionDuration} ease-out, transform ${transitionDuration} ease-out`,
         transformOrigin: "top left",
         willChange:      "opacity, transform",
+        contain:         "layout style",
       }}
     >
-      <PopupBackground />
+      <PopupBackground isMobile={isMobile} />
 
       {/* Content */}
       <div className="absolute flex flex-col gap-[16px] items-start pb-[20px]" style={{ left: 23, top: 43, width: 360, minHeight: 140 }}>

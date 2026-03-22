@@ -12,7 +12,7 @@ import { CardAMockup, CardBMockup } from "../../components/quiz/QuizCardMockups"
 import { FlagReportButton } from "./FlagReportButton";
 
 // Natural dimensions of Figma compare cards
-const FIGMA_W = 207;
+const FIGMA_W = 186;
 const FIGMA_H = 231;
 const MOCK_W  = 333;
 const MOCK_H  = 415;
@@ -72,6 +72,9 @@ export function CompareUIQuiz({
   isReplay,
   compareCardMinHeight,
   compareMaxScale,
+  mobileCardMinHeight,
+  mobileNaturalW,
+  mobileNaturalH,
 }: {
   question: string;
   /** MUST be an array of 2 items with label + (content or previewType). */
@@ -86,6 +89,12 @@ export function CompareUIQuiz({
   compareCardMinHeight?: number;
   /** Optional max scale for Figma content in compare cards */
   compareMaxScale?: number;
+  /** Optional min height (px) for mobile compare cards (overrides default 220/250) */
+  mobileCardMinHeight?: number;
+  /** Override natural width of mobile Figma content (for lesson-specific card sizes) */
+  mobileNaturalW?: number;
+  /** Override natural height of mobile Figma content (for lesson-specific card sizes) */
+  mobileNaturalH?: number;
 }) {
   const [selection, setSelection] = useState<string | null>(null);
   const [phase, setPhase] = useState<Phase>("selecting");
@@ -136,7 +145,7 @@ export function CompareUIQuiz({
   if (!compareOptions || compareOptions.length === 0) {
     return (
       <div className="w-[1042px] flex justify-center">
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#798589] text-[18px]">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[18px]">
           Нет вариантов для сравнения
         </p>
       </div>
@@ -148,11 +157,11 @@ export function CompareUIQuiz({
     // Breakpoint: 440px = "large phone" (Pro Max etc.)
     const isLargePhone = vw >= 440;
 
-    // FIXED sizes per spec:
-    //   small  (388×858): dark container 220px, inner content area 190px → paddingY 15px
-    //   large  (440×954): dark container 250px, inner content area 220px → paddingY 15px
-    const containerH = isLargePhone ? 250 : 220;
-    const paddingY   = 10; // equal top/bottom margin inside dark container
+    const containerH = mobileCardMinHeight ?? (isLargePhone ? 250 : 220);
+    const paddingY   = mobileCardMinHeight ? 20 : 10;
+    const paddingX   = mobileCardMinHeight ? 20 : 0;
+    const figmaW     = mobileNaturalW ?? FIGMA_W;
+    const figmaH     = mobileNaturalH ?? FIGMA_H;
 
     // Border color per card state
     const getBorderColor = (state: CompareCardState): string | undefined => {
@@ -168,7 +177,7 @@ export function CompareUIQuiz({
         <div className="w-full px-[16px] flex flex-col" style={{ gap: 10 }}>
 
           {/* Question title */}
-          <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[1.25] text-[#f4f5fc] text-[22px] text-center w-full">
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.25] text-[#f4f5fc] text-[22px] text-center w-full">
             {question}
           </p>
 
@@ -185,7 +194,9 @@ export function CompareUIQuiz({
                   onClick={isClickable ? () => handleSelect(option.label) : undefined}
                   className={`relative rounded-[15px] overflow-hidden transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.99]" : ""}`}
                   style={{
-                    height: `calc((100dvh - 296px) / 2)`,
+                    height: mobileCardMinHeight
+                      ? `calc((100dvh - 290px) / 2)`
+                      : `calc((100dvh - 296px) / 2)`,
                     minHeight: containerH,
                     background: "linear-gradient(172deg, rgb(44,53,56) 2%, rgb(56,67,72) 99%)",
                     boxShadow: borderColor ? `0 0 0 3px ${borderColor}` : undefined,
@@ -195,10 +206,11 @@ export function CompareUIQuiz({
                   <div className="w-full h-full">
                     {option.content ? (
                       <ScaledPreview
-                        naturalWidth={FIGMA_W}
-                        naturalHeight={FIGMA_H}
+                        naturalWidth={figmaW}
+                        naturalHeight={figmaH}
                         paddingY={paddingY}
-                        maxScale={1}
+                        paddingX={paddingX}
+                        maxScale={1.8}
                       >
                         {option.content}
                       </ScaledPreview>
@@ -206,7 +218,7 @@ export function CompareUIQuiz({
                       <ScaledPreview
                         naturalWidth={MOCK_W}
                         naturalHeight={MOCK_H}
-                        paddingY={paddingY}
+                        paddingY={10}
                         maxScale={1}
                       >
                         {option.previewType === "good" ? <CardAMockup /> : <CardBMockup />}
@@ -231,7 +243,7 @@ export function CompareUIQuiz({
             <div className="mb-[10px]">
               {isCorrect
                 ? <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
-                : <IncorrectFeedback correctAnswer={correctAnswer} explanation={explanation} isReplay={isReplay} />
+                : <IncorrectFeedback correctAnswer={correctAnswer} explanation={explanation} isReplay={isReplay} hideAnswer />
               }
             </div>
           )}
@@ -254,7 +266,7 @@ export function CompareUIQuiz({
     <>
       {/* Question */}
       <div className="flex justify-center" style={{ width: quizW }}>
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[35px] text-[#f4f5fc] text-[32px] text-center">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[35px] text-[#f4f5fc] text-[32px] text-center">
           {question}
         </p>
       </div>
@@ -277,17 +289,19 @@ export function CompareUIQuiz({
           compareCardMinHeight={compareCardMinHeight}
           compareMaxScale={compareMaxScale}
           cardWidth={colW}
+          figmaNaturalW={mobileNaturalW}
+          figmaNaturalH={mobileNaturalH}
         />
       </div>
 
       {/* Fixed bottom bar */}
       <div className="fixed bottom-[20px] left-0 right-0 z-10 flex justify-center">
         <div className="flex gap-[32px] items-center mb-[20px]" style={{ width: quizW }}>
-          <div className="flex-1 flex items-center">
+          <div className="flex-1 flex items-center" style={{ paddingRight: 40 }}>
             {phase === "feedback" && (
               isCorrect
                 ? <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
-                : <IncorrectFeedback correctAnswer={correctAnswer} explanation={explanation} isReplay={isReplay} />
+                : <IncorrectFeedback correctAnswer={correctAnswer} explanation={explanation} isReplay={isReplay} hideAnswer />
             )}
           </div>
           <div className="flex-none flex items-center justify-end gap-[20px]">

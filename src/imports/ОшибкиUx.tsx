@@ -1,3 +1,5 @@
+import React from "react";
+
 function Paragraph() {
   return (
     <div className="absolute h-[21px] left-0 top-[8px] w-[9.297px]" data-name="Paragraph">
@@ -112,7 +114,7 @@ function Container1() {
 
 function Lesson5Quiz1VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson5Quiz1VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson5Quiz1VariantA">
       <Container1 />
     </div>
   );
@@ -179,7 +181,7 @@ function Container8() {
 
 function Lesson5Quiz1VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson5Quiz1VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson5Quiz1VariantB">
       <Container8 />
     </div>
   );
@@ -244,7 +246,7 @@ function Container13() {
 
 function Lesson5Quiz2VariantA() {
   return (
-    <div className="absolute bg-white h-[231px] left-[21.3px] overflow-clip rounded-[14.99px] top-0 w-[186px]" data-name="Lesson5Quiz2VariantA">
+    <div className="absolute bg-white h-[231px] left-0 overflow-clip rounded-[14.99px] top-0 w-[186px]" data-name="Lesson5Quiz2VariantA">
       <Container11 />
       <Paragraph11 />
       <Container12 />
@@ -329,7 +331,7 @@ function Container15() {
 
 function Lesson5Quiz2VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson5Quiz2VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson5Quiz2VariantB">
       <Container15 />
     </div>
   );
@@ -411,7 +413,7 @@ function Container19() {
 
 function Lesson5Quiz3VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson5Quiz3VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson5Quiz3VariantA">
       <Container19 />
     </div>
   );
@@ -493,7 +495,7 @@ function Container23() {
 
 function Lesson5Quiz3VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson5Quiz3VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson5Quiz3VariantB">
       <Container23 />
     </div>
   );
@@ -1283,7 +1285,7 @@ function Container72() {
 
 function Lesson5Quiz10Card() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex flex-col h-[80px] items-start justify-center left-0 pl-[8px] py-[29.5px] rounded-[8px] top-[3910px]" data-name="Lesson5Quiz10Card1">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson5Quiz10Card1">
       <Container72 />
     </div>
   );
@@ -1325,7 +1327,7 @@ function Container75() {
 
 function Lesson5Quiz10Card1() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[154px] px-[8px] rounded-[8px] top-[3910px] w-[130px]" data-name="Lesson5Quiz10Card2">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson5Quiz10Card2">
       <Container75 />
     </div>
   );
@@ -1397,7 +1399,7 @@ function Container76() {
 
 function Lesson5Quiz10Card2() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[308px] pl-[45.961px] pr-[45.969px] rounded-[8px] top-[3910px] w-[130px]" data-name="Lesson5Quiz10Card3">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson5Quiz10Card3">
       <Container76 />
     </div>
   );
@@ -1484,7 +1486,7 @@ function Paragraph65() {
 
 function Lesson5Quiz11Card() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex flex-col gap-[2px] h-[80px] items-start justify-center left-0 pl-[8px] py-[29.25px] rounded-[8px] top-[4161px] w-[130px]" data-name="Lesson5Quiz11Card1">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson5Quiz11Card1">
       <Container80 />
       <Paragraph65 />
     </div>
@@ -1512,7 +1514,7 @@ function Container83() {
 
 function Lesson5Quiz11Card1() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[154px] px-[40px] rounded-[8px] top-[4161px] w-[130px]" data-name="Lesson5Quiz11Card2">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson5Quiz11Card2">
       <Container83 />
     </div>
   );
@@ -1573,7 +1575,7 @@ function Paragraph69() {
 
 function Lesson5Quiz11Card2() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex flex-col gap-[2px] h-[80px] items-start justify-center left-[308px] pl-[8px] py-[29.5px] rounded-[8px] top-[4161px] w-[130px]" data-name="Lesson5Quiz11Card3">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson5Quiz11Card3">
       <Container84 />
       <Paragraph69 />
     </div>
@@ -1659,7 +1661,7 @@ function Paragraph75() {
 
 function Lesson5Quiz12Card() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex flex-col gap-[2px] h-[80px] items-start justify-center left-0 pl-[8px] py-[29.5px] rounded-[8px] top-[4412px] w-[130px]" data-name="Lesson5Quiz12Card1">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson5Quiz12Card1">
       <Container87 />
       <Paragraph75 />
     </div>
@@ -1713,7 +1715,7 @@ function Container90() {
 
 function Lesson5Quiz12Card1() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[154px] px-[52.75px] rounded-[8px] top-[4412px] w-[130px]" data-name="Lesson5Quiz12Card2">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson5Quiz12Card2">
       <Container90 />
     </div>
   );
@@ -1757,7 +1759,7 @@ function Container93() {
 
 function Lesson5Quiz12Card2() {
   return (
-    <div className="absolute bg-[rgba(255,255,255,0)] content-stretch flex h-[80px] items-center justify-center left-[308px] px-[47.273px] rounded-[8px] top-[4412px] w-[130px]" data-name="Lesson5Quiz12Card3">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson5Quiz12Card3">
       <Container93 />
     </div>
   );
@@ -1790,23 +1792,134 @@ function Paragraph81() {
 // ─────────────────────────────────────────────────────────────────────────────
 // Named exports for LessonQuizPage (quiz_ux_errors visuals)
 // ─────────────────────────────────────────────────────────────────────────────
+const CW: React.CSSProperties = { position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" };
+const CI: React.CSSProperties = { position: "absolute", inset: 0, padding: "14px 16px", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" };
+
+// Q1A: Overloaded screen — hard to focus
 export function CQErrCompare1A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson5Quiz1VariantA /></div>;
+  return (
+    <div style={CW}>
+      <div style={{ position: "absolute", inset: 0, padding: "10px 12px", overflow: "hidden" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 5 }}>
+          {[["#fecaca","#fed7aa"],["#fef08a","#bbf7d0"],["#bfdbfe","#e9d5ff"],["#fecdd3","#cffafe"],["#d9f99d","#fde68a"],["#e0e7ff","#ffe4e6"]].map(([a, b], i) => (
+            <div key={i} style={{ background: i % 2 === 0 ? a : b, borderRadius: 6, padding: "6px 8px", display: "flex", flexDirection: "column", gap: 3 }}>
+              <div style={{ height: 7, background: "rgba(0,0,0,0.2)", borderRadius: 2, width: "70%" }} />
+              <div style={{ height: 6, background: "rgba(0,0,0,0.12)", borderRadius: 2, width: "90%" }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// Q1B: Only necessary elements — easy to navigate
 export function CQErrCompare1B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson5Quiz1VariantB /></div>;
+  return (
+    <div style={CW}>
+      <div style={CI}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "center" }}>
+          <div style={{ height: 12, background: "#1f2937", borderRadius: 3, width: "55%" }} />
+          <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "80%" }} />
+          <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "65%" }} />
+          <div style={{ height: 16 }} />
+          <div style={{ background: "#3b82f6", borderRadius: 8, padding: "10px 0", width: "75%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ height: 8, background: "white", borderRadius: 2, width: 55 }} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// Q2A: Multiple equal-weight buttons — unclear what's primary
 export function CQErrCompare2A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson5Quiz2VariantA /></div>;
+  return (
+    <div style={CW}>
+      <div style={CI}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "stretch" }}>
+          {["#6b7280","#6b7280","#6b7280","#6b7280"].map((color, i) => (
+            <div key={i} style={{ background: color, borderRadius: 8, padding: "10px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ height: 8, background: "white", borderRadius: 2, width: 55 }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// Q2B: One main action button — goal is obvious
 export function CQErrCompare2B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson5Quiz2VariantB /></div>;
+  return (
+    <div style={CW}>
+      <div style={CI}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "stretch" }}>
+          <div style={{ background: "#3b82f6", borderRadius: 8, padding: "12px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ height: 8, background: "white", borderRadius: 2, width: 65 }} />
+          </div>
+          <div style={{ background: "#f3f4f6", borderRadius: 8, padding: "9px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ height: 7, background: "#9ca3af", borderRadius: 2, width: 50 }} />
+          </div>
+          <div style={{ background: "#f3f4f6", borderRadius: 8, padding: "9px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ height: 7, background: "#9ca3af", borderRadius: 2, width: 45 }} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// Q3A: Many extra steps — complex scenario
 export function CQErrCompare3A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson5Quiz3VariantA /></div>;
+  const steps = ["1", "2", "3", "4", "5", "6", "7"];
+  return (
+    <div style={CW}>
+      <div style={CI}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 0, alignItems: "flex-start" }}>
+          {steps.map((s, i) => (
+            <React.Fragment key={s}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ width: 22, height: 22, borderRadius: "50%", background: "#f3f4f6", border: "1.5px solid #d1d5db", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontSize: 9, color: "#6b7280", fontWeight: 600 }}>{s}</span>
+                </div>
+                <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: 70 + (i % 3) * 12 }} />
+              </div>
+              {i < steps.length - 1 && <div style={{ width: 1.5, height: 8, background: "#e5e7eb", marginLeft: 10 }} />}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
+
+// Q3B: Minimal steps — fast and convenient
 export function CQErrCompare3B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson5Quiz3VariantB /></div>;
+  const steps = ["1", "2", "3"];
+  return (
+    <div style={CW}>
+      <div style={CI}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 0, alignItems: "flex-start" }}>
+          {steps.map((s, i) => (
+            <React.Fragment key={s}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontSize: 12, color: "white", fontWeight: 700 }}>{s}</span>
+                </div>
+                <div style={{ height: 8, background: "#bfdbfe", borderRadius: 3, width: 90 }} />
+              </div>
+              {i < steps.length - 1 && <div style={{ width: 2, height: 14, background: "#bfdbfe", marginLeft: 13 }} />}
+            </React.Fragment>
+          ))}
+          <div style={{ marginTop: 12, background: "#dcfce7", borderRadius: 8, padding: "8px 12px", display: "flex", alignItems: "center", gap: 6, alignSelf: "stretch" }}>
+            <span style={{ fontSize: 14 }}>✓</span>
+            <div style={{ height: 7, background: "#16a34a", borderRadius: 2, width: 80 }} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 export function CQErrSingle1() {
   return <div style={{ position: "relative", background: "white", height: 231, width: 186, overflow: "hidden", paddingTop: 10, paddingLeft: 10, paddingRight: 10, borderRadius: 15 }}><Container26 /></div>;

@@ -113,7 +113,7 @@ export default function LevelSelectPage() {
     setSelected(id);
     playCorrectSound();
     userCtx?.setLevel(id);
-    setTimeout(() => navigate("/quiz"), 280);
+    setTimeout(() => navigate("/onboarding-goal"), 280);
   };
 
   return (
@@ -131,7 +131,7 @@ export default function LevelSelectPage() {
         <div className="flex flex-col items-center gap-[36px] w-full max-w-[526px]">
 
           {/* Title */}
-          <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] text-[#f4f5fc] text-[32px] whitespace-nowrap">
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[32px] whitespace-nowrap">
             Какой у вас уровень?
           </p>
 

@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useId } from "react";
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router";
 import Layout from "../components/Layout";
 import { ChallengePhone1, ChallengePhone2, ChallengePhone3 } from "../../imports/Frame481451";
 import svgCardPaths from "../../imports/svg-u7gh1bm86c";
+import svgMfoan from "../../imports/svg-mfoan0qzpw";
 import { useWindowWidth } from "../hooks/useWindowWidth";
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
@@ -21,26 +22,23 @@ function IconSandClock() {
 }
 
 function IconFace() {
+  const uid = useId().replace(/:/g, "");
+  const maskId = `lv-${uid}`;
   return (
-    <div className="overflow-clip relative shrink-0 size-[14px]">
-      <div className="absolute bottom-[37.5%] left-[27.08%] right-[60.42%] top-1/2">
-        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 1.75 1.75">
-          <path d={svgCardPaths.p1388cf00} fill="var(--fill-0, #F1F2FB)" />
-        </svg>
-      </div>
-      <div className="absolute inset-[2.08%_0_4.17%_0]">
-        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14 13.125">
-          <path d={svgCardPaths.pf7fd000} fill="var(--fill-0, #F1F2FB)" />
-        </svg>
-      </div>
-      <div className="absolute bottom-[37.5%] left-[60.42%] right-[27.08%] top-1/2">
-        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 1.75 1.75">
-          <path d={svgCardPaths.p1388cf00} fill="var(--fill-0, #F1F2FB)" />
-        </svg>
-      </div>
-      <div className="absolute inset-[70.84%_36.46%_18.76%_36.46%]">
-        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 3.79188 1.45548">
-          <path d={svgCardPaths.p1eb2aec0} fill="var(--fill-0, #F1F2FB)" />
+    <div className="h-[15px] overflow-clip relative shrink-0 w-[17px]">
+      <div className="absolute inset-[22.57%_5.88%_15.9%_5.88%]">
+        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14.9997 9.23063">
+          <defs>
+            <mask id={maskId}>
+              <rect x="0" y="0" width="5.1" height="9.3" fill="white" />
+              <rect x="5" y="0" width="10"  height="9.3" fill="white" fillOpacity="0.6" />
+            </mask>
+          </defs>
+          <g mask={`url(#${maskId})`}>
+            <path d={svgMfoan.p1f3ddd00} fill="#F1F2FB" />
+            <path d={svgMfoan.p1dcc7b80} fill="#F1F2FB" />
+            <path d={svgMfoan.p36483400} fill="#F1F2FB" />
+          </g>
         </svg>
       </div>
     </div>
@@ -118,7 +116,7 @@ function TabBar({ active, onSwitch }: TabBarProps) {
         }`}
         onClick={() => onSwitch("current")}
       >
-        <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[27.5px] shrink-0 text-[18px] whitespace-nowrap transition-colors duration-150 ${active === "current" ? "text-[#f4f5fc]" : "text-[#798589]"}`}>
+        <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] shrink-0 text-[18px] whitespace-nowrap transition-colors duration-150 ${active === "current" ? "text-[#f4f5fc]" : "text-[#798589]"}`}>
           Текущие
         </p>
         <div
@@ -134,7 +132,7 @@ function TabBar({ active, onSwitch }: TabBarProps) {
         }`}
         onClick={() => onSwitch("archive")}
       >
-        <p className={`font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[27.5px] shrink-0 text-[18px] whitespace-nowrap transition-colors duration-150 ${active === "archive" ? "text-[#f4f5fc]" : "text-[#798589]"}`}>
+        <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] shrink-0 text-[18px] whitespace-nowrap transition-colors duration-150 ${active === "archive" ? "text-[#f4f5fc]" : "text-[#798589]"}`}>
           См. архив
         </p>
       </div>
@@ -157,7 +155,7 @@ function Card1({ onClick }: { onClick?: () => void }) {
         </div>
         {/* Info */}
         <div className="flex flex-col gap-[8px]">
-          <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[22px] leading-[26px]">
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px] leading-[26px]">
             Меню для приложения
           </p>
           <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#798589] text-[15px] leading-[19px]">
@@ -180,7 +178,7 @@ function Card1({ onClick }: { onClick?: () => void }) {
             <div aria-hidden="true" className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[13px] shadow-[0px_4px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none transition-shadow duration-75" />
             <div className="flex flex-row items-center justify-center gap-[8px] size-full px-[16px]">
               <IconPencilEdit />
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[18px]">Начать</p>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px]">Начать</p>
               <div className="bg-[#404d52] flex h-[26px] items-center justify-center px-[10px] rounded-full">
                 <p className="font-['Inter:Semi_Bold',sans-serif] font-medium text-[#eef5ff] text-[10px]">+1250 XP</p>
               </div>
@@ -208,7 +206,7 @@ function Card1({ onClick }: { onClick?: () => void }) {
         <div className="content-stretch flex flex-[1_0_0] flex-col h-[159px] items-start justify-between min-h-px min-w-px relative">
           {/* Top: title + badges */}
           <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[28px] whitespace-nowrap">
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[28px] whitespace-nowrap">
               Меню для приложения
             </p>
             <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[20px] text-[#798589] text-[18px]">
@@ -238,7 +236,7 @@ function Card1({ onClick }: { onClick?: () => void }) {
               />
               <div className="flex flex-row items-center justify-center gap-[8px] size-full px-[16px]">
                 <IconPencilEdit />
-                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
                   Начать
                 </p>
                 <div className="bg-[#404d52] content-stretch flex h-[28px] items-center justify-center px-[12px] relative rounded-full shrink-0">
@@ -267,7 +265,7 @@ function Card2() {
           <ChallengePhone2 />
         </div>
         <div className="flex flex-col gap-[8px]">
-          <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[22px] leading-[26px]">
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px] leading-[26px]">
             Интерфейс приложения здоровья
           </p>
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[13px]">Это занимает до 24 часов</p>
@@ -275,12 +273,12 @@ function Card2() {
             <button className="group bg-[#343e42] h-[48px] relative rounded-[13px] flex-1 cursor-pointer select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75">
               <div aria-hidden="true" className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[13px] shadow-[0px_4px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none transition-shadow duration-75" />
               <div className="flex items-center justify-center size-full">
-                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[18px]">Открыть</p>
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px]">Открыть</p>
               </div>
             </button>
             <div className="bg-[#424d52] flex gap-[6px] h-[36px] items-center justify-center px-[12px] rounded-full shrink-0">
               <IconProcessingTime />
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#ffb121] text-[14px] whitespace-nowrap">На проверке</p>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#ffb121] text-[14px] whitespace-nowrap">На проверке</p>
             </div>
           </div>
         </div>
@@ -305,7 +303,7 @@ function Card2() {
         <div className="content-stretch flex flex-[1_0_0] flex-col h-[159px] items-start justify-between min-h-px min-w-px relative">
           {/* Top: title + metadata */}
           <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[28px] whitespace-nowrap">
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[28px] whitespace-nowrap">
               Интерфейс приложения здоровья
             </p>
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[15px] text-[#798589] text-[12px] whitespace-nowrap">Это занимает до 24 часов</p>
@@ -319,14 +317,14 @@ function Card2() {
                 className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[15px] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none transition-shadow duration-75"
               />
               <div className="flex flex-row items-center justify-center gap-[8px] size-full px-[16px]">
-                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
                   Открыть
                 </p>
               </div>
             </div>
             <div className="bg-[#424d52] flex gap-[8px] h-[36px] items-center justify-center px-[16px] rounded-full shrink-0">
               <IconProcessingTime />
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] text-[#ffb121] text-[16px] whitespace-nowrap">На проверке</p>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#ffb121] text-[16px] whitespace-nowrap">На проверке</p>
             </div>
           </div>
         </div>
@@ -347,23 +345,23 @@ function Card3() {
           <ChallengePhone3 />
         </div>
         <div className="flex flex-col gap-[8px]">
-          <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[22px] leading-[26px]">
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px] leading-[26px]">
             Интерфейс приложения здоровья
           </p>
           <div className="bg-[#3a464a] flex gap-[4px] h-[22px] items-center px-[8px] rounded-[10px] w-fit">
             <IconVerify />
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium text-[#6a777b] text-[11px] whitespace-nowrap">Проверено ментором</p>
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#6a777b] text-[11px] whitespace-nowrap">Проверено ментором</p>
           </div>
           <div className="flex items-center gap-[12px] mt-[2px]">
             <button className="group bg-[#343e42] h-[48px] relative rounded-[13px] flex-1 cursor-pointer select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75">
               <div aria-hidden="true" className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[13px] shadow-[0px_4px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none transition-shadow duration-75" />
               <div className="flex items-center justify-center size-full">
-                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[18px]">Смотреть фидбек</p>
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px]">Смотреть фидбек</p>
               </div>
             </button>
             <div className="bg-[#424d52] flex gap-[6px] h-[36px] items-center justify-center px-[12px] rounded-full shrink-0">
               <IconGreenCheck />
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium text-[#5edd60] text-[14px] whitespace-nowrap">Готово</p>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#5edd60] text-[14px] whitespace-nowrap">Готово</p>
             </div>
           </div>
         </div>
@@ -388,12 +386,12 @@ function Card3() {
         <div className="content-stretch flex flex-[1_0_0] flex-col h-[159px] items-start justify-between min-h-px min-w-px relative">
           {/* Top: title + mentor badge */}
           <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[28px] whitespace-nowrap">
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[28px] whitespace-nowrap">
               Интерфейс приложения здоровья
             </p>
             <div className="bg-[#3a464a] flex gap-[4.967px] h-[22.351px] items-center px-[9.934px] rounded-[12px]">
               <IconVerify />
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[12px] text-[#6a777b] text-[10.99px] whitespace-nowrap">Проверено ментором</p>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[12px] text-[#6a777b] text-[10.99px] whitespace-nowrap">Проверено ментором</p>
             </div>
           </div>
 
@@ -405,14 +403,14 @@ function Card3() {
                 className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[15px] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none transition-shadow duration-75"
               />
               <div className="flex flex-row items-center justify-center gap-[8px] size-full px-[16px]">
-                <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
                   Смотреть фидбек
                 </p>
               </div>
             </div>
             <div className="bg-[#424d52] flex gap-[8px] h-[36px] items-center justify-center px-[16px] rounded-full shrink-0">
               <IconGreenCheck />
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[27.5px] text-[#5edd60] text-[16px] whitespace-nowrap">Готово</p>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#5edd60] text-[16px] whitespace-nowrap">Готово</p>
             </div>
           </div>
         </div>
@@ -429,7 +427,7 @@ function ArchivePlaceholder() {
       className="h-[200px] flex flex-col items-center justify-center rounded-[20px] w-full gap-[10px]"
       style={{ border: "2px dashed #4B595F" }}
     >
-      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-medium leading-[27.5px] text-[#798589] text-[22px]">
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#798589] text-[22px]">
         Архив недельных вызовов пуст
       </p>
       <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[20px] text-[#57646a] text-[16px]">
@@ -446,16 +444,8 @@ export default function ChallengesPage() {
   const navigate = useNavigate();
 
   return (
-    <Layout title="Недельные вызовы" rightWidth="320px">
+    <Layout title="Недельные вызовы" rightWidth="320px" stickyBar={<TabBar active={activeTab} onSwitch={setActiveTab} />}>
       <div className="flex flex-col gap-[20px] w-full">
-        {/* Sticky tab bar — sticks to top of scroll area, bg covers content above */}
-        <div
-          className="sticky top-[0] z-20 mx-[-16px] px-[16px] pt-[12px] pb-[8px]"
-          style={{ background: "#282F33" }}
-        >
-          <TabBar active={activeTab} onSwitch={setActiveTab} />
-        </div>
-
         {activeTab === "current" ? (
           <div className="flex flex-col gap-[20px]">
             <Card1 onClick={() => navigate("/challenge-detail")} />

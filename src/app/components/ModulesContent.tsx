@@ -122,7 +122,7 @@ function ActiveModuleCard() {
             </div>
           </div>
           <div className="flex flex-col gap-[8px] min-w-0 flex-1">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[22px] leading-[26px]">
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px] leading-[26px]">
               Основы UX/UI
             </p>
             <div className="flex flex-wrap gap-[8px_16px] items-center">
@@ -155,7 +155,7 @@ function ActiveModuleCard() {
         >
           <div aria-hidden="true" className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[12px] shadow-[0px_4px_0px_0px_black] group-active:shadow-none transition-shadow duration-75" />
           <div className="flex items-center justify-center gap-[8px] size-full px-[16px]">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[20px] whitespace-nowrap">{buttonText}</p>
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[20px] whitespace-nowrap">{buttonText}</p>
             <div className="bg-[#404d52] flex h-[24px] items-center justify-center px-[8px] rounded-full">
               <p className="font-['Inter:Semi_Bold',sans-serif] font-medium text-[#eef5ff] text-[9px] whitespace-nowrap">+{totalXP} XP</p>
             </div>
@@ -189,7 +189,7 @@ function ActiveModuleCard() {
 
           {/* Top: title + unified meta badges row (fix 1) */}
           <div className="content-stretch flex flex-col gap-[14px] items-start relative shrink-0 w-full">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[28px] whitespace-nowrap">
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[28px] whitespace-nowrap">
               Основы UX/UI
             </p>
 
@@ -226,7 +226,7 @@ function ActiveModuleCard() {
           >
             <div aria-hidden="true" className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[15px] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none transition-shadow duration-75" />
             <div className="flex flex-row items-center justify-center gap-[8px] size-full px-[16px]">
-              <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[26px] whitespace-nowrap">{buttonText}</p>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[26px] whitespace-nowrap">{buttonText}</p>
               <div className="bg-[#404d52] content-stretch flex h-[28px] items-center justify-center px-[12px] relative rounded-full shrink-0">
                 <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[15px] not-italic relative shrink-0 text-[#eef5ff] text-[10px] whitespace-nowrap">+{totalXP} XP</p>
               </div>
@@ -265,7 +265,7 @@ function LockedModuleCard({ title, level, lessonCount, durationMin = 0, image }:
             </div>
           </div>
           <div className="flex flex-col gap-[8px] min-w-0 flex-1">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[20px] leading-[24px] truncate">{title}</p>
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[20px] leading-[24px] truncate">{title}</p>
             <div className="flex flex-wrap gap-[8px_14px] items-center">
               <div className="flex gap-[4px] items-center">
                 <LevelIcon active={false} />
@@ -285,7 +285,7 @@ function LockedModuleCard({ title, level, lessonCount, durationMin = 0, image }:
         <div className="bg-[#2c3437] h-[44px] relative rounded-[12px] w-full flex items-center justify-center gap-[8px]">
           <div aria-hidden="true" className="absolute border border-[#3d474a] border-solid inset-0 pointer-events-none rounded-[12px] shadow-[0px_2px_0px_0px_black]" />
           <Lock className="relative z-10 shrink-0 text-[#57646a]" size={18} strokeWidth={2.5} />
-          <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold relative z-10 text-[#57646a] text-[16px] whitespace-nowrap">Заблокировано</p>
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium relative z-10 text-[#57646a] text-[16px] whitespace-nowrap">Заблокировано</p>
         </div>
       </div>
     );
@@ -313,7 +313,7 @@ function LockedModuleCard({ title, level, lessonCount, durationMin = 0, image }:
 
           {/* Top: title + unified meta badges row (fix 1) */}
           <div className="content-stretch flex flex-col gap-[14px] items-start relative shrink-0 w-full">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[28px] whitespace-nowrap">{title}</p>
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[28px] whitespace-nowrap">{title}</p>
 
             {/* Meta row — Level  lessons  ⏱ time */}
             <div className="content-stretch flex gap-[16px] items-center relative shrink-0 flex-wrap">
@@ -342,7 +342,7 @@ function LockedModuleCard({ title, level, lessonCount, durationMin = 0, image }:
           <div className="bg-[#2c3437] h-[60px] relative rounded-[15px] shrink-0 w-full flex items-center justify-center gap-[10px]">
             <div aria-hidden="true" className="absolute border border-[#3d474a] border-solid inset-0 pointer-events-none rounded-[15px] shadow-[0px_2px_0px_0px_black]" />
             <Lock className="relative z-10 shrink-0 text-[#57646a]" size={22} strokeWidth={2.5} />
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[27.5px] relative z-10 shrink-0 text-[#57646a] text-[22px] whitespace-nowrap">Заблокировано</p>
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative z-10 shrink-0 text-[#57646a] text-[22px] whitespace-nowrap">Заблокировано</p>
           </div>
 
         </div>

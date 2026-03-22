@@ -54,11 +54,111 @@ app.post("/make-server-d627d1b0/feedback/submit", async (c) => {
     await kv.set(allKey, allIds);
 
     console.log(`Feedback submitted: ${feedbackId} | rating=${rating} | email=${email}`);
+
+    // Send Telegram notification
+    const tgToken = Deno.env.get("TELEGRAM_BOT_TOKEN") ?? "8435487532:AAGwv6tK-uF3aR8OzewOReWDtJwjeXS1-js";
+    const tgChatId = Deno.env.get("TELEGRAM_CHAT_ID") ?? "573283449";
+    if (tgToken && tgChatId) {
+      const stars = "⭐".repeat(rating);
+      const msg = [
+        `📬 *Новый отзыв в Скиллум*`,
+        ``,
+        `${stars} (${rating}/5)`,
+        ``,
+        `💬 *Что было неудобно:*`,
+        text,
+        missing ? `\n❓ *Чего не хватает:*\n${missing}` : "",
+        email ? `\n📧 ${email}` : "",
+      ].filter(Boolean).join("\n");
+      fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: tgChatId, text: msg, parse_mode: "Markdown" }),
+      }).catch(() => {});
+    }
+
     return c.json({ success: true, feedbackId });
   } catch (error) {
     console.log(`Error submitting feedback: ${error}`);
     return c.json({ error: `Failed to submit feedback: ${error}` }, 500);
   }
+});
+
+// List all feedback (admin)
+app.get("/make-server-d627d1b0/feedback/list", async (c) => {
+  const secret = c.req.query("secret");
+  const adminSecret = Deno.env.get("ADMIN_SECRET") ?? "skillum_admin_2025";
+  if (secret !== adminSecret) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+  const allIds: string[] = (await kv.get("feedback_all")) ?? [];
+  const items = await Promise.all(allIds.map((id) => kv.get(`feedback:${id}`)));
+  return c.json({ total: items.length, items });
+});
+
+// Submit error report
+app.post("/make-server-d627d1b0/report/submit", async (c) => {
+  try {
+    const body = await c.req.json();
+    const { issue_type, description, email, context, attachment_url, attachment_name } = body;
+
+    if (!description) {
+      return c.json({ error: "Missing required field: description" }, 400);
+    }
+
+    const reportId = `rp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const report = {
+      id: reportId,
+      issue_type: issue_type || "other",
+      description,
+      email: email || "",
+      context: context || "",
+      attachment_url: attachment_url || "",
+      attachment_name: attachment_name || "",
+      created_at: new Date().toISOString(),
+    };
+
+    await kv.set(`report:${reportId}`, report);
+    const allIds: string[] = (await kv.get("report_all")) ?? [];
+    allIds.unshift(reportId);
+    await kv.set("report_all", allIds);
+
+    // Telegram notification
+    const tgToken = Deno.env.get("TELEGRAM_BOT_TOKEN") ?? "8435487532:AAGwv6tK-uF3aR8OzewOReWDtJwjeXS1-js";
+    const tgChatId = Deno.env.get("TELEGRAM_CHAT_ID") ?? "573283449";
+    const msg = [
+      `🐛 *Новый репорт об ошибке*`,
+      ``,
+      `📂 *Тип:* ${issue_type || "Не указан"}`,
+      ``,
+      `📝 *Описание:*`,
+      description,
+      context ? `\n🗺 *Контекст:* ${context}` : "",
+      email ? `\n📧 ${email}` : "",
+      attachment_url ? `\n📎 [Вложение](${attachment_url})` : "",
+    ].filter(Boolean).join("\n");
+    fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: tgChatId, text: msg, parse_mode: "Markdown" }),
+    }).catch(() => {});
+
+    return c.json({ success: true, reportId });
+  } catch (error) {
+    return c.json({ error: `Failed to submit report: ${error}` }, 500);
+  }
+});
+
+// List all reports (admin)
+app.get("/make-server-d627d1b0/report/list", async (c) => {
+  const secret = c.req.query("secret");
+  const adminSecret = Deno.env.get("ADMIN_SECRET") ?? "skillum_admin_2025";
+  if (secret !== adminSecret) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+  const allIds: string[] = (await kv.get("report_all")) ?? [];
+  const items = await Promise.all(allIds.map((id) => kv.get(`report:${id}`)));
+  return c.json({ total: items.length, items });
 });
 
 // Helper: run SQL via Supabase Management API
@@ -330,6 +430,117 @@ app.post("/make-server-d627d1b0/report/submit", async (c) => {
   } catch (error) {
     console.log(`Error submitting report: ${error}`);
     return c.json({ error: `Failed to submit report: ${error}` }, 500);
+  }
+});
+
+// ── In-app notifications ──────────────────────────────────────────────────────
+
+// GET  /notifications?userId=xxx
+app.get("/make-server-d627d1b0/notifications", async (c) => {
+  try {
+    const userId = c.req.query("userId");
+    if (!userId) return c.json({ error: "userId required" }, 400);
+    const rows = await sqlQuery(
+      `SELECT id, user_id, type, title, body, data, read, created_at
+       FROM public.notifications
+       WHERE user_id = '${esc(userId)}'
+       ORDER BY created_at DESC
+       LIMIT 100`
+    );
+    return c.json({ notifications: rows });
+  } catch (error) {
+    console.log(`Error fetching notifications: ${error}`);
+    return c.json({ error: `Failed: ${error}` }, 500);
+  }
+});
+
+// PATCH /notifications/:id/read — mark a notification as read
+app.patch("/make-server-d627d1b0/notifications/:id/read", async (c) => {
+  try {
+    const id = c.req.param("id");
+    const { userId } = await c.req.json().catch(() => ({}));
+    if (!userId) return c.json({ error: "userId required" }, 400);
+    await sqlQuery(
+      `UPDATE public.notifications SET read = TRUE
+       WHERE id = '${esc(id)}' AND user_id = '${esc(userId)}'`
+    );
+    return c.json({ success: true });
+  } catch (error) {
+    return c.json({ error: `Failed: ${error}` }, 500);
+  }
+});
+
+// DELETE /notifications/:id?userId=xxx
+app.delete("/make-server-d627d1b0/notifications/:id", async (c) => {
+  try {
+    const id = c.req.param("id");
+    const userId = c.req.query("userId");
+    if (!userId) return c.json({ error: "userId required" }, 400);
+    await sqlQuery(
+      `DELETE FROM public.notifications
+       WHERE id = '${esc(id)}' AND user_id = '${esc(userId)}'`
+    );
+    return c.json({ success: true });
+  } catch (error) {
+    return c.json({ error: `Failed: ${error}` }, 500);
+  }
+});
+
+// POST /notifications/send-daily — called by pg_cron at 10:00 UTC
+// Inserts a daily_reminder for each user who wasn't active today.
+// Protected by x-admin-secret header or ?secret= query param.
+app.post("/make-server-d627d1b0/notifications/send-daily", async (c) => {
+  const adminSecret = Deno.env.get("ADMIN_SECRET") ?? "skillum_admin_2025";
+  const secret = c.req.header("x-admin-secret") ?? c.req.query("secret");
+  if (secret !== adminSecret) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  try {
+    const todayUtc = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+
+    // Find users who have progress data but weren't active today
+    const inactive = await sqlQuery(`
+      SELECT user_id, streak
+      FROM public.user_progress
+      WHERE last_streak_date IS DISTINCT FROM '${esc(todayUtc)}'
+        AND user_id IS NOT NULL
+        AND user_id <> ''
+    `);
+
+    if (!inactive.length) {
+      return c.json({ success: true, sent: 0 });
+    }
+
+    let sent = 0;
+    for (const row of inactive) {
+      const uid = esc(row.user_id);
+      const streak = Number(row.streak ?? 0);
+      const title = streak > 0
+        ? `Не потеряйте серию 🔥 ${streak} ${streak === 1 ? 'день' : streak < 5 ? 'дня' : 'дней'}!`
+        : "Не забудьте позаниматься сегодня 📚";
+      const body = streak > 0
+        ? "Зайдите и пройдите хотя бы один урок, чтобы серия не прервалась."
+        : "Небольшой урок в день — и ваш прогресс растёт.";
+      const titleEsc = esc(title);
+      const bodyEsc = esc(body);
+      try {
+        await sqlQuery(`
+          INSERT INTO public.notifications (user_id, type, title, body, data)
+          VALUES ('${uid}', 'daily_reminder', '${titleEsc}', '${bodyEsc}', '{"streak":${streak}}'::jsonb)
+          ON CONFLICT ON CONSTRAINT notifications_daily_unique_idx DO NOTHING
+        `);
+        sent++;
+      } catch (_e) {
+        // skip duplicate / constraint errors silently
+      }
+    }
+
+    console.log(`Daily reminders sent: ${sent}/${inactive.length}`);
+    return c.json({ success: true, sent, total: inactive.length });
+  } catch (error) {
+    console.log(`Error sending daily reminders: ${error}`);
+    return c.json({ error: `Failed: ${error}` }, 500);
   }
 });
 

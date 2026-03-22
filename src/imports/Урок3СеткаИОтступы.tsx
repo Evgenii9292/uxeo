@@ -148,7 +148,7 @@ function Container4() {
 
 function Lesson3Quiz1VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz1VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz1VariantA">
       <Container4 />
     </div>
   );
@@ -266,7 +266,7 @@ function Container9() {
 
 function Lesson3Quiz1VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz1VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz1VariantB">
       <Container9 />
     </div>
   );
@@ -364,7 +364,7 @@ function Container16() {
 
 function Lesson3Quiz2VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz2VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz2VariantA">
       <Container16 />
     </div>
   );
@@ -436,7 +436,7 @@ function Container20() {
 
 function Lesson3Quiz2VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz2VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz2VariantB">
       <Container20 />
     </div>
   );
@@ -522,7 +522,7 @@ function Container26() {
 
 function Lesson3Quiz3VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz3VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz3VariantA">
       <Container26 />
     </div>
   );
@@ -586,7 +586,7 @@ function Container29() {
 
 function Lesson3Quiz3VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz3VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson3Quiz3VariantB">
       <Container29 />
     </div>
   );
@@ -2165,23 +2165,121 @@ function Container73() {
 // ─────────────────────────────────────────────────────────────────────────────
 // Named exports for LessonQuizPage (quiz_element_states — Grid & Spacing)
 // ─────────────────────────────────────────────────────────────────────────────
+// ─── Quiz 1: Где используется сетка? ────────────────────────────────────────
 export function CQGridCompare1A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson3Quiz1VariantA /></div>;
+  // Плохо: элементы расположены хаотично — нет выравнивания
+  const items = [
+    { color: "#fca5a5", w: "100%", ml: "0%",  h: 34 },
+    { color: "#86efac", w: "68%",  ml: "18%", h: 34 },
+    { color: "#fde68a", w: "80%",  ml: "0%",  h: 34 },
+  ];
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, padding: "14px 14px", display: "flex", flexDirection: "column", gap: 8, overflow: "hidden" }}>
+        {items.map((item, i) => (
+          <div key={i} style={{ background: "#f7f8fc", borderRadius: 6, height: item.h, width: item.w, marginLeft: item.ml, flexShrink: 0, display: "flex", alignItems: "center", padding: "0 10px", gap: 8 }}>
+            <div style={{ width: 24, height: 24, background: item.color, borderRadius: 4, flexShrink: 0 }} />
+            <span style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "#364146" }}>Товар {i + 1}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 export function CQGridCompare1B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson3Quiz1VariantB /></div>;
+  // Хорошо: 2-колоночная сетка — всё выровнено
+  const items = [
+    { name: "Товар 1", color: "#fca5a5" },
+    { name: "Товар 2", color: "#86efac" },
+    { name: "Товар 3", color: "#fde68a" },
+    { name: "Товар 4", color: "#c4b5fd" },
+  ];
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, padding: "14px 14px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 8, overflow: "hidden" }}>
+        {[items.slice(0, 2), items.slice(2, 4)].map((row, ri) => (
+          <div key={ri} style={{ display: "flex", gap: 8 }}>
+            {row.map((item, i) => (
+              <div key={i} style={{ flex: 1, background: "#f7f8fc", borderRadius: 6, height: 58, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 5 }}>
+                <div style={{ width: 28, height: 28, background: item.color, borderRadius: 4 }} />
+                <span style={{ fontSize: 8, fontFamily: "Inter, sans-serif", color: "#364146" }}>{item.name}</span>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
+
+// ─── Quiz 2: Где отступы сделаны правильнее? ────────────────────────────────
 export function CQGridCompare2A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson3Quiz2VariantA /></div>;
+  // Плохо: разные отступы — нет ритма
+  const gaps = [2, 16, 5, 18];
+  const colors = ["#fca5a5", "#86efac", "#fde68a", "#c4b5fd"];
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, padding: "14px 14px", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>
+        {colors.map((color, i) => (
+          <div key={i}>
+            <div style={{ background: "#f7f8fc", borderRadius: 6, height: 24, display: "flex", alignItems: "center", padding: "0 10px", gap: 8 }}>
+              <div style={{ width: 14, height: 14, background: color, borderRadius: 3, flexShrink: 0 }} />
+              <span style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "#364146" }}>Элемент {i + 1}</span>
+            </div>
+            {i < 3 && <div style={{ height: gaps[i] }} />}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 export function CQGridCompare2B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson3Quiz2VariantB /></div>;
+  // Хорошо: одинаковые отступы — ритм
+  const colors = ["#fca5a5", "#86efac", "#fde68a", "#c4b5fd"];
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, padding: "14px 14px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 8, overflow: "hidden" }}>
+        {colors.map((color, i) => (
+          <div key={i} style={{ background: "#f7f8fc", borderRadius: 6, height: 24, display: "flex", alignItems: "center", padding: "0 10px", gap: 8 }}>
+            <div style={{ width: 14, height: 14, background: color, borderRadius: 3, flexShrink: 0 }} />
+            <span style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "#364146" }}>Элемент {i + 1}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
+
+// ─── Quiz 3: Где интерфейс выглядит аккуратнее? ─────────────────────────────
 export function CQGridCompare3A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson3Quiz3VariantA /></div>;
+  // Плохо: текст и кнопка смещены, нет центрирования — НЕ центрируем намеренно
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+        <div style={{ padding: "18px 14px" }}>
+          <div style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "#8e9199", marginBottom: 30 }}>UX Дизайн Курс</div>
+          <div style={{ fontSize: 11, fontFamily: "Inter, sans-serif", fontWeight: 600, color: "#364146", marginBottom: 20, width: "60%" }}>Начни учиться сегодня</div>
+          <div style={{ background: "#3b82f6", borderRadius: 4, height: 22, width: "52%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ color: "white", fontSize: 9, fontFamily: "Inter, sans-serif" }}>Начать</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 export function CQGridCompare3B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson3Quiz3VariantB /></div>;
+  // Хорошо: всё выровнено и центрировано
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "14px 20px", gap: 10, overflow: "hidden" }}>
+        <div style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "#8e9199" }}>UX Дизайн Курс</div>
+        <div style={{ fontSize: 13, fontFamily: "Inter, sans-serif", fontWeight: 700, color: "#364146", textAlign: "center" }}>Начни учиться сегодня</div>
+        <div style={{ background: "#3b82f6", borderRadius: 6, height: 28, width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ color: "white", fontSize: 10, fontFamily: "Inter, sans-serif" }}>Начать обучение</span>
+        </div>
+      </div>
+    </div>
+  );
 }
 export function CQGridSingle1() {
   return <div style={{ height: 231, width: 186, overflow: "hidden", borderRadius: 15 }}><Lesson3Quiz /></div>;

@@ -10,8 +10,6 @@ export default function ModulesPage() {
   return (
     <Layout
       title="UX/UI"
-      showBack
-      backPath="/"
     >
       <ModulesContent />
     </Layout>

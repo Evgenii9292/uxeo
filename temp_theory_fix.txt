@@ -1,0 +1,2 @@
+Нужно удалить строки 625-759 из TheoryPage.tsx и заменить на:
+              <div className="h-[16px] relative shrink-0 w-[8px]">

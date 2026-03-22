@@ -69,6 +69,32 @@ export function ReportErrorModal({
       };
       if (context) body.context = context;
 
+      // Upload attachment to Supabase Storage if provided
+      if (attachment) {
+        try {
+          const ext = attachment.name.split(".").pop() ?? "bin";
+          const filename = `report_${Date.now()}.${ext}`;
+          const uploadRes = await fetch(
+            `https://${projectId}.supabase.co/storage/v1/object/report-attachments/${filename}`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${publicAnonKey}`,
+                "Content-Type": attachment.type || "application/octet-stream",
+                "x-upsert": "true",
+              },
+              body: attachment,
+            }
+          );
+          if (uploadRes.ok) {
+            body.attachment_url = `https://${projectId}.supabase.co/storage/v1/object/public/report-attachments/${filename}`;
+            body.attachment_name = attachment.name;
+          }
+        } catch {
+          // Attachment upload failed — proceed without it
+        }
+      }
+
       const res = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/report/submit`,
         {
@@ -149,7 +175,7 @@ export function ReportErrorModal({
           <path d="M7 12l3 3 7-7" stroke="rgba(0,147,47,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
-      <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[20px] text-center">
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[20px] text-center">
         Спасибо!
       </p>
       <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#798589] text-[15px] text-center leading-[1.4]">
@@ -351,7 +377,7 @@ export function ReportErrorModal({
             <path d="m27 5h-9c0-1.6542969-1.3457031-3-3-3h-8c-.5522461 0-1 .4477539-1 1v16 10c0 .5522461.4477539 1 1 1s1-.4477539 1-1v-9h8c0 1.6542969 1.3457031 3 3 3h8c1.6542969 0 3-1.3457031 3-3v-12c0-1.6542969-1.3457031-3-3-3z" />
           </svg>
         )}
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[18px]">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px]">
           {sending ? "Отправляем..." : "Отправить"}
         </p>
       </button>
@@ -394,7 +420,7 @@ export function ReportErrorModal({
         >
           {/* Header */}
           <div className="flex items-center justify-between">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[22px]">
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px]">
               Сообщить об ошибке
             </p>
             <button
@@ -424,7 +450,7 @@ export function ReportErrorModal({
             onClick={(e) => e.stopPropagation()}
           >
             <p
-              className="font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[18px] text-center pt-[20px] pb-[12px]"
+              className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px] text-center pt-[20px] pb-[12px]"
             >
               Добавить вложение
             </p>
@@ -444,7 +470,7 @@ export function ReportErrorModal({
 
             <button
               onClick={() => setShowAttachSheet(false)}
-              className="mx-[16px] mt-[10px] mb-[max(16px,env(safe-area-inset-bottom,16px))] rounded-[14px] py-[15px] font-['Roboto_Condensed:Bold',sans-serif] font-bold text-[#f4f5fc] text-[17px]"
+              className="mx-[16px] mt-[10px] mb-[max(16px,env(safe-area-inset-bottom,16px))] rounded-[14px] py-[15px] font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[17px]"
               style={{ background: "#374348" }}
             >
               Отмена

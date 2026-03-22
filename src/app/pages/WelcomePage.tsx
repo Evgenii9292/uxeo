@@ -1,7 +1,8 @@
-import { useState } from "react";
 import { useNavigate } from "react-router";
+import { useState, useEffect } from "react";
 import svgPaths from "../../imports/svg-0jdjpvfhdv";
-import { ReportErrorModal } from "./quiz/ReportErrorModal";
+import { FlagReportButton } from "./quiz/FlagReportButton";
+import { useAuth } from "../context/AuthContext";
 
 // ─── Скиллум Logo ─────────────────────────────────────────────────────────────
 function LogoContainer() {
@@ -69,7 +70,7 @@ function PrimaryButton({ onClick }: { onClick: () => void }) {
     >
       <div className="bg-[#ff5d39] content-stretch flex items-center justify-center px-[25.835px] py-[0.835px] relative rounded-[15px] size-full">
         <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-[0px_0px_0px_0px_#c24226]" />
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[22.955px] relative shrink-0 text-[26px] text-[rgba(247,248,252,0.9)] whitespace-nowrap">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] relative shrink-0 text-[24px] md:text-[26px] text-[rgba(247,248,252,0.9)] whitespace-nowrap">
           Начать обучение
         </p>
       </div>
@@ -85,7 +86,7 @@ function SecondaryButton({ onClick }: { onClick: () => void }) {
       className="relative bg-[#343e42] h-[59px] rounded-[15px] shrink-0 w-full cursor-pointer select-none outline-none transition-[transform,box-shadow] duration-75 shadow-[0px_5px_0px_0px_rgba(0,0,0,0.3)] hover:translate-y-[2px] hover:shadow-[0px_3px_0px_0px_rgba(0,0,0,0.3)] active:translate-y-[5px] active:shadow-none mx-[0px] mt-[8px] mb-[0px]"
     >
       <div className="flex items-center justify-center size-full m-[0px]">
-        <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[22.955px] relative shrink-0 text-[26px] text-[rgba(244,245,252,0.9)] whitespace-nowrap">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] relative shrink-0 text-[24px] md:text-[26px] text-[rgba(244,245,252,0.9)] whitespace-nowrap">
           У меня уже есть аккаунт
         </p>
       </div>
@@ -128,16 +129,56 @@ function playClick() {
   } catch (_) {}
 }
 
+// ─── Google icon ──────────────────────────────────────────────────────────────
+function GoogleIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+    </svg>
+  );
+}
+
 export default function WelcomePage() {
   const navigate = useNavigate();
-  const [reportOpen, setReportOpen] = useState(false);
-  const goToMain = () => navigate("/");
+  const { signInWithGoogle, signInWithEmail, isAuthenticated, loading } = useAuth();
+  const [email, setEmail] = useState("");
+  const [emailSent, setEmailSent] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [showEmailInput, setShowEmailInput] = useState(false);
+
+  // Если уже авторизован — отправить дальше (HomeRedirect разберётся)
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      navigate("/", { replace: true });
+    }
+  }, [loading, isAuthenticated, navigate]);
+
   const goToLevel = () => navigate("/level");
+
+  const handleEmailSubmit = async () => {
+    if (!email.trim() || !email.includes("@")) {
+      setEmailError("Введите корректный email");
+      return;
+    }
+    setEmailLoading(true);
+    setEmailError("");
+    const { error } = await signInWithEmail(email.trim());
+    setEmailLoading(false);
+    if (error) {
+      setEmailError("Ошибка. Попробуйте ещё раз.");
+    } else {
+      setEmailSent(true);
+    }
+  };
 
   return (
     <div
       className="relative min-h-screen w-full flex flex-col overflow-hidden"
-      style={{ backgroundImage: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46, 57, 62) 147.74%)" }}
+      style={{ backgroundImage: "radial-gradient(ellipse at 50% 20%, rgba(255,93,57,0.09) 0%, transparent 60%), linear-gradient(165.05deg, #282F33 14.367%, rgb(46, 57, 62) 147.74%)" }}
     >
       {/* Logo */}
       <div className="flex justify-center pt-[31px]">
@@ -150,25 +191,109 @@ export default function WelcomePage() {
 
           {/* Headline + subtitle */}
           <div className="content-stretch flex flex-col gap-[25px] items-start justify-center relative shrink-0 w-full">
-            <p className="font-['Roboto_Condensed:Bold',sans-serif] font-bold leading-[37px] min-w-full relative shrink-0 text-[32px] text-[rgba(244,245,252,0.9)] w-[min-content]">
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[37px] min-w-full relative shrink-0 text-[32px] text-[rgba(244,245,252,0.9)] w-[min-content]">
               Освойте веб-дизайн через игру и практику
             </p>
             <div className="content-stretch flex gap-[17px] items-start relative shrink-0 w-[364px]">
               <FreeIconPartyPopper />
-              <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] relative shrink-0 text-[#e0e2e8] text-[18px] w-[312px]">
+              <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] relative shrink-0 text-[#798589] text-[18px] w-[312px]">
                 Решайте реальные задачи интерфейсов и закрепляйте знания практикой.
               </p>
             </div>
           </div>
 
           {/* Buttons */}
-          <div className="content-stretch flex flex-col gap-[12.521px] items-start justify-center relative shrink-0 w-full p-[0px]">
-            <div className="w-full">
-              <PrimaryButton onClick={() => { playClick(); goToLevel(); }} />
-            </div>
-            <div className="w-full">
-              <SecondaryButton onClick={() => { playClick(); goToMain(); }} />
-            </div>
+          <div className="flex flex-col gap-[17px] w-full">
+
+            {/* Google sign-in — primary */}
+            <button
+              onClick={() => { playClick(); signInWithGoogle(); }}
+              className="group relative w-full h-[59px] rounded-[15px] flex items-center justify-center gap-[10px] select-none cursor-pointer outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
+              style={{ background: "#242B2E" }}
+            >
+              <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#1a2023] group-hover:shadow-[0px_2px_0px_0px_#1a2023] group-active:shadow-none" style={{ border: "1px solid rgba(72,83,87,0.6)" }} />
+              <GoogleIcon />
+              <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px]">
+                Войти через Google
+              </span>
+            </button>
+
+            {/* Email sign-in button (same style) */}
+            {!showEmailInput && !emailSent && (
+              <button
+                onClick={() => setShowEmailInput(true)}
+                className="group relative w-full h-[59px] rounded-[15px] flex items-center justify-center gap-[10px] select-none cursor-pointer outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
+                style={{ background: "#242B2E" }}
+              >
+                <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#1a2023] group-hover:shadow-[0px_2px_0px_0px_#1a2023] group-active:shadow-none" style={{ border: "1px solid rgba(72,83,87,0.6)" }} />
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="#798589"/>
+                </svg>
+                <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px]">
+                  Войти по email
+                </span>
+              </button>
+            )}
+
+            {showEmailInput && !emailSent && (
+              <div className="flex flex-col gap-[8px]">
+                {/* Input — homework style */}
+                <div
+                  className="relative w-full h-[59px] rounded-[15px] flex items-center px-[20px]"
+                  style={{ backgroundImage: "linear-gradient(171.89deg, rgb(44,53,56) 2.42%, rgb(56,67,72) 98.53%, rgb(44,53,56) 116.25%)" }}
+                >
+                  <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[15px]" style={{ border: emailError ? "2px solid rgba(255,77,77,0.6)" : "2px solid rgba(160,163,173,0.2)" }} />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={e => { setEmail(e.target.value); setEmailError(""); }}
+                    onKeyDown={e => e.key === "Enter" && handleEmailSubmit()}
+                    placeholder="example@mail.com"
+                    name="email"
+                    autoComplete="email"
+                    autoFocus
+                    className="bg-transparent flex-1 outline-none border-none font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[18px] placeholder-[#798589]"
+                    style={{ color: "rgba(244,245,252,0.9)", caretColor: "rgba(244,245,252,0.8)" }}
+                  />
+                </div>
+                {emailError && (
+                  <p className="text-[#ff6b6b] text-[13px] font-['Roboto_Condensed:Regular',sans-serif]">{emailError}</p>
+                )}
+                {/* Submit button — same height as other buttons */}
+                <button
+                  onClick={handleEmailSubmit}
+                  disabled={emailLoading}
+                  className="group relative w-full h-[59px] rounded-[15px] flex items-center justify-center select-none cursor-pointer outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
+                  style={{ background: "#FF5D39", opacity: emailLoading ? 0.7 : 1 }}
+                >
+                  <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" style={{ border: "1px solid #ff390d" }} />
+                  <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[rgba(247,248,252,0.9)] text-[22px]">
+                    {emailLoading ? "Отправляем…" : "Отправить ссылку"}
+                  </span>
+                </button>
+              </div>
+            )}
+
+            {emailSent && (
+              <div className="text-center py-[8px]">
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[16px]">
+                  Письмо отправлено! ✉️
+                </p>
+                <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] text-[14px] mt-[4px]">
+                  Проверь почту и нажми на ссылку
+                </p>
+              </div>
+            )}
+
+            {/* Removed "Начать без входа" — all users should register for cross-device sync */}
+            {false && (
+              <button
+                onClick={() => { playClick(); goToLevel(); }}
+                className="hidden"
+              >
+                Начать без входа
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -181,13 +306,9 @@ export default function WelcomePage() {
       </div>
 
       {/* Report error */}
-      <button
-        onClick={() => setReportOpen(true)}
-        className="absolute bottom-[28px] left-[28px] font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#777982] text-[16px] whitespace-nowrap cursor-pointer hover:text-[#a0a3ab] transition-colors duration-150 outline-none bg-transparent border-none"
-      >
-        Сообщить об ошибке
-      </button>
-      {reportOpen && <ReportErrorModal onClose={() => setReportOpen(false)} />}
+      <div className="absolute bottom-[28px] left-[28px]">
+        <FlagReportButton />
+      </div>
     </div>
   );
 }

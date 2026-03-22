@@ -99,6 +99,31 @@ export function AchievementUnlockedModal({ achievementId, onDismiss }: Props) {
   useEffect(() => {
     // Tiny delay so CSS transition has a starting state
     const t = requestAnimationFrame(() => setVisible(true));
+
+    // Victory jingle: ascending 4-note fanfare
+    const audioCtx = new AudioContext();
+    const isMobile = window.innerWidth < 768;
+    const vol = isMobile ? 0.07 : 0.14;
+    const notes = [523, 659, 784, 1047]; // C5 E5 G5 C6
+    const dur = 0.18;
+    const gap = 0.13;
+    audioCtx.resume().then(() => {
+      const now = audioCtx.currentTime + 0.05;
+      notes.forEach((freq, i) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(freq, now + i * gap);
+        g.gain.setValueAtTime(0, now + i * gap);
+        g.gain.linearRampToValueAtTime(vol, now + i * gap + 0.03);
+        g.gain.exponentialRampToValueAtTime(0.001, now + i * gap + dur);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(now + i * gap);
+        o.stop(now + i * gap + dur + 0.05);
+      });
+      setTimeout(() => audioCtx.close(), 1500);
+    }).catch(() => {});
+
     return () => cancelAnimationFrame(t);
   }, []);
 

@@ -3,29 +3,30 @@ import svgPaths from "../../imports/svg-pt1cecsedx";
 import { useUserSafe } from "../context/UserContext";
 import { useEffect, useRef, useState } from "react";
 
+const FIRE_ACTIVE_FILTER  = "brightness(0) saturate(100%) invert(72%) sepia(76%) saturate(751%) hue-rotate(357deg) brightness(102%)";
+const FIRE_INACTIVE_FILTER = "brightness(0) saturate(0%) invert(55%) brightness(85%)";
+const ZAP_ACTIVE_FILTER   = "brightness(0) saturate(100%) invert(49%) sepia(79%) saturate(1117%) hue-rotate(348deg) brightness(103%)";
+const ZAP_INACTIVE_FILTER  = "brightness(0) saturate(0%) invert(55%) brightness(85%)";
+
 function FireIcon({ isActive }: { isActive: boolean }) {
-  if (isActive) {
-    return <img src="/fire-icon.svg" width={22} height={24} style={{ objectFit: "contain" }} />;
-  }
   return (
-    <div className="relative shrink-0 w-[14px] h-[20px]">
-      <svg className="absolute block size-full" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16.7655 24.4324">
-        <path d={svgPaths.p33094f0} fill="#798589" />
-      </svg>
-    </div>
+    <img
+      src="/fire-icon.svg"
+      width={22}
+      height={24}
+      style={{ objectFit: "contain", filter: isActive ? FIRE_ACTIVE_FILTER : FIRE_INACTIVE_FILTER }}
+    />
   );
 }
 
 function ZapIcon({ isActive }: { isActive: boolean }) {
-  if (isActive) {
-    return <img src="/zap-icon.svg" width={24} height={24} style={{ objectFit: "contain" }} />;
-  }
   return (
-    <div className="relative shrink-0 size-[22px]">
-      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
-        <path d={svgPaths.p3b6e5180} fill="#798589" />
-      </svg>
-    </div>
+    <img
+      src="/zap-icon.svg"
+      width={24}
+      height={24}
+      style={{ objectFit: "contain", filter: isActive ? ZAP_ACTIVE_FILTER : ZAP_INACTIVE_FILTER }}
+    />
   );
 }
 
@@ -272,7 +273,7 @@ export default function AppHeader({ title, subtitle, showBack = false, onBack, i
                 <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[5px] items-center relative">
                   <FireIcon isActive={streak > 0} />
                   <p 
-                    className="font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold leading-[32.068px] relative shrink-0 text-[24px] whitespace-nowrap"
+                    className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[32.068px] relative shrink-0 text-[24px] whitespace-nowrap"
                     style={{ 
                       color: streak > 0 ? '#FFB121' : '#798589',
                       filter: streak > 0 ? 'drop-shadow(0 0 4px rgba(255, 177, 33, 0.3))' : 'none'
@@ -293,7 +294,7 @@ export default function AppHeader({ title, subtitle, showBack = false, onBack, i
                 <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[4px] items-center relative">
                   <ZapIcon isActive={xp > 0} />
                   <p 
-                    className="font-['Roboto_Condensed:ExtraBold',sans-serif] font-extrabold leading-[21px] relative shrink-0 text-[24px] whitespace-nowrap"
+                    className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[21px] relative shrink-0 text-[24px] whitespace-nowrap"
                     style={{ 
                       color: xp > 0 ? '#FF6B21' : '#798589',
                       backgroundImage: xp > 0 ? 'linear-gradient(to bottom, #FF6B21, #C15C2A)' : 'none',
@@ -314,7 +315,7 @@ export default function AppHeader({ title, subtitle, showBack = false, onBack, i
                   title="Админ-панель"
                 >
                   <div className="px-[12px] py-[6px] rounded-[8px] bg-[#ff6b21] hover:bg-[#e66020] transition-colors">
-                    <span className="font-['Roboto_Condensed:Bold',sans-serif] font-medium text-[14px] text-[#f4f5fc]">
+                    <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[14px] text-[#f4f5fc]">
                       ADMIN
                     </span>
                   </div>

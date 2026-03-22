@@ -1,3 +1,4 @@
+import React from "react";
 import imgImageWithFallback from "figma:asset/595a8f2cb3c56269b797c388589f3d38b7abb408.png";
 
 function Paragraph() {
@@ -10,32 +11,32 @@ function Paragraph() {
 
 function Paragraph1() {
   return (
-    <div className="absolute content-stretch flex h-[12px] items-start left-0 top-0 w-[166px]" data-name="Paragraph">
-      <p className="flex-[1_0_0] font-['Inter:Regular',sans-serif] font-normal leading-[12px] min-h-px min-w-px not-italic relative text-[#101828] text-[10px] tracking-[-0.13px]">Добро пожаловать</p>
+    <div className="absolute content-stretch flex h-[14px] items-start left-0 top-0 w-[166px]" data-name="Paragraph">
+      <p className="flex-[1_0_0] font-['Inter:Regular',sans-serif] font-normal leading-[14px] min-h-px min-w-px not-italic relative text-[#101828] text-[12px] tracking-[-0.13px]">Добро пожаловать</p>
     </div>
   );
 }
 
 function Paragraph2() {
   return (
-    <div className="absolute h-[24px] left-0 top-[20px] w-[166px]" data-name="Paragraph">
-      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[8px] left-0 not-italic text-[#364146] text-[6px] top-0 tracking-[-0.08px] w-[161px]">Это новое приложение для управления задачами которое поможет вам организовать рабочий процесс и повысить продуктивность ежедневной работы.</p>
+    <div className="absolute h-[36px] left-0 top-[22px] w-[166px]" data-name="Paragraph">
+      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[10px] left-0 not-italic text-[#364146] text-[8px] top-0 tracking-[-0.08px] w-[161px]">Это новое приложение для управления задачами которое поможет вам организовать рабочий процесс и повысить продуктивность ежедневной работы.</p>
     </div>
   );
 }
 
 function Paragraph3() {
   return (
-    <div className="absolute h-[24px] left-0 top-[50px] w-[166px]" data-name="Paragraph">
-      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[8px] left-0 not-italic text-[#364146] text-[6px] top-0 tracking-[-0.08px] w-[143px]">Вы можете создавать проекты добавлять задачи устанавливать сроки и отслеживать прогресс выполнения всех ваших целей.</p>
+    <div className="absolute h-[36px] left-0 top-[64px] w-[166px]" data-name="Paragraph">
+      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[10px] left-0 not-italic text-[#364146] text-[8px] top-0 tracking-[-0.08px] w-[143px]">Вы можете создавать проекты добавлять задачи устанавливать сроки и отслеживать прогресс выполнения всех ваших целей.</p>
     </div>
   );
 }
 
 function Paragraph4() {
   return (
-    <div className="absolute h-[24px] left-0 top-[80px] w-[166px]" data-name="Paragraph">
-      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[8px] left-0 not-italic text-[#364146] text-[6px] top-0 tracking-[-0.08px] w-[157px]">Приложение синхронизируется между всеми вашими устройствами и позволяет работать в команде совместно с коллегами над общими проектами.</p>
+    <div className="absolute h-[36px] left-0 top-[106px] w-[166px]" data-name="Paragraph">
+      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[10px] left-0 not-italic text-[#364146] text-[8px] top-0 tracking-[-0.08px] w-[157px]">Приложение синхронизируется между всеми вашими устройствами и позволяет работать в команде совместно с коллегами над общими проектами.</p>
     </div>
   );
 }
@@ -47,13 +48,16 @@ function Container1() {
       <Paragraph2 />
       <Paragraph3 />
       <Paragraph4 />
+      <div className="absolute bg-[#f0f1f5] content-stretch flex flex-col h-[26px] items-center justify-center left-0 rounded-[6px] top-[155px] w-[166px]">
+        <p className="font-['Inter:Regular',sans-serif] font-normal not-italic text-[#8e9199] text-[8px] tracking-[-0.1px]">Начать</p>
+      </div>
     </div>
   );
 }
 
 function Lesson1Quiz1VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz1VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz1VariantA">
       <Container1 />
     </div>
   );
@@ -86,8 +90,8 @@ function Paragraph6() {
 
 function Paragraph7() {
   return (
-    <div className="absolute content-stretch flex h-[9px] items-start left-0 top-[89.5px] w-[166px]" data-name="Paragraph">
-      <p className="flex-[1_0_0] font-['Inter:Regular',sans-serif] font-normal leading-[9px] min-h-px min-w-px not-italic relative text-[#8e9199] text-[7px] tracking-[-0.09px]">Организуй проекты и достигай целей быстрее</p>
+    <div className="absolute content-stretch flex h-[11px] items-start left-0 top-[87px] w-[166px]" data-name="Paragraph">
+      <p className="flex-[1_0_0] font-['Inter:Regular',sans-serif] font-normal leading-[11px] min-h-px min-w-px not-italic relative text-[#8e9199] text-[9px] tracking-[-0.09px]">Организуй проекты и достигай целей быстрее</p>
     </div>
   );
 }
@@ -120,7 +124,7 @@ function Container3() {
 
 function Lesson1Quiz1VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz1VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz1VariantB">
       <Container3 />
     </div>
   );
@@ -145,24 +149,24 @@ function Paragraph9() {
 
 function Paragraph10() {
   return (
-    <div className="absolute h-[13.5px] left-0 top-[52px] w-[166px]" data-name="Paragraph">
-      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[13.5px] left-0 not-italic text-[#101828] text-[9px] top-[0.5px] tracking-[-0.12px] whitespace-nowrap">Приложение</p>
+    <div className="absolute h-[14px] left-0 top-[10px] w-[166px]" data-name="Paragraph">
+      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[14px] left-0 not-italic text-[#101828] text-[12px] top-[0px] tracking-[-0.12px] whitespace-nowrap">Приложение</p>
     </div>
   );
 }
 
 function Paragraph11() {
   return (
-    <div className="h-[7.5px] relative shrink-0 w-full" data-name="Paragraph">
-      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-0 not-italic text-[5px] text-white top-[-0.5px] tracking-[-0.07px] whitespace-nowrap">Сохранить</p>
+    <div className="h-[9px] relative shrink-0 w-full" data-name="Paragraph">
+      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-0 not-italic text-[7px] text-white top-[0px] tracking-[-0.07px] whitespace-nowrap">Сохранить</p>
     </div>
   );
 }
 
 function Container8() {
   return (
-    <div className="bg-[#3b82f6] h-[13.5px] relative rounded-[4px] shrink-0 w-[37.57px]" data-name="Container">
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[3px] px-[6px] relative size-full">
+    <div className="bg-[#3b82f6] h-[18px] relative rounded-[4px] shrink-0 w-[52px]" data-name="Container">
+      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-center justify-center px-[6px] relative size-full">
         <Paragraph11 />
       </div>
     </div>
@@ -171,16 +175,16 @@ function Container8() {
 
 function Paragraph12() {
   return (
-    <div className="h-[7.5px] relative shrink-0 w-full" data-name="Paragraph">
-      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-0 not-italic text-[5px] text-white top-[-0.5px] tracking-[-0.07px] whitespace-nowrap">Изменить</p>
+    <div className="h-[9px] relative shrink-0 w-full" data-name="Paragraph">
+      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-0 not-italic text-[7px] text-white top-[0px] tracking-[-0.07px] whitespace-nowrap">Изменить</p>
     </div>
   );
 }
 
 function Container9() {
   return (
-    <div className="bg-[#8b5cf6] h-[13.5px] relative rounded-[4px] shrink-0 w-[35.461px]" data-name="Container">
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[3px] px-[6px] relative size-full">
+    <div className="bg-[#8b5cf6] h-[18px] relative rounded-[4px] shrink-0 w-[49px]" data-name="Container">
+      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-center justify-center px-[6px] relative size-full">
         <Paragraph12 />
       </div>
     </div>
@@ -189,16 +193,16 @@ function Container9() {
 
 function Paragraph13() {
   return (
-    <div className="h-[7.5px] relative shrink-0 w-full" data-name="Paragraph">
-      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-0 not-italic text-[5px] text-white top-[-0.5px] tracking-[-0.07px] whitespace-nowrap">Удалить</p>
+    <div className="h-[9px] relative shrink-0 w-full" data-name="Paragraph">
+      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-0 not-italic text-[7px] text-white top-[0px] tracking-[-0.07px] whitespace-nowrap">Удалить</p>
     </div>
   );
 }
 
 function Container10() {
   return (
-    <div className="bg-[#ef4444] h-[13.5px] relative rounded-[4px] shrink-0 w-[31.727px]" data-name="Container">
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[3px] px-[6px] relative size-full">
+    <div className="bg-[#ef4444] h-[18px] relative rounded-[4px] shrink-0 w-[44px]" data-name="Container">
+      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-center justify-center px-[6px] relative size-full">
         <Paragraph13 />
       </div>
     </div>
@@ -207,7 +211,7 @@ function Container10() {
 
 function Container7() {
   return (
-    <div className="absolute content-stretch flex gap-[4px] h-[13.5px] items-start left-0 top-[71.5px] w-[166px]" data-name="Container">
+    <div className="absolute content-stretch flex gap-[4px] h-[18px] items-start left-0 top-[30px] w-[166px]" data-name="Container">
       <Container8 />
       <Container9 />
       <Container10 />
@@ -217,16 +221,16 @@ function Container7() {
 
 function Paragraph14() {
   return (
-    <div className="h-[7.5px] relative shrink-0 w-full" data-name="Paragraph">
-      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-0 not-italic text-[5px] text-white top-[-0.5px] tracking-[-0.07px] whitespace-nowrap">Отправить</p>
+    <div className="h-[9px] relative shrink-0 w-full" data-name="Paragraph">
+      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-0 not-italic text-[7px] text-white top-[0px] tracking-[-0.07px] whitespace-nowrap">Отправить</p>
     </div>
   );
 }
 
 function Container12() {
   return (
-    <div className="bg-[#22c55e] h-[13.5px] relative rounded-[4px] shrink-0 w-[37.648px]" data-name="Container">
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[3px] px-[6px] relative size-full">
+    <div className="bg-[#22c55e] h-[18px] relative rounded-[4px] shrink-0 w-[52px]" data-name="Container">
+      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-center justify-center px-[6px] relative size-full">
         <Paragraph14 />
       </div>
     </div>
@@ -235,16 +239,16 @@ function Container12() {
 
 function Paragraph15() {
   return (
-    <div className="h-[7.5px] relative shrink-0 w-full" data-name="Paragraph">
-      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-0 not-italic text-[#78350f] text-[5px] top-[-0.5px] tracking-[-0.07px] whitespace-nowrap">Поделиться</p>
+    <div className="h-[9px] relative shrink-0 w-full" data-name="Paragraph">
+      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-0 not-italic text-[#78350f] text-[7px] top-[0px] tracking-[-0.07px] whitespace-nowrap">Поделиться</p>
     </div>
   );
 }
 
 function Container13() {
   return (
-    <div className="bg-[#fbbf24] h-[13.5px] relative rounded-[4px] shrink-0 w-[40.68px]" data-name="Container">
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[3px] px-[6px] relative size-full">
+    <div className="bg-[#fbbf24] h-[18px] relative rounded-[4px] shrink-0 w-[57px]" data-name="Container">
+      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-center justify-center px-[6px] relative size-full">
         <Paragraph15 />
       </div>
     </div>
@@ -253,7 +257,7 @@ function Container13() {
 
 function Container11() {
   return (
-    <div className="absolute content-stretch flex gap-[4px] h-[13.5px] items-start left-0 top-[89px] w-[166px]" data-name="Container">
+    <div className="absolute content-stretch flex gap-[4px] h-[18px] items-start left-0 top-[52px] w-[166px]" data-name="Container">
       <Container12 />
       <Container13 />
     </div>
@@ -262,16 +266,16 @@ function Container11() {
 
 function Paragraph16() {
   return (
-    <div className="h-[7.5px] relative shrink-0 w-full" data-name="Paragraph">
-      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-0 not-italic text-[5px] text-white top-[-0.5px] tracking-[-0.07px] whitespace-nowrap">Экспорт</p>
+    <div className="h-[9px] relative shrink-0 w-full" data-name="Paragraph">
+      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-0 not-italic text-[7px] text-white top-[0px] tracking-[-0.07px] whitespace-nowrap">Экспорт</p>
     </div>
   );
 }
 
 function Container15() {
   return (
-    <div className="bg-[#ec4899] h-[13.5px] relative rounded-[4px] shrink-0 w-[31.641px]" data-name="Container">
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[3px] px-[6px] relative size-full">
+    <div className="bg-[#ec4899] h-[18px] relative rounded-[4px] shrink-0 w-[44px]" data-name="Container">
+      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-center justify-center px-[6px] relative size-full">
         <Paragraph16 />
       </div>
     </div>
@@ -280,16 +284,16 @@ function Container15() {
 
 function Paragraph17() {
   return (
-    <div className="h-[7.5px] relative shrink-0 w-full" data-name="Paragraph">
-      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-0 not-italic text-[5px] text-white top-[-0.5px] tracking-[-0.07px] whitespace-nowrap">Печать</p>
+    <div className="h-[9px] relative shrink-0 w-full" data-name="Paragraph">
+      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-0 not-italic text-[7px] text-white top-[0px] tracking-[-0.07px] whitespace-nowrap">Печать</p>
     </div>
   );
 }
 
 function Container16() {
   return (
-    <div className="bg-[#06b6d4] h-[13.5px] relative rounded-[4px] shrink-0 w-[29.023px]" data-name="Container">
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[3px] px-[6px] relative size-full">
+    <div className="bg-[#06b6d4] h-[18px] relative rounded-[4px] shrink-0 w-[40px]" data-name="Container">
+      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-center justify-center px-[6px] relative size-full">
         <Paragraph17 />
       </div>
     </div>
@@ -298,7 +302,7 @@ function Container16() {
 
 function Container14() {
   return (
-    <div className="absolute content-stretch flex gap-[4px] h-[13.5px] items-start left-0 top-[106.5px] w-[166px]" data-name="Container">
+    <div className="absolute content-stretch flex gap-[4px] h-[18px] items-start left-0 top-[74px] w-[166px]" data-name="Container">
       <Container15 />
       <Container16 />
     </div>
@@ -307,15 +311,15 @@ function Container14() {
 
 function Paragraph18() {
   return (
-    <div className="content-stretch flex h-[6px] items-start relative shrink-0 w-full" data-name="Paragraph">
-      <p className="flex-[1_0_0] font-['Inter:Regular',sans-serif] font-normal leading-[6px] min-h-px min-w-px not-italic relative text-[#8e9199] text-[5px] tracking-[-0.07px]">Текстовая информация</p>
+    <div className="content-stretch flex h-[8px] items-start relative shrink-0 w-full" data-name="Paragraph">
+      <p className="flex-[1_0_0] font-['Inter:Regular',sans-serif] font-normal leading-[8px] min-h-px min-w-px not-italic relative text-[#8e9199] text-[7px] tracking-[-0.07px]">Текстовая информация</p>
     </div>
   );
 }
 
 function Container17() {
   return (
-    <div className="absolute bg-[#f7f8fc] content-stretch flex flex-col h-[14px] items-start left-0 pt-[4px] px-[4px] rounded-[4px] top-[128px] w-[166px]" data-name="Container">
+    <div className="absolute bg-[#f7f8fc] content-stretch flex flex-col h-[20px] items-start justify-center left-0 px-[6px] rounded-[4px] top-[96px] w-[166px]" data-name="Container">
       <Paragraph18 />
     </div>
   );
@@ -335,7 +339,7 @@ function Container6() {
 
 function Lesson1Quiz2VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start justify-center left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz2VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start justify-center left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz2VariantA">
       <Container6 />
     </div>
   );
@@ -369,7 +373,7 @@ function Paragraph20() {
 function Paragraph21() {
   return (
     <div className="h-[18px] relative shrink-0 w-full" data-name="Paragraph">
-      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[9px] left-0 not-italic text-[#364146] text-[7px] top-0 tracking-[-0.09px] w-[149px]">Информация о проекте и описание текущих задач</p>
+      <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[10px] left-0 not-italic text-[#364146] text-[8px] top-0 tracking-[-0.09px] w-[149px]">Информация о проекте</p>
     </div>
   );
 }
@@ -456,7 +460,7 @@ function Container19() {
 
 function Lesson1Quiz2VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz2VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz2VariantB">
       <Container19 />
     </div>
   );
@@ -548,7 +552,7 @@ function Container26() {
 
 function Lesson1Quiz3VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz3VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz3VariantA">
       <Container26 />
     </div>
   );
@@ -624,7 +628,7 @@ function Container31() {
 
 function Lesson1Quiz3VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz3VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 overflow-clip pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson1Quiz3VariantB">
       <Container31 />
     </div>
   );
@@ -1217,7 +1221,7 @@ function Container54() {
 
 function Paragraph71() {
   return (
-    <div className="h-[7.5px] relative shrink-0 w-full" data-name="Paragraph">
+    <div className="h-[9px] relative shrink-0 w-full" data-name="Paragraph">
       <p className="-translate-x-1/2 absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-[23.08px] not-italic text-[5px] text-center text-white top-[-0.5px] tracking-[-0.07px] whitespace-nowrap">Btn1</p>
     </div>
   );
@@ -1235,7 +1239,7 @@ function Container57() {
 
 function Paragraph72() {
   return (
-    <div className="h-[7.5px] relative shrink-0 w-full" data-name="Paragraph">
+    <div className="h-[9px] relative shrink-0 w-full" data-name="Paragraph">
       <p className="-translate-x-1/2 absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-[23.13px] not-italic text-[5px] text-center text-white top-[-0.5px] tracking-[-0.07px] whitespace-nowrap">Btn2</p>
     </div>
   );
@@ -1253,7 +1257,7 @@ function Container58() {
 
 function Paragraph73() {
   return (
-    <div className="h-[7.5px] relative shrink-0 w-full" data-name="Paragraph">
+    <div className="h-[9px] relative shrink-0 w-full" data-name="Paragraph">
       <p className="-translate-x-1/2 absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-[23.05px] not-italic text-[5px] text-center text-white top-[-0.5px] tracking-[-0.07px] whitespace-nowrap">Btn3</p>
     </div>
   );
@@ -1283,7 +1287,7 @@ function Container56() {
 
 function Paragraph74() {
   return (
-    <div className="h-[7.5px] relative shrink-0 w-full" data-name="Paragraph">
+    <div className="h-[9px] relative shrink-0 w-full" data-name="Paragraph">
       <p className="-translate-x-1/2 absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-[37.03px] not-italic text-[#78350f] text-[5px] text-center top-[-0.5px] tracking-[-0.07px] whitespace-nowrap">Btn4</p>
     </div>
   );
@@ -1301,7 +1305,7 @@ function Container61() {
 
 function Paragraph75() {
   return (
-    <div className="h-[7.5px] relative shrink-0 w-full" data-name="Paragraph">
+    <div className="h-[9px] relative shrink-0 w-full" data-name="Paragraph">
       <p className="-translate-x-1/2 absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-[37.12px] not-italic text-[5px] text-center text-white top-[-0.5px] tracking-[-0.07px] whitespace-nowrap">Btn5</p>
     </div>
   );
@@ -1427,7 +1431,7 @@ function Container65() {
 
 function Lesson1Quiz10Card() {
   return (
-    <div className="absolute content-stretch flex h-[80px] items-center justify-center left-0 px-[41px] rounded-[8px] top-[3829px] w-[130px]" data-name="Lesson1Quiz10Card1">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson1Quiz10Card1">
       <Container65 />
     </div>
   );
@@ -1453,7 +1457,7 @@ function Container67() {
 
 function Lesson1Quiz10Card1() {
   return (
-    <div className="absolute content-stretch flex h-[80px] items-center justify-center left-[154px] px-[50px] rounded-[8px] top-[3829px] w-[130px]" data-name="Lesson1Quiz10Card2">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson1Quiz10Card2">
       <Container67 />
     </div>
   );
@@ -1479,7 +1483,7 @@ function Container68() {
 
 function Lesson1Quiz10Card2() {
   return (
-    <div className="absolute content-stretch flex h-[80px] items-center justify-center left-[308px] px-[50px] rounded-[8px] top-[3829px] w-[130px]" data-name="Lesson1Quiz10Card3">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson1Quiz10Card3">
       <Container68 />
     </div>
   );
@@ -1527,7 +1531,7 @@ function Container69() {
 
 function Lesson1Quiz11Card() {
   return (
-    <div className="absolute content-stretch flex h-[80px] items-center justify-center left-0 pl-[39.344px] pr-[39.352px] rounded-[8px] top-[4080px] w-[130px]" data-name="Lesson1Quiz11Card1">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson1Quiz11Card1">
       <Container69 />
     </div>
   );
@@ -1543,7 +1547,7 @@ function Paragraph86() {
 
 function Lesson1Quiz11Card1() {
   return (
-    <div className="absolute content-stretch flex h-[80px] items-center justify-center left-[154px] px-[8px] rounded-[8px] top-[4080px] w-[130px]" data-name="Lesson1Quiz11Card2">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson1Quiz11Card2">
       <Paragraph86 />
     </div>
   );
@@ -1594,7 +1598,7 @@ function Container70() {
 
 function Lesson1Quiz11Card2() {
   return (
-    <div className="absolute content-stretch flex h-[80px] items-center justify-center left-[308px] px-[35px] rounded-[8px] top-[4080px] w-[130px]" data-name="Lesson1Quiz11Card3">
+    <div className="flex items-center justify-center w-full h-full" data-name="Lesson1Quiz11Card3">
       <Container70 />
     </div>
   );
@@ -1674,7 +1678,7 @@ function Container72() {
 
 function Paragraph93() {
   return (
-    <div className="h-[7.5px] relative shrink-0 w-full" data-name="Paragraph">
+    <div className="h-[9px] relative shrink-0 w-full" data-name="Paragraph">
       <p className="-translate-x-1/2 absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-[51.4px] not-italic text-[5px] text-center text-white top-[-0.5px] tracking-[-0.07px] whitespace-nowrap">Действие</p>
     </div>
   );
@@ -1690,7 +1694,7 @@ function Container81() {
 
 function Paragraph94() {
   return (
-    <div className="h-[7.5px] relative shrink-0 w-full" data-name="Paragraph">
+    <div className="h-[9px] relative shrink-0 w-full" data-name="Paragraph">
       <p className="-translate-x-1/2 absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-[51.33px] not-italic text-[5px] text-center text-white top-[-0.5px] tracking-[-0.07px] whitespace-nowrap">Продолжить</p>
     </div>
   );
@@ -1706,7 +1710,7 @@ function Container82() {
 
 function Paragraph95() {
   return (
-    <div className="h-[7.5px] relative shrink-0 w-full" data-name="Paragraph">
+    <div className="h-[9px] relative shrink-0 w-full" data-name="Paragraph">
       <p className="-translate-x-1/2 absolute font-['Inter:Regular',sans-serif] font-normal leading-[7.5px] left-[50.5px] not-italic text-[5px] text-center text-white top-[-0.5px] tracking-[-0.07px] whitespace-nowrap">Далее</p>
     </div>
   );
@@ -1811,23 +1815,104 @@ function Paragraph101() {
 // ─────────────────────────────────────────────────────────────────────────────
 // Named exports for LessonQuizPage (quiz_what_is_ux visuals)
 // ─────────────────────────────────────────────────────────────────────────────
+const CW: React.CSSProperties = { position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" };
+const CI: React.CSSProperties = { position: "absolute", inset: 0, padding: "14px 16px", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" };
+
+// ─── Quiz 1: Где действие понятнее? ─────────────────────────────────────────
 export function CQUxCompare1A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson1Quiz1VariantA /></div>;
+  // Плохо: текст без кнопки — непонятно что делать
+  return (
+    <div style={CW}><div style={{ ...CI, gap: 6 }}>
+      {["Добро пожаловать в наш курс по UX дизайну.", "Здесь вы найдёте много полезного материала.", "Изучайте и практикуйтесь каждый день."].map((t, i) => (
+        <div key={i} style={{ background: "#f7f8fc", borderRadius: 5, padding: "7px 10px" }}>
+          <span style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "#364146", lineHeight: 1.4 }}>{t}</span>
+        </div>
+      ))}
+    </div></div>
+  );
 }
 export function CQUxCompare1B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson1Quiz1VariantB /></div>;
+  // Хорошо: чёткий экран с одной кнопкой действия
+  return (
+    <div style={CW}><div style={{ ...CI, alignItems: "center", gap: 12 }}>
+      <span style={{ fontSize: 11, fontFamily: "Inter, sans-serif", fontWeight: 700, color: "#101828", textAlign: "center" }}>Изучите UX Дизайн</span>
+      <span style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "#8e9199", textAlign: "center" }}>Начните обучение прямо сейчас</span>
+      <div style={{ background: "#3b82f6", borderRadius: 8, height: 36, width: "80%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ color: "white", fontSize: 12, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>Start</span>
+      </div>
+    </div></div>
+  );
 }
+
+// ─── Quiz 2: Где интерфейс удобнее? ─────────────────────────────────────────
 export function CQUxCompare2A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson1Quiz2VariantA /></div>;
+  // Плохо: много элементов без структуры
+  const items = ["Кнопка", "Меню", "Форма", "Блок", "Иконка", "Текст"];
+  return (
+    <div style={CW}><div style={{ ...CI, gap: 5 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+        {items.map((t, i) => (
+          <div key={i} style={{ background: i % 2 === 0 ? "#f7f8fc" : "#e5e7eb", borderRadius: i * 2 + 2, padding: "5px 8px" }}>
+            <span style={{ fontSize: 8, fontFamily: "Inter, sans-serif", color: "#364146" }}>{t}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{ background: "#dbeafe", borderRadius: 4, height: 20, width: "60%" }} />
+      <div style={{ background: "#f7f8fc", borderRadius: 6, height: 24, display: "flex", alignItems: "center", padding: "0 8px" }}>
+        <span style={{ fontSize: 8, fontFamily: "Inter, sans-serif", color: "#8e9199" }}>Введите текст...</span>
+      </div>
+    </div></div>
+  );
 }
 export function CQUxCompare2B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson1Quiz2VariantB /></div>;
+  // Хорошо: чёткая структура и одно главное действие
+  return (
+    <div style={CW}><div style={{ ...CI, gap: 10 }}>
+      <div style={{ background: "#f7f8fc", borderRadius: 6, padding: "8px 10px" }}>
+        <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "50%", marginBottom: 5 }} />
+        <div style={{ height: 5, background: "#e5e7eb", borderRadius: 2, width: "80%" }} />
+      </div>
+      <div style={{ background: "#f7f8fc", borderRadius: 6, padding: "8px 10px" }}>
+        <div style={{ height: 5, background: "#e5e7eb", borderRadius: 2, width: "90%", marginBottom: 4 }} />
+        <div style={{ height: 5, background: "#e5e7eb", borderRadius: 2, width: "70%" }} />
+      </div>
+      <div style={{ background: "#3b82f6", borderRadius: 6, height: 32, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ color: "white", fontSize: 10, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>Начать</span>
+      </div>
+    </div></div>
+  );
 }
+
+// ─── Quiz 3: Где цель достичь легче? ────────────────────────────────────────
 export function CQUxCompare3A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson1Quiz3VariantA /></div>;
+  // Плохо: несколько равнозначных кнопок — непонятно что нажать
+  const btns = [
+    { label: "Войти", bg: "#e5e7eb", color: "#6b7280", w: "100%" },
+    { label: "Подробнее", bg: "#e5e7eb", color: "#6b7280", w: "100%" },
+    { label: "Начать", bg: "#e5e7eb", color: "#6b7280", w: "100%" },
+  ];
+  return (
+    <div style={CW}><div style={{ ...CI, gap: 8 }}>
+      {btns.map((b, i) => (
+        <div key={i} style={{ background: b.bg, borderRadius: 6, height: 30, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ fontSize: 10, fontFamily: "Inter, sans-serif", color: b.color }}>{b.label}</span>
+        </div>
+      ))}
+    </div></div>
+  );
 }
 export function CQUxCompare3B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson1Quiz3VariantB /></div>;
+  // Хорошо: одна чёткая кнопка действия
+  return (
+    <div style={CW}><div style={{ ...CI, alignItems: "center", gap: 10 }}>
+      <div style={{ height: 6, background: "#e5e7eb", borderRadius: 3, width: "60%" }} />
+      <div style={{ height: 5, background: "#f3f4f6", borderRadius: 3, width: "80%" }} />
+      <div style={{ height: 5, background: "#f3f4f6", borderRadius: 3, width: "70%" }} />
+      <div style={{ background: "#3b82f6", borderRadius: 8, height: 36, width: "80%", display: "flex", alignItems: "center", justifyContent: "center", marginTop: 6 }}>
+        <span style={{ color: "white", fontSize: 11, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>Начать обучение</span>
+      </div>
+    </div></div>
+  );
 }
 export function CQUxSingle1() {
   return <div style={{ position: "relative", background: "white", height: 231, width: 186, overflow: "hidden", paddingTop: 10, paddingLeft: 10, paddingRight: 10, borderRadius: 15 }}><Container34 /></div>;

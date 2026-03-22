@@ -1,3 +1,4 @@
+import React from "react";
 import imgImageWithFallback from "figma:asset/e425135426e3dc0ed5a040f07fda2936ad73f826.png";
 import imgImageWithFallback1 from "figma:asset/ec52a400a5e82dbd5c521dc9b3b88f88c59fdd05.png";
 import imgImageWithFallback2 from "figma:asset/1ee69fbffd1c72702913b6c723c0aff9ce6d1232.png";
@@ -111,7 +112,7 @@ function Container4() {
 
 function Lesson4Quiz1VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz1VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz1VariantA">
       <Container4 />
     </div>
   );
@@ -247,7 +248,7 @@ function Container9() {
 
 function Lesson4Quiz1VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz1VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz1VariantB">
       <Container9 />
     </div>
   );
@@ -365,7 +366,7 @@ function Container19() {
 
 function Lesson4Quiz2VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz2VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz2VariantA">
       <Container19 />
     </div>
   );
@@ -485,7 +486,7 @@ function Container24() {
 
 function Lesson4Quiz2VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz2VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz2VariantB">
       <Container24 />
     </div>
   );
@@ -717,7 +718,7 @@ function Container33() {
 
 function Lesson4Quiz3VariantA() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[21.3px] pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz3VariantA">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz3VariantA">
       <Container33 />
     </div>
   );
@@ -901,7 +902,7 @@ function Container42() {
 
 function Lesson4Quiz3VariantB() {
   return (
-    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-[20.95px] pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz3VariantB">
+    <div className="absolute bg-white content-stretch flex flex-col h-[231px] items-start left-0 pt-[10px] px-[10px] rounded-[14.99px] top-0 w-[186px]" data-name="Lesson4Quiz3VariantB">
       <Container42 />
     </div>
   );
@@ -2669,23 +2670,80 @@ function Container94() {
 // ─────────────────────────────────────────────────────────────────────────────
 // Named exports for LessonQuizPage (quiz_figma_components)
 // ─────────────────────────────────────────────────────────────────────────────
+function FigmaCompareWrap({ children }: { children: React.ReactNode }) {
+  const scale = 260 / 186;
+  const scaledH = 231 * scale;
+  const topOffset = (180 - scaledH) / 2;
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
+      <div style={{ position: "absolute", top: topOffset, left: 0, width: 186, height: 231, transformOrigin: "top left", transform: `scale(${scale})` }}>
+        {children}
+      </div>
+    </div>
+  );
+}
 export function CQFigmaCompare1A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson4Quiz1VariantA /></div>;
+  return <FigmaCompareWrap><Lesson4Quiz1VariantA /></FigmaCompareWrap>;
 }
 export function CQFigmaCompare1B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson4Quiz1VariantB /></div>;
+  return <FigmaCompareWrap><Lesson4Quiz1VariantB /></FigmaCompareWrap>;
 }
 export function CQFigmaCompare2A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson4Quiz2VariantA /></div>;
+  return <FigmaCompareWrap><Lesson4Quiz2VariantA /></FigmaCompareWrap>;
 }
 export function CQFigmaCompare2B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson4Quiz2VariantB /></div>;
+  return <FigmaCompareWrap><Lesson4Quiz2VariantB /></FigmaCompareWrap>;
 }
+
+// ─── Quiz 3: Где компоненты гибче? ──────────────────────────────────────────
 export function CQFigmaCompare3A() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson4Quiz3VariantA /></div>;
+  // Плохо: карточки нарисованы отдельно — разные по структуре
+  const items = [
+    { h: 38, r: 4,  imgW: 28, imgH: 28 },
+    { h: 34, r: 10, imgW: 22, imgH: 22 },
+    { h: 40, r: 6,  imgW: 32, imgH: 30 },
+  ];
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden" }}>
+      <div style={{ position: "absolute", inset: 0, background: "white", borderRadius: 14, padding: "14px 16px", display: "flex", flexDirection: "column", gap: 8, overflow: "hidden" }}>
+        {items.map((item, i) => (
+          <div key={i} style={{ background: "#f3f4f6", borderRadius: item.r, height: item.h, flexShrink: 0, display: "flex", alignItems: "center", padding: "0 10px", gap: 8 }}>
+            <div style={{ width: item.imgW, height: item.imgH, background: "#d1d5db", borderRadius: 3, flexShrink: 0 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, marginBottom: 4, width: "55%" }} />
+              <div style={{ height: 5, background: "#e5e7eb", borderRadius: 2, width: "38%" }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 export function CQFigmaCompare3B() {
-  return <div style={{ position: "relative", width: 207, height: 231 }}><Lesson4Quiz3VariantB /></div>;
+  // Хорошо: один мастер-компонент — одинаковые копии
+  const copyStyle: React.CSSProperties = { background: "#f3f4f6", borderRadius: 6, height: 38, flexShrink: 0, display: "flex", alignItems: "center", padding: "0 10px", gap: 8 };
+  return (
+    <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden" }}>
+      <div style={{ position: "absolute", inset: 0, background: "white", borderRadius: 14, padding: "14px 16px", display: "flex", flexDirection: "column", gap: 8, overflow: "hidden" }}>
+        <div style={{ ...copyStyle, border: "2px solid #7c3aed", background: "#f0ebff" }}>
+          <div style={{ width: 28, height: 28, background: "#c4b5fd", borderRadius: 4, flexShrink: 0 }} />
+          <div style={{ flex: 1 }}>
+            <div style={{ height: 7, background: "#a78bfa", borderRadius: 2, marginBottom: 4, width: "55%" }} />
+            <div style={{ height: 5, background: "#c4b5fd", borderRadius: 2, width: "38%" }} />
+          </div>
+        </div>
+        {[0, 1].map((i) => (
+          <div key={i} style={copyStyle}>
+            <div style={{ width: 28, height: 28, background: "#d1d5db", borderRadius: 4, flexShrink: 0 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, marginBottom: 4, width: "55%" }} />
+              <div style={{ height: 5, background: "#e5e7eb", borderRadius: 2, width: "38%" }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 export function CQFigmaSingle1() {
   return <div style={{ height: 231, width: 186, overflow: "hidden", borderRadius: 15 }}><Lesson4Quiz /></div>;
