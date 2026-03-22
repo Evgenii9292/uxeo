@@ -16,7 +16,7 @@ interface PageTransitionProps {
  * • duration=600 for page load, duration=260 for question-to-question.
  * • cubic-bezier(0.22, 1, 0.36, 1) = ease-out expo: snappy start, smooth settle.
  */
-export default function PageTransition({ children, duration = 600, scaleFrom = 0.96 }: PageTransitionProps) {
+export default function PageTransition({ children, duration = 1200, scaleFrom = 0.96 }: PageTransitionProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
