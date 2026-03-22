@@ -495,9 +495,6 @@ export function MatchingQuiz({
               const ring = topCardRing(pair.id);
               const dot = topDotStyle(pair.id);
               const isSelected = pair.id === selectedId;
-              const hasNode = !!pair.node;
-              const nodeScale = topCardW / 260;
-              const nodeCardH = Math.round(180 * nodeScale);
               return (
                 <div key={pair.id} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                   <div
@@ -523,10 +520,9 @@ export function MatchingQuiz({
                     }}
                     style={{
                       width: topCardW,
-                      height: hasNode ? nodeCardH : topCardH,
+                      height: topCardH,
                       borderRadius: 15,
                       backgroundImage: topCardBg,
-                      overflow: "hidden",
                       boxShadow: ring ? `0 0 0 3px ${ring}` : undefined,
                       cursor: checked ? "default" : "pointer",
                       display: "flex", alignItems: "center", justifyContent: "center",
@@ -534,15 +530,9 @@ export function MatchingQuiz({
                       transform: isSelected ? "translateY(-3px)" : "translateY(0)",
                     }}
                   >
-                    {hasNode ? (
-                      <div style={{ position: "absolute", top: 0, left: 0, transformOrigin: "top left", transform: `scale(${nodeScale})`, pointerEvents: "none" }}>
-                        {pair.node}
-                      </div>
-                    ) : (
-                      <p style={{ fontFamily: "'Roboto Condensed', sans-serif", fontWeight: 400, color: "#f4f5fc", fontSize: 14, textAlign: "center", lineHeight: 1.3, padding: "0 8px", pointerEvents: "none", wordBreak: "break-word", overflowWrap: "break-word" }}>
-                        {pair.term}
-                      </p>
-                    )}
+                    <p style={{ fontFamily: "'Roboto Condensed', sans-serif", fontWeight: 400, color: "#f4f5fc", fontSize: 14, textAlign: "center", lineHeight: 1.3, padding: "0 8px", pointerEvents: "none", wordBreak: "break-word", overflowWrap: "break-word" }}>
+                      {pair.term}
+                    </p>
                     <div
                       ref={(el) => { topDotRefs.current[pair.id] = el; }}
                       style={{ position: "absolute", bottom: 0, left: "50%", transform: "translate(-50%, 50%)", width: 12, height: 12, borderRadius: "50%", background: dot.bg, border: `2px solid ${dot.border}`, zIndex: 2 }}
@@ -717,9 +707,6 @@ export function MatchingQuiz({
             const ring = topCardRing(pair.id);
             const dot  = topDotStyle(pair.id);
             const isSelected = pair.id === selectedId;
-            const hasNode = !!pair.node;
-            const desktopNodeW = 260;
-            const desktopNodeH = 180;
             return (
               <div
                 key={pair.id}
@@ -730,12 +717,10 @@ export function MatchingQuiz({
                   ref={(el) => { topCardRefs.current[pair.id] = el; }}
                   onMouseDown={(e) => handleTopMouseDown(e, pair.id)}
                   style={{
-                    width: hasNode ? desktopNodeW : 300,
-                    height: hasNode ? desktopNodeH : undefined,
-                    minHeight: hasNode ? undefined : 90,
+                    width: 300,
+                    minHeight: 90,
                     borderRadius: 15,
                     backgroundImage: topCardBg,
-                    overflow: "hidden",
                     boxShadow: ring
                       ? `0 0 0 3px ${ring}, inset -4px 0px 4px 0px #384348, inset 4px 0px 4px 0px #384348, inset 0px -4px 4px 0px rgba(0,0,0,0.2), inset 0px 4px 4px 0px rgba(0,0,0,0.2)`
                       : "inset -4px 0px 4px 0px #384348, inset 4px 0px 4px 0px #384348, inset 0px -4px 4px 0px rgba(0,0,0,0.2), inset 0px 4px 4px 0px rgba(0,0,0,0.2)",
@@ -749,26 +734,22 @@ export function MatchingQuiz({
                     transform: isSelected ? "translateY(-2px)" : "translateY(0)",
                   }}
                 >
-                  {hasNode ? (
-                    <div style={{ pointerEvents: "none" }}>{pair.node}</div>
-                  ) : (
-                    <p
-                      style={{
-                        fontFamily: "'Roboto Condensed', sans-serif",
-                        fontWeight: 400,
-                        color: "#f4f5fc",
-                        fontSize: 18,
-                        textAlign: "center",
-                        lineHeight: 1.3,
-                        padding: "12px 20px",
-                        pointerEvents: "none",
-                        wordBreak: "break-word",
-                        overflowWrap: "break-word",
-                      }}
-                    >
-                      {pair.term}
-                    </p>
-                  )}
+                  <p
+                    style={{
+                      fontFamily: "'Roboto Condensed', sans-serif",
+                      fontWeight: 400,
+                      color: "#f4f5fc",
+                      fontSize: 18,
+                      textAlign: "center",
+                      lineHeight: 1.3,
+                      padding: "12px 20px",
+                      pointerEvents: "none",
+                      wordBreak: "break-word",
+                      overflowWrap: "break-word",
+                    }}
+                  >
+                    {pair.term}
+                  </p>
                   {/* Connector dot — centered on bottom border */}
                   <div
                     ref={(el) => { topDotRefs.current[pair.id] = el; }}
