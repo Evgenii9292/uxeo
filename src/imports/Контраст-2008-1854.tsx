@@ -1264,17 +1264,17 @@ export default function Component() {
 
 const f = "Inter, sans-serif";
 
-// ── Q1A: синяя кнопка на синем фоне — низкий контраст (bad) ───────────────
+// ── Q1A: светлая кнопка на светлом фоне — низкий контраст (bad) ───────────
 export function CQCompare1A() {
   return (
-    <div style={{ width: 260, height: 180, borderRadius: 15, background: "#1e40af", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "18px 20px", display: "flex", flexDirection: "column" }}>
-      <span style={{ fontFamily: f, fontSize: 11, fontWeight: 600, color: "#60a5fa", letterSpacing: -0.2, marginBottom: 6 }}>Оформить доступ</span>
-      <span style={{ fontFamily: f, fontSize: 9, color: "#3b82f6", lineHeight: 1.6, marginBottom: 4 }}>Откройте все уроки и материалы курса прямо сейчас</span>
-      <div style={{ height: 6, borderRadius: 3, background: "#2563eb", width: "70%", marginBottom: 3 }} />
-      <div style={{ height: 6, borderRadius: 3, background: "#2563eb", width: "50%", marginBottom: 3 }} />
+    <div style={{ width: 260, height: 180, borderRadius: 15, background: "#f0f4ff", overflow: "hidden", position: "relative", boxSizing: "border-box", padding: "18px 20px", display: "flex", flexDirection: "column" }}>
+      <span style={{ fontFamily: f, fontSize: 11, fontWeight: 600, color: "#bfdbfe", letterSpacing: -0.2, marginBottom: 6 }}>Оформить доступ</span>
+      <span style={{ fontFamily: f, fontSize: 9, color: "#c7d2fe", lineHeight: 1.6, marginBottom: 4 }}>Откройте все уроки и материалы курса прямо сейчас</span>
+      <div style={{ height: 6, borderRadius: 3, background: "#dbeafe", width: "70%", marginBottom: 3 }} />
+      <div style={{ height: 6, borderRadius: 3, background: "#dbeafe", width: "50%", marginBottom: 3 }} />
       <div style={{ flex: 1 }} />
-      <div style={{ background: "#2563eb", borderRadius: 8, padding: "9px 0", display: "flex", alignItems: "center", justifyContent: "center", border: "1.5px solid #3b82f6" }}>
-        <span style={{ fontFamily: f, fontSize: 10, fontWeight: 600, color: "#93c5fd" }}>Купить доступ</span>
+      <div style={{ background: "#bfdbfe", borderRadius: 8, padding: "9px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontFamily: f, fontSize: 10, fontWeight: 600, color: "#e0eaff" }}>Купить доступ</span>
       </div>
     </div>
   );
