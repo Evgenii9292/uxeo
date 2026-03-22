@@ -13,9 +13,10 @@ interface PageTransitionProps {
  *
  * • Uses requestAnimationFrame to guarantee the browser renders the
  *   initial opacity:0 / scale state before animating.
- * • duration=900 for page load, duration=220 for question-to-question.
+ * • duration=600 for page load, duration=260 for question-to-question.
+ * • cubic-bezier(0.22, 1, 0.36, 1) = ease-out expo: snappy start, smooth settle.
  */
-export default function PageTransition({ children, duration = 900, scaleFrom = 0.97 }: PageTransitionProps) {
+export default function PageTransition({ children, duration = 600, scaleFrom = 0.96 }: PageTransitionProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -29,8 +30,8 @@ export default function PageTransition({ children, duration = 900, scaleFrom = 0
     <div
       style={{
         opacity: isVisible ? 1 : 0,
-        transform: isVisible ? "scale(1)" : `scale(${scaleFrom})`,
-        transition: `opacity ${duration}ms ease-in-out, transform ${duration}ms ease-in-out`,
+        transform: isVisible ? "scale(1) translateY(0)" : `scale(${scaleFrom}) translateY(8px)`,
+        transition: `opacity ${duration}ms cubic-bezier(0.22, 1, 0.36, 1), transform ${duration}ms cubic-bezier(0.22, 1, 0.36, 1)`,
         willChange: "opacity, transform",
       }}
     >

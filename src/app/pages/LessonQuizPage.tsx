@@ -1146,7 +1146,7 @@ export default function LessonQuizPage() {
 
         {/* ZONE 2+3 — conditional on question type */}
         {questionType === "multiple_select" ? (
-          <PageTransition key={currentQuestionIndex} duration={220} scaleFrom={0.99}>
+          <PageTransition key={currentQuestionIndex} duration={300} scaleFrom={0.97}>
           <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : "pt-[80px] pb-[120px]"}`}>
             <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-center" : "justify-center gap-[52px]"}`}>
               <MultipleChoiceQuiz
@@ -1168,7 +1168,7 @@ export default function LessonQuizPage() {
           </div>
           </PageTransition>
         ) : questionType === "matching" ? (
-          <PageTransition key={currentQuestionIndex} duration={220} scaleFrom={0.99}>
+          <PageTransition key={currentQuestionIndex} duration={300} scaleFrom={0.97}>
           <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : "pt-[80px] pb-[120px]"}`}>
             <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-start pt-[10px] gap-[10px]" : "justify-center gap-[52px]"}`}>
               <MatchingQuiz
@@ -1184,7 +1184,7 @@ export default function LessonQuizPage() {
           </div>
           </PageTransition>
         ) : questionType === "compare_ui" ? (
-          <PageTransition key={currentQuestionIndex} duration={220} scaleFrom={0.99}>
+          <PageTransition key={currentQuestionIndex} duration={300} scaleFrom={0.97}>
           <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : "pt-[80px] pb-[120px]"}`}>
             <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-start pt-[10px]" : "justify-center gap-[52px]"}`}>
               <CompareUIQuiz
