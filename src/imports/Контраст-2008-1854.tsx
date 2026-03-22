@@ -1407,15 +1407,16 @@ export function CQMulti3() {
 }
 
 // ── Connect / Matching Q10 ───────────────────────────────────────────────────
-const card: React.CSSProperties = { width: 260, height: 180, borderRadius: 15, background: "#fff", overflow: "hidden", position: "relative", boxSizing: "border-box", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "20px 24px" };
+// dark card bg ≈ rgb(44,53,56) — all CQConn use transparent bg, light-themed colors
+const card: React.CSSProperties = { width: 260, height: 180, background: "transparent", overflow: "hidden", position: "relative", boxSizing: "border-box", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "20px 24px" };
 
 /** Яркая кнопка → "Привлекает внимание" */
 export function CQConn1A() {
   return (
     <div style={card}>
-      <div style={{ fontFamily: f, fontSize: 11, color: "#6b7280", marginBottom: 6 }}>Страница входа</div>
-      <div style={{ fontFamily: f, fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 4 }}>Добро пожаловать</div>
-      <div style={{ fontFamily: f, fontSize: 9, color: "#6b7280", marginBottom: 14, textAlign: "center" }}>Войдите в аккаунт чтобы продолжить</div>
+      <div style={{ fontFamily: f, fontSize: 11, color: "#9aa5aa", marginBottom: 6 }}>Страница входа</div>
+      <div style={{ fontFamily: f, fontSize: 13, fontWeight: 700, color: "#f4f5fc", marginBottom: 4 }}>Добро пожаловать</div>
+      <div style={{ fontFamily: f, fontSize: 9, color: "#9aa5aa", marginBottom: 14, textAlign: "center" }}>Войдите в аккаунт чтобы продолжить</div>
       <div style={{ background: "#3b82f6", borderRadius: 8, padding: "9px 28px", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <span style={{ fontFamily: f, fontSize: 11, fontWeight: 600, color: "#fff" }}>Войти</span>
       </div>
@@ -1427,9 +1428,9 @@ export function CQConn1A() {
 export function CQConn1B() {
   return (
     <div style={{ ...card, alignItems: "flex-start", justifyContent: "flex-start", padding: "20px 22px" }}>
-      <div style={{ fontFamily: f, fontSize: 15, fontWeight: 700, color: "#111827", marginBottom: 6 }}>Основы контраста</div>
-      <div style={{ fontFamily: f, fontSize: 9, color: "#374151", lineHeight: 1.6, marginBottom: 5 }}>Контраст — разница между цветом текста и фона. Тёмный текст на светлом фоне обеспечивает максимальную читаемость.</div>
-      <div style={{ fontFamily: f, fontSize: 8, color: "#4b5563", lineHeight: 1.6 }}>Стандарт доступности WCAG рекомендует соотношение 4.5:1 для основного текста и 3:1 для крупных заголовков.</div>
+      <div style={{ fontFamily: f, fontSize: 15, fontWeight: 700, color: "#f4f5fc", marginBottom: 6 }}>Основы контраста</div>
+      <div style={{ fontFamily: f, fontSize: 9, color: "#c8cfd3", lineHeight: 1.6, marginBottom: 5 }}>Контраст — разница между цветом текста и фона. Белый текст на тёмном фоне обеспечивает максимальную читаемость.</div>
+      <div style={{ fontFamily: f, fontSize: 8, color: "#9aa5aa", lineHeight: 1.6 }}>Стандарт WCAG рекомендует соотношение 4.5:1 для основного текста и 3:1 для заголовков.</div>
     </div>
   );
 }
@@ -1438,9 +1439,9 @@ export function CQConn1B() {
 export function CQConn1C() {
   return (
     <div style={{ ...card, alignItems: "flex-start", justifyContent: "flex-start", padding: "20px 22px" }}>
-      <div style={{ fontFamily: f, fontSize: 15, fontWeight: 700, color: "#d1d5db", marginBottom: 6 }}>Основы контраста</div>
-      <div style={{ fontFamily: f, fontSize: 9, color: "#e5e7eb", lineHeight: 1.6, marginBottom: 5 }}>Контраст — разница между цветом текста и фона. Светлый текст на светлом фоне почти не различим.</div>
-      <div style={{ fontFamily: f, fontSize: 8, color: "#e5e7eb", lineHeight: 1.6 }}>Стандарт доступности WCAG рекомендует соотношение 4.5:1 для основного текста и 3:1 для крупных заголовков.</div>
+      <div style={{ fontFamily: f, fontSize: 15, fontWeight: 700, color: "#4a5a60", marginBottom: 6 }}>Основы контраста</div>
+      <div style={{ fontFamily: f, fontSize: 9, color: "#3d4c52", lineHeight: 1.6, marginBottom: 5 }}>Контраст — разница между цветом текста и фона. Тёмный текст на тёмном фоне почти не различим.</div>
+      <div style={{ fontFamily: f, fontSize: 8, color: "#3d4c52", lineHeight: 1.6 }}>Стандарт WCAG рекомендует соотношение 4.5:1 для основного текста и 3:1 для заголовков.</div>
     </div>
   );
 }
@@ -1450,12 +1451,12 @@ export function CQConn1C() {
 /** Яркая кнопка → "Контраст" */
 export function CQConn2A() {
   return (
-    <div style={{ ...card, background: "#f9fafb" }}>
-      <div style={{ fontFamily: f, fontSize: 10, color: "#9ca3af", marginBottom: 10 }}>Действие</div>
+    <div style={card}>
+      <div style={{ fontFamily: f, fontSize: 10, color: "#9aa5aa", marginBottom: 10 }}>Действие</div>
       <div style={{ background: "#3b82f6", borderRadius: 10, padding: "10px 36px" }}>
         <span style={{ fontFamily: f, fontSize: 12, fontWeight: 700, color: "#fff" }}>Начать</span>
       </div>
-      <div style={{ fontFamily: f, fontSize: 8, color: "#9ca3af", marginTop: 10, textAlign: "center" }}>Кнопка яркая — сразу видна на фоне</div>
+      <div style={{ fontFamily: f, fontSize: 8, color: "#9aa5aa", marginTop: 10, textAlign: "center" }}>Кнопка яркая — сразу видна на фоне</div>
     </div>
   );
 }
@@ -1464,9 +1465,9 @@ export function CQConn2A() {
 export function CQConn2B() {
   return (
     <div style={{ ...card, alignItems: "flex-start", justifyContent: "flex-start", padding: "18px 22px" }}>
-      <div style={{ fontFamily: f, fontSize: 16, fontWeight: 800, color: "#111827", marginBottom: 6 }}>Статья</div>
-      <div style={{ fontFamily: f, fontSize: 9, color: "#374151", lineHeight: 1.6, marginBottom: 8 }}>Заголовок крупный и жирный — он выделяется. Текст статьи мельче и легче по весу. Это создаёт ощущение структуры.</div>
-      <div style={{ fontFamily: f, fontSize: 8, color: "#9ca3af", lineHeight: 1.5 }}>Дополнительный материал · 3 мин чтения</div>
+      <div style={{ fontFamily: f, fontSize: 16, fontWeight: 800, color: "#f4f5fc", marginBottom: 6 }}>Статья</div>
+      <div style={{ fontFamily: f, fontSize: 9, color: "#c8cfd3", lineHeight: 1.6, marginBottom: 8 }}>Заголовок крупный и жирный — он выделяется. Текст статьи мельче и легче по весу. Это создаёт структуру.</div>
+      <div style={{ fontFamily: f, fontSize: 8, color: "#9aa5aa", lineHeight: 1.5 }}>Дополнительный материал · 3 мин чтения</div>
     </div>
   );
 }
@@ -1475,9 +1476,9 @@ export function CQConn2B() {
 export function CQConn2C() {
   return (
     <div style={{ ...card, alignItems: "flex-start", justifyContent: "flex-start", padding: "18px 22px" }}>
-      <div style={{ fontFamily: f, fontSize: 9, color: "#9ca3af", marginBottom: 6 }}>Статья</div>
-      <div style={{ fontFamily: f, fontSize: 9, color: "#9ca3af", lineHeight: 1.6, marginBottom: 6 }}>Заголовок такого же размера, как и остальной текст. Контраст между элементами отсутствует.</div>
-      <div style={{ fontFamily: f, fontSize: 9, color: "#9ca3af", lineHeight: 1.5 }}>Дополнительный материал · 3 мин чтения</div>
+      <div style={{ fontFamily: f, fontSize: 9, color: "#798589", marginBottom: 6 }}>Статья</div>
+      <div style={{ fontFamily: f, fontSize: 9, color: "#798589", lineHeight: 1.6, marginBottom: 6 }}>Заголовок такого же размера и цвета, как и остальной текст. Контраст отсутствует.</div>
+      <div style={{ fontFamily: f, fontSize: 9, color: "#798589", lineHeight: 1.5 }}>Дополнительный материал · 3 мин чтения</div>
     </div>
   );
 }
@@ -1487,12 +1488,12 @@ export function CQConn2C() {
 /** Кнопка сливается с фоном → "Сделать цвет контрастным" */
 export function CQConn3A() {
   return (
-    <div style={{ ...card, background: "#e5e7eb" }}>
-      <div style={{ fontFamily: f, fontSize: 10, color: "#9ca3af", marginBottom: 12 }}>Следующий шаг</div>
-      <div style={{ background: "#d1d5db", borderRadius: 9, padding: "9px 28px" }}>
-        <span style={{ fontFamily: f, fontSize: 11, fontWeight: 600, color: "#9ca3af" }}>Продолжить</span>
+    <div style={card}>
+      <div style={{ fontFamily: f, fontSize: 10, color: "#9aa5aa", marginBottom: 12 }}>Следующий шаг</div>
+      <div style={{ background: "#3a4a50", borderRadius: 9, padding: "9px 28px", border: "1px solid #4a5a60" }}>
+        <span style={{ fontFamily: f, fontSize: 11, fontWeight: 600, color: "#4a5a60" }}>Продолжить</span>
       </div>
-      <div style={{ fontFamily: f, fontSize: 8, color: "#9ca3af", marginTop: 10, textAlign: "center" }}>Кнопка почти не видна</div>
+      <div style={{ fontFamily: f, fontSize: 8, color: "#798589", marginTop: 10, textAlign: "center" }}>Кнопка почти не видна</div>
     </div>
   );
 }
@@ -1501,9 +1502,9 @@ export function CQConn3A() {
 export function CQConn3B() {
   return (
     <div style={{ ...card, alignItems: "flex-start", justifyContent: "flex-start", padding: "18px 22px" }}>
-      <div style={{ fontFamily: f, fontSize: 13, fontWeight: 700, color: "#d1d5db", marginBottom: 6 }}>Важное сообщение</div>
-      <div style={{ fontFamily: f, fontSize: 9, color: "#e5e7eb", lineHeight: 1.6, marginBottom: 6 }}>Текст цвета слишком близкого к фону — почти невозможно прочитать. Пользователь теряет информацию.</div>
-      <div style={{ fontFamily: f, fontSize: 8, color: "#e5e7eb" }}>5 мин назад</div>
+      <div style={{ fontFamily: f, fontSize: 13, fontWeight: 700, color: "#4a5a60", marginBottom: 6 }}>Важное сообщение</div>
+      <div style={{ fontFamily: f, fontSize: 9, color: "#3d4c52", lineHeight: 1.6, marginBottom: 6 }}>Текст почти не отличается от фона — невозможно прочитать. Пользователь теряет информацию.</div>
+      <div style={{ fontFamily: f, fontSize: 8, color: "#3d4c52" }}>5 мин назад</div>
     </div>
   );
 }
@@ -1513,8 +1514,8 @@ export function CQConn3C() {
   return (
     <div style={{ ...card, justifyContent: "center", gap: 8 }}>
       {["Сохранить", "Отменить", "Удалить"].map((label) => (
-        <div key={label} style={{ background: "#f3f4f6", borderRadius: 8, padding: "8px 0", width: 160, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <span style={{ fontFamily: f, fontSize: 10, fontWeight: 500, color: "#6b7280" }}>{label}</span>
+        <div key={label} style={{ background: "#384348", borderRadius: 8, padding: "8px 0", width: 160, display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #4a5a60" }}>
+          <span style={{ fontFamily: f, fontSize: 10, fontWeight: 500, color: "#9aa5aa" }}>{label}</span>
         </div>
       ))}
     </div>

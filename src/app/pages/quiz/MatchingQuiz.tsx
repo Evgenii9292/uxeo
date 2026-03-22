@@ -525,7 +525,7 @@ export function MatchingQuiz({
                       width: topCardW,
                       height: hasNode ? nodeCardH : topCardH,
                       borderRadius: 15,
-                      backgroundImage: hasNode ? "none" : topCardBg,
+                      backgroundImage: topCardBg,
                       overflow: "hidden",
                       boxShadow: ring ? `0 0 0 3px ${ring}` : undefined,
                       cursor: checked ? "default" : "pointer",
@@ -734,7 +734,7 @@ export function MatchingQuiz({
                     height: hasNode ? desktopNodeH : undefined,
                     minHeight: hasNode ? undefined : 90,
                     borderRadius: 15,
-                    backgroundImage: hasNode ? "none" : topCardBg,
+                    backgroundImage: topCardBg,
                     overflow: "hidden",
                     boxShadow: ring
                       ? `0 0 0 3px ${ring}, inset -4px 0px 4px 0px #384348, inset 4px 0px 4px 0px #384348, inset 0px -4px 4px 0px rgba(0,0,0,0.2), inset 0px 4px 4px 0px rgba(0,0,0,0.2)`
