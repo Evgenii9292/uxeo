@@ -97,28 +97,24 @@ export function TheoryMobileLayout({
         style={{ paddingBottom: (tabBarVisible ? 52 : 0) + 72 + 16 }}
         onScroll={handleScroll}
       >
-        {/* Hero */}
-        <div className="relative overflow-hidden flex items-center justify-center" style={{ height: '220px', background: '#282F33' }}>
+        {/* Hero icon — no bg, centered */}
+        <div className="flex items-center justify-center" style={{ height: '200px' }}>
           <img
             src={getLessonIcon(lessonId)}
             alt=""
-            style={{ width: 140, height: 140, objectFit: "contain", transform: `translateY(${mobileScrollY * 0.15}px)` }}
+            style={{ width: 150, height: 150, objectFit: "contain", transform: `translateY(${mobileScrollY * 0.1}px)` }}
           />
-          <div className="absolute bottom-0 left-0 right-0 h-[60px]"
-            style={{ background: 'linear-gradient(to top, rgb(40,47,51), transparent)' }} />
         </div>
 
         {/* Title + meta */}
-        <div className="px-[16px] pb-[16px] relative z-10" style={{ marginTop: '-30px' }}>
+        <div className="px-[16px] pb-[16px]">
           <div className="flex items-end justify-between gap-[10px]">
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[28px]">
               {lessonData.title}
             </p>
-            <div className="flex gap-[12px] items-center shrink-0 pb-[2px]">
-              <div className="flex gap-[5px] items-center">
-                <TimeIcon />
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f7fb] text-[16px]">{lessonData.duration}</p>
-              </div>
+            <div className="flex gap-[5px] items-center shrink-0 pb-[4px]">
+              <TimeIcon />
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f7fb] text-[16px]">{lessonData.duration}</p>
             </div>
           </div>
         </div>
