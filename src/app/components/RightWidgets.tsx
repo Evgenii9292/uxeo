@@ -210,11 +210,11 @@ function LeagueProgress() {
               </div>
             </div>
             {/* Current league trophy */}
-            <div className="content-stretch flex h-[57px] items-center relative shrink-0">
+            <div className="content-stretch flex h-[51px] items-center relative shrink-0">
               <img
                 src={league.trophy}
-                width={29}
-                height={29}
+                width={26}
+                height={26}
                 style={{ objectFit: "contain" }}
               />
             </div>
