@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router";
 import Layout from "../components/Layout";
 import RightWidgets from "../components/RightWidgets";
@@ -67,13 +67,24 @@ export default function TheoryPage() {
     );
   }
 
+  const heroRef = useRef<HTMLDivElement>(null);
+  const [scrollY, setScrollY] = useState(0);
+  useEffect(() => {
+    const el = heroRef.current?.closest(".overflow-y-auto") as HTMLElement | null;
+    if (!el) return;
+    const onScroll = () => setScrollY(el.scrollTop);
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+  const shift = scrollY * 0.25;
+
   return (
     <div className="theory-page size-full">
       <Layout title="Теория" showBack backPath="/lessons" rightContent={<RightWidgets />} leftWidth="660px" rightWidth="320px">
         <div className="flex flex-col gap-[20px] w-full">
-          {/* Hero — icon centered, no bg */}
-          <div className="flex flex-col items-center gap-[20px] w-full py-[10px]">
-            <img src={getLessonIcon(lessonId)} alt="" style={{ width: 160, height: 160, objectFit: "contain", filter: "brightness(0) invert(1)", maskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)" }} />
+          {/* Hero — icon centered, no bg, parallax */}
+          <div ref={heroRef} className="flex flex-col items-center gap-[20px] w-full py-[10px]">
+            <img src={getLessonIcon(lessonId)} alt="" style={{ width: 160, height: 160, objectFit: "contain", filter: "brightness(0) invert(1)", maskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", transform: `translateY(${shift}px)`, willChange: "transform" }} />
             <div className="flex items-center justify-between w-full">
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[35px] text-[#f4f5fc] text-[32px]">
                 {lessonData.title}
