@@ -102,7 +102,7 @@ export function TheoryMobileLayout({
           <img
             src={getLessonIcon(lessonId)}
             alt=""
-            style={{ width: 150, height: 150, objectFit: "contain", transform: `translateY(${mobileScrollY * 0.1}px)` }}
+            style={{ width: 150, height: 150, objectFit: "contain", filter: "brightness(0) invert(1)", transform: `translateY(${mobileScrollY * 0.1}px)` }}
           />
         </div>
 

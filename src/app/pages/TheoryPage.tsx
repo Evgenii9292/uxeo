@@ -69,11 +69,11 @@ export default function TheoryPage() {
 
   return (
     <div className="theory-page size-full">
-      <Layout title={lessonData.title} showBack backPath="/lessons" rightContent={<RightWidgets />} leftWidth="660px" rightWidth="320px">
+      <Layout title="Теория" showBack backPath="/lessons" rightContent={<RightWidgets />} leftWidth="660px" rightWidth="320px">
         <div className="flex flex-col gap-[20px] w-full">
           {/* Hero — icon centered, no bg */}
           <div className="flex flex-col items-center gap-[20px] w-full py-[10px]">
-            <img src={getLessonIcon(lessonId)} alt="" style={{ width: 160, height: 160, objectFit: "contain" }} />
+            <img src={getLessonIcon(lessonId)} alt="" style={{ width: 160, height: 160, objectFit: "contain", filter: "brightness(0) invert(1)" }} />
             <div className="flex items-center justify-between w-full">
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[35px] text-[#f4f5fc] text-[32px]">
                 {lessonData.title}
