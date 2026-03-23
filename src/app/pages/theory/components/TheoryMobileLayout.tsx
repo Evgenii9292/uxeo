@@ -102,7 +102,7 @@ export function TheoryMobileLayout({
           <img
             src={getLessonIcon(lessonId)}
             alt=""
-            style={{ width: 150, height: 150, objectFit: "contain", filter: "brightness(0) invert(1)", maskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", transform: `translateY(${mobileScrollY * 0.25}px)`, opacity: Math.max(0.5, 1 - mobileScrollY / 180), willChange: "transform, opacity" }}
+            style={{ width: 150, height: 150, objectFit: "contain", filter: "brightness(0) invert(0.52)", maskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", transform: `translateY(${mobileScrollY * 0.25}px)`, opacity: Math.max(0.5, 1 - mobileScrollY / 180), willChange: "transform, opacity" }}
           />
         </div>
 
