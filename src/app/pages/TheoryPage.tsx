@@ -8,7 +8,7 @@ import { LESSON_CONTENT, type LessonContentData } from "../data/lesson-content";
 import { TimeIcon, TheoryLevelIcon } from "./theory/ui/Icons";
 import { AccordionSectionDesktop } from "./theory/components/AccordionSection";
 import { useTheory } from "./theory/useTheory";
-import { HeroImage } from "./theory/components/TheoryShared";
+import { getLessonIcon } from "../data/lesson-icons";
 import { TheoryMobileLayout } from "./theory/components/TheoryMobileLayout";
 
 export default function TheoryPage() {
@@ -74,9 +74,9 @@ export default function TheoryPage() {
           {/* Hero block */}
           <div className="bg-[#404d52] rounded-[15px] p-[20px] w-full">
             <div className="content-stretch flex gap-[20px] items-stretch relative shrink-0 w-full">
-              {/* Left: image */}
-              <div className="shrink-0 rounded-[15px] overflow-hidden self-stretch" style={{ width: '300px' }}>
-                <HeroImage />
+              {/* Left: lesson icon */}
+              <div className="shrink-0 rounded-[15px] bg-[#282F33] self-stretch flex items-center justify-center" style={{ width: '220px' }}>
+                <img src={getLessonIcon(lessonId)} alt="" style={{ width: 140, height: 140, objectFit: "contain" }} />
               </div>
               {/* Right: title + meta */}
               <div className="flex flex-col gap-[14px] flex-1 py-[10px]">

@@ -11,7 +11,7 @@ import { FloatingCircle } from "../../../components/FloatingCircle";
 import { MobileFloatingCircles } from "../../../components/MobileFloatingCircles";
 import { TimeIcon, TheoryLevelIcon } from "../ui/Icons";
 import { AccordionSectionMobile } from "./AccordionSection";
-import { HeroImage } from "./TheoryShared";
+import { getLessonIcon } from "../../../data/lesson-icons";
 import type { LessonContentData } from "../../../data/lesson-content";
 import type { AccordionState } from "../useTheory";
 import { LESSONS } from "../../../data/lessons";
@@ -97,13 +97,15 @@ export function TheoryMobileLayout({
         style={{ paddingBottom: (tabBarVisible ? 52 : 0) + 72 + 16 }}
         onScroll={handleScroll}
       >
-        {/* Hero parallax */}
-        <div className="relative overflow-hidden" style={{ height: '280px' }}>
-          <div className="absolute inset-0" style={{ transform: `translateY(${mobileScrollY * 0.3}px)` }}>
-            <HeroImage />
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 h-[80px]"
-            style={{ background: 'linear-gradient(to top, rgb(45,54,58), transparent)' }} />
+        {/* Hero */}
+        <div className="relative overflow-hidden flex items-center justify-center" style={{ height: '220px', background: '#282F33' }}>
+          <img
+            src={getLessonIcon(lessonId)}
+            alt=""
+            style={{ width: 140, height: 140, objectFit: "contain", transform: `translateY(${mobileScrollY * 0.15}px)` }}
+          />
+          <div className="absolute bottom-0 left-0 right-0 h-[60px]"
+            style={{ background: 'linear-gradient(to top, rgb(40,47,51), transparent)' }} />
         </div>
 
         {/* Title + meta */}

@@ -12,7 +12,7 @@ import svgCardPaths from "../../imports/svg-u7gh1bm86c";
 import imgProgressRoot from "figma:asset/010ae10dcd9db562072cdc157b19ca2406d1fb36.png";
 import type { Lesson } from "./roadmap-types";
 import { NODE_W, NODE_H } from "./roadmap-layout";
-import iconBtn from "../../assets/icon-btn.svg";
+import { getLessonIcon } from "../../app/data/lesson-icons";
 import { GreenIndicator } from "../../app/pages/theory/ui/Indicators";
 
 // ─── Lesson total time (theory + quiz) ───────────────────────────────────────
@@ -307,8 +307,8 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
           {/* Icon + Title + Description */}
           <div className="flex gap-[15px] items-start w-full">
             {/* Icon */}
-            <div className="h-[55px] shrink-0 w-[56px] relative">
-              <img src={iconBtn} alt="" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+            <div className="h-[55px] shrink-0 w-[56px] relative flex items-center justify-center">
+              <img src={getLessonIcon(lesson.lessonId, isHomework)} alt="" style={{ width: 52, height: 52, objectFit: "contain" }} />
             </div>
             {/* Text */}
             <div className="flex flex-1 flex-col gap-[15px] items-start min-w-0">
