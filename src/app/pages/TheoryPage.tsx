@@ -77,7 +77,7 @@ export default function TheoryPage() {
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
   const shift   = scrollY * 0.25;
-  const opacity = Math.max(0, 1 - scrollY / 180);
+  const opacity = Math.max(0.5, 1 - scrollY / 180);
 
   return (
     <div className="theory-page size-full">
