@@ -47,7 +47,7 @@ export function AccordionSectionMobile({
                     (state.selectedAnswer === "right" && section.quizRightCorrect);
 
   return (
-    <div data-section={sectionIndex} className="w-full bg-[#374348] rounded-[15px] overflow-hidden">
+    <div data-section={sectionIndex} className="w-full bg-[#343e42] rounded-[15px] overflow-hidden">
       {/* Header */}
       <div
         className={`h-auto min-h-[100px] relative shrink-0 w-full flex items-center ${isUnlocked ? "cursor-pointer" : "cursor-not-allowed"}`}
@@ -58,7 +58,7 @@ export function AccordionSectionMobile({
             {state.completed ? <GreenIndicator /> : state.hasIncorrectAnswer ? <OrangeIndicator /> : <GrayIndicator />}
             <p
               className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[24px] text-[22px]"
-              style={{ color: !isUnlocked ? "#4a5560" : isOpen ? "#f1f2fb" : "#798589" }}
+              style={{ color: !isUnlocked ? "rgba(241,242,251,0.12)" : isOpen ? "#f1f2fb" : "#798589" }}
             >
               {section.title}
             </p>
@@ -77,9 +77,15 @@ export function AccordionSectionMobile({
                 {section.content}
               </div>
 
-              {/* Quiz container */}
-              <div className="bg-[#3F4C52] rounded-[15px] w-full mt-[10px]">
-                <div className="p-[20px] flex flex-col gap-[20px]">
+              {/* Quiz section — no outer bg */}
+              <div className="w-full mt-[10px]">
+                {/* Divider + heading */}
+                <div className="flex items-center gap-[12px] mb-[16px]">
+                  <div className="h-[1px] flex-1" style={{ background: "rgba(241,242,251,0.1)" }} />
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[12px] uppercase tracking-widest shrink-0">Закрепим</p>
+                  <div className="h-[1px] flex-1" style={{ background: "rgba(241,242,251,0.1)" }} />
+                </div>
+                <div className="flex flex-col gap-[20px]">
                   {/* Header row */}
                   <div className="flex items-center justify-between w-full">
                     <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[24px] text-[#f1f2fb] text-[20px] flex-1 pr-[10px]">
@@ -171,7 +177,7 @@ export function AccordionSectionDesktop({
                     (state.selectedAnswer === "right" && section.quizRightCorrect);
 
   return (
-    <div data-section={sectionIndex} className="w-full bg-[#374348] rounded-[15px] overflow-hidden">
+    <div data-section={sectionIndex} className="w-full bg-[#343e42] rounded-[15px] overflow-hidden">
       {/* Header */}
       <div
         className={`h-[120px] relative shrink-0 w-full flex items-center ${isUnlocked ? "cursor-pointer" : "cursor-not-allowed"}`}
@@ -182,7 +188,7 @@ export function AccordionSectionDesktop({
             {state.completed ? <GreenIndicator /> : state.hasIncorrectAnswer ? <OrangeIndicator /> : <GrayIndicator />}
             <p
               className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[26px] whitespace-nowrap"
-              style={{ color: !isUnlocked ? "#4a5560" : isOpen ? "#f1f2fb" : "#798589" }}
+              style={{ color: !isUnlocked ? "rgba(241,242,251,0.12)" : isOpen ? "#f1f2fb" : "#798589" }}
             >
               {section.title}
             </p>
@@ -202,9 +208,15 @@ export function AccordionSectionDesktop({
                   {section.content}
                 </div>
 
-                {/* Outer quiz container */}
-                <div className="bg-[#3F4C52] rounded-[15px] w-full mt-[10px]">
-                  <div className="p-[30px] flex flex-col gap-[20px]">
+                {/* Quiz section — no outer bg */}
+                <div className="w-full mt-[10px]">
+                  {/* Divider + heading */}
+                  <div className="flex items-center gap-[14px] mb-[20px]">
+                    <div className="h-[1px] flex-1" style={{ background: "rgba(241,242,251,0.1)" }} />
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[14px] uppercase tracking-widest shrink-0">Закрепим</p>
+                    <div className="h-[1px] flex-1" style={{ background: "rgba(241,242,251,0.1)" }} />
+                  </div>
+                  <div className="flex flex-col gap-[20px]">
                     {/* Header row: question LEFT, label RIGHT */}
                     <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
                       <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f1f2fb] text-[26px] flex-1 pr-[20px]">

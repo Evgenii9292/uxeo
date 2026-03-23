@@ -85,7 +85,9 @@ export default function TheoryPage() {
         <div className="flex flex-col gap-[20px] w-full">
           {/* Hero — icon centered, no bg, parallax */}
           <div ref={heroRef} className="flex flex-col items-center gap-[20px] w-full py-[10px]">
-            <img src={getLessonIcon(lessonId)} alt="" style={{ width: 160, height: 160, objectFit: "contain", filter: "brightness(0) invert(1)", maskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", transform: `translateY(${shift}px)`, opacity, willChange: "transform, opacity" }} />
+            <div className="relative flex items-center justify-center" style={{ width: 200, height: 200 }}>
+              <img src={getLessonIcon(lessonId)} alt="" style={{ width: 160, height: 160, objectFit: "contain", filter: "brightness(0) invert(1)", maskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", transform: `translateY(${shift}px)`, opacity: Math.max(0.5, 1 - scrollY / 180), willChange: "transform, opacity", position: "relative", zIndex: 1 }} />
+            </div>
             <div className="flex items-center justify-between w-full">
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[35px] text-[#f4f5fc] text-[32px]">
                 {lessonData.title}

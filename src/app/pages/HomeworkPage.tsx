@@ -336,49 +336,29 @@ function LevelIcon() {
 
 function HeroCard({ hw }: { hw: HomeworkData }) {
   return (
-    <div className="flex flex-col gap-[20px] w-full">
-      {/* Homework hero */}
-      <div
-        className="w-full rounded-[12px] flex items-center justify-center overflow-hidden"
-        style={{ height: 200, background: "#394449" }}
-      >
-        <div className="flex flex-col items-center gap-[12px]">
-          <div className="size-[64px] rounded-full bg-[#394449] flex items-center justify-center">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f1f2fb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="16" y1="13" x2="8" y2="13" />
-              <line x1="16" y1="17" x2="8" y2="17" />
-              <polyline points="10 9 9 9 8 9" />
-            </svg>
-          </div>
-          <p className={`${TEXT_MEDIUM} leading-[20px] text-[#798589] text-[16px]`}>Практическое задание</p>
-        </div>
+    <div className="flex flex-col items-center gap-[20px] w-full py-[10px]">
+      {/* Icon — centered, no bg, like theory */}
+      <div className="flex items-center justify-center" style={{ width: 160, height: 160 }}>
+        <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#f1f2fb" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5 }}>
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+          <polyline points="10 9 9 9 8 9" />
+        </svg>
       </div>
-      <div className="flex flex-col gap-[40px]">
-        <div className="flex flex-col gap-[9px]">
-          <p className={`${TEXT_TITLE} leading-[35px] text-[#f4f5fc] text-[32px]`}>{hw.title}</p>
-          <p className={`${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[18px] opacity-80`}>{hw.subtitle}</p>
-        </div>
-        <div className="flex flex-wrap gap-[5px_20px] items-center">
-          <div className="flex gap-[5px] items-center">
-            <div className="overflow-clip relative shrink-0 size-[14px]">
-              <div className="absolute inset-[0_11.67%_0_11.66%]">
-                <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 10.7333 14">
-                  <path d={svgPaths.p11af9000} fill="#F1F2FB" />
-                </svg>
-              </div>
+      {/* Title left, time right */}
+      <div className="flex items-center justify-between w-full">
+        <p className={`${TEXT_TITLE} leading-[35px] text-[#f4f5fc] text-[32px]`}>{hw.title}</p>
+        <div className="flex gap-[5px] items-center shrink-0">
+          <div className="overflow-clip relative shrink-0 size-[14px]">
+            <div className="absolute inset-[0_11.67%_0_11.66%]">
+              <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 10.7333 14">
+                <path d={svgPaths.p11af9000} fill="#F1F2FB" />
+              </svg>
             </div>
-            <p className={`${TEXT_MEDIUM} leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap`}>{hw.time}</p>
           </div>
-          <div className="flex gap-[5px] items-center">
-            <LevelIcon />
-            <p className={`${TEXT_MEDIUM} leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap`}>{hw.level}</p>
-          </div>
-          <div className="flex gap-[5px] items-center">
-            <Zap size={14} className="shrink-0 text-[#F1F2FB]" fill="#F1F2FB" />
-            <p className={`${TEXT_MEDIUM} leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap`}>{hw.xp}</p>
-          </div>
+          <p className={`${TEXT_MEDIUM} leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap`}>{hw.time}</p>
         </div>
       </div>
     </div>
@@ -479,7 +459,7 @@ function PendingCard() {
       {/* Outer wrapper — yellow gradient for pending */}
       <div
         className="rounded-[15px] flex flex-col gap-[14px]"
-        style={{ background: "linear-gradient(145deg, #3d3820 0%, #343e42 55%)", border: "2px solid #4a4220", padding: "20px" }}
+        style={{ background: "#343e42", border: "2px solid #384348", padding: "20px" }}
       >
         {/* Status pill */}
         <div
@@ -754,20 +734,20 @@ function SubmitBlock({ homeworkLessonId, lessonName }: { homeworkLessonId?: stri
           </div>
         )}
 
-        {/* Outer wrapper */}
+        {/* Outer wrapper — red for rejected */}
         <div
           className="rounded-[15px] flex flex-col gap-[14px]"
-          style={{ background: "#343e42", border: "2px solid #384348", padding: "20px" }}
+          style={{ background: "linear-gradient(145deg, #312630 0%, #343e42 55%)", border: "2px solid #4a3040", padding: "20px" }}
         >
           {/* Status pill */}
           <div
             className="flex gap-[7px] items-center px-[12px] h-[32px] rounded-full self-start"
-            style={{ background: "#2E3538" }}
+            style={{ background: "#2a2030" }}
           >
             <svg width="14" height="14" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="m48 256c0 114.87 93.13 208 208 208s208-93.13 208-208-93.13-208-208-208-208 93.13-208 208zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6l84.55 79.74a8.2 8.2 0 0 1 0 11.94l-84.42 79.77a8.32 8.32 0 0 1 -14-6v-37.29c-57.07 0-84.51 13.47-108.58 38.68-5.49 5.65-15.07 1.32-14.42-6.43z" fill="#91969B" />
+              <path d="m48 256c0 114.87 93.13 208 208 208s208-93.13 208-208-93.13-208-208-208-208 93.13-208 208zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6l84.55 79.74a8.2 8.2 0 0 1 0 11.94l-84.42 79.77a8.32 8.32 0 0 1 -14-6v-37.29c-57.07 0-84.51 13.47-108.58 38.68-5.49 5.65-15.07 1.32-14.42-6.43z" fill="#e8a0c0" />
             </svg>
-            <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#91969B" }}>переделать</p>
+            <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#e8a0c0" }}>Переделать</p>
           </div>
 
           {/* Inner feedback card */}
@@ -988,6 +968,9 @@ export default function HomeworkPage() {
   const isMobile = useIsMobile();
   const homeworkLessonId = (location.state as any)?.homeworkId || "homework-1";
   const hw = HOMEWORK_CONTENT[homeworkLessonId] || DEFAULT_HOMEWORK;
+  const hwCtx = useHomeworkSafe();
+  const serverRecord = hwCtx?.getByLessonId(homeworkLessonId) ?? hwCtx?.getByLessonName(hw.title);
+  const isPendingInline = isMobile && serverRecord?.status === "pending";
 
   const [openSections, setOpenSections] = useState<Set<number>>(new Set([0]));
   const [submitVisible, setSubmitVisible] = useState(true);
@@ -1009,6 +992,9 @@ export default function HomeworkPage() {
     scrollEl.addEventListener('scroll', onScroll, { passive: true });
     return () => scrollEl.removeEventListener('scroll', onScroll);
   }, [isMobile]);
+
+  // Refresh homework data on page open to get latest comment/status from server
+  useEffect(() => { hwCtx?.refresh(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggleSection = (i: number) => {
     setOpenSections(prev => {
@@ -1077,13 +1063,16 @@ export default function HomeworkPage() {
             <ExampleContent hw={hw} />
           </AccordionSection>
 
+          {/* Pending status inline on mobile */}
+          {isPendingInline && <PendingCard />}
+
           {/* Bottom padding — extra on mobile for the fixed submit block */}
           <div style={{ height: isMobile ? 130 : 110 }} />
         </div>
       </Layout>
 
       {/* Submit block — fixed at bottom (right on desktop, full-width on mobile) */}
-      <div
+      {!isPendingInline && <div
         style={isMobile ? {
           position: "fixed",
           bottom: submitVisible ? 52 : 4,
@@ -1102,7 +1091,7 @@ export default function HomeworkPage() {
         }}
       >
         <SubmitBlock homeworkLessonId={homeworkLessonId} lessonName={hw.title} />
-      </div>
+      </div>}
     </>
   );
 }

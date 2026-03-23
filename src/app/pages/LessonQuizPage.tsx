@@ -188,6 +188,8 @@ export default function LessonQuizPage() {
   const [showCompletionOverlay, setShowCompletionOverlay] = useState(false);
   const [showStreakOverlay, setShowStreakOverlay] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const quizStartTime = useRef(Date.now());
   const [runAnsweredQuestions, setRunAnsweredQuestions] = useState(0);
   const [runCorrectAnswers, setRunCorrectAnswers] = useState(0);
   const runCorrectRef = useRef(0);
@@ -232,6 +234,7 @@ export default function LessonQuizPage() {
     const passed = resultCorrect >= Math.ceil(resultTotal * 0.5);
 
     const handleRetry = () => {
+      quizStartTime.current = Date.now();
       setQuizFinished(false);
       setShowCompletionOverlay(false);
       setSelection(null);
@@ -255,6 +258,7 @@ export default function LessonQuizPage() {
           earnedXP={totalEarnedXP}
           passed={passed}
           bestStreak={bestStreak}
+          elapsedSeconds={elapsedSeconds}
           onContinue={() => {
             setShowCompletionOverlay(false);
             if (passed) {
@@ -965,6 +969,7 @@ export default function LessonQuizPage() {
         if (finalRunCorrect === totalQuestions && totalQuestions > 0) {
           achievementsCtx?.triggerAchievement("perfect_quiz");
         }
+        setElapsedSeconds(Math.round((Date.now() - quizStartTime.current) / 1000));
         setShowCompletionOverlay(true);
         setQuizFinished(true);
       }
@@ -1054,6 +1059,7 @@ export default function LessonQuizPage() {
       if (finalRunCorrect === totalQuestions && totalQuestions > 0) {
         achievementsCtx?.triggerAchievement("perfect_quiz");
       }
+      setElapsedSeconds(Math.round((Date.now() - quizStartTime.current) / 1000));
       setShowCompletionOverlay(true);
       setQuizFinished(true);
     }

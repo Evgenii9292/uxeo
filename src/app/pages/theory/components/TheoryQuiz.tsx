@@ -68,7 +68,7 @@ export function QuizCardLeft({ isSelected, isCorrect, showFeedback, onClick, dis
       style={isSelected ? isCorrect
         ? { background: `linear-gradient(#2D3B36, #2D3B36) padding-box, linear-gradient(to bottom, #00932F, #002D0E) border-box`, borderColor: "transparent" }
         : { background: `linear-gradient(#3B3736, #3B3736) padding-box, linear-gradient(to bottom, #932E00, #2D0000) border-box`, borderColor: "transparent" }
-        : { background: "#282F33", borderColor: "#282F33" }}
+        : { background: "#3c4a52", borderColor: "#3c4a52" }}
     >
       {contentNode ? (
         <QuizVariantSlot node={contentNode} />
@@ -94,7 +94,7 @@ export function QuizCardRight({ isSelected, isCorrect, showFeedback, onClick, di
       style={isSelected ? isCorrect
         ? { background: `linear-gradient(#2D3B36, #2D3B36) padding-box, linear-gradient(to bottom, #00932F, #002D0E) border-box`, borderColor: "transparent" }
         : { background: `linear-gradient(#3B3736, #3B3736) padding-box, linear-gradient(to bottom, #932E00, #2D0000) border-box`, borderColor: "transparent" }
-        : { background: "#282F33", borderColor: "#282F33" }}
+        : { background: "#3c4a52", borderColor: "#3c4a52" }}
     >
       {contentNode ? (
         <QuizVariantSlot node={contentNode} />

@@ -1,6 +1,6 @@
 // ─── Lesson Completion Screen ─────────────────────────────────────────────────
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import correctSvgPaths from "../../imports/svg-1n8b0v1b3s";
 import { useWindowWidth } from "../hooks/useWindowWidth";
 
@@ -103,6 +103,7 @@ interface LessonCompletionScreenProps {
   earnedXP: number;
   passed: boolean;
   bestStreak?: number;
+  elapsedSeconds?: number;
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
@@ -116,9 +117,12 @@ export default function LessonCompletionScreen({
   earnedXP,
   passed,
   bestStreak = 0,
+  elapsedSeconds = 0,
 }: LessonCompletionScreenProps) {
   const vw = useWindowWidth();
   const isMobile = vw < 768;
+  const [rating, setRating] = useState(0);
+  const [hovered, setHovered] = useState(0);
 
   useEffect(() => {
     const ctx = new AudioContext();
@@ -163,89 +167,144 @@ export default function LessonCompletionScreen({
     return () => { ctx.close().catch(() => {}); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const formatTime = (s: number) => {
+    if (s < 60) return `${s}с`;
+    const m = Math.floor(s / 60), sec = s % 60;
+    return sec > 0 ? `${m}м ${sec}с` : `${m}м`;
+  };
+
+  const starSize = isMobile ? 32 : 38;
+  const activeStars = hovered || rating;
+
+  const StarRow = () => (
+    <div className="flex flex-col items-center gap-[10px]">
+      <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] leading-[1.2] ${isMobile ? "text-[13px]" : "text-[16px]"}`}>
+        Оцените урок — это помогает нам стать лучше
+      </p>
+      <div className="flex gap-[6px]">
+        {[1,2,3,4,5].map(n => (
+          <button
+            key={n}
+            onMouseEnter={() => setHovered(n)}
+            onMouseLeave={() => setHovered(0)}
+            onClick={() => setRating(n)}
+            className="transition-transform duration-100 active:scale-90 hover:scale-110 cursor-pointer outline-none"
+          >
+            <svg width={starSize} height={starSize} viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"
+                fill={activeStars >= n ? "#FFB121" : "none"}
+                stroke={activeStars >= n ? "#FFB121" : "#4a5560"}
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div
       className="relative min-h-screen w-full overflow-hidden flex items-center justify-center"
-      style={{ backgroundImage: "#282F33" }}
+      style={{ background: "#282F33" }}
     >
-      <div className="flex flex-col items-center gap-[48px]">
+      <div className={`flex flex-col items-center ${isMobile ? "gap-[32px] px-[24px] w-full" : "gap-[40px]"}`}>
 
         {passed ? (
           /* ── STATE A: PASSED ────────────────────────────────────────────── */
           <>
-            {/* Icon — only on pass */}
-            <PartyPopperIcon />
-
-            <div className="flex flex-col items-center gap-[16px]">
-              <h1 className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#cdf6db] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[28px]" : "text-[48px]"}`}>
+            <div className="flex flex-col items-center gap-[12px]">
+              <PartyPopperIcon />
+              <h1 className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#cdf6db] leading-[1.2] ${isMobile ? "text-[28px]" : "text-[48px]"}`}>
                 Поздравляем!
               </h1>
-              <p className={`font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#f4f5fc] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[17px]" : "text-[24px]"}`}>
-                Урок пройден
-              </p>
-              <p className={`font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#798589] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[14px]" : "text-[18px]"}`}>
-                {correctAnswers} из {totalQuestions} заданий выполнено
+              <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] leading-[1.2] ${isMobile ? "text-[14px]" : "text-[18px]"}`}>
+                Урок успешно пройден
               </p>
             </div>
 
-            {/* XP reward */}
-            <div className="flex items-center gap-[12px]">
-              <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#00d043] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[24px]" : "text-[36px]"}`}>
-                +{earnedXP} XP
-              </p>
-              <LightningIcon size={isMobile ? 22 : 32} />
-            </div>
-
-            {/* Best streak badge */}
-            {bestStreak >= 2 && (
-              <div className="flex items-center gap-[8px]">
-                <svg width="14" height="20" viewBox="0 0 16.7655 24.4324" fill="none">
-                  <defs>
-                    <linearGradient id="csfg" x1="8.38" x2="8.38" y1="0" y2="24.4324" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#FFB121" /><stop offset="1" stopColor="#BB8116" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M13.5956 6.34462C13.4294 6.06951 13.1002 5.93905 12.7908 6.02528C12.4813 6.11155 12.2672 6.39348 12.2672 6.71478C12.2672 7.58838 11.5564 8.29907 10.6828 8.29907C9.80926 8.29907 9.09857 7.58833 9.09857 6.71478V0.715745C9.09857 0.426229 8.9242 0.16525 8.65668 0.0544453C8.38931 -0.0562166 8.08133 0.00491231 7.87661 0.20963C7.7963 0.289942 5.88751 2.20985 3.95372 5.11054C2.81341 6.821 1.90344 8.51763 1.24916 10.1534C0.420315 12.2256 0 14.2094 0 16.0497C0 20.6719 3.7605 24.4324 8.38273 24.4324C13.005 24.4324 16.7655 20.6719 16.7655 16.0497C16.7655 13.091 15.699 9.82582 13.5956 6.34462Z" fill="url(#csfg)" />
-                </svg>
-                <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[15px]" : "text-[20px]"}`}>
-                  Лучшая серия: <span className="text-[#FFB121] font-medium">{bestStreak}</span>
+            {/* Stat cards */}
+            <div className={`flex gap-[12px] ${isMobile ? "w-full" : ""}`}>
+              <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: 1 }}>
+                <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] leading-[1.1] ${isMobile ? "text-[26px]" : "text-[36px]"}`}>
+                  {correctAnswers}<span className="text-[#798589]">/{totalQuestions}</span>
                 </p>
+                <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] ${isMobile ? "text-[12px]" : "text-[14px]"}`}>заданий</p>
               </div>
-            )}
+              <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: 1 }}>
+                <div className="flex items-center gap-[6px]">
+                  <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#00d043] leading-[1.1] ${isMobile ? "text-[26px]" : "text-[36px]"}`}>+{earnedXP}</p>
+                  <LightningIcon size={isMobile ? 20 : 26} />
+                </div>
+                <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] ${isMobile ? "text-[12px]" : "text-[14px]"}`}>XP заработано</p>
+              </div>
+              {bestStreak >= 2 && (
+                <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: 1 }}>
+                  <div className="flex items-center gap-[6px]">
+                    <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#FFB121] leading-[1.1] ${isMobile ? "text-[26px]" : "text-[36px]"}`}>{bestStreak}</p>
+                    <svg width="16" height="22" viewBox="0 0 16.7655 24.4324" fill="none">
+                      <defs><linearGradient id="csfg" x1="8.38" x2="8.38" y1="0" y2="24.4324" gradientUnits="userSpaceOnUse"><stop stopColor="#FFB121" /><stop offset="1" stopColor="#BB8116" /></linearGradient></defs>
+                      <path d="M13.5956 6.34462C13.4294 6.06951 13.1002 5.93905 12.7908 6.02528C12.4813 6.11155 12.2672 6.39348 12.2672 6.71478C12.2672 7.58838 11.5564 8.29907 10.6828 8.29907C9.80926 8.29907 9.09857 7.58833 9.09857 6.71478V0.715745C9.09857 0.426229 8.9242 0.16525 8.65668 0.0544453C8.38931 -0.0562166 8.08133 0.00491231 7.87661 0.20963C7.7963 0.289942 5.88751 2.20985 3.95372 5.11054C2.81341 6.821 1.90344 8.51763 1.24916 10.1534C0.420315 12.2256 0 14.2094 0 16.0497C0 20.6719 3.7605 24.4324 8.38273 24.4324C13.005 24.4324 16.7655 20.6719 16.7655 16.0497C16.7655 13.091 15.699 9.82582 13.5956 6.34462Z" fill="url(#csfg)" />
+                    </svg>
+                  </div>
+                  <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] ${isMobile ? "text-[12px]" : "text-[14px]"}`}>серия ответов</p>
+                </div>
+              )}
+              {elapsedSeconds > 0 && (
+                <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: 1 }}>
+                  <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] leading-[1.1] ${isMobile ? "text-[26px]" : "text-[36px]"}`}>
+                    {formatTime(elapsedSeconds)}
+                  </p>
+                  <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] ${isMobile ? "text-[12px]" : "text-[14px]"}`}>время</p>
+                </div>
+              )}
+            </div>
 
+            <StarRow />
             <OrangeButton label="Продолжить" onClick={onContinue} isMobile={isMobile} />
           </>
         ) : (
           /* ── STATE B: FAILED ────────────────────────────────────────────── */
           <>
-            <div className="flex flex-col items-center gap-[16px]">
-              <h1 className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#ffbaaa] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[28px]" : "text-[48px]"}`}>
+            <div className="flex flex-col items-center gap-[12px]">
+              <h1 className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#ffbaaa] leading-[1.2] ${isMobile ? "text-[28px]" : "text-[48px]"}`}>
                 Попробуйте ещё раз
               </h1>
-              <p className={`font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#f4f5fc] leading-[1.4] text-center max-w-[480px] ${isMobile ? "text-[15px] px-[24px]" : "text-[22px]"}`}>
-                Вы выполнили {correctAnswers} из {totalQuestions} заданий.<br />
-                Чтобы пройти урок нужно хотя бы {Math.ceil(totalQuestions * 0.5)} из {totalQuestions}.
+              <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] leading-[1.2] text-center ${isMobile ? "text-[14px]" : "text-[18px]"}`}>
+                Нужно {Math.ceil(totalQuestions * 0.5)} из {totalQuestions}, чтобы пройти урок
               </p>
             </div>
 
-            {/* Partial XP (if any) */}
-            {earnedXP > 0 && (
-              <div className="flex items-center gap-[12px]">
-                <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[20px]" : "text-[28px]"}`}>
-                  +{earnedXP} XP
+            {/* Stat cards */}
+            <div className={`flex gap-[12px] ${isMobile ? "w-full" : ""}`}>
+              <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: 1 }}>
+                <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] leading-[1.1] ${isMobile ? "text-[26px]" : "text-[36px]"}`}>
+                  {correctAnswers}<span className="text-[#798589]">/{totalQuestions}</span>
                 </p>
-                <LightningIcon size={isMobile ? 18 : 26} />
+                <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] ${isMobile ? "text-[12px]" : "text-[14px]"}`}>правильных</p>
               </div>
-            )}
+              {earnedXP > 0 && (
+                <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: 1 }}>
+                  <div className="flex items-center gap-[6px]">
+                    <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] leading-[1.1] ${isMobile ? "text-[26px]" : "text-[36px]"}`}>+{earnedXP}</p>
+                    <LightningIcon size={isMobile ? 20 : 26} />
+                  </div>
+                  <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] ${isMobile ? "text-[12px]" : "text-[14px]"}`}>XP заработано</p>
+                </div>
+              )}
+            </div>
 
-            {/* Two buttons */}
-            <div className="flex flex-col items-center gap-[26px] w-full min-w-[320px]">
+            <StarRow />
+
+            <div className="flex flex-col items-center gap-[20px] w-full min-w-[320px]">
               <OrangeButton label="Попробовать ещё раз" onClick={onRetry ?? onContinue} isMobile={isMobile} />
               <button
                 onClick={() => { (onBack ?? onContinue)(); playClick(false); }}
                 className="cursor-pointer select-none outline-none transition-opacity duration-150 hover:opacity-80"
               >
-                <p className={`font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#798589] leading-[1.2] whitespace-nowrap ${isMobile ? "text-[15px]" : "text-[20px]"}`}>
+                <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] leading-[1.2] ${isMobile ? "text-[15px]" : "text-[20px]"}`}>
                   Вернуться на Roadmap
                 </p>
               </button>
