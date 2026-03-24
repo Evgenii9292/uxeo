@@ -182,7 +182,7 @@ app.put("/make-server-d627d1b0/homework/:homeworkId/status", async (c) => {
   try {
     const homeworkId = c.req.param("homeworkId");
     const body = await c.req.json();
-    const { status } = body;
+    const { status, comment, image_url } = body;
 
     if (!["pending", "reviewed", "rejected"].includes(status)) {
       return c.json({ error: "Invalid status. Must be: pending, reviewed, or rejected" }, 400);
@@ -193,7 +193,9 @@ app.put("/make-server-d627d1b0/homework/:homeworkId/status", async (c) => {
       return c.json({ error: "Homework not found" }, 404);
     }
 
-    const updated = { ...existing, status };
+    const updated: any = { ...existing, status };
+    if (comment !== undefined) updated.comment = comment;
+    if (image_url !== undefined) updated.image_url = image_url;
     await kv.set(`homework:${homeworkId}`, updated);
 
     console.log(`Homework ${homeworkId} status updated to ${status}`);
@@ -201,6 +203,37 @@ app.put("/make-server-d627d1b0/homework/:homeworkId/status", async (c) => {
   } catch (error) {
     console.log(`Error updating homework status: ${error}`);
     return c.json({ error: `Failed to update homework status: ${error}` }, 500);
+  }
+});
+
+// Delete homework (admin only)
+app.delete("/make-server-d627d1b0/homework/:homeworkId", async (c) => {
+  try {
+    const homeworkId = c.req.param("homeworkId");
+
+    const existing: any = await kv.get(`homework:${homeworkId}`);
+    if (!existing) {
+      return c.json({ error: "Homework not found" }, 404);
+    }
+
+    // Remove from main KV
+    await kv.delete(`homework:${homeworkId}`);
+
+    // Remove from homework_all list
+    const allKey = `homework_all`;
+    const allIds: string[] = (await kv.get(allKey)) ?? [];
+    await kv.set(allKey, allIds.filter((id) => id !== homeworkId));
+
+    // Remove from user's list
+    const userKey = `homework_user:${existing.user_id}`;
+    const userIds: string[] = (await kv.get(userKey)) ?? [];
+    await kv.set(userKey, userIds.filter((id) => id !== homeworkId));
+
+    console.log(`Homework ${homeworkId} deleted`);
+    return c.json({ success: true });
+  } catch (error) {
+    console.log(`Error deleting homework: ${error}`);
+    return c.json({ error: `Failed to delete homework: ${error}` }, 500);
   }
 });
 

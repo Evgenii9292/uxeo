@@ -74,7 +74,7 @@ import {
   CQStructConn1A, CQStructConn1B, CQStructConn1C,
   CQStructConn2A, CQStructConn2B, CQStructConn2C,
   CQStructConn3A, CQStructConn3B, CQStructConn3C,
-} from "../../imports/СтруктураИнтерфейса";
+} from "../../imports/InterfaceStructure";
 import {
   CQElemCompare1A, CQElemCompare1B, CQElemCompare2A, CQElemCompare2B, CQElemCompare3A, CQElemCompare3B,
   CQElemSingle1, CQElemSingle2, CQElemSingle3,

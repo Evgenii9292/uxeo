@@ -125,7 +125,12 @@ export default function AdminHomeworksPage() {
         `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/homework/${hwId}`,
         { method: "DELETE", headers: { Authorization: `Bearer ${publicAnonKey}` } }
       );
-      if (!res.ok) { const d = await res.json(); throw new Error(d.error || "Failed"); }
+      if (!res.ok) {
+        let msg = "Failed";
+        try { const d = await res.json(); msg = d.error || msg; }
+        catch { msg = await res.text().catch(() => msg); }
+        throw new Error(msg);
+      }
       setHomeworks(p => p.filter(h => h.id !== hwId));
     } catch (err) {
       alert(`Ошибка удаления: ${err instanceof Error ? err.message : "Unknown error"}`);

@@ -168,6 +168,9 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
   // Fade-in state: starts false, goes true after first paint
   const [visible, setVisible] = useState(false);
 
+  const isMobile = window.innerWidth < 768;
+  const isMobileSheet = isMobile && lesson.lessonId === "contrast-lesson";
+
   const isLocked   = lesson.status === "locked";
   const isCompleted = lesson.status === "completed";
   const totalQ     = lesson.totalQuestions > 0 ? lesson.totalQuestions : 5;
@@ -187,6 +190,7 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
   // Use useLayoutEffect so position is computed before the browser paints —
   // avoids the 1-frame blank state that caused visible jumps when switching nodes.
   useLayoutEffect(() => {
+    if (isMobileSheet) return;
     function compute() {
       if (!anchorRef.current) return;
       const rect = anchorRef.current.getBoundingClientRect();
@@ -210,11 +214,20 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
       window.removeEventListener("scroll", compute, true);
       window.removeEventListener("resize", compute);
     };
-  }, [anchorRef]);
+  }, [anchorRef, isMobileSheet]);
+
+  // For mobile sheet: trigger slide-in on mount
+  // Double RAF ensures the browser has painted the initial hidden state before transitioning
+  useEffect(() => {
+    if (!isMobileSheet) return;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setVisible(true));
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Trigger fade-in + scroll to popup on the frame after position is known
   useEffect(() => {
-    if (!pos) return;
+    if (isMobileSheet || !pos) return;
     requestAnimationFrame(() => {
       setVisible(true);
       // Scroll the nearest scrollable container (not window) so popup is fully visible
@@ -273,9 +286,192 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
     navigate(`/lesson-quiz?quizId=${encodeURIComponent(targetQuizId)}&lessonId=${encodeURIComponent(lesson.lessonId)}`, { state: { lessonId: lesson.lessonId, quizId: targetQuizId } });
   };
 
+  // ── Mobile bottom sheet (contrast-lesson test) ─────────────────────────────
+  if (isMobileSheet) {
+    return ReactDOM.createPortal(
+      <>
+        {/* Backdrop — transparent, just for close-on-outside-tap */}
+        <div
+          onMouseDown={onClose}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 99,
+          }}
+        />
+        {/* Sheet */}
+        <div
+          ref={popupRef}
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 100,
+            borderRadius: "20px 20px 0 0",
+            background: "linear-gradient(150deg, #C0C3D0 0%, #CEC4BB 16.8%, #9699A5 100%)",
+            padding: "28px 20px 44px",
+            transform: visible ? "translateY(0)" : "translateY(100%)",
+            transition: "transform 0.38s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease",
+            opacity: visible ? 1 : 0,
+            willChange: "transform",
+          }}
+        >
+          <div className="flex flex-col gap-[16px] items-start">
+            {/* Title + Description */}
+            <div className="flex flex-col gap-[8px] items-start w-full">
+              {/* Icon + Title + Description */}
+              <div className="flex gap-[15px] items-start w-full">
+                {/* Icon */}
+                <div className="h-[55px] shrink-0 w-[56px] relative flex items-center justify-center">
+                  <img src={getLessonIcon(lesson.lessonId, isHomework)} alt="" style={{ width: 52, height: 52, objectFit: "contain" }} />
+                </div>
+                {/* Text */}
+                <div className="flex flex-1 flex-col gap-[15px] items-start min-w-0">
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[26px] text-[#232a2d] overflow-hidden whitespace-nowrap w-full" style={{ textOverflow: "ellipsis" }}>
+                    {lesson.title}
+                  </p>
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[18px] text-[#232a2d] w-full line-clamp-2 overflow-hidden" style={{ textOverflow: "ellipsis" }}>
+                    {lesson.description}
+                  </p>
+                </div>
+              </div>
+
+              {/* Progress bar */}
+              <div className="flex gap-[10px] items-center w-full">
+                <div className="flex-1 py-[10px]">
+                  <div className="flex flex-col items-start w-full">
+                    <div className="flex flex-col h-[13px] items-start overflow-clip relative rounded-full w-full">
+                      <img
+                        alt=""
+                        className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-full size-full"
+                        src={imgProgressRoot}
+                      />
+                      <div
+                        className="h-[13px] rounded-full shrink-0 relative"
+                        style={{
+                          width: `${Math.max(pct, 5)}%`,
+                          backgroundImage: "linear-gradient(173.584deg, rgb(66, 78, 83) 54.135%, rgb(44, 53, 56) 85.747%)",
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                {pct >= 100 ? (
+                  <GreenIndicator />
+                ) : (
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#343e42] text-[16px] whitespace-nowrap shrink-0">
+                    {Math.round(pct)}%
+                  </p>
+                )}
+              </div>
+
+              {/* Info row */}
+              <div className="flex items-center justify-between w-full h-[20px] mt-[20px]">
+                <div className="flex gap-[6px] items-center">
+                  <ClockIcon />
+                  <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#232a2d] text-[16px] whitespace-nowrap">
+                    {LESSON_TOTAL_TIME[lesson.lessonId] ?? "~12 мин"}
+                  </span>
+                </div>
+                <div className="flex gap-[5px] items-center justify-center">
+                  <svg className="shrink-0" width="14" height="14" fill="none" viewBox="0 0 12 14">
+                    <path d="M6.5 0L0 7.78H5.07L4.5 14L12 5.22H6.43L6.5 0Z" fill="#232A2D" />
+                  </svg>
+                  <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#232a2d] text-[16px] whitespace-nowrap">
+                    +{lesson.xpReward || 1250} XP
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex gap-[17px] items-start w-full mt-[4px]">
+              {isHomework ? (
+                hwStatus === "reviewed" ? (
+                  <button
+                    onClick={() => navigate("/homework", { state: { homeworkId: lesson.lessonId } })}
+                    className="group h-[60px] rounded-[15px] flex items-center justify-center px-[17px] w-full cursor-pointer select-none relative hover:translate-y-[3px] active:translate-y-[5px] transition-all duration-75 bg-[#343e42] gap-[10px]"
+                  >
+                    <div aria-hidden="true" className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
+                    <IconGreenCheck />
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#5edd60] text-[26px] whitespace-nowrap relative">
+                      Готово
+                    </p>
+                  </button>
+                ) : hwStatus === "rejected" ? (
+                  <button
+                    onClick={() => navigate("/homework", { state: { homeworkId: lesson.lessonId } })}
+                    className="group h-[60px] rounded-[15px] flex items-center justify-center px-[17px] w-full cursor-pointer select-none relative hover:translate-y-[3px] active:translate-y-[5px] transition-all duration-75 bg-[#343e42] gap-[10px]"
+                  >
+                    <div aria-hidden="true" className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#FF5D39] text-[26px] whitespace-nowrap relative">
+                      Переделать ↩
+                    </p>
+                  </button>
+                ) : hwStatus === "pending" || isCompleted ? (
+                  <button
+                    onClick={() => navigate("/homework", { state: { homeworkId: lesson.lessonId } })}
+                    className="group h-[60px] rounded-[15px] flex items-center justify-center px-[17px] w-full cursor-pointer select-none relative hover:translate-y-[3px] active:translate-y-[5px] transition-all duration-75 bg-[#343e42] gap-[10px]"
+                  >
+                    <div aria-hidden="true" className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
+                    <IconProcessingTime />
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#ffb121] text-[26px] whitespace-nowrap relative">
+                      На проверке
+                    </p>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => navigate("/homework", { state: { homeworkId: lesson.lessonId } })}
+                    className="group h-[60px] rounded-[15px] flex items-center justify-center px-[17px] cursor-pointer select-none relative w-full hover:translate-y-[3px] active:translate-y-[5px] transition-all duration-75 bg-[#343e42]"
+                  >
+                    <div
+                      aria-hidden="true"
+                      className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none"
+                    />
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[28px] whitespace-nowrap relative">
+                      Задание
+                    </p>
+                  </button>
+                )
+              ) : (
+                <>
+                  <button
+                    onClick={handleQuiz}
+                    className="group h-[60px] rounded-[15px] flex items-center justify-center px-[17px] cursor-pointer select-none relative w-[184px] shrink-0 hover:translate-y-[3px] active:translate-y-[5px] transition-all duration-75 bg-[#343e42]"
+                  >
+                    <div
+                      aria-hidden="true"
+                      className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none"
+                    />
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[26px] whitespace-nowrap relative">
+                      {pct >= 100 ? "Повторить" : pct > 0 ? "Продолжить" : "Квиз"}
+                    </p>
+                  </button>
+                  <button
+                    onClick={() => navigate(`${theoryPath}?lessonId=${encodeURIComponent(lesson.lessonId)}`, { state: { lessonId: lesson.lessonId } })}
+                    className="group bg-[#f7f8fc] h-[60px] rounded-[15px] flex items-center justify-center px-[16px] cursor-pointer select-none flex-1 hover:translate-y-[3px] active:translate-y-[5px] transition-all duration-75 relative"
+                  >
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-0 pointer-events-none rounded-[15px] shadow-[0px_5px_0px_0px_#d2d4df] group-hover:shadow-[0px_2px_0px_0px_#d2d4df] group-active:shadow-none transition-shadow duration-75"
+                    />
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#323c41] text-[26px] whitespace-nowrap relative">
+                      Теория
+                    </p>
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </>,
+      document.body
+    );
+  }
+
   if (!pos) return null;
 
-  const isMobile = window.innerWidth < 768;
   const transitionDuration = isMobile ? "0.12s" : "0.18s";
 
   return ReactDOM.createPortal(
