@@ -139,6 +139,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
           .reduce((sum, q) => sum + (q.xpValue || 25), 0);
       }, 0);
 
+      // Don't create ghost rows for users who haven't done anything
+      const hasProgress = xpVal > 0
+        || (user.level && user.level !== "")
+        || (user.goal && user.goal !== "")
+        || Object.keys(user.lessonProgress).length > 0;
+      if (!hasProgress) return;
+
       fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/progress`,
         {
