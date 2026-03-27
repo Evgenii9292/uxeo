@@ -238,7 +238,7 @@ export default function BottomTabBar() {
       <nav
         className="flex-none relative z-50 rounded-tl-[15px] rounded-tr-[15px]"
         style={{
-          height: "calc(52px + env(safe-area-inset-bottom, 0px))",
+          height: "calc(52px + env(safe-area-inset-bottom, 0px) + 15px)",
           background: "rgba(45,54,58,0.95)",
           backdropFilter: "blur(14px)",
           WebkitBackdropFilter: "blur(14px)",
@@ -249,7 +249,7 @@ export default function BottomTabBar() {
           className="absolute left-0 right-0 flex items-center justify-around"
           style={{
             height: 52,
-            bottom: "env(safe-area-inset-bottom, 0px)",
+            top: 0,
             paddingLeft: 8,
             paddingRight: 8,
           }}

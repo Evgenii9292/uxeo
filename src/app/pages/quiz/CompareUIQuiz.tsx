@@ -157,10 +157,9 @@ export function CompareUIQuiz({
     // Breakpoint: 440px = "large phone" (Pro Max etc.)
     const isLargePhone = vw >= 440;
 
-    const isFeedback = phase === "feedback";
     const containerH = mobileCardMinHeight
-      ? (isFeedback ? 140 : mobileCardMinHeight)
-      : (isLargePhone ? (isFeedback ? 160 : 250) : (isFeedback ? 140 : 220));
+      ? mobileCardMinHeight
+      : (isLargePhone ? 250 : 220);
     const paddingY   = mobileCardMinHeight ? 20 : 10;
     const paddingX   = mobileCardMinHeight ? 20 : 0;
     const figmaW     = mobileNaturalW ?? FIGMA_W;
@@ -198,8 +197,8 @@ export function CompareUIQuiz({
                   className={`relative rounded-[15px] overflow-hidden transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.99]" : ""}`}
                   style={{
                     height: mobileCardMinHeight
-                      ? `calc((100dvh - ${isFeedback ? 440 : 290}px) / 2)`
-                      : `calc((100dvh - ${isFeedback ? 440 : 296}px) / 2)`,
+                      ? `calc((100dvh - 290px) / 2)`
+                      : `calc((100dvh - 296px) / 2)`,
                     minHeight: containerH,
                     background: "linear-gradient(172deg, rgb(30,37,41) 2%, rgb(38,46,50) 99%)",
                     boxShadow: borderColor ? `0 0 0 3px ${borderColor}` : undefined,

@@ -126,9 +126,8 @@ export default function QuizPage() {
   // ── MOBILE layout ───────────────────────────────────────────────────────────
   if (isMobile) {
     const isLargePhone = vw >= 440;
-    // When feedback shown, subtract extra ~100px total (50px per card) to make room for answer
-    const heightSubtract = phase === "feedback" ? 456 : 356;
-    const containerH = isLargePhone ? (phase === "feedback" ? 160 : 210) : (phase === "feedback" ? 140 : 185);
+    const heightSubtract = 356;
+    const containerH = isLargePhone ? 210 : 185;
     const paddingY = 20;
 
     const cards: Array<{ id: "A" | "B"; Mockup: () => JSX.Element }> = [
