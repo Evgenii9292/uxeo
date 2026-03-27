@@ -6,16 +6,19 @@
 html {
   overflow: hidden;
   height: 100%;
+  overscroll-behavior: none;
 }
 
 body {
   overflow: hidden;
   height: 100%;
+  overscroll-behavior: none;
 }
 
 #root {
   overflow: hidden;
   height: 100%;
+  overscroll-behavior: none;
 }
 
 /* ── Global Typography: Medium as maximum weight everywhere ─────────────────── */

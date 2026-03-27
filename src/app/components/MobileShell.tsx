@@ -257,8 +257,12 @@ export default function MobileShell({
         <div
           className="fixed left-0 right-0 z-30 px-[16px] transition-[bottom] duration-300"
           style={{
-            bottom: effectiveTabBarVisible ? 52 : 0,
-            paddingBottom: "max(10px, env(safe-area-inset-bottom, 10px))",
+            bottom: effectiveTabBarVisible
+              ? "calc(52px + env(safe-area-inset-bottom, 0px))"
+              : 0,
+            paddingBottom: effectiveTabBarVisible
+              ? 10
+              : "max(10px, env(safe-area-inset-bottom, 10px))",
             paddingTop: 10,
           }}
         >
