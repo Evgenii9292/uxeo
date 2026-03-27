@@ -21,6 +21,11 @@ body {
   overscroll-behavior: none;
 }
 
+/* ── Prevent double-tap zoom on all interactive elements ───────────────────── */
+button, a, [role="button"], input, select, textarea, label {
+  touch-action: manipulation;
+}
+
 /* ── Global Typography: Medium as maximum weight everywhere ─────────────────── */
 /* Removes Bold and Semi-Bold across all UI components globally */
 .font-semibold {

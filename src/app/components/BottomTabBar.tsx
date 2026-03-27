@@ -187,7 +187,7 @@ function IconLeague({ active }: { active: boolean }) {
   const league = getLeague(userData?.xp ?? 0);
   return (
     <div style={{ width: 29, height: 29, display: "flex", alignItems: "center", justifyContent: "center", opacity: active ? 1 : 0.85 }}>
-      <img src={league.trophy} width={21} height={21} style={{ objectFit: "contain", filter: "brightness(1.6) saturate(1.4)" }} />
+      <img src={league.trophy} width={21} height={21} draggable={false} style={{ objectFit: "contain", filter: "brightness(1.6) saturate(1.4)", touchAction: "manipulation", userSelect: "none", WebkitUserSelect: "none" }} />
     </div>
   );
 }
