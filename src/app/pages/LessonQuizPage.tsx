@@ -206,6 +206,14 @@ export default function LessonQuizPage() {
   const isMobile = vw < 768;
   const isTablet = vw >= 768 && vw < 1280;
   const isLargePhone = vw >= 440; // 440×954 vs 388×858
+  // Compact desktop: small laptop screens (height < 820px)
+  const [vh, setVh] = useState(() => typeof window !== "undefined" ? window.innerHeight : 900);
+  useEffect(() => {
+    const onResize = () => setVh(window.innerHeight);
+    window.addEventListener("resize", onResize, { passive: true });
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  const isCompact = !isMobile && vh < 820;
   // Responsive quiz content width: 1042px on wide screens, fluid on tablet
   const quizW = isTablet ? Math.min(1042, vw - 48) : 1042;
   const barW = isTablet ? Math.min(1042, vw - 88) : 1042;
@@ -1121,7 +1129,7 @@ export default function LessonQuizPage() {
         ) : (
           <>
             {/* Desktop/tablet header — single flex row, no overlap */}
-            <div className="fixed top-0 left-0 right-0 z-10 flex items-center gap-[16px] px-[22px]" style={{ height: 80 }}>
+            <div className="fixed top-0 left-0 right-0 z-10 flex items-center gap-[16px] px-[22px]" style={{ height: isCompact ? 60 : 80 }}>
               <CloseButton onClick={() => setShowExitModal(true)} />
               {/* Bar — height:17 so items-center aligns bar track center with button center */}
               <div className="flex-1 relative" style={{ height: 17 }}>
@@ -1154,8 +1162,8 @@ export default function LessonQuizPage() {
         {/* ZONE 2+3 — conditional on question type */}
         {questionType === "multiple_select" ? (
           <PageTransition key={currentQuestionIndex} duration={0} scaleFrom={1}>
-          <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : "pt-[80px] pb-[120px]"}`}>
-            <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-center" : "justify-center gap-[52px]"}`}>
+          <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`}>
+            <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-center" : isCompact ? "justify-center gap-[28px]" : "justify-center gap-[52px]"}`}>
               <MultipleChoiceQuiz
                 key={currentQuestionIndex}
                 question={(currentQuestion as any).question}
@@ -1176,8 +1184,8 @@ export default function LessonQuizPage() {
           </PageTransition>
         ) : questionType === "matching" ? (
           <PageTransition key={currentQuestionIndex} duration={0} scaleFrom={1}>
-          <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : "pt-[80px] pb-[120px]"}`}>
-            <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-start pt-[10px] gap-[10px]" : "justify-center gap-[52px]"}`}>
+          <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`}>
+            <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-start pt-[10px] gap-[10px]" : isCompact ? "justify-center gap-[28px]" : "justify-center gap-[52px]"}`}>
               <MatchingQuiz
                 key={currentQuestionIndex}
                 question={(currentQuestion as any).question}
@@ -1192,8 +1200,8 @@ export default function LessonQuizPage() {
           </PageTransition>
         ) : questionType === "compare_ui" ? (
           <PageTransition key={currentQuestionIndex} duration={0} scaleFrom={1}>
-          <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : "pt-[80px] pb-[120px]"}`}>
-            <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-start pt-[10px]" : "justify-center gap-[52px]"}`}>
+          <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`}>
+            <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-start pt-[10px]" : isCompact ? "justify-center gap-[28px]" : "justify-center gap-[52px]"}`}>
               <CompareUIQuiz
                 key={currentQuestionIndex}
                 question={(currentQuestion as any).question}
@@ -1204,7 +1212,7 @@ export default function LessonQuizPage() {
                 onContinue={handleProceedNewType}
                 earnedXP={earnedXP}
                 isReplay={xpAlreadyAwarded}
-                compareCardMinHeight={["quiz_contrast","quiz_color","quiz_hierarchy","quiz_creating_ui_kit","quiz_figma_components","quiz_element_states","quiz_what_is_ui_kit","quiz_ui_elements","quiz_what_is_ux","quiz_user_flow","quiz_interface_structure","quiz_interface_elements","quiz_ux_errors"].includes(quizId) ? 366 : 430}
+                compareCardMinHeight={["quiz_contrast","quiz_color","quiz_hierarchy","quiz_creating_ui_kit","quiz_figma_components","quiz_element_states","quiz_what_is_ui_kit","quiz_ui_elements","quiz_what_is_ux","quiz_user_flow","quiz_interface_structure","quiz_interface_elements","quiz_ux_errors"].includes(quizId) ? (isCompact ? 280 : 366) : (isCompact ? 320 : 430)}
                 compareMaxScale={1.7}
                 mobileCardMinHeight={["quiz_contrast","quiz_color","quiz_hierarchy","quiz_creating_ui_kit","quiz_figma_components","quiz_element_states","quiz_what_is_ui_kit","quiz_ui_elements","quiz_what_is_ux","quiz_user_flow","quiz_interface_structure","quiz_interface_elements","quiz_ux_errors"].includes(quizId) ? 255 : undefined}
                 mobileNaturalW={["quiz_contrast","quiz_color","quiz_hierarchy","quiz_creating_ui_kit","quiz_figma_components","quiz_element_states","quiz_what_is_ui_kit","quiz_ui_elements","quiz_what_is_ux","quiz_user_flow","quiz_interface_structure","quiz_interface_elements","quiz_ux_errors"].includes(quizId) ? 260 : undefined}
@@ -1216,8 +1224,8 @@ export default function LessonQuizPage() {
         ) : (
           <>
             {/* ZONE 2 — Center: question + options */}
-            <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : "pt-[80px] pb-[120px]"}`}>
-              <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-center" : "justify-center gap-[52px]"}`}>
+            <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`}>
+              <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-center" : isCompact ? "justify-center gap-[28px]" : "justify-center gap-[52px]"}`}>
 
                 {isMobile ? (
                   /* ── MOBILE fixed-pixel layout ── */

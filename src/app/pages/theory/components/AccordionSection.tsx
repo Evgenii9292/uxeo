@@ -140,18 +140,31 @@ export function AccordionSectionMobile({
                           <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#ffd8d2] text-[14px] leading-[1.3]">{section.incorrectFeedback}</p>
                         </div>
                       )}
-                      <button
+                      <div
+                        className="group relative cursor-pointer select-none w-full rounded-[15px] hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75 pointer-events-auto"
+                        style={{ height: 50 }}
                         onClick={onContinue}
-                        className={`w-full h-[50px] rounded-[15px] flex items-center justify-center gap-[10px] pointer-events-auto active:scale-95 transition-transform duration-75 ${
-                          isLastSection && state.showFeedback ? "bg-[#ff6b21]" : "bg-[#f7f8fc]"
-                        }`}
-                        style={{ boxShadow: isLastSection && state.showFeedback ? "0px 4px 0px 0px #c54a0a" : "0px 4px 0px 0px #d2d4df" }}
                       >
-                        {isLastSection && state.showFeedback && <Zap size={18} className="text-[#f1f2fb]" fill="currentColor" />}
-                        <p className={`font-['Roboto_Condensed:Medium',sans-serif] text-[20px] ${isLastSection && state.showFeedback ? "text-[#f1f2fb]" : "text-[#343e42]"}`}>
-                          {isLastSection && state.showFeedback ? "Начать квиз" : "Продолжить"}
-                        </p>
-                      </button>
+                        <div
+                          aria-hidden="true"
+                          className="absolute inset-0 rounded-[15px] pointer-events-none transition-shadow duration-75 group-hover:shadow-[0px_2px_0px_0px_var(--btn-shadow)] group-active:shadow-none"
+                          style={{
+                            boxShadow: isLastSection && state.showFeedback ? "0px 4px 0px 0px #c54a0a" : "0px 4px 0px 0px #d2d4df",
+                            // @ts-ignore
+                            "--btn-shadow": isLastSection && state.showFeedback ? "#c54a0a" : "#d2d4df",
+                          }}
+                        />
+                        <div
+                          className={`flex items-center justify-center size-full gap-[10px] rounded-[15px] ${
+                            isLastSection && state.showFeedback ? "bg-[#ff6b21]" : "bg-[#f7f8fc]"
+                          }`}
+                        >
+                          {isLastSection && state.showFeedback && <Zap size={18} className="text-[#f1f2fb]" fill="currentColor" />}
+                          <p className={`font-['Roboto_Condensed:Medium',sans-serif] text-[20px] ${isLastSection && state.showFeedback ? "text-[#f1f2fb]" : "text-[#343e42]"}`}>
+                            {isLastSection && state.showFeedback ? "Начать квиз" : "Продолжить"}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
