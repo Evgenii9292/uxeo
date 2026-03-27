@@ -364,7 +364,7 @@ export function Roadmap({
               left = pos.x - annotW - (hasStarted ? 14 : 29);
               top  = pos.y + NODE_H * 0.4 - 22;
             } else {
-              left = pos.x - (hasStarted ? 70 : 90);
+              left = pos.x - (hasStarted ? 70 : 80);
               top  = pos.y - 30;
             }
 

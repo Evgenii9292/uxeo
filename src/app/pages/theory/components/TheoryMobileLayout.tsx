@@ -103,7 +103,10 @@ export function TheoryMobileLayout({
       <div
         ref={mobileScrollRef}
         className="flex-1 overflow-y-auto scrollbar-hide"
-        style={{ paddingBottom: (tabBarVisible ? 52 : 0) + 22 }}
+        style={{
+          paddingBottom: "calc(74px + env(safe-area-inset-bottom, 0px))",
+          overscrollBehavior: "contain",
+        }}
         onScroll={handleScroll}
       >
         {/* Hero icon — no bg, centered */}
