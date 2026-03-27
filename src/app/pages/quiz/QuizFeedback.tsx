@@ -14,7 +14,7 @@ export function CorrectFeedback({ explanation, showXp = true }: { explanation: s
       <div className="flex flex-col gap-[5px] items-end justify-start shrink-0">
         <div className="flex gap-[9px] items-end shrink-0">
           <PartyPopperIcon />
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] text-[#cdf6db] text-[18px] whitespace-nowrap">Верно!</p>
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] text-[#cdf6db] text-[18px] whitespace-nowrap" style={{ marginBottom: 4 }}>Верно!</p>
         </div>
         {showXp && (
           <div className="flex items-center justify-between w-[47px]">
