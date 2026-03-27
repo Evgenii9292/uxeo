@@ -374,7 +374,50 @@ function LevelIcon() {
   );
 }
 
-function HeroCard({ hw }: { hw: HomeworkData }) {
+function HeroCard({ hw, isMobile }: { hw: HomeworkData; isMobile?: boolean }) {
+  if (isMobile) {
+    return (
+      <div className="flex flex-col gap-[14px] w-full pt-[4px] pb-[8px]">
+        {/* Image: no bg/border, bottom fade */}
+        {hw.previewImage ? (
+          <div className="relative w-full overflow-hidden" style={{ maxHeight: 220 }}>
+            <img
+              src={hw.previewImage}
+              alt={hw.title}
+              className="block w-full object-contain"
+              style={{
+                maxHeight: 220,
+                maskImage: "linear-gradient(to bottom, black 40%, transparent 100%)",
+                WebkitMaskImage: "linear-gradient(to bottom, black 40%, transparent 100%)",
+              }}
+            />
+          </div>
+        ) : (
+          <div className="flex items-center justify-center" style={{ height: 140 }}>
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#f1f2fb" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.3 }}>
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+          </div>
+        )}
+        {/* Title + time */}
+        <div className="flex items-end justify-between w-full gap-[10px]">
+          <p className={`${TEXT_TITLE} leading-[1.2] text-[#f4f5fc] text-[26px]`}>{hw.title}</p>
+          <div className="flex gap-[5px] items-center shrink-0 pb-[2px]">
+            <div className="overflow-clip relative shrink-0 size-[13px]">
+              <div className="absolute inset-[0_11.67%_0_11.66%]">
+                <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 10.7333 14">
+                  <path d={svgPaths.p11af9000} fill="#F1F2FB" />
+                </svg>
+              </div>
+            </div>
+            <p className={`${TEXT_MEDIUM} leading-[20px] text-[#f1f2fb] text-[15px] whitespace-nowrap`}>{hw.time}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center gap-[20px] w-full py-[10px]">
       <div
@@ -463,6 +506,37 @@ function InfoPopup({ onClose }: { onClose: () => void }) {
         </div>
       </div>
     </>
+  );
+}
+
+// ── PC guidance banner (mobile only) ─────────────────────────────────────────
+
+function PCGuidanceBanner() {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = () => {
+    try { navigator.clipboard.writeText(window.location.href); } catch (_) {}
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2200);
+  };
+  return (
+    <div
+      className="rounded-[12px] flex flex-col gap-[10px] px-[14px] py-[12px]"
+      style={{ background: "rgba(255,107,33,0.07)", border: "1px solid rgba(255,107,33,0.18)" }}
+    >
+      <div className="flex items-start gap-[8px]">
+        <span style={{ fontSize: 15, lineHeight: 1, flexShrink: 0, marginTop: 2 }}>💻</span>
+        <p className={`${TEXT_BODY} text-[13px] leading-[18px]`} style={{ color: "rgba(244,245,252,0.55)" }}>
+          Домашнее задание выполняется в Figma. Удобнее открыть на компьютере.
+        </p>
+      </div>
+      <button
+        onClick={handleCopy}
+        className={`${TEXT_MEDIUM} text-[13px] text-left active:opacity-50 transition-opacity`}
+        style={{ color: copied ? "#5EDD60" : "#FF6B21", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+      >
+        {copied ? "✓ Ссылка скопирована" : "Скопировать ссылку на эту страницу →"}
+      </button>
+    </div>
   );
 }
 
@@ -1195,26 +1269,7 @@ export default function HomeworkPage() {
   const hasAdminFeedback = !!(serverRecord?.comment || serverRecord?.image_url);
 
   const [openSections, setOpenSections] = useState<Set<number>>(new Set([0]));
-  const [submitVisible, setSubmitVisible] = useState(true);
-
-  const lastScrollRef = useRef(0);
-
-  // Hide submit block when scrolling down (sync with tab bar behaviour)
-  useEffect(() => {
-    if (!isMobile) return;
-    const scrollEl = document.querySelector<HTMLElement>('.overflow-y-auto.overflow-x-hidden.scrollbar-hide');
-    if (!scrollEl) return;
-    const onScroll = () => {
-      const currentY = scrollEl.scrollTop;
-      const delta = currentY - lastScrollRef.current;
-      if (Math.abs(delta) > 6) {
-        setSubmitVisible(delta < 0);
-        lastScrollRef.current = currentY;
-      }
-    };
-    scrollEl.addEventListener('scroll', onScroll, { passive: true });
-    return () => scrollEl.removeEventListener('scroll', onScroll);
-  }, [isMobile]);
+  const submitRef = useRef<HTMLDivElement>(null);
 
   // Refresh homework data on page open to get latest comment/status from server
   useEffect(() => { hwCtx?.refresh(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -1237,9 +1292,9 @@ export default function HomeworkPage() {
         rightWidth="320px"
       >
         <div className="flex flex-col gap-[13px] w-full">
-          {/* Hero — no background, matches theory style */}
+          {/* Hero */}
           <div className="pb-[10px] pt-[0px]">
-            <HeroCard hw={hw} />
+            <HeroCard hw={hw} isMobile={isMobile} />
           </div>
 
           {/* 1. Задание — первым, включает описание + контекст + задачу */}
@@ -1287,38 +1342,69 @@ export default function HomeworkPage() {
           </AccordionSection>
 
 
-          {/* Bottom padding — extra on mobile for the fixed submit block */}
-          <div style={{ height: isMobile ? 140 : 110 }} />
+          {/* 5. Отправить работу — mobile only, inline (not accordion) */}
+          {isMobile && (
+            <div
+              ref={submitRef}
+              className="rounded-[15px] overflow-hidden w-full flex flex-col"
+              style={{ background: "#343e42" }}
+            >
+              {/* Header — not clickable, just label */}
+              <div className="h-[72px] flex items-center px-[20px] gap-[16px]">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="#798589" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f1f2fb] text-[22px]">
+                  Отправить работу
+                </p>
+              </div>
+              {/* Content */}
+              <div className="flex flex-col gap-[12px] pb-[20px] px-[16px]">
+                <SubmitBlock homeworkLessonId={homeworkLessonId} lessonName={hw.title} mobileCompact={false} />
+                <PCGuidanceBanner />
+              </div>
+            </div>
+          )}
+
+          {/* Bottom padding */}
+          <div style={{ height: isMobile ? 24 : 110 }} />
         </div>
       </Layout>
 
-      {/* Submit block — fixed at bottom (right on desktop, full-width on mobile) */}
-      <div
-        style={isMobile ? {
-          position: "fixed",
-          bottom: submitVisible ? 52 : 4,
-          left: 0,
-          right: 0,
-          padding: "10px 16px 14px",
-          zIndex: 25,
-          background: "linear-gradient(to top, #282F33 60%, transparent)",
-          transition: "bottom 0.3s ease",
-        } : {
-          position: "fixed",
-          bottom: 20,
-          right: "max(40px, calc((100vw - 1440px) / 2 + 40px))",
-          width: 280,
-          zIndex: 50,
-        }}
-      >
-        {isMobile ? (
-          <div style={{ background: "#2C3538", borderRadius: 18, padding: "14px 14px 12px", boxShadow: "0 -2px 20px 0 rgba(0,0,0,0.35)" }}>
-            <SubmitBlock homeworkLessonId={homeworkLessonId} lessonName={hw.title} mobileCompact={isMobile} />
-          </div>
-        ) : (
-          <SubmitBlock homeworkLessonId={homeworkLessonId} lessonName={hw.title} mobileCompact={isMobile} />
-        )}
-      </div>
+      {/* Desktop: submit block fixed at right */}
+      {!isMobile && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 20,
+            right: "max(40px, calc((100vw - 1440px) / 2 + 40px))",
+            width: 280,
+            zIndex: 50,
+          }}
+        >
+          <SubmitBlock homeworkLessonId={homeworkLessonId} lessonName={hw.title} mobileCompact={false} />
+        </div>
+      )}
+
+      {/* Mobile: floating circle — scroll to submit section */}
+      {isMobile && (
+        <button
+          onClick={() => submitRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+          className="fixed right-[16px] z-30 rounded-full flex items-center justify-center cursor-pointer select-none transition-transform duration-75 active:scale-90"
+          style={{
+            width: 54,
+            height: 54,
+            bottom: "calc(82px + env(safe-area-inset-bottom, 0px))",
+            background: "#FF6B21",
+            boxShadow: "0 4px 0 #C54A0A",
+          }}
+          aria-label="К домашнему заданию"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="#F4F5FC" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      )}
     </>
   );
 }
