@@ -14,8 +14,8 @@ import { FlagReportButton } from "./FlagReportButton";
 // Natural dimensions of Figma compare cards
 const FIGMA_W = 186;
 const FIGMA_H = 231;
-const MOCK_W  = 333;
-const MOCK_H  = 415;
+const MOCK_W  = 404;
+const MOCK_H  = 367;
 
 type Phase = "selecting" | "feedback";
 
@@ -198,7 +198,7 @@ export function CompareUIQuiz({
                       ? `calc((100dvh - 290px) / 2)`
                       : `calc((100dvh - 296px) / 2)`,
                     minHeight: containerH,
-                    background: "linear-gradient(172deg, rgb(44,53,56) 2%, rgb(56,67,72) 99%)",
+                    background: "linear-gradient(172deg, rgb(30,37,41) 2%, rgb(38,46,50) 99%)",
                     boxShadow: borderColor ? `0 0 0 3px ${borderColor}` : undefined,
                   }}
                 >

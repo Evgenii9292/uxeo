@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useUserSafe } from "../context/UserContext";
+import { formatXp } from "../pages/LeaguePage";
 import svgPaths from "../../imports/svg-pt1cecsedx";
 
 function ZapIcon({ isActive }: { isActive: boolean }) {
@@ -67,7 +68,7 @@ export default function XpCounter() {
           WebkitTextFillColor: xp > 0 ? "transparent" : "unset",
         }}
       >
-        {xp}
+        {formatXp(xp)}
       </p>
     </div>
   );

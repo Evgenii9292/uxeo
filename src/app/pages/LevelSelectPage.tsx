@@ -1,32 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import svgPaths from "../../imports/svg-nfm2yohg1w";
 import { useUserSafe, type ExperienceLevel } from "../context/UserContext";
-import { ReportErrorModal } from "./quiz/ReportErrorModal";
-
-// ─── Back button (exact from Figma) ──────────────────────────────────────────
-function BackButton({ onClick }: { onClick: () => void }) {
-  return (
-    <div className="relative shrink-0 cursor-pointer select-none" onClick={onClick}>
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center relative">
-        <div className="relative shrink-0 size-[58px]">
-          <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 58 58">
-            <g>
-              <circle cx="29" cy="29" fill="url(#paint0_linear_lvlsel_back)" r="29" />
-              <path d={svgPaths.p1a9a4a80} stroke="var(--stroke-0, #C3C6D1)" strokeLinecap="round" strokeOpacity="0.6" strokeWidth="5" />
-            </g>
-            <defs>
-              <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_lvlsel_back" x1="24.5104" x2="59.2485" y1="12.4232" y2="30.7966">
-                <stop stopColor="#3D494F" />
-                <stop offset="1" stopColor="#303C42" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-      </div>
-    </div>
-  );
-}
+import { CloseButton } from "./quiz/CloseButton";
+import { FlagReportButton } from "./quiz/FlagReportButton";
 
 // ─── Sound: correct answer tone ───────────────────────────────────────────────
 function playCorrectSound() {
@@ -34,15 +10,18 @@ function playCorrectSound() {
     const ctx = new AudioContext();
     const o = ctx.createOscillator();
     const g = ctx.createGain();
+    const isMobile = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
+    const peak = isMobile ? 0.06 : 0.12;
     o.type = "sine";
     o.frequency.setValueAtTime(660, ctx.currentTime);
     o.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08);
-    g.gain.setValueAtTime(0.12, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+    g.gain.setValueAtTime(0.0001, ctx.currentTime);
+    g.gain.linearRampToValueAtTime(peak, ctx.currentTime + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.09);
     o.connect(g);
     g.connect(ctx.destination);
     o.start();
-    o.stop(ctx.currentTime + 0.08);
+    o.stop(ctx.currentTime + 0.095);
   } catch (_) {}
 }
 
@@ -106,7 +85,6 @@ export default function LevelSelectPage() {
   const navigate = useNavigate();
   const userCtx = useUserSafe();
   const [selected, setSelected] = useState<LevelId | null>(null);
-  const [reportOpen, setReportOpen] = useState(false);
 
   const handleSelect = (id: LevelId) => {
     if (selected) return; // already transitioning
@@ -119,11 +97,16 @@ export default function LevelSelectPage() {
   return (
     <div
       className="relative min-h-screen w-full flex flex-col overflow-hidden"
-      style={{ backgroundImage: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46, 57, 62) 147.74%)" }}
+      style={{
+        minHeight: "100dvh",
+        paddingBottom: "max(10px, env(safe-area-inset-bottom, 10px))",
+        backgroundImage: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46, 57, 62) 147.74%)",
+      }}
     >
-      {/* Header with back button */}
-      <div className="content-stretch flex items-center px-[22px] py-[15px]">
-        <BackButton onClick={() => navigate("/welcome")} />
+      {/* Header with close + report buttons */}
+      <div className="flex items-center justify-between px-[22px] py-[15px]">
+        <CloseButton onClick={() => navigate("/welcome")} />
+        <FlagReportButton context="LevelSelectPage" />
       </div>
 
       {/* Main content — centred */}
@@ -149,14 +132,6 @@ export default function LevelSelectPage() {
         </div>
       </div>
 
-      {/* Report error */}
-      <button
-        onClick={() => setReportOpen(true)}
-        className="absolute bottom-[28px] left-[28px] font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#777982] text-[16px] whitespace-nowrap cursor-pointer hover:text-[#a0a3ab] transition-colors duration-150 outline-none bg-transparent border-none"
-      >
-        Сообщить об ошибке
-      </button>
-      {reportOpen && <ReportErrorModal onClose={() => setReportOpen(false)} />}
     </div>
   );
 }

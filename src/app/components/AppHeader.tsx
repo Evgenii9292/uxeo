@@ -1,20 +1,20 @@
 import { useNavigate } from "react-router";
 import svgPaths from "../../imports/svg-pt1cecsedx";
 import { useUserSafe } from "../context/UserContext";
+import { formatXp } from "../pages/LeaguePage";
 import { useEffect, useRef, useState } from "react";
-
-const FIRE_ACTIVE_FILTER  = "brightness(0) saturate(100%) invert(72%) sepia(76%) saturate(751%) hue-rotate(357deg) brightness(102%)";
-const FIRE_INACTIVE_FILTER = "brightness(0) saturate(0%) invert(55%) brightness(85%)";
-const ZAP_ACTIVE_FILTER   = "brightness(0) saturate(100%) invert(49%) sepia(79%) saturate(1117%) hue-rotate(348deg) brightness(103%)";
-const ZAP_INACTIVE_FILTER  = "brightness(0) saturate(0%) invert(55%) brightness(85%)";
 
 function FireIcon({ isActive }: { isActive: boolean }) {
   return (
     <img
-      src="/fire-icon.svg"
+      src={isActive ? "/fire-icon-active.png" : "/fire-icon-inactive.png"}
+      alt=""
+      aria-hidden="true"
       width={22}
       height={24}
-      style={{ objectFit: "contain", filter: isActive ? FIRE_ACTIVE_FILTER : FIRE_INACTIVE_FILTER }}
+      loading="eager"
+      decoding="async"
+      style={{ objectFit: "contain" }}
     />
   );
 }
@@ -22,10 +22,14 @@ function FireIcon({ isActive }: { isActive: boolean }) {
 function ZapIcon({ isActive }: { isActive: boolean }) {
   return (
     <img
-      src="/zap-icon.svg"
+      src={isActive ? "/zap-icon-active.png" : "/zap-icon-inactive.png"}
+      alt=""
+      aria-hidden="true"
       width={24}
       height={24}
-      style={{ objectFit: "contain", filter: isActive ? ZAP_ACTIVE_FILTER : ZAP_INACTIVE_FILTER }}
+      loading="eager"
+      decoding="async"
+      style={{ objectFit: "contain" }}
     />
   );
 }
@@ -153,7 +157,7 @@ function ProfileIcon() {
 }
 
 interface AppHeaderProps {
-  title: string;
+  title: React.ReactNode;
   subtitle?: string;
   showBack?: boolean;
   onBack?: () => void;
@@ -164,9 +168,11 @@ interface AppHeaderProps {
   tabletFullWidthBorder?: { viewportWidth: number; sidebarWidth: number; contentLeft: number };
   /** Desktop: full-width border from sidebar to screen edge */
   desktopFullWidthBorder?: { viewportWidth: number; sidebarRightEdge: number; sidePad: number };
+  /** Optional blurred background */
+  blurredBackground?: boolean;
 }
 
-export default function AppHeader({ title, subtitle, showBack = false, onBack, icon, noBottomBorder, tabletFullWidthBorder, desktopFullWidthBorder }: AppHeaderProps) {
+export default function AppHeader({ title, subtitle, showBack = false, onBack, icon, noBottomBorder, tabletFullWidthBorder, desktopFullWidthBorder, blurredBackground = false }: AppHeaderProps) {
   const navigate = useNavigate();
   const userData = useUserSafe();
   
@@ -219,7 +225,9 @@ export default function AppHeader({ title, subtitle, showBack = false, onBack, i
       className="relative shrink-0 w-full"
       data-name="Header"
       style={{
-        backgroundColor: '#282F33',
+        backgroundColor: blurredBackground ? 'rgba(40,47,51,0.62)' : '#282F33',
+        backdropFilter: blurredBackground ? 'blur(14px)' : 'none',
+        WebkitBackdropFilter: blurredBackground ? 'blur(14px)' : 'none',
         ...(!(noBottomBorder || tabletFullWidthBorder || desktopFullWidthBorder) && {
           borderBottom: '1px solid rgba(87,100,106,0.35)'
         })
@@ -231,12 +239,10 @@ export default function AppHeader({ title, subtitle, showBack = false, onBack, i
           <div className="relative shrink-0">
             <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[20px] items-center relative">
               {showBack && (
-                /* Enlarged hit area: -m + p trick keeps visual size identical
-                   while extending the clickable zone by 12 px on every side.
-                   active:scale-80 gives a slightly more expressive press feel. */
-                <div
-                  className="relative shrink-0 cursor-pointer select-none transition-transform duration-75 hover:scale-95 active:scale-80 p-[12px] -m-[12px]"
+                <button
+                  className="relative shrink-0 cursor-pointer select-none transition-transform duration-75 hover:scale-95 active:scale-80 p-[12px] -m-[12px] border-none bg-transparent outline-none"
                   onClick={handleBack}
+                  style={{ touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }}
                 >
                   <div className="h-[20px] relative shrink-0 w-[10px]">
                     <div className="absolute inset-[-12.5%_-25%_-12.5%_-8.43%]">
@@ -245,7 +251,7 @@ export default function AppHeader({ title, subtitle, showBack = false, onBack, i
                       </svg>
                     </div>
                   </div>
-                </div>
+                </button>
               )}
               {icon && <div className="shrink-0">{icon}</div>}
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[26px] whitespace-nowrap">
@@ -303,7 +309,7 @@ export default function AppHeader({ title, subtitle, showBack = false, onBack, i
                       WebkitTextFillColor: xp > 0 ? 'transparent' : 'unset'
                     }}
                   >
-                    {xp}
+                    {formatXp(xp)}
                   </p>
                 </div>
               </div>

@@ -20,8 +20,8 @@ import type { CardState } from "../../components/quiz/QuizCardMockups";
 export type CompareCardState = CardState;
 
 // Natural pixel dimensions of CardAMockup / CardBMockup
-const CARD_W = 333;
-const CARD_H = 415;
+const CARD_W = 404;
+const CARD_H = 367;
 
 // Natural pixel dimensions of Figma contrast-quiz cards
 const FIGMA_COMPARE_W = 186;

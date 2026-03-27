@@ -1,20 +1,20 @@
 export const LESSON_ICON: Record<string, string> = {
-  "color-lesson":               "/lesson-icons/color.svg",
-  "contrast-lesson":            "/lesson-icons/contrast.svg",
-  "hierarchy-lesson":           "/lesson-icons/hierarchy.svg",
-  "what-is-ux-lesson":          "/lesson-icons/what-is-ux.svg",
-  "user-flow-lesson":           "/lesson-icons/user-flow.svg",
-  "interface-structure-lesson": "/lesson-icons/structure.svg",
-  "interface-elements-lesson":  "/lesson-icons/interface-elements.svg",
-  "ux-errors-lesson":           "/lesson-icons/ux-errors.svg",
-  "what-is-ui-kit-lesson":      "/lesson-icons/what-is-ui-kit.svg",
-  "ui-elements-lesson":         "/lesson-icons/ui-elements.svg",
-  "element-states-lesson":      "/lesson-icons/element-states.svg",
-  "figma-components-lesson":    "/lesson-icons/figma-components.svg",
-  "creating-ui-kit-lesson":     "/lesson-icons/creating-ui-kit.svg",
+  "color-lesson":               "/lesson-icons-png/color.png",
+  "contrast-lesson":            "/lesson-icons-png/contrast.png",
+  "hierarchy-lesson":           "/lesson-icons-png/hierarchy.png",
+  "what-is-ux-lesson":          "/lesson-icons-png/what-is-ux.png",
+  "user-flow-lesson":           "/lesson-icons-png/user-flow.png",
+  "interface-structure-lesson": "/lesson-icons-png/structure.png",
+  "interface-elements-lesson":  "/lesson-icons-png/interface-elements.png",
+  "ux-errors-lesson":           "/lesson-icons-png/ux-errors.png",
+  "what-is-ui-kit-lesson":      "/lesson-icons-png/what-is-ui-kit.png",
+  "ui-elements-lesson":         "/lesson-icons-png/ui-elements.png",
+  "element-states-lesson":      "/lesson-icons-png/element-states.png",
+  "figma-components-lesson":    "/lesson-icons-png/figma-components.png",
+  "creating-ui-kit-lesson":     "/lesson-icons-png/creating-ui-kit.png",
 };
 
 export function getLessonIcon(lessonId: string, isHomework = false): string {
-  if (isHomework) return "/lesson-icons/homework.svg";
-  return LESSON_ICON[lessonId] ?? "/lesson-icons/homework.svg";
+  if (isHomework) return "/lesson-icons-png/homework.png";
+  return LESSON_ICON[lessonId] ?? "/lesson-icons-png/homework.png";
 }

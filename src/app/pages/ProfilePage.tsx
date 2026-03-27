@@ -1,12 +1,15 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
 import Layout from "../components/Layout";
 import { useUserSafe } from "../context/UserContext";
+import { useAuth } from "../context/AuthContext";
+import { supabase } from "../../../utils/supabase/client";
+import { projectId } from "../../../utils/supabase/info";
 import svgPaths from "../../imports/svg-mo1fvfhy71";
 import imgAvatar from "figma:asset/906790c4d803b2b6f01b6bc1dc6703b587d8a0d9.png";
 import { ActiveCourseCard, COURSE_DISPLAY } from "../components/CoursesContent";
 import { useAchievementsSafe, ACHIEVEMENTS, ACHIEVEMENT_ORDER, AchievementId } from "../context/AchievementsContext";
-import { getLeague } from "./LeaguePage";
+import { getLeague, formatXp } from "./LeaguePage";
 
 // ─── Pencil icon (orange gradient, from Figma) ────────────────────────────────
 function PencilIcon() {
@@ -31,10 +34,10 @@ function PencilIcon() {
 function FireStatIcon() {
   return (
     <img
-      src="/fire-icon.svg"
+      src="/fire-icon-active.png"
       width={22}
       height={24}
-      style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(76%) saturate(751%) hue-rotate(357deg) brightness(102%)", flexShrink: 0 }}
+      style={{ flexShrink: 0 }}
     />
   );
 }
@@ -43,10 +46,10 @@ function FireStatIcon() {
 function ZapStatIcon() {
   return (
     <img
-      src="/zap-icon.svg"
+      src="/zap-icon-active.png"
       width={22}
       height={22}
-      style={{ filter: "brightness(0) saturate(100%) invert(49%) sepia(79%) saturate(1117%) hue-rotate(348deg) brightness(103%)", flexShrink: 0 }}
+      style={{ flexShrink: 0 }}
     />
   );
 }
@@ -93,8 +96,8 @@ function EditButton({ onClick }: { onClick: () => void }) {
   return (
     <button onClick={onClick} className="content-stretch flex gap-[8px] items-center relative shrink-0 cursor-pointer bg-transparent border-0 p-0 outline-none">
       <PencilIcon />
-      <p className="bg-clip-text font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[16px] text-[transparent] whitespace-nowrap"
-        style={{ backgroundImage: "linear-gradient(186.946deg, rgb(255, 107, 33) 48.665%, rgb(153, 64, 20) 112.02%)" }}>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[16px] whitespace-nowrap"
+        style={{ color: "#FF6B21" }}>
         Редактировать
       </p>
     </button>
@@ -163,6 +166,20 @@ function resizeImageToDataUrl(file: File, maxSize = 400, quality = 0.88): Promis
 const PROFILE_NAME_KEY  = "uxeo-profile-name";
 const PROFILE_TITLE_KEY = "uxeo-profile-title";
 const PROFILE_AVATAR_KEY = "uxeo-profile-avatar";
+const USER_ID_KEY = "uxeo-user-id";
+
+function getProfileTitleFromLevel(level: string | null | undefined) {
+  switch (level) {
+    case "beginner":
+      return "Джун-дизайнер";
+    case "some_experience":
+      return "Мидл-дизайнер";
+    case "designer":
+      return "Опытный дизайнер";
+    default:
+      return "Дизайнер";
+  }
+}
 
 // Illustrated DiceBear avatar collection (notionists style)
 const DICEBEAR_SEEDS = [
@@ -247,6 +264,9 @@ function AvatarPickerModal({ current, onSelect, onClose }: {
 }
 
 function ProfileCard() {
+  const userCtx = useUserSafe();
+  const { email } = useAuth();
+  const autoTitle = getProfileTitleFromLevel(userCtx?.level);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(() => {
     const saved = localStorage.getItem(PROFILE_NAME_KEY);
@@ -258,14 +278,30 @@ function ProfileCard() {
   const [title, setTitle] = useState(() => {
     const saved = localStorage.getItem(PROFILE_TITLE_KEY);
     if (saved) return saved;
-    localStorage.setItem(PROFILE_TITLE_KEY, "Дизайнер мидл");
-    return "Дизайнер мидл";
+    localStorage.setItem(PROFILE_TITLE_KEY, autoTitle);
+    return autoTitle;
   });
   const [editName, setEditName] = useState(name);
   const [editTitle, setEditTitle] = useState(title);
   const [avatarSrc, setAvatarSrc] = useState<string | null>(() => localStorage.getItem(PROFILE_AVATAR_KEY));
   const [showPicker, setShowPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(PROFILE_TITLE_KEY);
+    const autoTitles = new Set([
+      "Дизайнер",
+      "Джун-дизайнер",
+      "Мидл-дизайнер",
+      "Опытный дизайнер",
+      "Дизайнер мидл",
+    ]);
+    if (!saved || autoTitles.has(saved)) {
+      setTitle(autoTitle);
+      setEditTitle(autoTitle);
+      localStorage.setItem(PROFILE_TITLE_KEY, autoTitle);
+    }
+  }, [autoTitle]);
 
   const handleAvatarSelect = (url: string) => {
     setAvatarSrc(url);
@@ -352,6 +388,9 @@ function ProfileCard() {
                 <div className="content-stretch flex flex-col gap-[8px] items-start">
                   <p className="font-['Roboto_Condensed:Medium',sans-serif] leading-[27.5px] text-[rgba(244,245,252,0.9)] text-[26px]">{name}</p>
                   <p className="font-['Roboto_Condensed:Medium',sans-serif] leading-[20px] text-[#798589] text-[16px]">{title}</p>
+                  {email && (
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] leading-[18px] text-[#556064] text-[13px]">{email}</p>
+                  )}
                 </div>
                 <EditButton onClick={handleEdit} />
               </div>
@@ -412,8 +451,8 @@ function StatisticsCard({ streak, xp }: { streak: number; xp: number }) {
         <div className="content-stretch flex items-end justify-between relative shrink-0 w-full">
           <div className="content-stretch flex gap-[8px] items-center relative shrink-0">
             <FireStatIcon />
-            <p className="bg-clip-text font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22px] relative shrink-0 text-[22px] text-[transparent] whitespace-nowrap"
-              style={{ backgroundImage: "linear-gradient(to bottom, #FFB121, #BB8116)" }}>
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22px] relative shrink-0 text-[22px] whitespace-nowrap"
+              style={{ color: "#FFB121" }}>
               {streak}
             </p>
           </div>
@@ -426,9 +465,9 @@ function StatisticsCard({ streak, xp }: { streak: number; xp: number }) {
         <div className="content-stretch flex items-end justify-between relative shrink-0 w-full">
           <div className="content-stretch flex gap-[8px] items-center relative shrink-0">
             <ZapStatIcon />
-            <p className="bg-clip-text font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22px] relative shrink-0 text-[22px] text-[transparent] whitespace-nowrap"
-              style={{ backgroundImage: "linear-gradient(195.05deg, rgb(255, 107, 33) 48.665%, rgb(153, 64, 20) 112.02%)" }}>
-              {xp}
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22px] relative shrink-0 text-[22px] whitespace-nowrap"
+              style={{ color: "#FF6B21" }}>
+              {formatXp(xp)}
             </p>
           </div>
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#798589] text-[16px] whitespace-nowrap">XP</p>
@@ -623,6 +662,102 @@ function ProfileSkeleton() {
   );
 }
 
+function AccountActionsCard() {
+  const navigate = useNavigate();
+  const { isAuthenticated, signOut } = useAuth();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const handleSignOut = async () => {
+    if (isSigningOut || isDeleting) return;
+    setIsSigningOut(true);
+    try {
+      await signOut();
+      navigate("/welcome", { replace: true });
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (isDeleting || isSigningOut) return;
+
+    const confirmed = window.confirm(
+      "Удалить аккаунт? Это действие нельзя отменить. Прогресс, домашки и профиль будут удалены."
+    );
+    if (!confirmed) return;
+
+    setIsDeleting(true);
+    try {
+      const { data } = await supabase.auth.getSession();
+      const accessToken = data.session?.access_token;
+      if (!accessToken) {
+        throw new Error("Сначала войди в аккаунт");
+      }
+
+      const res = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/account/delete`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(payload?.error || "Не удалось удалить аккаунт");
+      }
+
+      localStorage.removeItem(PROFILE_NAME_KEY);
+      localStorage.removeItem(PROFILE_TITLE_KEY);
+      localStorage.removeItem(PROFILE_AVATAR_KEY);
+      localStorage.removeItem(USER_ID_KEY);
+
+      await signOut();
+      navigate("/welcome", { replace: true });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Не удалось удалить аккаунт";
+      alert(message);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  return (
+    <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full mt-[32px] pb-[40px]">
+      <SectionTitle text="Аккаунт" />
+      <div className="bg-[#343e42] relative rounded-[15px] shrink-0 w-full">
+        <div className="content-stretch flex flex-col gap-[14px] items-start p-[20px] relative w-full">
+          <button
+            onClick={handleSignOut}
+            disabled={isSigningOut || isDeleting}
+            className="group relative flex h-[56px] items-center justify-center px-[18px] rounded-[15px] w-full shrink-0 bg-[#ff5d39] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px] disabled:opacity-60 disabled:cursor-default disabled:hover:translate-y-0 disabled:active:translate-y-0"
+          >
+            <div aria-hidden="true" className="absolute border-[#ff390d] border-[1px] border-solid inset-0 pointer-events-none rounded-[15px] shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_3px_0px_0px_#c24226] group-active:shadow-none transition-[box-shadow] duration-75" />
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px] leading-[22px] whitespace-nowrap relative">
+              {isSigningOut ? "Выходим..." : "Выйти"}
+            </p>
+          </button>
+
+          <button
+            onClick={handleDeleteAccount}
+            disabled={isDeleting || isSigningOut}
+            className="group relative flex h-[56px] items-center justify-center px-[18px] rounded-[15px] w-full shrink-0 bg-[#343e42] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px] disabled:opacity-60 disabled:cursor-default disabled:hover:translate-y-0 disabled:active:translate-y-0"
+          >
+            <div aria-hidden="true" className="absolute border-[1px] border-solid inset-0 pointer-events-none rounded-[15px] border-[rgba(255,93,57,0.35)] shadow-[0px_5px_0px_0px_#1d292d] group-hover:shadow-[0px_3px_0px_0px_#1d292d] group-active:shadow-none transition-[box-shadow] duration-75" />
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#ff8b73] text-[22px] leading-[22px] whitespace-nowrap relative">
+              {isDeleting ? "Удаляем..." : "Удалить аккаунт"}
+            </p>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Profile Page ─────────────────────────────────────────────────────────────
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -664,6 +799,8 @@ export default function ProfilePage() {
         <SectionTitle text="Достижения" />
         <AchievementsGrid />
       </div>
+
+      <AccountActionsCard />
     </Layout>
   );
 }

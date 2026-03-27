@@ -32,6 +32,8 @@ export default function TheoryPage() {
   const {
     mobileScrollRef,
     mobileScrollY,
+    completedSectionsCount,
+    totalSections,
     setMobileScrollY,
     openSections,
     accordionStates,
@@ -44,12 +46,15 @@ export default function TheoryPage() {
   if (isMobile) {
     return (
       <TheoryMobileLayout
+        key={lessonId}
         xp={userCtx?.xp ?? 0}
         streak={userCtx?.streak ?? 0}
         lessonData={lessonData}
         lessonId={lessonId}
         mobileScrollRef={mobileScrollRef}
         mobileScrollY={mobileScrollY}
+        completedSectionsCount={completedSectionsCount}
+        totalSections={totalSections}
         setMobileScrollY={setMobileScrollY}
         openSections={openSections}
         accordionStates={accordionStates}
@@ -80,21 +85,34 @@ export default function TheoryPage() {
   const opacity = Math.max(0.5, 1 - scrollY / 180);
 
   return (
-    <div className="theory-page size-full">
+    <div key={lessonId} className="theory-page size-full">
       <Layout title="Теория" showBack backPath="/lessons" rightContent={<RightWidgets />} leftWidth="660px" rightWidth="320px">
         <div className="flex flex-col gap-[20px] w-full">
           {/* Hero — icon centered, no bg, parallax */}
           <div ref={heroRef} className="flex flex-col items-center gap-[20px] w-full py-[10px]">
-            <div className="relative flex items-center justify-center" style={{ width: 200, height: 200 }}>
-              <img src={getLessonIcon(lessonId)} alt="" style={{ width: 160, height: 160, objectFit: "contain", filter: "brightness(0) invert(1)", maskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", transform: `translateY(${shift}px)`, opacity: Math.max(0.5, 1 - scrollY / 180), willChange: "transform, opacity", position: "relative", zIndex: 1 }} />
+            <div className="relative flex items-center justify-center" style={{ width: 160, height: 160 }}>
+              <img src={getLessonIcon(lessonId)} alt="" style={{ width: 128, height: 128, objectFit: "contain", filter: "brightness(0) invert(1)", maskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", transform: `translateY(${shift}px)`, opacity: Math.max(0.5, 1 - scrollY / 180), willChange: "transform, opacity", position: "relative", zIndex: 1 }} />
             </div>
             <div className="flex items-center justify-between w-full">
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[35px] text-[#f4f5fc] text-[32px]">
                 {lessonData.title}
               </p>
-              <div className="flex gap-[5px] items-center shrink-0">
-                <TimeIcon />
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap">{lessonData.duration}</p>
+              <div className="flex items-center gap-[8px] shrink-0">
+                <div className="flex gap-[5px] items-center">
+                  <TimeIcon />
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap">{lessonData.duration}</p>
+                </div>
+                <div
+                  className="flex items-center gap-[6px] h-[28px] px-[10px] rounded-full"
+                  style={{ background: "#404D52" }}
+                >
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-none text-[#798589] text-[13px] whitespace-nowrap">
+                    Микроквизы
+                  </p>
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-none text-[#F1F2FB] text-[13px] whitespace-nowrap">
+                    {completedSectionsCount}/{totalSections}
+                  </p>
+                </div>
               </div>
             </div>
           </div>

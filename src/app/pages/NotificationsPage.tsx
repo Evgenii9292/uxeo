@@ -92,19 +92,19 @@ function ChevronRight() {
 
 function ZapGradient() {
   return (
-    <img src="/zap-icon.svg" width={16} height={18} className="shrink-0" style={{ display: 'block', objectFit: 'contain', filter: 'brightness(0) saturate(100%) invert(49%) sepia(79%) saturate(1117%) hue-rotate(348deg) brightness(103%)' }} />
+    <img src="/zap-icon-active.png" width={16} height={18} className="shrink-0" style={{ display: 'block', objectFit: 'contain' }} />
   );
 }
 
 function ZapWhite() {
   return (
-    <img src="/zap-icon.svg" width={16} height={18} className="shrink-0" style={{ display: 'block', objectFit: 'contain', filter: 'brightness(0) saturate(100%) invert(49%) sepia(79%) saturate(1117%) hue-rotate(348deg) brightness(103%)' }} />
+    <img src="/zap-icon-active.png" width={16} height={18} className="shrink-0" style={{ display: 'block', objectFit: 'contain' }} />
   );
 }
 
 function FireInline() {
   return (
-    <img src="/fire-icon.svg" width={16} height={18} className="shrink-0" style={{ display: 'block', objectFit: 'contain', filter: 'brightness(0) saturate(100%) invert(72%) sepia(76%) saturate(751%) hue-rotate(357deg) brightness(102%)' }} />
+    <img src="/fire-icon-active.png" width={16} height={18} className="shrink-0" style={{ display: 'block', objectFit: 'contain' }} />
   );
 }
 
@@ -1074,6 +1074,7 @@ export default function NotificationsPage() {
     hw => hw.status === "reviewed" || hw.status === "rejected"
   );
   const [hwRead, setHwRead] = useState<Record<string, boolean>>({});
+  const [lightboxImg, setLightboxImg] = useState<string | null>(null);
 
   // Mark all as seen when page opens
   useEffect(() => {
@@ -1130,7 +1131,7 @@ export default function NotificationsPage() {
                 const desc  = hw.status === "reviewed"
                   ? `Мы проверили задание «${hw.lesson_name}». Посмотрите результат.`
                   : `Задание «${hw.lesson_name}» требует доработки.`;
-                const color = hw.status === "reviewed" ? "#5EDD60" : "#FF5D39";
+                const color = hw.status === "reviewed" ? "#5EDD60" : "#FF6B21";
                 const lessonId = hw.lesson_id || hw.lesson_name;
                 if (filter === "unread" && isRead) return null;
                 return (
@@ -1155,18 +1156,31 @@ export default function NotificationsPage() {
                       {/* Left */}
                       <div className="flex-1 min-w-0 flex flex-col gap-[10px]">
                         <div style={{ opacity: isRead ? 0.5 : 1 }}>
-                          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] whitespace-nowrap" style={{ color }}>
-                            {label}
-                          </p>
+                          <div className="flex items-center gap-[6px]">
+                            {hw.status === "rejected" ? (
+                              <svg width="14" height="14" viewBox="0 0 512 512" fill="none">
+                                <path d="m48 256c0 114.87 93.13 208 208 208s208-93.13 208-208-93.13-208-208-208-208 93.13-208 208zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6l84.55 79.74a8.2 8.2 0 0 1 0 11.94l-84.42 79.77a8.32 8.32 0 0 1 -14-6v-37.29c-57.07 0-84.51 13.47-108.58 38.68-5.49 5.65-15.07 1.32-14.42-6.43z" fill="#FF6B21" />
+                              </svg>
+                            ) : null}
+                            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] whitespace-nowrap" style={{ color: hw.status === "reviewed" ? color : "#f4f5fc" }}>
+                              {label}
+                            </p>
+                          </div>
                         </div>
                         <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[16px] leading-[20px]" style={{ color: "#596367" }}>{desc}</p>
                         {hw.comment && (
-                          <div className="px-[12px] py-[10px] rounded-[10px]" style={{ background: hw.status === "reviewed" ? "rgba(94,221,96,0.08)" : "rgba(255,93,57,0.08)", borderLeft: `3px solid ${hw.status === "reviewed" ? "#5EDD60" : "#FF5D39"}` }}>
+                          <div className="px-[12px] py-[10px] rounded-[10px]" style={{ background: hw.status === "reviewed" ? "rgba(94,221,96,0.08)" : "rgba(255,107,33,0.08)", borderLeft: `3px solid ${hw.status === "reviewed" ? "#5EDD60" : "#FF6B21"}` }}>
                             <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[14px] text-[rgba(244,245,252,0.85)] leading-[20px]">{hw.comment}</p>
                           </div>
                         )}
                         {hw.image_url && (
-                          <img src={hw.image_url} alt="Скриншот от проверяющего" className="w-full rounded-[10px] object-cover" style={{ maxHeight: 200 }} onClick={e => e.stopPropagation()} />
+                          <img
+                            src={hw.image_url}
+                            alt="Скриншот от проверяющего"
+                            className="rounded-[8px] object-cover cursor-zoom-in"
+                            style={{ width: 72, height: 54 }}
+                            onClick={e => { e.stopPropagation(); setLightboxImg(hw.image_url!); }}
+                          />
                         )}
                       </div>
                       {/* Right */}
@@ -1254,6 +1268,22 @@ export default function NotificationsPage() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ── Image lightbox ── */}
+      {lightboxImg && (
+        <div
+          className="fixed inset-0 z-[300] flex items-center justify-center px-[16px]"
+          style={{ background: 'rgba(0,0,0,0.85)' }}
+          onClick={() => setLightboxImg(null)}
+        >
+          <img
+            src={lightboxImg}
+            alt="Скриншот"
+            className="max-w-full max-h-[90vh] rounded-[12px] object-contain"
+            onClick={e => e.stopPropagation()}
+          />
         </div>
       )}
     </Layout>

@@ -12,28 +12,58 @@ export default function AuthCallbackPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Supabase picks up the token from the URL automatically (detectSessionInUrl: true).
-    // We just wait for the session to be established, then redirect.
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
-        // Notify if new user (created_at within last 60 seconds)
-        const user = data.session.user;
-        const createdAt = new Date(user.created_at).getTime();
-        const isNew = Date.now() - createdAt < 60_000;
-        if (isNew) {
-          const provider = user.app_metadata?.provider ?? "email";
-          fetch(`https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/registered`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${publicAnonKey}` },
-            body: JSON.stringify({ email: user.email, provider, userId: user.id }),
-          }).catch(() => {});
-        }
-        navigate("/", { replace: true });
-      } else {
-        // Try once more after a short delay (token exchange may still be in progress)
-        setTimeout(() => navigate("/", { replace: true }), 1500);
+    let cancelled = false;
+
+    async function resolveRedirect() {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        setTimeout(() => {
+          if (!cancelled) navigate("/", { replace: true });
+        }, 1500);
+        return;
       }
-    });
+
+      const user = data.session.user;
+      try {
+        if (user.email) {
+          localStorage.setItem("uxeo-user-email", user.email);
+        }
+      } catch {}
+
+      let hasExistingProgress = true; // safe default: assume existing on API error
+      try {
+        const res = await fetch(
+          `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/progress?userId=${encodeURIComponent(user.id)}`,
+          { headers: { Authorization: `Bearer ${publicAnonKey}` } }
+        );
+        if (res.ok) {
+          const payload = await res.json().catch(() => ({}));
+          hasExistingProgress = Boolean(payload?.found);
+        }
+      } catch {
+        // API unavailable — treat as existing user to avoid false "new user" notifications
+        hasExistingProgress = true;
+      }
+
+      if (!hasExistingProgress) {
+        const provider = user.app_metadata?.provider ?? "email";
+        fetch(`https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/registered`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${publicAnonKey}` },
+          body: JSON.stringify({ email: user.email, provider, userId: user.id }),
+        }).catch(() => {});
+        if (!cancelled) navigate("/level", { replace: true });
+        return;
+      }
+
+      if (!cancelled) navigate("/", { replace: true });
+    }
+
+    resolveRedirect();
+
+    return () => {
+      cancelled = true;
+    };
   }, [navigate]);
 
   return (

@@ -7,6 +7,7 @@ import FreeIconGift from "../../imports/FreeIconGift81465531";
 import { CompactWidgets } from "./RightWidgets";
 import Group1 from "../../imports/Group481513";
 import imgVector from "figma:asset/fbd1a4de6983385b09d8ab2cc1ccfe34c3361ab2.png";
+import skillumLongLogo from "../../assets/skillum-logo-long.svg";
 import { useHomeworkSafe } from "../context/HomeworkContext";
 import { getLeague } from "../pages/LeaguePage";
 import { useUserSafe } from "../context/UserContext";
@@ -37,30 +38,30 @@ function useNotifCount() {
 /** Скиллум logo — full sidebar */
 function SkillumLogo() {
   return (
-    <svg width="124" height="37" viewBox="0 0 150 55" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M11.5162 23.0303C12.3172 23.0303 13.0427 22.8716 13.6925 22.5542C14.3575 22.2217 14.9016 21.7079 15.3247 21.0127C15.7479 20.3023 15.9897 19.3804 16.0502 18.2469H19.8134C19.7529 19.8792 19.3373 21.3149 18.5665 22.5542C17.8109 23.7784 16.8134 24.7381 15.5741 25.4333C14.35 26.1133 12.9973 26.4534 11.5162 26.4534C9.92935 26.4534 8.54649 26.1965 7.36767 25.6826C6.20395 25.1688 5.23671 24.4282 4.46594 23.461C3.71028 22.4786 3.14354 21.2922 2.76571 19.9018C2.38788 18.4963 2.19897 16.9019 2.19897 15.1185V12.3528C2.19897 10.5695 2.38788 8.98258 2.76571 7.59217C3.14354 6.18664 3.71028 5.00026 4.46594 4.03301C5.23671 3.05066 6.20395 2.30256 7.36767 1.78871C8.54649 1.27486 9.92935 1.01794 11.5162 1.01794C13.1787 1.01794 14.6144 1.3731 15.8235 2.08342C17.0477 2.77862 17.9998 3.7912 18.6799 5.12116C19.3751 6.43601 19.7529 8.03045 19.8134 9.90448H16.0502C15.9897 8.69543 15.7706 7.6904 15.3928 6.8894C15.0149 6.07329 14.5011 5.46877 13.8512 5.07582C13.2013 4.66777 12.423 4.46374 11.5162 4.46374C10.4583 4.46374 9.58175 4.65265 8.88654 5.03048C8.20645 5.3932 7.66993 5.92216 7.27699 6.61737C6.88405 7.31257 6.60445 8.1438 6.43821 9.11104C6.28708 10.0783 6.21151 11.1589 6.21151 12.3528V15.1185C6.21151 16.3125 6.28708 17.4006 6.43821 18.383C6.60445 19.3502 6.87649 20.1814 7.25432 20.8766C7.64726 21.5718 8.19134 22.1084 8.88654 22.4862C9.58175 22.8489 10.4583 23.0303 11.5162 23.0303ZM25.8359 1.47133V26H21.8234V1.47133H25.8359ZM39.3244 1.47133L29.4631 15.5266H24.4984L23.8637 11.8541H27.8309L34.5184 1.47133H39.3244ZM34.8811 26L27.6948 14.8918L30.2565 11.8541L39.9138 26H34.8811ZM45.1203 19.3578L54.0068 1.47133H58.0194V26H54.0068V8.11357L45.1203 26H41.1304V1.47133H45.1203V19.3578ZM75.1274 1.47133V4.9398H65.3568V1.47133H75.1274ZM78.7093 1.47133V26H74.7194V1.47133H78.7093ZM64.4046 1.47133H68.4172L67.8504 13.3049C67.7598 15.1336 67.6086 16.7507 67.3971 18.1563C67.2006 19.5467 66.921 20.7406 66.5583 21.7381C66.2107 22.7356 65.7724 23.5517 65.2434 24.1864C64.7296 24.8061 64.1099 25.267 63.3845 25.5693C62.6742 25.8564 61.8505 26 60.9135 26H59.712V22.3048L60.5054 22.2368C61.0344 22.1915 61.4878 22.0404 61.8656 21.7834C62.2586 21.5265 62.576 21.1487 62.8178 20.6499C63.0747 20.1361 63.2787 19.4787 63.4298 18.6777C63.5961 17.8767 63.7246 16.9245 63.8152 15.8213C63.9059 14.718 63.9739 13.4334 64.0193 11.9674L64.4046 1.47133ZM95.84 1.47133V4.9398H86.0693V1.47133H95.84ZM99.4218 1.47133V26H95.4319V1.47133H99.4218ZM85.1172 1.47133H89.1297L88.563 13.3049C88.4723 15.1336 88.3212 16.7507 88.1096 18.1563C87.9131 19.5467 87.6335 20.7406 87.2708 21.7381C86.9232 22.7356 86.4849 23.5517 85.956 24.1864C85.4421 24.8061 84.8225 25.267 84.0971 25.5693C83.3867 25.8564 82.5631 26 81.6261 26H80.4246V22.3048L81.218 22.2368C81.747 22.1915 82.2004 22.0404 82.5782 21.7834C82.9711 21.5265 83.2885 21.1487 83.5303 20.6499C83.7872 20.1361 83.9913 19.4787 84.1424 18.6777C84.3086 17.8767 84.4371 16.9245 84.5278 15.8213C84.6185 14.718 84.6865 13.4334 84.7318 11.9674L85.1172 1.47133Z" fill="#F4F5FC"/>
-      <path d="M109.85 2.01017C107.522 6.6174 98.9338 31.1234 107.687 26.4487C110.907 24.7289 113.928 21.8662 116.24 19.0702C117.264 17.8311 117.859 16.8466 118.45 15.4342C119.04 14.0218 119.607 12.2114 120.063 10.4481C120.942 7.04667 122.078 1.73656 121.935 2.01017C121.701 2.45629 120.434 6.97585 119.294 10.2566C113.307 27.4877 94.3437 57.2363 91.3441 52.7363C88.7873 48.9006 101.029 40.7363 109.85 32.3559C112.365 29.9668 121.999 21.1843 123.003 19.8525C125.277 16.8361 122.844 26.2983 123.006 27.35C123.314 29.3393 127.833 22.1397 128.617 20.9606C131.195 17.0786 133.104 11.6943 134.637 7.27784C135.822 3.86173 135.836 0.664476 134.637 3.94812C133.724 6.44905 125.872 23.8948 133.026 21.4095C139.756 19.0718 144.686 10.6417 146 3.94812C147.062 -1.46088 141.793 15.3065 140.844 20.7363C140.056 25.2424 144 26 148.5 22.5" stroke="#F4F5FC" strokeWidth="3" strokeLinecap="round"/>
-    </svg>
+    <img
+      src={skillumLongLogo}
+      alt="Skillum"
+      className="block h-auto w-[162px]"
+      draggable={false}
+    />
   );
 }
 
-/** Скиллум logo — compact sidebar (ellipse icon only, ~30 × 32 px) */
+/** Скиллум logo — compact sidebar (icon only) */
 function SkillumIconOnly() {
   return (
-    <div style={{ width: 30, height: 32, position: "relative" }}>
-      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 40 42">
-        <ellipse cx="20" cy="21" fill="url(#sb_compact_icon_grad)" rx="20" ry="21" />
-        <defs>
-          <linearGradient gradientUnits="userSpaceOnUse" id="sb_compact_icon_grad" x1="21.6076" x2="19.717" y1="4.758" y2="40.811">
-            <stop stopColor="#435861" />
-            <stop offset="1" stopColor="#000" />
-          </linearGradient>
-        </defs>
-      </svg>
-      <div style={{ position: "absolute", top: "26%", left: "3%", right: "83%", bottom: "11%" }}>
-        <img alt="" src={imgVector} style={{ display: "block", width: "100%", height: "100%" }} />
-      </div>
-    </div>
+    <svg width="36" height="32" viewBox="0 0 88 78" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M73 2.27175e-05L15 0.000110559C6.71572 0.000123105 0 6.71585 0 15.0001V63.0001C0 71.2844 6.70996 78.0001 14.9942 78.0001H73.001C81.2852 78.0001 88 71.2844 88 63.0001V15C88 6.71574 81.2843 1.0171e-05 73 2.27175e-05Z" fill="#354146"/>
+      <path d="M48.1299 60.4734C51.6586 63.2591 55.8476 65.4689 60.458 66.9766C68.2171 69.5139 75 62.6424 75 54.479L75 24.0414C75 15.8779 68.2171 9.00647 60.458 11.5438C55.8477 13.0514 51.6586 15.2612 48.1299 18.047C44.6013 20.8327 41.8023 24.1399 39.8926 27.7797C37.9829 31.4194 37 35.3205 37 39.2602C37 43.1998 37.9829 47.1009 39.8926 50.7407C41.8023 54.3804 44.6013 57.6876 48.1299 60.4734Z" fill="#64B6FF"/>
+      <path d="M41 59.9999C37.5642 62.8786 32.6483 65.3426 28.1593 66.9005C20.6349 69.5118 14 62.8036 14 54.8391V23.665C14 15.7095 20.6177 9.01098 28.1593 11.5438C32.6483 13.0515 36.7272 15.2612 40.163 18.047C43.5987 20.8328 46.3241 24.1399 48.1835 27.7797C50.043 31.4195 51 35.3206 51 39.2602C50.5 48.9999 44.4358 57.1213 41 59.9999Z" fill="#FF6B21"/>
+      <mask id="mask0_icon_compact" style={{maskType:"alpha"}} maskUnits="userSpaceOnUse" x="37" y="21" width="15" height="36">
+        <path d="M38.1707 46.9811C38.8742 49.4289 39.9055 51.6531 41.2055 53.5266C42.0725 54.7761 43.0477 55.8532 44.105 56.733C53.605 43.7601 53.105 32.2601 44.105 21.7872C43.0477 22.6669 42.0725 23.7441 41.2055 24.9935C39.9055 26.867 38.8742 29.0912 38.1707 31.5391C37.4671 33.9869 37.105 36.6105 37.105 39.2601C37.105 41.9096 37.4671 44.5332 38.1707 46.9811Z" fill="#D9D9D9"/>
+      </mask>
+      <g mask="url(#mask0_icon_compact)">
+        <path d="M75 54.479C75 62.6424 68.2171 69.5139 60.458 66.9766C55.8476 65.4689 51.6586 63.2591 48.1299 60.4734C44.6013 57.6876 41.8023 54.3804 39.8926 50.7407C37.9829 47.1009 37 43.1998 37 39.2602L75 39.2602L75 54.479Z" fill="#FEBC4E"/>
+        <path d="M75 24.0414C75 15.8779 68.2171 9.00647 60.458 11.5438C55.8477 13.0514 51.6586 15.2612 48.1299 18.047C44.6013 20.8327 41.8023 24.1399 39.8926 27.7797C37.9829 31.4194 37 35.3205 37 39.2602L75 39.2602V24.0414Z" fill="#FEBC4E"/>
+      </g>
+    </svg>
   );
 }
 
@@ -78,7 +79,7 @@ function UxeoLogo() {
           </defs>
         </svg>
       </div>
-      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[32px] w-[91.837px]">UXEO</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[32px] w-[91.837px]">Skillum</p>
     </div>
   );
 }
@@ -171,14 +172,6 @@ function NotificationIcon({ hasUnread }: { hasUnread: boolean }) {
           <path d={svgNotif.p1ca20b00} fill="#FFD845" />
         </svg>
       </div>
-      {/* Red dot badge — shown only when unread notifications exist */}
-      {hasUnread && (
-        <div className="absolute inset-[-5.82%_-5%_40.82%_40%]">
-          <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 13 13">
-            <circle cx="6.5" cy="6.5" fill="#FF3B0A" r="5.75" stroke="#3D494F" strokeWidth="1.5" />
-          </svg>
-        </div>
-      )}
     </div>
   );
 }
@@ -205,7 +198,7 @@ function NavItems({ activePath }: { activePath: string }) {
     <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full">
       {/* Обучение */}
       <div
-        className={`h-[41px] relative rounded-[10px] shrink-0 w-[205px] cursor-pointer transition-colors ${isLearningActive ? "bg-[#343e42]" : "hover:bg-[#343e42]"}`}
+        className={`h-[41px] relative rounded-[10px] shrink-0 w-[205px] cursor-pointer ${isLearningActive ? "bg-[#343e42]" : "hover:bg-[#343e42]"}`}
         onClick={() => navigate("/lessons")}
       >
         <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[10px] items-center pl-[12px] relative size-full bg-[#00000000]">
@@ -220,7 +213,7 @@ function NavItems({ activePath }: { activePath: string }) {
 
       {/* Курсы */}
       <div
-        className={`h-[41px] relative rounded-[10px] shrink-0 w-[205px] cursor-pointer transition-colors ${isCoursesActive ? "bg-[#343e42]" : "hover:bg-[#343e42]"}`}
+        className={`h-[41px] relative rounded-[10px] shrink-0 w-[205px] cursor-pointer ${isCoursesActive ? "bg-[#343e42]" : "hover:bg-[#343e42]"}`}
         onClick={() => navigate("/courses")}
       >
         <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[10px] items-center pl-[12px] relative size-full bg-[#00000000]">
@@ -238,7 +231,7 @@ function NavItems({ activePath }: { activePath: string }) {
 
       {/* Вызовы */}
       <div
-        className={`h-[41px] relative rounded-[10px] shrink-0 w-[205px] cursor-pointer transition-colors ${isChallengesActive ? "bg-[#343e42]" : "hover:bg-[#343e42]"}`}
+        className={`h-[41px] relative rounded-[10px] shrink-0 w-[205px] cursor-pointer ${isChallengesActive ? "bg-[#343e42]" : "hover:bg-[#343e42]"}`}
         onClick={() => { if (!isChallengesActive) navigate("/challenges"); }}
       >
         <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[10px] items-center pl-[12px] relative size-full">
@@ -292,7 +285,7 @@ function NavItems({ activePath }: { activePath: string }) {
 
       {/* Лига */}
       <div
-        className={`h-[41px] relative rounded-[10px] shrink-0 w-[205px] cursor-pointer transition-colors ${isLeagueActive ? "bg-[#343e42]" : "hover:bg-[#343e42]"}`}
+        className={`h-[41px] relative rounded-[10px] shrink-0 w-[205px] cursor-pointer ${isLeagueActive ? "bg-[#343e42]" : "hover:bg-[#343e42]"}`}
         onClick={() => { if (!isLeagueActive) navigate("/league"); }}
       >
         <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[10px] items-center pl-[12px] relative size-full">
@@ -305,7 +298,7 @@ function NavItems({ activePath }: { activePath: string }) {
 
       {/* Профиль */}
       <div
-        className={`h-[41px] relative rounded-[10px] shrink-0 w-[205px] cursor-pointer transition-colors ${isProfileActive ? "bg-[#343e42]" : "hover:bg-[#343e42]"}`}
+        className={`h-[41px] relative rounded-[10px] shrink-0 w-[205px] cursor-pointer ${isProfileActive ? "bg-[#343e42]" : "hover:bg-[#343e42]"}`}
         onClick={() => navigate("/profile")}
       >
         <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[10px] items-center pl-[12px] relative size-full">
@@ -366,21 +359,16 @@ function NavItems({ activePath }: { activePath: string }) {
 
       {/* Fix 3: Уведомления — no background in default state, only on hover/active */}
       <div
-        className={`h-[41px] relative rounded-[10px] shrink-0 w-[205px] cursor-pointer transition-colors ${activePath === "/notifications" ? "bg-[#343e42]" : "hover:bg-[#343e42]"}`}
+        className={`h-[41px] relative rounded-[10px] shrink-0 w-[205px] cursor-pointer ${activePath === "/notifications" ? "bg-[#343e42]" : "hover:bg-[#343e42]"}`}
         onClick={() => navigate("/notifications")}
       >
         <div className="content-stretch flex gap-[10px] items-center pl-[12px] relative size-full">
           <NotificationIcon hasUnread={hasUnreadHW} />
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[21px] relative shrink-0 text-[#f1f2fb] text-[18px] whitespace-nowrap">Уведомления</p>
           {notifCount > 0 && (
-            <div
-              className="flex items-center justify-center rounded-full min-w-[18px] h-[18px] px-[4px]"
-              style={{ background: "#FF6B21" }}
-            >
-              <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[10.5px] leading-none" style={{ color: '#282F33' }}>
-                {notifCount > 99 ? "99+" : notifCount}
-              </span>
-            </div>
+            <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[12px] leading-none" style={{ color: "#FF6B21", marginLeft: "-4px", marginTop: "-2px" }}>
+              {notifCount > 99 ? "99+" : notifCount}
+            </span>
           )}
         </div>
       </div>
@@ -408,7 +396,7 @@ function SidebarFooter() {
       {/* О нас / Сбросить прогресс */}
       <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
         {/* О нас */}
-        <div onClick={() => navigate("/about")} className="h-[44px] relative rounded-[14px] shrink-0 w-full cursor-pointer hover:bg-[#343e42] transition-colors mt-[-10px]">
+        <div onClick={() => navigate("/about")} className="h-[44px] relative rounded-[14px] shrink-0 w-full cursor-pointer hover:bg-[#343e42] mt-[-10px]">
           <div className="flex flex-row items-center size-full m-[0px]">
             <div className="content-stretch flex items-center relative size-full pl-[12px] pr-[0px] py-[0px] m-[0px]">
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[21px] relative shrink-0 text-[#f2f4fb] text-[18px] whitespace-nowrap">О нас</p>
@@ -418,7 +406,7 @@ function SidebarFooter() {
         {/* Сбросить прогресс */}
         <div
           onClick={handleResetData}
-          className="h-[44px] relative rounded-[14px] shrink-0 w-full cursor-pointer hover:bg-[#3d2828] transition-colors"
+          className="h-[44px] relative rounded-[14px] shrink-0 w-full cursor-pointer hover:bg-[#3d2828]"
         >
           <div className="flex flex-row items-center size-full m-[0px]">
             <div className="content-stretch flex items-center relative size-full pl-[12px] pr-[0px] py-[0px] m-[0px]">
@@ -429,7 +417,7 @@ function SidebarFooter() {
       </div>
 
       {/* Написать отзыв — одна кнопка с иконкой подарка */}
-      <div className="group flex items-center gap-[8px] h-[40px] px-[12px] rounded-[12px] shrink-0 w-full cursor-pointer select-none hover:bg-[#343e42] transition-colors duration-150">
+      <div className="group flex items-center gap-[8px] h-[40px] px-[12px] rounded-[12px] shrink-0 w-full cursor-pointer select-none hover:bg-[#343e42]">
         <div className="relative shrink-0 size-[20px] flex items-center justify-center">
           <FreeIconGift />
         </div>
@@ -439,12 +427,12 @@ function SidebarFooter() {
       {/* Сообщить об ошибке */}
       <div
         onClick={() => setShowReport(true)}
-        className="group flex items-center gap-[8px] h-[40px] px-[12px] rounded-[12px] shrink-0 w-full cursor-pointer select-none hover:bg-[#343e42] transition-colors duration-150"
+        className="group flex items-center gap-[8px] h-[40px] px-[12px] rounded-[12px] shrink-0 w-full cursor-pointer select-none hover:bg-[#343e42]"
       >
-        <svg width="18" height="18" viewBox="0 0 32 32" fill="none" className="shrink-0 text-[#798589] group-hover:text-[#a0a3ab] transition-colors duration-150">
+        <svg width="18" height="18" viewBox="0 0 32 32" fill="none" className="shrink-0 text-[#798589] group-hover:text-[#a0a3ab]">
           <path d="m27 5h-9c0-1.6542969-1.3457031-3-3-3h-8c-.5522461 0-1 .4477539-1 1v16 10c0 .5522461.4477539 1 1 1s1-.4477539 1-1v-9h8c0 1.6542969 1.3457031 3 3 3h8c1.6542969 0 3-1.3457031 3-3v-12c0-1.6542969-1.3457031-3-3-3z" fill="currentColor" />
         </svg>
-        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[16px] text-[#798589] group-hover:text-[#a0a3ab] transition-colors duration-150 whitespace-nowrap">
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[16px] text-[#798589] group-hover:text-[#a0a3ab] whitespace-nowrap">
           Сообщить об ошибке
         </p>
       </div>
@@ -466,6 +454,7 @@ function CompactSidebar({ activePath }: { activePath: string }) {
   const isLearningActive = [
     "/lessons", "/modules", "/theory", "/lesson-quiz", "/homework",
   ].includes(activePath);
+  const isCoursesActive    = activePath === "/" || activePath === "/courses";
   const isChallengesActive = activePath === "/challenges";
   const isLeagueActive     = activePath === "/league";
   const isProfileActive    = activePath === "/profile";
@@ -476,7 +465,7 @@ function CompactSidebar({ activePath }: { activePath: string }) {
     <div
       title={label}
       onClick={onClick}
-      className={`flex items-center justify-center w-[52px] h-[52px] rounded-[10px] cursor-pointer transition-colors ${
+      className={`flex items-center justify-center w-[52px] h-[52px] rounded-[10px] cursor-pointer ${
         isActive ? "bg-[#282f33]" : "hover:bg-white/5"
       }`}
     >
@@ -550,7 +539,7 @@ function CompactSidebar({ activePath }: { activePath: string }) {
         {hasUnread && (
           <div className="absolute inset-[-0.78%_-4.76%_38.88%_42.86%]">
             <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 23.8333 23.8333">
-              <circle cx="11.9167" cy="11.9167" fill="#FF6B21" r="10.5417" stroke="#3D494F" strokeWidth="2.75" />
+              <circle cx="11.9167" cy="11.9167" fill="#FF6B21" r="10.5417" stroke="#282F33" strokeWidth="2.75" />
             </svg>
           </div>
         )}
@@ -571,6 +560,7 @@ function CompactSidebar({ activePath }: { activePath: string }) {
       {/* Nav icons — plain, no circular backgrounds */}
       <div className="flex flex-col gap-[10px] items-center w-full">
         {iconBtn(isLearningActive,   () => navigate("/lessons"),       "Обучение",    bookIcon)}
+        {iconBtn(isCoursesActive,    () => navigate("/courses"),       "Курсы",       <svg width="26" height="26" viewBox="0 0 29 29" fill="none"><rect x="3" y="3" width="10" height="10.5" rx="3" fill={isCoursesActive ? "#FF6B21" : "#4E6068"} /><rect x="16" y="3" width="10" height="10.5" rx="3" fill={isCoursesActive ? "#FF9A5C" : "#3A4A52"} /><rect x="3" y="15.5" width="10" height="10.5" rx="3" fill={isCoursesActive ? "#FF9A5C" : "#3A4A52"} /><rect x="16" y="15.5" width="10" height="10.5" rx="3" fill={isCoursesActive ? "#FF6B21" : "#4E6068"} /></svg>)}
         {iconBtn(isChallengesActive, () => navigate("/challenges"),    "Вызовы",      medalIcon)}
         {iconBtn(isLeagueActive,     () => navigate("/league"),        "Лига",        <img src={currentLeague.trophy} width={22} height={22} style={{ objectFit: "contain" }} />)}
         {iconBtn(isProfileActive,    () => navigate("/profile"),       "Профиль",     profileIcon)}

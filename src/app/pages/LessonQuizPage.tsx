@@ -253,6 +253,7 @@ export default function LessonQuizPage() {
     if (showCompletionOverlay && !showStreakOverlay) {
       return (
         <LessonCompletionScreen
+          lessonId={quizId}
           correctAnswers={resultCorrect}
           totalQuestions={resultTotal}
           earnedXP={totalEarnedXP}
@@ -1110,9 +1111,9 @@ export default function LessonQuizPage() {
                 </div>
               </div>
             </div>
-            <div className="flex gap-[4px] items-center shrink-0">
-              <div className="relative shrink-0 size-[18px]">
-                <img src="/zap-icon.svg" style={{ width: "100%", height: "100%", objectFit: "contain", filter: "brightness(0) saturate(0%) invert(55%) brightness(85%)" }} />
+              <div className="flex gap-[4px] items-center shrink-0">
+                <div className="relative shrink-0 size-[18px]">
+                <img src="/zap-icon-inactive.png" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
               </div>
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[21px] text-[#798589] whitespace-nowrap text-[18px]">{totalXp}</p>
             </div>

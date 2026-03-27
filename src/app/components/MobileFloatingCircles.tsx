@@ -4,13 +4,13 @@
  */
 
 import React, { useState } from "react";
+import { useLocation } from "react-router";
 import FreeIconGift from "../../imports/FreeIconGift81465531";
 import { FloatingCircle } from "./FloatingCircle";
 import { FeedbackModal } from "./FeedbackModal";
 
-const TABBAR_H   = 52;   // height of BottomTabBar
-const STICKY_H   = 72;   // height of sticky continue-button slot
-const BOTTOM_GAP = 20;   // gap from the lowest fixed element
+const HEADER_H   = 50;   // height of MobileHeader
+const TOP_GAP    = 10;   // gap below the header
 
 // ── MobileFloatingCircles ─────────────────────────────────────────────────────
 
@@ -22,29 +22,27 @@ export function MobileFloatingCircles({
   hasStickyButton?: boolean;
 }) {
   const [showFeedback, setShowFeedback] = useState(false);
-
-  const bottomOffset = hasStickyButton
-    ? (tabBarVisible ? TABBAR_H + STICKY_H + BOTTOM_GAP : STICKY_H + BOTTOM_GAP)
-    : (tabBarVisible ? TABBAR_H + BOTTOM_GAP : BOTTOM_GAP);
+  const { pathname } = useLocation();
+  const hideGift = pathname === "/notifications";
 
   return (
     <>
-      <div
-        className="fixed right-[16px] z-40 transition-[bottom] duration-300"
-        style={{ bottom: bottomOffset }}
+      {!hideGift && <div
+        className="fixed right-[16px] z-40"
+        style={{ top: HEADER_H + TOP_GAP }}
       >
         <FloatingCircle
-          size={56}
+          size={38}
           noArc
           bg="#282F33"
           onClick={() => setShowFeedback(true)}
           title="Написать отзыв"
         >
-          <div style={{ width: 28, height: 28, position: "relative", flexShrink: 0 }}>
+          <div style={{ width: 18, height: 18, position: "relative", flexShrink: 0 }}>
             <FreeIconGift />
           </div>
         </FloatingCircle>
-      </div>
+      </div>}
 
       {showFeedback && <FeedbackModal onClose={() => setShowFeedback(false)} />}
     </>

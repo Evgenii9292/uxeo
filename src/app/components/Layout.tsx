@@ -1,4 +1,6 @@
+import { useCallback, useRef } from "react";
 import { useLocation, useNavigate } from "react-router";
+import { motion } from "motion/react";
 import Sidebar from "./Sidebar";
 import AppHeader from "./AppHeader";
 import RightWidgets from "./RightWidgets";
@@ -25,7 +27,7 @@ const TABLET_MAX_W = 880;
 
 interface LayoutProps {
   children: React.ReactNode;
-  title: string;
+  title: React.ReactNode;
   subtitle?: string;
   showBack?: boolean;
   rightContent?: React.ReactNode;
@@ -50,6 +52,8 @@ interface LayoutProps {
   noTopPad?: boolean;
   /** Rendered between header and scroll area — stays fixed while content scrolls */
   stickyBar?: React.ReactNode;
+  /** Keep mobile tab bar always visible on this screen */
+  mobileKeepTabBarVisible?: boolean;
 }
 
 const PAGE_BG = "#282F33";
@@ -70,13 +74,35 @@ export default function Layout({
   bgColor,
   noTopPad = false,
   stickyBar,
+  mobileKeepTabBarVisible = false,
 }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const vw = useWindowWidth();
+  const desktopScrollRef = useRef<HTMLDivElement | null>(null);
 
   const isTabletRange = vw >= 768 && vw < 1280;
   const isMobile      = vw < 768;
+  const contentKey = `${location.pathname}${location.search}`;
+  const pageTransition = {
+    initial: { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] as const },
+  };
+
+  const handleDesktopWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    if (isMobile || isTabletRange) return;
+
+    const scrollEl = desktopScrollRef.current;
+    if (!scrollEl) return;
+
+    const target = e.target as Node | null;
+    if (target && scrollEl.contains(target)) return;
+    if (scrollEl.scrollHeight <= scrollEl.clientHeight) return;
+
+    e.preventDefault();
+    scrollEl.scrollTop += e.deltaY;
+  }, [isMobile, isTabletRange]);
 
   // ── Mobile ────────────────────────────────────────────────────────────────
   if (isMobile) {
@@ -87,6 +113,8 @@ export default function Layout({
         backPath={backPath}
         stickyBottom={mobileStickyBottom}
         stickyTop={stickyBar}
+        contentKey={contentKey}
+        keepTabBarVisible={mobileKeepTabBarVisible}
       >
         {children}
       </MobileShell>
@@ -134,23 +162,31 @@ export default function Layout({
             </div>
           )}
 
-          {/* ── Scrollable middle area ── */}
-          <div className="flex-1 overflow-y-auto scrollbar-hide">
-            <div className={`flex flex-col gap-[36px] items-start w-full pb-[24px]${noTopPad ? "" : " pt-[20px]"}`}>
-              {compactTopContent && (
-                <div className="w-full">{compactTopContent}</div>
-              )}
-              {/* When not fixed-bottom, children go in the scroll area */}
-              {!tabletChildrenFixed && children}
+          <motion.div
+            key={contentKey}
+            className="flex-1 flex flex-col min-h-0"
+            initial={pageTransition.initial}
+            animate={pageTransition.animate}
+            transition={pageTransition.transition}
+          >
+            {/* ── Scrollable middle area ── */}
+            <div className="flex-1 overflow-y-auto scrollbar-hide">
+              <div className={`flex flex-col gap-[36px] items-start w-full pb-[24px]${noTopPad ? "" : " pt-[20px]"}`}>
+                {compactTopContent && (
+                  <div className="w-full">{compactTopContent}</div>
+                )}
+                {/* When not fixed-bottom, children go in the scroll area */}
+                {!tabletChildrenFixed && children}
+              </div>
             </div>
-          </div>
 
-          {/* ── Fixed-bottom panel (lesson card etc.) ── */}
-          {tabletChildrenFixed && (
-            <div className="shrink-0 pb-[16px]">
-              {children}
-            </div>
-          )}
+            {/* ── Fixed-bottom panel (lesson card etc.) ── */}
+            {tabletChildrenFixed && (
+              <div className="shrink-0 pb-[16px]">
+                {children}
+              </div>
+            )}
+          </motion.div>
         </div>
       </div>
     );
@@ -168,6 +204,7 @@ export default function Layout({
       <div
         className="absolute top-0 bottom-0 flex flex-col overflow-hidden"
         style={{ left: `${SIDEBAR_RIGHT_EDGE}px`, right: 0 }}
+        onWheel={handleDesktopWheel}
       >
         {/* Header container — fixed height */}
         <div className="shrink-0 pt-[10px]">
@@ -223,12 +260,12 @@ export default function Layout({
               </div>
             )}
             {/* Scroll container - center column only */}
-            <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide min-h-0">
+            <div ref={desktopScrollRef} className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide min-h-0">
               <div
                 className="flex flex-col gap-[36px] items-start w-full pb-[40px]"
                 style={{
                   paddingLeft: `${SIDE_PAD}px`,
-                  paddingRight: `${ZONE_GAP}px`,
+                  paddingRight: `${SIDE_PAD}px`,
                   paddingTop: stickyBar ? '16px' : '36px',
                 }}
               >

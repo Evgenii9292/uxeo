@@ -7,13 +7,19 @@ import { useHomeworkSafe } from "../../app/context/HomeworkContext";
 import svgPaths      from "../../imports/svg-m45lips45r";
 import svgRoad       from "../../imports/svg-r65h8i9kzg";
 import svgFullRing   from "../../imports/svg-7tw6k57ebg";
-import svgAnnotations from "../../imports/svg-jywxuurbpc";
-import svgFigmaNote  from "../../imports/svg-mfpv5bbouj";
 import svgHomeworkIcon from "../../imports/svg-lzat1pb268";
 import svgCardPaths    from "../../imports/svg-u7gh1bm86c";
 import imgHomework   from "figma:asset/73955ec9afb1b01b6b33dcbe4e02cde8a0717024.png";
+import selectionRingImg from "../../assets/roadmap-selection-ring.png";
 import { NODE_W, NODE_H } from "./roadmap-layout";
 import type { Lesson } from "./roadmap-types";
+
+// Maps lessonId → lesson_name stored in DB (submitted via HomeworkPage)
+const HW_DB_NAME: Record<string, string> = {
+  "homework-1": "Дизайн экрана онбординга",
+  "homework-2": "Интерфейс дашборда",
+  "homework-3": "UI Kit компонента",
+};
 
 // ─── Shadow palette ───────────────────────────────────────────────────────────
 
@@ -197,7 +203,7 @@ function OrangeCurrentEllipse({ uid, pct, isHomework }: { uid: string; pct: numb
   );
 }
 
-// ─── Homework: dark clock node (#424A4D bg, #80949B clock) ───────────────────
+// ─── Homework: clock node (same grey as locked nodes) ────────────────────────
 
 function HomeworkClockEllipse() {
   return (
@@ -206,15 +212,15 @@ function HomeworkClockEllipse() {
       <div
         aria-hidden="true"
         className="absolute"
-        style={{ top: 7, left: 0, width: NODE_W, height: NODE_H, borderRadius: "50%", background: "#222829" }}
+        style={{ top: 7, left: 0, width: NODE_W, height: NODE_H, borderRadius: "50%", background: SHADOW_GRAY }}
       />
       <div
         className="absolute group-hover:translate-y-[3px] group-active:translate-y-[5px] transition-transform duration-75"
         style={{ top: 0, left: 0, width: NODE_W, height: NODE_H, overflow: "visible" }}
       >
-        {/* Filled ellipse — no border */}
+        {/* Filled ellipse — same grey as locked nodes */}
         <svg className="absolute inset-0 block" fill="none" width={NODE_W} height={NODE_H} viewBox="0 0 91 79" overflow="visible">
-          <ellipse cx="45.5" cy="39.5" rx="45.5" ry="39.5" fill="#424A4D" />
+          <ellipse cx="45.5" cy="39.5" rx="45.5" ry="39.5" fill="#343E42" />
         </svg>
         {/* Clock icon — 34px, centered */}
         <div className="absolute" style={{ top: 22, left: 29, width: 34, height: 34 }}>
@@ -324,9 +330,7 @@ function SelectionRing() {
         zIndex: 2,
       }}
     >
-      <svg className="ml-[-10px] mr-[0px] my-[0px]" fill="none" preserveAspectRatio="none" viewBox="0 0 129.443 107.418" width={129} height={107}>
-        <path d={svgFigmaNote.p6c9c500 || svgAnnotations.p3c5ec300} fill="#455155" />
-      </svg>
+      <img src={selectionRingImg} width={129} height={107} alt="" loading="lazy" style={{ marginLeft: 10 }} />
     </div>
   );
 }
@@ -391,10 +395,16 @@ function renderVisual(lesson: Lesson, uid: string, hwStatus?: string | null, isU
   const isHomework = lesson.totalQuestions === 0;
 
   if (isHomework) {
-    if (hwStatus === "reviewed") {
-      if (isUnseenFeedback) return <HomeworkFeedbackEllipse uid={uid} />;
-      return <GreenCheckmarkEllipse uid={uid} />;
-    }
+    // reviewed → green checkmark
+    if (hwStatus === "reviewed") return <GreenCheckmarkEllipse uid={uid} />;
+    // submitted, waiting for review
+    if (hwStatus === "pending") return <HomeworkClockEllipse />;
+    // rejected → grey with homework icon (badge overlay will signal feedback)
+    if (hwStatus === "rejected") return <GrayLockedEllipse icon="homework" uid={uid} />;
+    // hwStatus null but lesson completed in UserContext → submitted, pending review (same logic as LessonPopup)
+    if (lesson.status === "completed") return <HomeworkClockEllipse />;
+    // not submitted yet — show orange if current (available), grey if locked
+    if (lesson.status === "current") return <OrangeCurrentEllipse uid={uid} pct={0} isHomework={true} />;
     return <GrayLockedEllipse icon="homework" uid={uid} />;
   }
 
@@ -419,11 +429,19 @@ interface LessonNodeProps {
   onClick: () => void;
 }
 
-export function LessonNode({ lesson, isSelected, nodeRef, onClick }: LessonNodeProps) {
+export const LessonNode = React.memo(function LessonNode({ lesson, isSelected, nodeRef, onClick }: LessonNodeProps) {
   const isHomework = lesson.totalQuestions === 0;
   const hwCtx = useHomeworkSafe();
-  const hwStatus = isHomework ? (hwCtx?.getByLessonId(lesson.lessonId)?.status ?? null) : null;
+  const hwRecord = isHomework
+    ? (hwCtx?.getByLessonId(lesson.lessonId)
+        ?? hwCtx?.getByLessonName(HW_DB_NAME[lesson.lessonId] ?? lesson.title))
+    : undefined;
+  const hwStatus = hwRecord?.status ?? null;
   const isUnseenFeedback = isHomework ? (hwCtx?.isUnseen(lesson.lessonId) ?? false) : false;
+  // Show feedback badge when admin left a comment (reviewed or rejected with comment)
+  const hasFeedbackBadge = isHomework
+    && (hwStatus === "reviewed" || hwStatus === "rejected")
+    && !!hwRecord?.comment?.trim();
 
   return (
     <div className="flex items-center gap-[20px]">
@@ -442,6 +460,16 @@ export function LessonNode({ lesson, isSelected, nodeRef, onClick }: LessonNodeP
         )}
         {isSelected && <SelectionRing />}
         {renderVisual(lesson, `rn${lesson.id}`, hwStatus, isUnseenFeedback)}
+        {/* Feedback badge — shown when admin left a comment */}
+        {hasFeedbackBadge && (
+          <img
+            src={hwStatus === "reviewed" ? "/feedback-badge-green.svg" : "/feedback-badge.svg"}
+            width={34}
+            height={34}
+            className="absolute pointer-events-none"
+            style={{ top: -8, left: -8, zIndex: 5 }}
+          />
+        )}
       </div>
 
       {/* Label */}
@@ -450,4 +478,4 @@ export function LessonNode({ lesson, isSelected, nodeRef, onClick }: LessonNodeP
       </div>
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import React from "react";
 import { createBrowserRouter, Outlet, Navigate } from "react-router";
 import CoursesPage from "./pages/CoursesPage";
 import ModulesPage from "./pages/ModulesPage";
@@ -19,6 +20,7 @@ import LeaguePage from "./pages/LeaguePage";
 import AuthCallbackPage from "./pages/AuthCallbackPage";
 import OnboardingGoalPage from "./pages/OnboardingGoalPage";
 import OnboardingTimePage from "./pages/OnboardingTimePage";
+import OnboardingNamePage from "./pages/OnboardingNamePage";
 import { UserProvider, useUserSafe } from "./context/UserContext";
 import { LessonProvider } from "./context/LessonContext";
 import { HomeworkProvider } from "./context/HomeworkContext";
@@ -33,8 +35,26 @@ function HomeRedirect() {
   const auth = useAuthSafe();
   const userCtx = useUserSafe();
 
-  // Ждём загрузку auth
-  if (auth?.loading) return null;
+  // Ждём загрузку auth и user data
+  if (auth?.loading || userCtx?.userLoading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          background: "linear-gradient(163.733deg, #282F33 14.367%, rgb(46, 57, 62) 147.74%)",
+          color: "#f4f5fc",
+          fontFamily: "Roboto Condensed, sans-serif",
+          fontSize: "22px",
+          padding: "24px",
+        }}
+      >
+        Загружаем Skillum...
+      </div>
+    );
+  }
 
   // Не авторизован → страница входа
   if (!auth?.isAuthenticated) {
@@ -51,6 +71,14 @@ function HomeRedirect() {
     Object.keys(userCtx.user.lessonProgress).length > 0;
 
   return <Navigate to={hasProgress ? "/lessons" : "/courses"} replace />;
+}
+
+// ── RequireAuth: редирект на /welcome если не авторизован ─────────────────────
+function RequireAuth({ children }: { children: React.ReactNode }) {
+  const auth = useAuthSafe();
+  if (auth?.loading) return null; // ждём загрузку
+  if (!auth?.isAuthenticated) return <Navigate to="/welcome" replace />;
+  return <>{children}</>;
 }
 
 // Inner watcher — must be inside all context providers
@@ -100,6 +128,15 @@ function ErrorPage() {
   );
 }
 
+// Layout-обёртка для защищённых маршрутов
+function ProtectedLayout() {
+  return (
+    <RequireAuth>
+      <Outlet />
+    </RequireAuth>
+  );
+}
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -107,120 +144,45 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        // Main entry: redirect based on user progress
         index: true,
         Component: HomeRedirect,
       },
+      // ── Публичные маршруты (без авторизации) ──────────────────────────────
+      { path: "welcome",        Component: WelcomePage },
+      { path: "auth/callback",  Component: AuthCallbackPage },
+      // ── Онбординг (требует авторизации, но не level) ──────────────────────
       {
-        // Courses catalog — choose a course
-        path: "courses",
-        Component: CoursesPage,
+        Component: ProtectedLayout,
+        children: [
+          { path: "level",           Component: LevelSelectPage },
+          { path: "onboarding-goal", Component: OnboardingGoalPage },
+          { path: "onboarding-time", Component: OnboardingTimePage },
+          { path: "onboarding-name", Component: OnboardingNamePage },
+          { path: "quiz",            Component: QuizPage },
+          { path: "email",           Component: EmailCapturePage },
+        ],
       },
+      // ── Основные страницы (требуют авторизации) ───────────────────────────
       {
-        // Welcome / onboarding screen
-        path: "welcome",
-        Component: WelcomePage,
+        Component: ProtectedLayout,
+        children: [
+          { path: "courses",          Component: CoursesPage },
+          { path: "modules",          Component: ModulesPage },
+          { path: "lessons",          Component: LessonPage },
+          { path: "lesson-quiz",      Component: LessonQuizPage },
+          { path: "theory",           Component: TheoryPage },
+          { path: "contrast",         Component: TheoryPage },
+          { path: "profile",          Component: ProfilePage },
+          { path: "challenges",       Component: ChallengesPage },
+          { path: "challenge-detail", Component: ChallengeDetailPage },
+          { path: "homework",         Component: HomeworkPage },
+          { path: "notifications",    Component: NotificationsPage },
+          { path: "admin-homeworks",  Component: AdminHomeworksPage },
+          { path: "about",            Component: AboutPage },
+          { path: "league",           Component: LeaguePage },
+        ],
       },
-      {
-        // Experience level selection — step 1 of onboarding
-        path: "level",
-        Component: LevelSelectPage,
-      },
-      {
-        // Onboarding: goal selection — step 2
-        path: "onboarding-goal",
-        Component: OnboardingGoalPage,
-      },
-      {
-        // Onboarding: daily time — step 3
-        path: "onboarding-time",
-        Component: OnboardingTimePage,
-      },
-      {
-        // Quiz screen — after level selection
-        path: "quiz",
-        Component: QuizPage,
-      },
-      {
-        // Lesson quiz screen — first quiz in lessons
-        path: "lesson-quiz",
-        Component: LessonQuizPage,
-      },
-      {
-        // Modules page — list of modules within a course
-        path: "modules",
-        Component: ModulesPage,
-      },
-      {
-        // Lesson / Roadmap — main learning screen
-        path: "lessons",
-        Component: LessonPage,
-      },
-      {
-        // Theory page — generic template for all theory lessons
-        path: "theory",
-        Component: TheoryPage,
-      },
-      {
-        // Contrast lesson — uses same generic TheoryPage template with contrast-lesson data
-        path: "contrast",
-        Component: TheoryPage,
-      },
-      {
-        // Profile page
-        path: "profile",
-        Component: ProfilePage,
-      },
-      {
-        // Weekly challenges page
-        path: "challenges",
-        Component: ChallengesPage,
-      },
-      {
-        // Challenge detail page
-        path: "challenge-detail",
-        Component: ChallengeDetailPage,
-      },
-      {
-        // Homework page — for lesson homeworks
-        path: "homework",
-        Component: HomeworkPage,
-      },
-      {
-        // Notifications page
-        path: "notifications",
-        Component: NotificationsPage,
-      },
-      {
-        // Admin homeworks management page
-        path: "admin-homeworks",
-        Component: AdminHomeworksPage,
-      },
-      {
-        // About page
-        path: "about",
-        Component: AboutPage,
-      },
-      {
-        // Email capture — shown after onboarding quiz (optional)
-        path: "email",
-        Component: EmailCapturePage,
-      },
-      {
-        // League page — leaderboard with rivals
-        path: "league",
-        Component: LeaguePage,
-      },
-      {
-        // OAuth / magic-link callback
-        path: "auth/callback",
-        Component: AuthCallbackPage,
-      },
-      {
-        // Catch-all — redirect to home
-        path: "*",
-        Component: HomeRedirect,
-      },
+      { path: "*", Component: HomeRedirect },
     ],
   },
 ]);

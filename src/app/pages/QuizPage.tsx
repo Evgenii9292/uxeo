@@ -18,8 +18,8 @@ type Phase = "selecting" | "feedback";
 type CardState = "idle" | "selected" | "correct" | "incorrect" | "dimmed";
 
 // Natural dimensions of CardAMockup / CardBMockup
-const MOCK_W = 333;
-const MOCK_H = 415;
+const MOCK_W = 404;
+const MOCK_H = 367;
 
 const BG_GRADIENT: Record<CardState, string> = {
   idle:      "linear-gradient(172deg, rgb(44,53,56) 2%, rgb(56,67,72) 99%)",
@@ -50,6 +50,8 @@ export default function QuizPage() {
   const lessonProgress = getLessonProgress(LESSON_ID);
   const xpAlreadyAwarded = lessonProgress.questions[QUESTION_ID]?.xpAwarded || false;
   const isCorrect = selection === "A";
+  const isTouchDevice = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
+  const gainFor = (base: number) => (isTouchDevice ? base * 0.55 : base);
 
   const handleSelect = (card: "A" | "B") => {
     if (phase === "feedback") return;
@@ -66,20 +68,21 @@ export default function QuizPage() {
         const o = ctx.createOscillator();
         o.type = "sine";
         const g = ctx.createGain();
+        g.gain.setValueAtTime(0.0001, ctx.currentTime);
         if (isCorrect) {
           o.frequency.setValueAtTime(523, ctx.currentTime);
           o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
           o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
-          g.gain.setValueAtTime(0.15, ctx.currentTime);
-          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+          g.gain.linearRampToValueAtTime(gainFor(0.15), ctx.currentTime + 0.015);
+          g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.32);
         } else {
           o.frequency.setValueAtTime(280, ctx.currentTime);
           o.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.15);
-          g.gain.setValueAtTime(0.08, ctx.currentTime);
-          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+          g.gain.linearRampToValueAtTime(gainFor(0.08), ctx.currentTime + 0.012);
+          g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.17);
         }
         o.connect(g); g.connect(ctx.destination);
-        o.start(); o.stop(ctx.currentTime + 0.3);
+        o.start(); o.stop(ctx.currentTime + (isCorrect ? 0.33 : 0.18));
       } catch (_) {}
     } else {
       navigate("/courses");
@@ -100,10 +103,11 @@ export default function QuizPage() {
       o.frequency.setValueAtTime(520, ctx.currentTime);
       o.frequency.exponentialRampToValueAtTime(340, ctx.currentTime + 0.05);
       const g = ctx.createGain();
-      g.gain.setValueAtTime(0.1, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+      g.gain.setValueAtTime(0.0001, ctx.currentTime);
+      g.gain.linearRampToValueAtTime(gainFor(0.1), ctx.currentTime + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.06);
       o.connect(g); g.connect(ctx.destination);
-      o.start(); o.stop(ctx.currentTime + 0.05);
+      o.start(); o.stop(ctx.currentTime + 0.065);
     } catch (_) {}
   }
 
@@ -122,8 +126,8 @@ export default function QuizPage() {
   // ── MOBILE layout ───────────────────────────────────────────────────────────
   if (isMobile) {
     const isLargePhone = vw >= 440;
-    const containerH = isLargePhone ? 250 : 220;
-    const paddingY = 10;
+    const containerH = isLargePhone ? 210 : 185;
+    const paddingY = 20;
 
     const cards: Array<{ id: "A" | "B"; Mockup: () => JSX.Element }> = [
       { id: "A", Mockup: CardAMockup },
@@ -273,7 +277,7 @@ export default function QuizPage() {
           </div>
 
           {/* Fixed bottom: feedback + button */}
-          <div className="fixed bottom-[20px] left-0 right-0 z-10 flex justify-center">
+          <div className="fixed left-0 right-0 z-10 flex justify-center" style={{ bottom: "max(20px, env(safe-area-inset-bottom, 20px))" }}>
             <div className="flex gap-[24px] items-center" style={{ width: avail }}>
               <div className="flex-1 flex items-center min-w-0">
                 {phase === "feedback" && (
@@ -331,15 +335,15 @@ export default function QuizPage() {
 
         {/* Bottom feedback + continue */}
         <div className="fixed bottom-[20px] left-0 right-0 z-10 flex justify-center">
-          <div className="flex gap-[32px] items-center w-[1044px] mx-[0px] mt-[0px] mb-[20px]">
-            <div className="w-[506px] flex items-center">
+          <div className="flex gap-[32px] items-center w-[952px] mx-[0px] mt-[0px] mb-[20px]">
+            <div className="w-[460px] flex items-center">
               {phase === "feedback" && (
                 isCorrect
                   ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} />
                   : <IncorrectFeedback correctAnswer="А" explanation={EXPLANATION} />
               )}
             </div>
-            <div className="w-[506px] flex items-center justify-end gap-[20px]">
+            <div className="w-[460px] flex items-center justify-end gap-[20px]">
               <FlagReportButton />
               {phase === "selecting" ? (
                 selection === null ? <ContinueDisabled /> : <ContinueActive onClick={handleContinue} />

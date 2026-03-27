@@ -5,6 +5,7 @@ import RightWidgets from "../components/RightWidgets";
 import { LESSONS, Lesson, LessonStatus } from "../data/lessons";
 import { QUIZ_BANK } from "../data/quiz-bank";
 import { useUserSafe } from "../context/UserContext";
+import { useAuthSafe } from "../context/AuthContext";
 import { useNavigate } from "react-router";
 import { useWindowWidth } from "../hooks/useWindowWidth";
 import svgPathsLightning from "../../imports/svg-mya2oswe4l";
@@ -127,13 +128,55 @@ function RightColumn({ onContinue }: { onContinue: () => void }) {
   );
 }
 
+const PROFILE_NAME_KEY = "uxeo-profile-name";
+const EMAIL_KEY = "uxeo-user-email";
+
+function deriveUserName(email?: string) {
+  try {
+    const savedName = localStorage.getItem(PROFILE_NAME_KEY)?.trim();
+    if (savedName) return savedName;
+
+    const savedEmail = localStorage.getItem(EMAIL_KEY)?.trim();
+    const sourceEmail = email?.trim() || savedEmail;
+    if (!sourceEmail) return "";
+
+    const derived = sourceEmail.split("@")[0]?.trim();
+    if (!derived) return "";
+
+    return derived.charAt(0).toUpperCase() + derived.slice(1);
+  } catch {
+    return "";
+  }
+}
+
 // ── Main page ────────────────────────────────────────────────────────────────
 
 export default function LessonPage() {
   const userData = useUserSafe();
+  const auth = useAuthSafe();
   const navigate = useNavigate();
   const vw = useWindowWidth();
   const isMobile = vw < 768;
+  const [userName, setUserName] = useState(() => deriveUserName(auth?.email));
+
+  useEffect(() => {
+    const nextName = deriveUserName(auth?.email);
+    setUserName(prev => prev === nextName ? prev : nextName);
+
+    if (!nextName) return;
+
+    try {
+      const savedName = localStorage.getItem(PROFILE_NAME_KEY)?.trim();
+      if (!savedName) {
+        localStorage.setItem(PROFILE_NAME_KEY, nextName);
+      }
+      if (auth?.email) {
+        localStorage.setItem(EMAIL_KEY, auth.email);
+      }
+    } catch {
+      // Ignore storage errors and keep the in-memory name.
+    }
+  }, [auth?.email]);
 
   // Derive dynamic lesson statuses from UserContext progress.
   // NODE STATE RULES:
@@ -231,9 +274,13 @@ export default function LessonPage() {
     setScrollToLessonId(null);
   }, []);
 
+  const pageTitle = userName
+    ? <>Привет, <span style={{ color: "#798589" }}>{userName}</span> 👋</>
+    : "Обучение";
+
   return (
     <Layout
-      title="Обучение"
+      title={pageTitle}
       bgColor="#282F33"
       showBack={false}
       backPath="/courses"

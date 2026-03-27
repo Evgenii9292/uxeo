@@ -2,11 +2,6 @@ import { useId } from "react";
 import { useNavigate } from "react-router";
 import { Zap, Check } from "lucide-react";
 import svgMfoan from "../../imports/svg-mfoan0qzpw";
-import UxIcon from "../../imports/Юх";
-import FigmaIcon from "../../imports/Фмгма";
-import NeuralIcon from "../../imports/Нейросети";
-import UxProIcon from "../../imports/ЮхПро";
-import TypographyIcon from "../../imports/Типографика";
 import { useUserSafe } from "../context/UserContext";
 import { LESSONS } from "../data/lessons";
 import { getCourseProgressFromRoadmap } from "../../features/roadmap/roadmap-data";
@@ -20,8 +15,10 @@ interface CourseDisplay {
   level: string;
   modules: number;
   lessons: number;
-  icon: React.ComponentType;
+  image?: string;
+  icon?: React.ComponentType;
   isActive?: boolean;
+  imageSize?: { desktop: { w: number; h: number }; mobile: { w: number; h: number } };
 }
 
 // ─── Dynamic stats for UX/UI course from LESSONS ──────────────────────────────
@@ -36,11 +33,12 @@ function getUxUiCourseStats() {
 const UX_UI_STATS = getUxUiCourseStats();
 
 const COURSE_DISPLAY: CourseDisplay[] = [
-  { id: "ux-ui-basics",  title: "UX/UI",              level: "новичек", modules: UX_UI_STATS.modules, lessons: UX_UI_STATS.lessons, icon: UxIcon,         isActive: true },
-  { id: "figma-pro",     title: "Figma PRO",           level: "мидл",    modules: 4, lessons: 24, icon: FigmaIcon },
-  { id: "ai-designers",  title: "ИИ для дизайнеров",  level: "новичек", modules: 4, lessons: 24, icon: NeuralIcon },
-  { id: "ux-pro",        title: "UX Pro",              level: "мидл",    modules: 4, lessons: 20, icon: UxProIcon },
-  { id: "typographica",  title: "Типографика Pro",     level: "мидл",    modules: 3, lessons: 18, icon: TypographyIcon },
+  { id: "ux-ui-basics",      title: "UX/UI",                    level: "новичек", modules: UX_UI_STATS.modules, lessons: UX_UI_STATS.lessons, image: "/course-icons-png/ux-ui.png", imageSize: { desktop: { w: 95, h: 86 }, mobile: { w: 36, h: 36 } }, isActive: true },
+  { id: "figma-pro",         title: "Figma PRO",                level: "мидл",    modules: 4, lessons: 24, image: "/course-icons-png/figma-pro.png" },
+  { id: "ai-designers",      title: "ИИ для дизайнеров",        level: "новичек", modules: 4, lessons: 24, image: "/course-icons-png/ai.png" },
+  { id: "ux-pro",            title: "UX Pro",                   level: "мидл",    modules: 4, lessons: 20, image: "/course-icons-png/ux-pro.png" },
+  { id: "typographica",      title: "Типографика Pro",          level: "мидл",    modules: 3, lessons: 18, image: "/course-icons-png/typography.png" },
+  { id: "product-design",    title: "Продуктовый дизайн",       level: "мидл+",   modules: 5, lessons: 28, image: "/course-icons-png/product-design.png" },
 ];
 
 // ─── Badge icons ──────────────────────────────────────────────────────────────
@@ -162,8 +160,10 @@ export function ActiveCourseCard({ course }: { course: CourseDisplay }) {
       <div className="bg-[#404d52] flex flex-col gap-[16px] p-[16px] rounded-[15px] w-full">
         {/* Icon + title row */}
         <div className="flex items-center gap-[14px]">
-          <div className="bg-[#38444a] rounded-[12px] shrink-0 flex items-center justify-center" style={{ width: 64, height: 64 }}>
-            <div style={{ width: 40, height: 36 }}><Icon /></div>
+          <div className="rounded-[12px] shrink-0 flex items-center justify-center" style={{ width: 64, height: 64, background: "#2D373A" }}>
+            {course.image
+              ? <img src={course.image} alt="" decoding="async" fetchPriority="high" style={{ width: course.imageSize?.mobile.w ?? 40, height: course.imageSize?.mobile.h ?? 40, objectFit: "contain" }} />
+              : Icon ? <div style={{ width: 40, height: 36 }}><Icon /></div> : null}
           </div>
           <div className="flex flex-col gap-[4px] min-w-0">
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px] leading-[26px] truncate">
@@ -234,13 +234,12 @@ export function ActiveCourseCard({ course }: { course: CourseDisplay }) {
 
         {/* Image panel */}
         <div className="content-stretch flex flex-col h-full items-start relative shrink-0">
-          <div className="bg-[#38444a] flex-[1_0_0] min-h-px min-w-px relative rounded-[15px] w-[185px]">
+          <div className="flex-[1_0_0] min-h-px min-w-px relative rounded-[15px] w-[185px]" style={{ background: "#2D373A" }}>
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div style={{ width: 105, height: 95 }}>
-                <Icon />
-              </div>
+              {course.image
+                ? <img src={course.image} alt="" decoding="async" fetchPriority="high" style={{ width: course.imageSize?.desktop.w ?? 105, height: course.imageSize?.desktop.h ?? 95, objectFit: "contain" }} />
+                : Icon ? <div style={{ width: 105, height: 95 }}><Icon /></div> : null}
             </div>
-            <ActiveProgressBar courseId={course.id} />
           </div>
         </div>
 
@@ -256,7 +255,7 @@ export function ActiveCourseCard({ course }: { course: CourseDisplay }) {
           </div>
 
           {/* Bottom: button + progress bar side by side */}
-          <div className="flex items-center gap-[20px]">
+          <div className="flex items-center gap-[20px] w-full">
             {/* Action button */}
             <div
               className="group bg-[#343e42] h-[55px] relative rounded-[15px] shrink-0 w-[210px] cursor-pointer select-none hover:translate-y-[3px] active:translate-y-[5px] transition-transform duration-75"
@@ -296,12 +295,17 @@ export function ActiveCourseCard({ course }: { course: CourseDisplay }) {
               </div>
             </div>
 
-            {/* Progress bar stretches to card edge using flex-1 */}
-            <div className="flex-1 h-[6px] bg-white/10 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-b from-[#ff6b21] to-[#994014] transition-[width] duration-300"
-                style={{ width: `${Math.round(Math.min(progress, 1) * 100)}%` }}
-              />
+            {/* Progress bar — dark track, white fill, 30px from card edge */}
+            <div className="flex-1 mr-[10px] flex flex-col justify-center">
+              <div className="h-[10px] rounded-full overflow-hidden w-full" style={{ background: "#2C3539" }}>
+                <div
+                  className="h-full rounded-full transition-[width] duration-300"
+                  style={{
+                    width: progress > 0 ? `${Math.max(Math.round(Math.min(progress, 1) * 100), 5)}%` : "0%",
+                    backgroundImage: "linear-gradient(90deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.6) 100%)",
+                  }}
+                />
+              </div>
             </div>
           </div>
 
@@ -323,8 +327,10 @@ function LockedCourseCard({ course }: { course: CourseDisplay }) {
       <div className="bg-[#343e42] flex flex-col gap-[16px] p-[16px] rounded-[15px] w-full">
         {/* Icon + title row */}
         <div className="flex items-center gap-[14px]">
-          <div className="bg-[#38444a] rounded-[12px] shrink-0 flex items-center justify-center opacity-60" style={{ width: 64, height: 64 }}>
-            <div style={{ width: 40, height: 36 }}><Icon /></div>
+          <div className="rounded-[12px] shrink-0 flex items-center justify-center opacity-60" style={{ width: 64, height: 64, background: "#2D373A" }}>
+            {course.image
+              ? <img src={course.image} style={{ width: 40, height: 40, objectFit: "contain" }} />
+              : Icon ? <div style={{ width: 40, height: 36 }}><Icon /></div> : null}
           </div>
           <div className="flex flex-col gap-[4px] min-w-0">
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798489] text-[22px] leading-[26px] truncate">
@@ -356,11 +362,11 @@ function LockedCourseCard({ course }: { course: CourseDisplay }) {
 
         {/* Image panel */}
         <div className="content-stretch flex flex-col h-full items-start relative shrink-0">
-          <div className="bg-[#38444a] flex-[1_0_0] min-h-px min-w-px relative rounded-[15px] w-[185px]">
+          <div className="flex-[1_0_0] min-h-px min-w-px relative rounded-[15px] w-[185px]" style={{ background: "#2D373A" }}>
             <div className="absolute inset-0 flex items-center justify-center opacity-60 pointer-events-none">
-              <div style={{ width: 105, height: 95 }}>
-                <Icon />
-              </div>
+              {course.image
+                ? <img src={course.image} style={{ width: 105, height: 95, objectFit: "contain" }} />
+                : Icon ? <div style={{ width: 105, height: 95 }}><Icon /></div> : null}
             </div>
           </div>
         </div>

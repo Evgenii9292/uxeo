@@ -16,25 +16,27 @@ interface QuizCardProps {
   onClick: () => void;
   disabled: boolean;
   contentNode?: React.ReactNode;
+  vPad?: number;
+  hPad?: number;
+  cardRadius?: number;
 }
 
 // Quiz variant renderer — proportional scale-UP to fill card width
-function QuizVariantSlot({ node }: { node: React.ReactNode }) {
+function QuizVariantSlot({ node, vPad = 50, hPad = 20 }: { node: React.ReactNode; vPad?: number; hPad?: number }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState<number>(1);
 
   useEffect(() => {
     const el = wrapperRef.current;
     if (!el) return;
-    // 20px padding on each side (40px total)
-    const compute = (w: number) => setScale((w - 40) / 186);
+    const compute = (w: number) => setScale((w - hPad * 2) / 186);
     compute(el.offsetWidth);
     const ro = new ResizeObserver(entries => {
       for (const e of entries) compute(e.contentRect.width);
     });
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [hPad]);
 
   const scaledW = Math.round(186 * scale);
   const scaledH = Math.round(231 * scale);
@@ -42,11 +44,7 @@ function QuizVariantSlot({ node }: { node: React.ReactNode }) {
   return (
     <div
       ref={wrapperRef}
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        padding: '50px 20px 50px 20px',
-      }}
+      style={{ display: 'flex', justifyContent: 'center', padding: `${vPad}px ${hPad}px` }}
     >
       <div style={{ width: scaledW, height: scaledH, overflow: 'hidden', flexShrink: 0 }}>
         <div style={{ width: 186, height: 231, transform: `scale(${scale})`, transformOrigin: 'top left', flexShrink: 0 }}>
@@ -58,20 +56,24 @@ function QuizVariantSlot({ node }: { node: React.ReactNode }) {
 }
 
 // Left card — Variant A (incorrect example)
-export function QuizCardLeft({ isSelected, isCorrect, showFeedback, onClick, disabled, contentNode }: QuizCardProps) {
+export function QuizCardLeft({ isSelected, isCorrect, showFeedback, onClick, disabled, contentNode, vPad, hPad, cardRadius }: QuizCardProps) {
+  const radius = cardRadius ?? 24;
   return (
     <div
       onClick={disabled ? undefined : onClick}
-      className={`flex-[1_0_0] min-h-px min-w-px relative rounded-[24px] transition-all border-2 overflow-hidden ${
+      className={`flex-[1_0_0] min-h-px min-w-px relative transition-all border-2 overflow-hidden ${
         showFeedback ? "cursor-default" : "cursor-pointer hover:scale-[1.01]"
       } ${disabled ? "pointer-events-none" : ""}`}
-      style={isSelected ? isCorrect
-        ? { background: `linear-gradient(#2D3B36, #2D3B36) padding-box, linear-gradient(to bottom, #00932F, #002D0E) border-box`, borderColor: "transparent" }
-        : { background: `linear-gradient(#3B3736, #3B3736) padding-box, linear-gradient(to bottom, #932E00, #2D0000) border-box`, borderColor: "transparent" }
-        : { background: "#3c4a52", borderColor: "#3c4a52" }}
+      style={{
+        borderRadius: radius,
+        ...(isSelected ? isCorrect
+          ? { background: `linear-gradient(#2D3B36, #2D3B36) padding-box, linear-gradient(to bottom, #00932F, #002D0E) border-box`, borderColor: "transparent" }
+          : { background: `linear-gradient(#3B3736, #3B3736) padding-box, linear-gradient(to bottom, #932E00, #2D0000) border-box`, borderColor: "transparent" }
+          : { background: "#3c4a52", borderColor: "#3c4a52" }),
+      }}
     >
       {contentNode ? (
-        <QuizVariantSlot node={contentNode} />
+        <QuizVariantSlot node={contentNode} vPad={vPad} hPad={hPad} />
       ) : (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '247px' }}>
           <div style={{ position: 'relative', width: '138px', height: '150px', transform: 'scale(1.4)', transformOrigin: 'center', flexShrink: 0 }}>
@@ -84,20 +86,24 @@ export function QuizCardLeft({ isSelected, isCorrect, showFeedback, onClick, dis
 }
 
 // Right card — Variant B (correct example)
-export function QuizCardRight({ isSelected, isCorrect, showFeedback, onClick, disabled, contentNode }: QuizCardProps) {
+export function QuizCardRight({ isSelected, isCorrect, showFeedback, onClick, disabled, contentNode, vPad, hPad, cardRadius }: QuizCardProps) {
+  const radius = cardRadius ?? 24;
   return (
     <div
       onClick={disabled ? undefined : onClick}
-      className={`flex-[1_0_0] min-h-px min-w-px relative rounded-[24px] transition-all border-2 overflow-hidden ${
+      className={`flex-[1_0_0] min-h-px min-w-px relative transition-all border-2 overflow-hidden ${
         showFeedback ? "cursor-default" : "cursor-pointer hover:scale-[1.01]"
       } ${disabled ? "pointer-events-none" : ""}`}
-      style={isSelected ? isCorrect
-        ? { background: `linear-gradient(#2D3B36, #2D3B36) padding-box, linear-gradient(to bottom, #00932F, #002D0E) border-box`, borderColor: "transparent" }
-        : { background: `linear-gradient(#3B3736, #3B3736) padding-box, linear-gradient(to bottom, #932E00, #2D0000) border-box`, borderColor: "transparent" }
-        : { background: "#3c4a52", borderColor: "#3c4a52" }}
+      style={{
+        borderRadius: radius,
+        ...(isSelected ? isCorrect
+          ? { background: `linear-gradient(#2D3B36, #2D3B36) padding-box, linear-gradient(to bottom, #00932F, #002D0E) border-box`, borderColor: "transparent" }
+          : { background: `linear-gradient(#3B3736, #3B3736) padding-box, linear-gradient(to bottom, #932E00, #2D0000) border-box`, borderColor: "transparent" }
+          : { background: "#3c4a52", borderColor: "#3c4a52" }),
+      }}
     >
       {contentNode ? (
-        <QuizVariantSlot node={contentNode} />
+        <QuizVariantSlot node={contentNode} vPad={vPad} hPad={hPad} />
       ) : (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '247px' }}>
           <div style={{ position: 'relative', width: '138px', height: '150px', transform: 'scale(1.4)', transformOrigin: 'center', flexShrink: 0 }}>

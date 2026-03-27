@@ -1,6 +1,7 @@
 import { Hono } from "npm:hono";
 import { cors } from "npm:hono/cors";
 import { logger } from "npm:hono/logger";
+import { createClient } from "jsr:@supabase/supabase-js@2.49.8";
 import * as kv from "./kv_store.tsx";
 
 const app = new Hono();
@@ -182,6 +183,14 @@ function esc(s: string): string {
   return String(s ?? "").replace(/'/g, "''");
 }
 
+function adminClient() {
+  return createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    { auth: { persistSession: false } },
+  );
+}
+
 // Submit homework
 app.post("/make-server-d627d1b0/homework/submit", async (c) => {
   try {
@@ -209,6 +218,42 @@ app.post("/make-server-d627d1b0/homework/submit", async (c) => {
   } catch (error) {
     console.log(`Error submitting homework: ${error}`);
     return c.json({ error: `Failed to submit homework: ${error}` }, 500);
+  }
+});
+
+// Delete current authenticated account
+app.post("/make-server-d627d1b0/account/delete", async (c) => {
+  try {
+    const authHeader = c.req.header("Authorization") ?? "";
+    const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+    if (!token) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    const supabase = adminClient();
+    const { data: userData, error: userError } = await supabase.auth.getUser(token);
+    const user = userData?.user;
+    if (userError || !user) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    const userId = user.id;
+
+    await sqlQuery(`DELETE FROM public.notifications WHERE user_id = '${esc(userId)}'`);
+    await sqlQuery(`DELETE FROM public.homeworks WHERE user_id = '${esc(userId)}'`);
+    await sqlQuery(`DELETE FROM public.challenges WHERE user_id = '${esc(userId)}'`);
+    await sqlQuery(`DELETE FROM public.user_progress WHERE user_id = '${esc(userId)}'`);
+    await sqlQuery(`DELETE FROM public.user_emails WHERE user_id = '${esc(userId)}'`);
+
+    const { error: deleteError } = await supabase.auth.admin.deleteUser(userId);
+    if (deleteError) {
+      throw deleteError;
+    }
+
+    return c.json({ success: true });
+  } catch (error) {
+    console.log(`Error deleting account: ${error}`);
+    return c.json({ error: `Failed to delete account: ${error}` }, 500);
   }
 });
 
@@ -272,6 +317,118 @@ app.put("/make-server-d627d1b0/homework/:homeworkId/status", async (c) => {
   }
 });
 
+// Delete homework (admin)
+app.delete("/make-server-d627d1b0/homework/:homeworkId", async (c) => {
+  try {
+    const homeworkId = c.req.param("homeworkId");
+    const result = await sqlQuery(
+      `DELETE FROM public.homeworks
+       WHERE id = '${esc(homeworkId)}'
+       RETURNING id`
+    );
+
+    if (!result.length) {
+      return c.json({ error: "Homework not found" }, 404);
+    }
+
+    return c.json({ success: true, deletedId: result[0].id });
+  } catch (error) {
+    console.log(`Error deleting homework: ${error}`);
+    return c.json({ error: `Failed to delete homework: ${error}` }, 500);
+  }
+});
+
+// Submit challenge
+app.post("/make-server-d627d1b0/challenge/submit", async (c) => {
+  try {
+    const { challengeName, userId, figmaLink, challengeId } = await c.req.json();
+    if (!challengeName || !userId || !figmaLink) {
+      return c.json({ error: "Missing required fields" }, 400);
+    }
+
+    const existing = await sqlQuery(
+      `SELECT id FROM public.challenges WHERE user_id = '${esc(userId)}' AND challenge_name = '${esc(challengeName)}' LIMIT 1`
+    );
+
+    if (existing.length > 0) {
+      await sqlQuery(
+        `UPDATE public.challenges
+         SET figma_link = '${esc(figmaLink)}', status = 'pending', comment = '', image_url = '', created_at = now()
+         WHERE id = '${esc(existing[0].id)}'`
+      );
+      return c.json({ success: true, challengeId: existing[0].id, resubmitted: true });
+    }
+
+    const result = await sqlQuery(
+      `INSERT INTO public.challenges (user_id, challenge_name, challenge_id, figma_link, status)
+       VALUES ('${esc(userId)}', '${esc(challengeName)}', '${esc(challengeId ?? "")}', '${esc(figmaLink)}', 'pending')
+       RETURNING id`
+    );
+
+    return c.json({ success: true, challengeId: result[0]?.id ?? "unknown" });
+  } catch (error) {
+    console.log(`Error submitting challenge: ${error}`);
+    return c.json({ error: `Failed to submit challenge: ${error}` }, 500);
+  }
+});
+
+// Get all challenges (admin)
+app.get("/make-server-d627d1b0/challenge/all", async (c) => {
+  try {
+    const rows = await sqlQuery(
+      `SELECT id, user_id, challenge_name, challenge_id, figma_link, status, comment, image_url, created_at
+       FROM public.challenges
+       ORDER BY created_at DESC`
+    );
+    return c.json({ challenges: rows });
+  } catch (error) {
+    console.log(`Error retrieving challenges: ${error}`);
+    return c.json({ error: `Failed to retrieve challenges: ${error}` }, 500);
+  }
+});
+
+// Update challenge status (admin)
+app.put("/make-server-d627d1b0/challenge/:challengeRowId/status", async (c) => {
+  try {
+    const challengeRowId = c.req.param("challengeRowId");
+    const { status, comment, image_url } = await c.req.json();
+    if (!["pending", "reviewed", "rejected"].includes(status)) {
+      return c.json({ error: "Invalid status" }, 400);
+    }
+
+    const result = await sqlQuery(
+      `UPDATE public.challenges
+       SET status = '${esc(status)}', comment = '${esc(comment ?? "")}', image_url = '${esc(image_url ?? "")}'
+       WHERE id = '${esc(challengeRowId)}'
+       RETURNING id, user_id, challenge_name, status, comment, image_url`
+    );
+
+    if (!result.length) return c.json({ error: "Challenge not found" }, 404);
+    return c.json({ success: true, challenge: result[0] });
+  } catch (error) {
+    console.log(`Error updating challenge status: ${error}`);
+    return c.json({ error: `Failed to update challenge status: ${error}` }, 500);
+  }
+});
+
+// Delete challenge (admin)
+app.delete("/make-server-d627d1b0/challenge/:challengeRowId", async (c) => {
+  try {
+    const challengeRowId = c.req.param("challengeRowId");
+    const result = await sqlQuery(
+      `DELETE FROM public.challenges
+       WHERE id = '${esc(challengeRowId)}'
+       RETURNING id`
+    );
+
+    if (!result.length) return c.json({ error: "Challenge not found" }, 404);
+    return c.json({ success: true, deletedId: result[0].id });
+  } catch (error) {
+    console.log(`Error deleting challenge: ${error}`);
+    return c.json({ error: `Failed to delete challenge: ${error}` }, 500);
+  }
+});
+
 // ── Email notifications (Resend) ─────────────────────────────────────────────
 
 async function sendStatusEmail(toEmail: string, lessonName: string, status: string, comment: string) {
@@ -300,11 +457,11 @@ async function sendStatusEmail(toEmail: string, lessonName: string, status: stri
         }
       </p>
       ${commentBlock}
-      <a href="https://uxeo.ru/notifications" style="display: inline-block; background: #ff5d39; color: white; padding: 14px 28px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 16px;">
-        Открыть UXEO
+      <a href="https://skillum.ru/notifications" style="display: inline-block; background: #ff5d39; color: white; padding: 14px 28px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 16px;">
+        Открыть Skillum
       </a>
       <p style="font-size: 12px; color: #798589; margin-top: 32px;">
-        Вы получили это письмо потому что оставили email в приложении UXEO.
+        Вы получили это письмо потому что оставили email в приложении Skillum.
       </p>
     </div>
   `;
@@ -312,7 +469,7 @@ async function sendStatusEmail(toEmail: string, lessonName: string, status: stri
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from: "UXEO <noreply@uxeo.ru>", to: toEmail, subject, html }),
+      body: JSON.stringify({ from: "Skillum <noreply@skillum.ru>", to: toEmail, subject, html }),
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
@@ -351,7 +508,7 @@ app.get("/make-server-d627d1b0/user/progress", async (c) => {
     if (!userId) return c.json({ error: "userId required" }, 400);
 
     const rows = await sqlQuery(
-      `SELECT xp, streak, last_streak_date, level, lesson_progress, weekly_challenges
+      `SELECT user_id, xp, streak, last_streak_date, level, goal, daily_time, lesson_progress, weekly_challenges, updated_at
        FROM public.user_progress WHERE user_id = '${esc(userId)}' LIMIT 1`
     );
 
@@ -366,19 +523,21 @@ app.get("/make-server-d627d1b0/user/progress", async (c) => {
 // POST /make-server-d627d1b0/user/progress
 app.post("/make-server-d627d1b0/user/progress", async (c) => {
   try {
-    const { userId, xp, streak, lastStreakDate, level, lessonProgress, weeklyChallenges } = await c.req.json();
+    const { userId, xp, streak, lastStreakDate, level, goal, dailyTime, lessonProgress, weeklyChallenges } = await c.req.json();
     if (!userId) return c.json({ error: "userId required" }, 400);
 
     const lpJson = JSON.stringify(lessonProgress ?? {}).replace(/'/g, "''");
 
     await sqlQuery(`
-      INSERT INTO public.user_progress (user_id, xp, streak, last_streak_date, level, lesson_progress, weekly_challenges, updated_at)
-      VALUES ('${esc(userId)}', ${xp ?? 0}, ${streak ?? 0}, '${esc(lastStreakDate ?? "")}', '${esc(level ?? "")}', '${lpJson}'::jsonb, ${weeklyChallenges ?? 0}, NOW())
+      INSERT INTO public.user_progress (user_id, xp, streak, last_streak_date, level, goal, daily_time, lesson_progress, weekly_challenges, updated_at)
+      VALUES ('${esc(userId)}', ${xp ?? 0}, ${streak ?? 0}, '${esc(lastStreakDate ?? "")}', '${esc(level ?? "")}', '${esc(goal ?? "")}', '${esc(dailyTime ?? "")}', '${lpJson}'::jsonb, ${weeklyChallenges ?? 0}, NOW())
       ON CONFLICT (user_id) DO UPDATE SET
         xp = EXCLUDED.xp,
         streak = EXCLUDED.streak,
         last_streak_date = EXCLUDED.last_streak_date,
         level = EXCLUDED.level,
+        goal = EXCLUDED.goal,
+        daily_time = EXCLUDED.daily_time,
         lesson_progress = EXCLUDED.lesson_progress,
         weekly_challenges = EXCLUDED.weekly_challenges,
         updated_at = NOW()

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import correctSvgPaths from "../../imports/svg-1n8b0v1b3s";
 import { useWindowWidth } from "../hooks/useWindowWidth";
+import { useUserSafe } from "../context/UserContext";
 
 // ─── UXEO icons ───────────────────────────────────────────────────────────────
 
@@ -98,6 +99,7 @@ interface LessonCompletionScreenProps {
   onContinue: () => void;
   onRetry?: () => void;
   onBack?: () => void;
+  lessonId?: string;
   correctAnswers: number;
   totalQuestions: number;
   earnedXP: number;
@@ -112,6 +114,7 @@ export default function LessonCompletionScreen({
   onContinue,
   onRetry,
   onBack,
+  lessonId,
   correctAnswers,
   totalQuestions,
   earnedXP,
@@ -121,7 +124,9 @@ export default function LessonCompletionScreen({
 }: LessonCompletionScreenProps) {
   const vw = useWindowWidth();
   const isMobile = vw < 768;
-  const [rating, setRating] = useState(0);
+  const userData = useUserSafe();
+  const savedRating = lessonId ? (userData?.getLessonProgress(lessonId)?.rating ?? 0) : 0;
+  const [rating, setRating] = useState(savedRating);
   const [hovered, setHovered] = useState(0);
 
   useEffect(() => {
@@ -187,7 +192,7 @@ export default function LessonCompletionScreen({
             key={n}
             onMouseEnter={() => setHovered(n)}
             onMouseLeave={() => setHovered(0)}
-            onClick={() => setRating(n)}
+            onClick={() => { setRating(n); if (lessonId) userData?.saveLessonRating(lessonId, n); }}
             className="transition-transform duration-100 active:scale-90 hover:scale-110 cursor-pointer outline-none"
           >
             <svg width={starSize} height={starSize} viewBox="0 0 24 24" fill="none">
@@ -226,14 +231,14 @@ export default function LessonCompletionScreen({
             </div>
 
             {/* Stat cards */}
-            <div className={`flex gap-[12px] ${isMobile ? "w-full" : ""}`}>
-              <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: 1 }}>
+            <div className={isMobile ? "grid grid-cols-2 gap-[12px] w-full" : "flex gap-[12px]"}>
+              <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: isMobile ? undefined : 1 }}>
                 <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] leading-[1.1] ${isMobile ? "text-[26px]" : "text-[36px]"}`}>
                   {correctAnswers}<span className="text-[#798589]">/{totalQuestions}</span>
                 </p>
                 <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] ${isMobile ? "text-[12px]" : "text-[14px]"}`}>заданий</p>
               </div>
-              <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: 1 }}>
+              <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: isMobile ? undefined : 1 }}>
                 <div className="flex items-center gap-[6px]">
                   <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#00d043] leading-[1.1] ${isMobile ? "text-[26px]" : "text-[36px]"}`}>+{earnedXP}</p>
                   <LightningIcon size={isMobile ? 20 : 26} />
@@ -241,7 +246,7 @@ export default function LessonCompletionScreen({
                 <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] ${isMobile ? "text-[12px]" : "text-[14px]"}`}>XP заработано</p>
               </div>
               {bestStreak >= 2 && (
-                <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: 1 }}>
+                <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: isMobile ? undefined : 1 }}>
                   <div className="flex items-center gap-[6px]">
                     <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#FFB121] leading-[1.1] ${isMobile ? "text-[26px]" : "text-[36px]"}`}>{bestStreak}</p>
                     <svg width="16" height="22" viewBox="0 0 16.7655 24.4324" fill="none">
@@ -253,7 +258,7 @@ export default function LessonCompletionScreen({
                 </div>
               )}
               {elapsedSeconds > 0 && (
-                <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: 1 }}>
+                <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: isMobile ? undefined : 1 }}>
                   <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] leading-[1.1] ${isMobile ? "text-[26px]" : "text-[36px]"}`}>
                     {formatTime(elapsedSeconds)}
                   </p>
@@ -278,15 +283,15 @@ export default function LessonCompletionScreen({
             </div>
 
             {/* Stat cards */}
-            <div className={`flex gap-[12px] ${isMobile ? "w-full" : ""}`}>
-              <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: 1 }}>
+            <div className={isMobile ? "grid grid-cols-2 gap-[12px] w-full" : "flex gap-[12px]"}>
+              <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: isMobile ? undefined : 1 }}>
                 <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] leading-[1.1] ${isMobile ? "text-[26px]" : "text-[36px]"}`}>
                   {correctAnswers}<span className="text-[#798589]">/{totalQuestions}</span>
                 </p>
                 <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] ${isMobile ? "text-[12px]" : "text-[14px]"}`}>правильных</p>
               </div>
               {earnedXP > 0 && (
-                <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: 1 }}>
+                <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: isMobile ? undefined : 1 }}>
                   <div className="flex items-center gap-[6px]">
                     <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] leading-[1.1] ${isMobile ? "text-[26px]" : "text-[36px]"}`}>+{earnedXP}</p>
                     <LightningIcon size={isMobile ? 20 : 26} />

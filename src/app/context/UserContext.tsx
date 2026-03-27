@@ -16,6 +16,7 @@ export interface LessonProgress {
   questions: Record<string, QuestionState>; // Track each question's state
   isCompleted: boolean; // Whether lesson is passed (>= 60% correct)
   correctAnswers: number; // Best correct count across all attempts (never decreases)
+  rating?: number; // Star rating 1–5 given by user after completion
 }
 
 interface User {
@@ -40,6 +41,7 @@ interface UserContextValue {
   goal: OnboardingGoal | null;
   dailyTime: DailyTime | null;
   weeklyChallengesCompleted: number;
+  userLoading: boolean;
   setLevel: (level: ExperienceLevel) => void;
   setGoal: (goal: OnboardingGoal) => void;
   setDailyTime: (dailyTime: DailyTime) => void;
@@ -51,6 +53,7 @@ interface UserContextValue {
   resetProgress: () => void;
   incrementStreak: () => boolean; // Returns true if streak was awarded, false if already done today
   getMiniQuizState: (lessonId: string, quizId: string) => { completed: boolean; selectedAnswer: string | null; isCorrect: boolean };
+  saveLessonRating: (lessonId: string, rating: number) => void;
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -87,14 +90,19 @@ export function UserProvider({ children }: { children: ReactNode }) {
   });
 
   const { userId } = useAuthSafe() ?? { userId: null };
+  const [userLoading, setUserLoading] = useState(true);
 
   // Debounce ref for Supabase sync
   const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load from Supabase on mount (merge with localStorage)
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) {
+      setUserLoading(false);
+      return;
+    }
 
+    setUserLoading(true);
     fetch(
       `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/progress?userId=${encodeURIComponent(userId)}`,
       { headers: { Authorization: `Bearer ${publicAnonKey}` } }
@@ -115,7 +123,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
           weeklyChallengesCompleted: d.weekly_challenges ?? prev.weeklyChallengesCompleted,
         }));
       })
-      .catch(() => { /* silent — use localStorage */ });
+      .catch(() => { /* silent — use localStorage */ })
+      .finally(() => setUserLoading(false));
   }, [userId]);
 
   // Sync to Supabase on user changes (debounced 3s)
@@ -359,6 +368,19 @@ export function UserProvider({ children }: { children: ReactNode }) {
     };
   };
 
+  const saveLessonRating = (lessonId: string, rating: number) => {
+    setUser(prev => ({
+      ...prev,
+      lessonProgress: {
+        ...prev.lessonProgress,
+        [lessonId]: {
+          ...(prev.lessonProgress[lessonId] || { lessonId, totalTasks: 5, questions: {}, isCompleted: false, correctAnswers: 0 }),
+          rating,
+        },
+      },
+    }));
+  };
+
   const setLevel = (level: ExperienceLevel) => {
     setUser((prev) => ({ ...prev, level }));
   };
@@ -380,6 +402,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       goal: user.goal,
       dailyTime: user.dailyTime,
       weeklyChallengesCompleted: user.weeklyChallengesCompleted,
+      userLoading,
       setLevel,
       setGoal,
       setDailyTime,
@@ -391,6 +414,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       resetProgress,
       incrementStreak,
       getMiniQuizState,
+      saveLessonRating,
     }}>
       {children}
     </UserContext.Provider>

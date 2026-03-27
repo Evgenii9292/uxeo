@@ -17,39 +17,11 @@ CREATE TABLE IF NOT EXISTS public.notifications (
 CREATE INDEX IF NOT EXISTS notifications_user_id_idx
   ON public.notifications(user_id, created_at DESC);
 
--- Prevent duplicate daily reminders for the same user on the same calendar day
-CREATE UNIQUE INDEX IF NOT EXISTS notifications_daily_unique_idx
-  ON public.notifications(user_id, (created_at::date))
-  WHERE type = 'daily_reminder';
+-- NOTE:
+-- A partial unique index on created_at::date fails on Supabase Postgres because
+-- the expression is not immutable for timestamptz. For MVP we skip this guard
+-- and rely on server-side logic to avoid duplicate daily reminders.
 
--- ── pg_cron daily job (10:00 UTC every day) ───────────────────────────────────
--- Requires: pg_cron + pg_net extensions (enable in Supabase Dashboard → Extensions)
--- Run this block separately if the extensions are not yet enabled.
-
-DO $$
-BEGIN
-  -- Only proceed if pg_cron extension is available
-  IF EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'pg_cron') THEN
-    -- Remove any previous version of the job first
-    PERFORM cron.unschedule('uxeo-daily-reminders');
-
-    PERFORM cron.schedule(
-      'uxeo-daily-reminders',
-      '0 10 * * *',   -- every day at 10:00 UTC
-      $$
-        SELECT net.http_post(
-          url     := 'https://pokzgxlgcshqdnwubyhw.supabase.co/functions/v1/make-server-d627d1b0/notifications/send-daily',
-          headers := jsonb_build_object(
-            'Content-Type',  'application/json',
-            'x-admin-secret', current_setting('app.admin_secret', true)
-          ),
-          body    := '{}'::jsonb
-        );
-      $$
-    );
-  END IF;
-EXCEPTION WHEN OTHERS THEN
-  -- pg_cron or pg_net not available — set up the cron manually via Supabase Dashboard
-  RAISE NOTICE 'pg_cron not available: configure the daily reminder cron manually';
-END;
-$$;
+-- NOTE:
+-- The pg_cron scheduling step is intentionally skipped in migrations for MVP.
+-- Configure the daily reminder job manually in Supabase Dashboard if needed.

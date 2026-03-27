@@ -38,11 +38,11 @@ function IconProcessingTime() {
     <div className="relative shrink-0 size-[20px]">
       <div className="absolute inset-[-2.78%]">
         <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 19 19">
-          <path d={svgCardPaths.p10e6fc80} fill="#FFB121" />
-          <path d={svgCardPaths.pe9e5cc0} fill="#FFB121" />
-          <path d={svgCardPaths.p2ae2c800} fill="#FFB121" />
-          <path d={svgCardPaths.p8839180} fill="#FFB121" />
-          <path d={svgCardPaths.pb4b6780} fill="#FFB121" />
+          <path d={svgCardPaths.p10e6fc80} fill="#FF6B21" />
+          <path d={svgCardPaths.pe9e5cc0} fill="#FF6B21" />
+          <path d={svgCardPaths.p2ae2c800} fill="#FF6B21" />
+          <path d={svgCardPaths.p8839180} fill="#FF6B21" />
+          <path d={svgCardPaths.pb4b6780} fill="#FF6B21" />
         </svg>
       </div>
     </div>
@@ -97,54 +97,22 @@ function PopupBackground({ isMobile }: { isMobile: boolean }) {
   }
 
   return (
-    <div className="absolute" style={{ inset: "0.39% 0 0 0" }}>
+    <div
+      className="absolute"
+      style={{
+        inset: "0.39% 0 0 0",
+        filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.22))",
+      }}
+    >
       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox={`0 0 ${POPUP_W} 316.765`}>
         <defs>
-          <filter
-            colorInterpolationFilters="sRGB"
-            filterUnits="userSpaceOnUse"
-            height="324.765"
-            id="filter_popup_bg"
-            width={POPUP_W + 8}
-            x="-4"
-            y="-4"
-          >
-            <feFlood floodOpacity="0" result="BackgroundImageFix" />
-            <feBlend in="SourceGraphic" in2="BackgroundImageFix" mode="normal" result="shape" />
-            <feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-            <feOffset dy="4" />
-            <feGaussianBlur stdDeviation="2" />
-            <feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic" />
-            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
-            <feBlend in2="shape" mode="normal" result="e1" />
-            <feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-            <feOffset dy="-5" />
-            <feGaussianBlur stdDeviation="2" />
-            <feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic" />
-            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
-            <feBlend in2="e1" mode="normal" result="e2" />
-            <feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-            <feOffset dx="4" />
-            <feGaussianBlur stdDeviation="2" />
-            <feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic" />
-            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
-            <feBlend in2="e2" mode="normal" result="e3" />
-            <feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-            <feOffset dx="-4" />
-            <feGaussianBlur stdDeviation="2" />
-            <feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic" />
-            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
-            <feBlend in2="e3" mode="normal" result="e4" />
-          </filter>
           <linearGradient gradientUnits="userSpaceOnUse" id="paint_popup_bg" x1="84.36" x2="311.03" y1="35.25" y2="336.31">
             <stop stopColor="#C0C3D0" />
             <stop offset="0.168" stopColor="#CEC4BB" />
             <stop offset="1" stopColor="#9699A5" />
           </linearGradient>
         </defs>
-        <g filter="url(#filter_popup_bg)">
-          <path d={svgPopup.p19655f00} fill="url(#paint_popup_bg)" />
-        </g>
+        <path d={svgPopup.p19655f00} fill="url(#paint_popup_bg)" />
       </svg>
     </div>
   );
@@ -157,9 +125,10 @@ interface LessonPopupProps {
   /** Ref to the node element — used to compute portal position */
   anchorRef: React.RefObject<HTMLDivElement | null>;
   onClose: () => void;
+  isClosing?: boolean;
 }
 
-export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
+export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: LessonPopupProps) {
   const navigate = useNavigate();
   const { getLessonProgress } = useUser();
   const hwCtx   = useHomeworkSafe();
@@ -167,9 +136,15 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
   const [pos, setPos] = useState<{ top: number; left: number; scale: number } | null>(null);
   // Fade-in state: starts false, goes true after first paint
   const [visible, setVisible] = useState(false);
+  const closeTimerRef = useRef<number | null>(null);
+  // Swipe-to-close drag state
+  const [dragY, setDragY] = useState(0);
+  const swipeTouchStartY = useRef(0);
+  const swipeTouchStartX = useRef(0);
 
   const isMobile = window.innerWidth < 768;
-  const isMobileSheet = isMobile && lesson.lessonId === "contrast-lesson";
+  const isMobileSheet = isMobile;
+  const MOBILE_CLOSE_MS = 280;
 
   const isLocked   = lesson.status === "locked";
   const isCompleted = lesson.status === "completed";
@@ -183,9 +158,32 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
   const theoryPath = lesson.lessonId === "contrast-lesson" ? "/contrast" : "/theory";
   const isHomework = lesson.totalQuestions === 0;
 
+  const requestClose = () => {
+    if (!isMobileSheet) {
+      onClose();
+      return;
+    }
+    setDragY(0);
+    setVisible(false);
+    if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = window.setTimeout(() => {
+      closeTimerRef.current = null;
+      onClose();
+    }, MOBILE_CLOSE_MS);
+  };
+
   // Homework backend status
   const hwRecord = isHomework ? hwCtx?.getByLessonId(lesson.lessonId) : undefined;
   const hwStatus = hwRecord?.status ?? null;
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) {
+        window.clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
+    };
+  }, []);
 
   // Use useLayoutEffect so position is computed before the browser paints —
   // avoids the 1-frame blank state that caused visible jumps when switching nodes.
@@ -225,6 +223,12 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    if (!isMobileSheet || !isClosing) return;
+    setDragY(0);
+    setVisible(false);
+  }, [isClosing, isMobileSheet]);
+
   // Trigger fade-in + scroll to popup on the frame after position is known
   useEffect(() => {
     if (isMobileSheet || !pos) return;
@@ -252,20 +256,29 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
     });
   }, [pos !== null]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Close on outside click — but NOT when clicking a lesson node (let node's onClick handle toggle)
+  // Desktop: close on outside mousedown
+  // Mobile sheet: close on outside touchstart (nodes excluded — their onClick handles switch)
   useEffect(() => {
+    if (isMobileSheet) {
+      const handler = (e: TouchEvent) => {
+        const target = e.target as Element | null;
+        if (!target) return;
+        if (target.closest('[data-roadmap-node]')) return;
+        if (popupRef.current && popupRef.current.contains(target)) return;
+        requestClose();
+      };
+      document.addEventListener("touchstart", handler, { passive: true });
+      return () => document.removeEventListener("touchstart", handler);
+    }
     const handler = (e: MouseEvent) => {
       const target = e.target as Element | null;
       if (!target) return;
-      // If the click is on a roadmap node, let the node's onClick handle popup toggle
       if (target.closest('[data-roadmap-node]')) return;
-      if (popupRef.current && !popupRef.current.contains(target)) {
-        onClose();
-      }
+      if (popupRef.current && !popupRef.current.contains(target)) onClose();
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, [onClose]);
+  }, [onClose, isMobileSheet]);
 
   const handleQuiz = () => {
     try {
@@ -290,18 +303,24 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
   if (isMobileSheet) {
     return ReactDOM.createPortal(
       <>
-        {/* Backdrop — transparent, just for close-on-outside-tap */}
-        <div
-          onMouseDown={onClose}
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 99,
-          }}
-        />
         {/* Sheet */}
         <div
           ref={popupRef}
+          onTouchStart={(e) => {
+            swipeTouchStartY.current = e.touches[0].clientY;
+            swipeTouchStartX.current = e.touches[0].clientX;
+          }}
+          onTouchMove={(e) => {
+            const dy = e.touches[0].clientY - swipeTouchStartY.current;
+            if (dy > 0) setDragY(dy);
+          }}
+          onTouchEnd={() => {
+            if (dragY > 80) {
+              requestClose();
+            } else {
+              setDragY(0);
+            }
+          }}
           style={{
             position: "fixed",
             bottom: 0,
@@ -310,13 +329,16 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
             zIndex: 100,
             borderRadius: "20px 20px 0 0",
             background: "linear-gradient(150deg, #C0C3D0 0%, #CEC4BB 16.8%, #9699A5 100%)",
-            padding: "28px 20px 44px",
-            transform: visible ? "translateY(0)" : "translateY(100%)",
-            transition: "transform 0.38s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease",
-            opacity: visible ? 1 : 0,
+            padding: "20px 20px 44px",
+            transform: visible ? `translateY(${dragY}px)` : "translateY(100%)",
+            transition: dragY > 0 ? "none" : "transform 0.38s cubic-bezier(0.25, 1, 0.5, 1)",
             willChange: "transform",
           }}
         >
+          {/* Drag handle */}
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+            <div style={{ width: 36, height: 4, borderRadius: 2, background: "rgba(35,42,45,0.25)" }} />
+          </div>
           <div className="flex flex-col gap-[16px] items-start">
             {/* Title + Description */}
             <div className="flex flex-col gap-[8px] items-start w-full">
@@ -324,7 +346,7 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
               <div className="flex gap-[15px] items-start w-full">
                 {/* Icon */}
                 <div className="h-[55px] shrink-0 w-[56px] relative flex items-center justify-center">
-                  <img src={getLessonIcon(lesson.lessonId, isHomework)} alt="" style={{ width: 52, height: 52, objectFit: "contain" }} />
+                  <img src={getLessonIcon(lesson.lessonId, isHomework)} alt="" decoding="async" fetchPriority="high" style={{ width: 52, height: 52, objectFit: "contain" }} />
                 </div>
                 {/* Text */}
                 <div className="flex flex-1 flex-col gap-[15px] items-start min-w-0">
@@ -337,34 +359,37 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
                 </div>
               </div>
 
-              {/* Progress bar */}
-              <div className="flex gap-[10px] items-center w-full">
-                <div className="flex-1 py-[10px]">
-                  <div className="flex flex-col items-start w-full">
-                    <div className="flex flex-col h-[13px] items-start overflow-clip relative rounded-full w-full">
-                      <img
-                        alt=""
-                        className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-full size-full"
-                        src={imgProgressRoot}
-                      />
-                      <div
-                        className="h-[13px] rounded-full shrink-0 relative"
-                        style={{
-                          width: `${Math.max(pct, 5)}%`,
-                          backgroundImage: "linear-gradient(173.584deg, rgb(66, 78, 83) 54.135%, rgb(44, 53, 56) 85.747%)",
-                        }}
-                      />
+              {/* Progress bar — hidden for homework */}
+              {!isHomework && (
+                <div className="flex gap-[10px] items-center w-full">
+                  <div className="flex-1 py-[10px]">
+                    <div className="flex flex-col items-start w-full">
+                      <div className="flex flex-col h-[13px] items-start overflow-clip relative rounded-full w-full">
+                        <img
+                          alt=""
+                          className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-full size-full"
+                          decoding="async"
+                          src={imgProgressRoot}
+                        />
+                        <div
+                          className="h-[13px] rounded-full shrink-0 relative"
+                          style={{
+                            width: `${Math.max(pct, 5)}%`,
+                            backgroundImage: "linear-gradient(173.584deg, rgb(66, 78, 83) 54.135%, rgb(44, 53, 56) 85.747%)",
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
+                  {pct >= 100 ? (
+                    <GreenIndicator />
+                  ) : (
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#343e42] text-[16px] whitespace-nowrap shrink-0">
+                      {Math.round(pct)}%
+                    </p>
+                  )}
                 </div>
-                {pct >= 100 ? (
-                  <GreenIndicator />
-                ) : (
-                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#343e42] text-[16px] whitespace-nowrap shrink-0">
-                    {Math.round(pct)}%
-                  </p>
-                )}
-              </div>
+              )}
 
               {/* Info row */}
               <div className="flex items-center justify-between w-full h-[20px] mt-[20px]">
@@ -379,10 +404,11 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
                     <path d="M6.5 0L0 7.78H5.07L4.5 14L12 5.22H6.43L6.5 0Z" fill="#232A2D" />
                   </svg>
                   <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#232a2d] text-[16px] whitespace-nowrap">
-                    +{lesson.xpReward || 1250} XP
+                    +{isHomework ? 800 : (lesson.xpReward || 1250)} XP
                   </span>
                 </div>
               </div>
+
             </div>
 
             {/* Buttons */}
@@ -396,7 +422,10 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
                     <div aria-hidden="true" className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
                     <IconGreenCheck />
                     <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#5edd60] text-[26px] whitespace-nowrap relative">
-                      Готово
+                      Сдано
+                    </p>
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[16px] leading-[20px] whitespace-nowrap relative" style={{ color: "rgba(94,221,96,0.6)" }}>
+                      +800 XP
                     </p>
                   </button>
                 ) : hwStatus === "rejected" ? (
@@ -405,7 +434,7 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
                     className="group h-[60px] rounded-[15px] flex items-center justify-center px-[17px] w-full cursor-pointer select-none relative hover:translate-y-[3px] active:translate-y-[5px] transition-all duration-75 bg-[#343e42] gap-[10px]"
                   >
                     <div aria-hidden="true" className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
-                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#FF5D39] text-[26px] whitespace-nowrap relative">
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#FF6B21] text-[26px] whitespace-nowrap relative">
                       Переделать ↩
                     </p>
                   </button>
@@ -415,9 +444,9 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
                     className="group h-[60px] rounded-[15px] flex items-center justify-center px-[17px] w-full cursor-pointer select-none relative hover:translate-y-[3px] active:translate-y-[5px] transition-all duration-75 bg-[#343e42] gap-[10px]"
                   >
                     <div aria-hidden="true" className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
-                    <IconProcessingTime />
-                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#ffb121] text-[26px] whitespace-nowrap relative">
-                      На проверке
+                    <IconGreenCheck />
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#5edd60] text-[26px] whitespace-nowrap relative">
+                      Сдано
                     </p>
                   </button>
                 ) : (
@@ -485,26 +514,33 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
         width:           POPUP_W,
         height:          POPUP_H,
         zIndex:          100,
-        // CSS transition instead of keyframe — re-triggers on each mount, even during rapid taps
-        opacity:         visible ? 1 : 0,
-        transform:       `${pos.scale < 1 ? `scale(${pos.scale})` : ""} translateY(${visible ? 0 : -8}px)`.trim(),
-        transition:      `opacity ${transitionDuration} ease-out, transform ${transitionDuration} ease-out`,
+        transform:       `${pos.scale < 1 ? `scale(${pos.scale})` : ""} translateY(${visible ? 0 : 8}px)`.trim(),
+        transition:      `transform ${transitionDuration} ease-out`,
         transformOrigin: "top left",
-        willChange:      "opacity, transform",
+        willChange:      "transform",
         contain:         "layout style",
       }}
     >
       <PopupBackground isMobile={isMobile} />
 
       {/* Content */}
-      <div className="absolute flex flex-col gap-[16px] items-start pb-[20px]" style={{ left: 23, top: 43, width: 360, minHeight: 140 }}>
+      <div
+        className="absolute flex flex-col gap-[16px] items-start"
+        style={{
+          left: 23,
+          top: 43,
+          width: 360,
+          minHeight: 140,
+          height: isHomework ? POPUP_H - 43 - 20 : undefined,
+        }}
+      >
         {/* Title + Description */}
         <div className="flex flex-col gap-[8px] items-start w-full">
           {/* Icon + Title + Description */}
           <div className="flex gap-[15px] items-start w-full">
             {/* Icon */}
             <div className="h-[55px] shrink-0 w-[56px] relative flex items-center justify-center">
-              <img src={getLessonIcon(lesson.lessonId, isHomework)} alt="" style={{ width: 52, height: 52, objectFit: "contain" }} />
+              <img src={getLessonIcon(lesson.lessonId, isHomework)} alt="" decoding="async" fetchPriority="high" style={{ width: 52, height: 52, objectFit: "contain" }} />
             </div>
             {/* Text */}
             <div className="flex flex-1 flex-col gap-[15px] items-start min-w-0">
@@ -517,34 +553,37 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
             </div>
           </div>
 
-          {/* Progress bar */}
-          <div className="flex gap-[10px] items-center w-full">
-            <div className="flex-1 py-[10px]">
-              <div className="flex flex-col items-start w-full">
-                <div className="flex flex-col h-[13px] items-start overflow-clip relative rounded-full w-full">
-                  <img
-                    alt=""
-                    className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-full size-full"
-                    src={imgProgressRoot}
-                  />
-                  <div
-                    className="h-[13px] rounded-full shrink-0 relative"
-                    style={{
-                      width: `${Math.max(pct, 5)}%`,
-                      backgroundImage: "linear-gradient(173.584deg, rgb(66, 78, 83) 54.135%, rgb(44, 53, 56) 85.747%)",
-                    }}
-                  />
+          {/* Progress bar — hidden for homework */}
+          {!isHomework && (
+            <div className="flex gap-[10px] items-center w-full">
+              <div className="flex-1 py-[10px]">
+                <div className="flex flex-col items-start w-full">
+                  <div className="flex flex-col h-[13px] items-start overflow-clip relative rounded-full w-full">
+                    <img
+                      alt=""
+                      className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-full size-full"
+                      decoding="async"
+                      src={imgProgressRoot}
+                    />
+                    <div
+                      className="h-[13px] rounded-full shrink-0 relative"
+                      style={{
+                        width: `${Math.max(pct, 5)}%`,
+                        backgroundImage: "linear-gradient(173.584deg, rgb(66, 78, 83) 54.135%, rgb(44, 53, 56) 85.747%)",
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
+              {pct >= 100 ? (
+                <GreenIndicator />
+              ) : (
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#343e42] text-[16px] whitespace-nowrap shrink-0">
+                  {Math.round(pct)}%
+                </p>
+              )}
             </div>
-            {pct >= 100 ? (
-              <GreenIndicator />
-            ) : (
-              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#343e42] text-[16px] whitespace-nowrap shrink-0">
-                {Math.round(pct)}%
-              </p>
-            )}
-          </div>
+          )}
 
           {/* Info row */}
           <div className="flex items-center justify-between w-full h-[20px] mt-[20px]">
@@ -559,14 +598,15 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
                 <path d="M6.5 0L0 7.78H5.07L4.5 14L12 5.22H6.43L6.5 0Z" fill="#232A2D" />
               </svg>
               <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#232a2d] text-[16px] whitespace-nowrap">
-                +{lesson.xpReward || 1250} XP
+                +{isHomework ? 800 : (lesson.xpReward || 1250)} XP
               </span>
             </div>
           </div>
+
         </div>
 
         {/* Buttons */}
-        <div className="flex gap-[17px] items-start w-full mt-[4px] pb-[20px]">
+        <div className={`flex gap-[17px] items-start w-full ${isHomework ? "mt-auto" : "mt-[4px] pb-[20px]"}`}>
           {isHomework ? (
             hwStatus === "reviewed" ? (
               <button
@@ -576,7 +616,10 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
                 <div aria-hidden="true" className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
                 <IconGreenCheck />
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#5edd60] text-[26px] whitespace-nowrap relative">
-                  Готово
+                  Сдано
+                </p>
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[16px] leading-[20px] whitespace-nowrap relative" style={{ color: "rgba(94,221,96,0.6)" }}>
+                  +800 XP
                 </p>
               </button>
             ) : hwStatus === "rejected" ? (
@@ -585,7 +628,7 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
                 className="group h-[60px] rounded-[15px] flex items-center justify-center px-[17px] w-full cursor-pointer select-none relative hover:translate-y-[3px] active:translate-y-[5px] transition-all duration-75 bg-[#343e42] gap-[10px]"
               >
                 <div aria-hidden="true" className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#FF5D39] text-[26px] whitespace-nowrap relative">
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#FF6B21] text-[26px] whitespace-nowrap relative">
                   Переделать ↩
                 </p>
               </button>
@@ -595,9 +638,9 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
                 className="group h-[60px] rounded-[15px] flex items-center justify-center px-[17px] w-full cursor-pointer select-none relative hover:translate-y-[3px] active:translate-y-[5px] transition-all duration-75 bg-[#343e42] gap-[10px]"
               >
                 <div aria-hidden="true" className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none" />
-                <IconProcessingTime />
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#ffb121] text-[26px] whitespace-nowrap relative">
-                  На проверке
+                <IconGreenCheck />
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#5edd60] text-[26px] whitespace-nowrap relative">
+                  Сдано
                 </p>
               </button>
             ) : (
@@ -650,8 +693,8 @@ export function LessonPopup({ lesson, anchorRef, onClose }: LessonPopupProps) {
       {/* Animation keyframe — kept for any legacy callers */}
       <style>{`
         @keyframes popupFadeIn {
-          from { opacity: 0; transform: translateY(-8px); }
-          to   { opacity: 1; transform: translateY(0); }
+          from { transform: translateY(8px); }
+          to   { transform: translateY(0); }
         }
       `}</style>
     </div>,

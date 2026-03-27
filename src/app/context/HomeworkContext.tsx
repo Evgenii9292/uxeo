@@ -41,7 +41,8 @@ interface HomeworkContextValue {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const SEEN_KEY = "uxeo-hw-seen"; // localStorage: Record<lessonId, HWStatus>
+const SEEN_KEY  = "uxeo-hw-seen";   // localStorage: Record<lessonId, HWStatus>
+const CACHE_KEY = "uxeo-hw-cache";  // localStorage: HomeworkRecord[]
 
 // ── Context ───────────────────────────────────────────────────────────────────
 
@@ -52,8 +53,11 @@ const HomeworkContext = createContext<HomeworkContextValue | undefined>(undefine
 export function HomeworkProvider({ children }: { children: ReactNode }) {
   const auth = useAuthSafe();
   const userId = auth?.userId ?? null;
-  const [homeworks, setHomeworks] = useState<HomeworkRecord[]>([]);
-  const [loading, setLoading]     = useState(false);
+  const [homeworks, setHomeworks] = useState<HomeworkRecord[]>(() => {
+    try { return JSON.parse(localStorage.getItem(CACHE_KEY) ?? "[]"); }
+    catch { return []; }
+  });
+  const [loading, setLoading] = useState(false);
   // seen: map of lessonId (or lesson_name as fallback) → last seen status
   const [seen, setSeen] = useState<Record<string, HWStatus>>(() => {
     try { return JSON.parse(localStorage.getItem(SEEN_KEY) ?? "{}"); }
@@ -70,7 +74,9 @@ export function HomeworkProvider({ children }: { children: ReactNode }) {
       );
       if (!res.ok) return;
       const data = await res.json();
-      setHomeworks(data.homeworks ?? []);
+      const fresh: HomeworkRecord[] = data.homeworks ?? [];
+      setHomeworks(fresh);
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify(fresh)); } catch {}
     } catch {
       // silent — network unavailable, keep stale state
     } finally {

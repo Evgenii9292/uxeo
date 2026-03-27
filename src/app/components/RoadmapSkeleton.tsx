@@ -35,7 +35,6 @@ export function RoadmapSkeleton({ visible }: { visible: boolean }) {
         position: "absolute",
         inset: 0,
         zIndex: 20,
-        background: "#2C353A",
         opacity: visible ? 1 : 0,
         transition: "opacity 0.45s ease-out",
         pointerEvents: visible ? "auto" : "none",

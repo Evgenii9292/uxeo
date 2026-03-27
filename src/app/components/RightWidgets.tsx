@@ -8,7 +8,7 @@ import { useNavigate, useLocation } from "react-router";
 import { LESSONS } from "../data/lessons";
 import { Zap } from "lucide-react";
 import { FloatingCircle } from "./FloatingCircle";
-import { getLeague, LEAGUES } from "../pages/LeaguePage";
+import { getLeague, LEAGUES, formatXp } from "../pages/LeaguePage";
 import FreeIconGift from "../../imports/FreeIconGift81465531";
 
 // --- Weekly Challenge (Figma icon) ---
@@ -185,7 +185,7 @@ function LeagueProgress() {
                   </div>
                 </div>
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[0] relative shrink-0 text-[#f1f2fb] text-[0px] text-[18px] whitespace-nowrap">
-                  <span className="leading-[20px] text-[#798589]">{xp} / {LEAGUE_MAX} XP</span>
+                  <span className="leading-[20px] text-[#798589]">{formatXp(xp)} / {formatXp(LEAGUE_MAX)} XP</span>
                 </p>
               </div>
             )}
@@ -386,7 +386,7 @@ function DailyChallenge() {
                 </div>
               </div>
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[0] relative shrink-0 text-[#f1f2fb] text-[0px] text-[18px] whitespace-nowrap">
-                <span className="leading-[20px] text-[#798589]">{xp} / {DAILY_MAX} XP</span>
+                <span className="leading-[20px] text-[#798589]">{formatXp(xp)} / {DAILY_MAX} XP</span>
               </p>
             </div>
           )}

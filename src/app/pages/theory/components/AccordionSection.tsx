@@ -9,7 +9,7 @@ import React from "react";
 import { Zap } from "lucide-react";
 import type { AccordionSection as AccordionSectionData } from "../../../data/lesson-content";
 import { GreenIndicator, GrayIndicator, OrangeIndicator } from "../ui/Indicators";
-import { ChevronIcon, RedCardIcon, SparkleIcon, PartyPopperIcon, FistIcon } from "../ui/Icons";
+import { ChevronIcon, SparkleIcon, PartyPopperIcon, FistIcon } from "../ui/Icons";
 import { QuizCardLeft, QuizCardRight } from "./TheoryQuiz";
 
 interface AccordionState {
@@ -58,7 +58,7 @@ export function AccordionSectionMobile({
             {state.completed ? <GreenIndicator /> : state.hasIncorrectAnswer ? <OrangeIndicator /> : <GrayIndicator />}
             <p
               className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[24px] text-[22px]"
-              style={{ color: !isUnlocked ? "rgba(241,242,251,0.12)" : isOpen ? "#f1f2fb" : "#798589" }}
+              style={{ color: !isUnlocked ? "rgba(121,133,137,0.25)" : isOpen ? "#f1f2fb" : "#798589" }}
             >
               {section.title}
             </p>
@@ -82,25 +82,21 @@ export function AccordionSectionMobile({
                 {/* Divider + heading */}
                 <div className="flex items-center gap-[12px] mb-[16px]">
                   <div className="h-[1px] flex-1" style={{ background: "rgba(241,242,251,0.1)" }} />
-                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[12px] uppercase tracking-widest shrink-0">Закрепим</p>
+                  <div className="flex items-center justify-center shrink-0">
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[12px] uppercase tracking-widest whitespace-nowrap">Закрепим</p>
+                  </div>
                   <div className="h-[1px] flex-1" style={{ background: "rgba(241,242,251,0.1)" }} />
                 </div>
                 <div className="flex flex-col gap-[20px]">
                   {/* Header row */}
-                  <div className="flex items-center justify-between w-full">
-                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[24px] text-[#f1f2fb] text-[20px] flex-1 pr-[10px]">
+                  <div className="flex items-center w-full">
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[24px] text-[#f1f2fb] text-[20px] flex-1">
                       {section.quizQuestion}
                     </p>
-                    <div className="flex gap-[7px] items-center shrink-0">
-                      <RedCardIcon />
-                      <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#ff6b21] text-[16px]">
-                        {section.quizLabel}
-                      </p>
-                    </div>
                   </div>
 
-                  {/* Cards — stacked on mobile */}
-                  <div className="flex flex-col gap-[14px] w-full">
+                  {/* Cards — side by side on mobile */}
+                  <div className="flex flex-row gap-[10px] w-full">
                     <QuizCardLeft
                       isSelected={state.selectedAnswer === "left"}
                       isCorrect={section.quizLeftCorrect}
@@ -108,6 +104,9 @@ export function AccordionSectionMobile({
                       onClick={() => onAnswerSelect("left", section.quizLeftCorrect)}
                       disabled={state.showFeedback}
                       contentNode={section.quizLeftNode}
+                      vPad={15}
+                      hPad={10}
+                      cardRadius={15}
                     />
                     <QuizCardRight
                       isSelected={state.selectedAnswer === "right"}
@@ -116,6 +115,9 @@ export function AccordionSectionMobile({
                       onClick={() => onAnswerSelect("right", section.quizRightCorrect)}
                       disabled={state.showFeedback}
                       contentNode={section.quizRightNode}
+                      vPad={15}
+                      hPad={10}
+                      cardRadius={15}
                     />
                   </div>
 
@@ -188,7 +190,7 @@ export function AccordionSectionDesktop({
             {state.completed ? <GreenIndicator /> : state.hasIncorrectAnswer ? <OrangeIndicator /> : <GrayIndicator />}
             <p
               className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[26px] whitespace-nowrap"
-              style={{ color: !isUnlocked ? "rgba(241,242,251,0.12)" : isOpen ? "#f1f2fb" : "#798589" }}
+              style={{ color: !isUnlocked ? "rgba(121,133,137,0.25)" : isOpen ? "#f1f2fb" : "#798589" }}
             >
               {section.title}
             </p>
@@ -213,21 +215,17 @@ export function AccordionSectionDesktop({
                   {/* Divider + heading */}
                   <div className="flex items-center gap-[14px] mb-[20px]">
                     <div className="h-[1px] flex-1" style={{ background: "rgba(241,242,251,0.1)" }} />
-                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[14px] uppercase tracking-widest shrink-0">Закрепим</p>
+                    <div className="flex items-center justify-center shrink-0">
+                      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[14px] uppercase tracking-widest whitespace-nowrap">Закрепим</p>
+                    </div>
                     <div className="h-[1px] flex-1" style={{ background: "rgba(241,242,251,0.1)" }} />
                   </div>
                   <div className="flex flex-col gap-[20px]">
-                    {/* Header row: question LEFT, label RIGHT */}
-                    <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-                      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f1f2fb] text-[26px] flex-1 pr-[20px]">
+                    {/* Header row: question only */}
+                    <div className="content-stretch flex items-center relative shrink-0 w-full">
+                      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f1f2fb] text-[26px] flex-1">
                         {section.quizQuestion}
                       </p>
-                      <div className="content-stretch flex gap-[7px] items-center relative shrink-0">
-                        <RedCardIcon />
-                        <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[1.2] relative shrink-0 text-[#ff6b21] text-[18px] whitespace-nowrap">
-                          {section.quizLabel}
-                        </p>
-                      </div>
                     </div>
 
                     {/* Answer cards — side by side on desktop */}

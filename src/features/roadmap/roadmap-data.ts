@@ -207,7 +207,7 @@ export const ROADMAP_LESSONS: Lesson[] = [
  * Returns progress as a fraction (0.0 to 1.0).
  */
 export function getCourseProgressFromRoadmap(
-  lessonProgress: Record<string, { isCompleted: boolean }>
+  lessonProgress: Record<string, { isCompleted?: boolean }>
 ): number {
   // Count only lessons with quizId (exclude homework)
   const quizLessons = ROADMAP_LESSONS.filter(lesson => lesson.quizId);
@@ -217,7 +217,11 @@ export function getCourseProgressFromRoadmap(
   
   // Count completed quiz lessons
   const completedLessons = quizLessons.filter(lesson => {
-    const progress = lessonProgress[lesson.lessonId];
+    // Support both storage formats:
+    // - canonical lessonId keys ("contrast-lesson")
+    // - legacy quizId keys ("quiz_contrast")
+    const progress = lessonProgress[lesson.lessonId]
+      ?? (lesson.quizId ? lessonProgress[lesson.quizId] : undefined);
     return progress && progress.isCompleted;
   }).length;
   

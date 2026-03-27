@@ -3,10 +3,10 @@
  * Header styled to match TheoryMobileLayout (glassmorphism, Figma back-chevron, XP/streak stats).
  */
 
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router";
-const FIRE_FILTER = "brightness(0) saturate(100%) invert(72%) sepia(76%) saturate(751%) hue-rotate(357deg) brightness(102%)";
-const ZAP_FILTER  = "brightness(0) saturate(100%) invert(49%) sepia(79%) saturate(1117%) hue-rotate(348deg) brightness(103%)";
+import { motion } from "motion/react";
+import { formatXp } from "../pages/LeaguePage";
 import svgPaths from "../../imports/svg-ns2c3tgkyt";
 import { useUserSafe } from "../context/UserContext";
 import BottomTabBar from "./BottomTabBar";
@@ -25,6 +25,12 @@ interface MobileShellProps {
   stickyBottom?: React.ReactNode;
   /** Content rendered between the header and the scroll area (never scrolls) */
   stickyTop?: React.ReactNode;
+  /** Stable route key for page-content transition */
+  contentKey?: string;
+  /** Keep bottom tab bar always visible on this screen */
+  keepTabBarVisible?: boolean;
+  /** Blur header background on this screen */
+  blurHeader?: boolean;
 }
 
 // ── Back chevron (same Figma SVG used in Theory header) ─────────────────────
@@ -48,6 +54,7 @@ export function MobileHeader({
   xp,
   streak,
   headerRight,
+  blurred = false,
 }: {
   title: string;
   showBack?: boolean;
@@ -55,32 +62,40 @@ export function MobileHeader({
   xp: number;
   streak: number;
   headerRight?: React.ReactNode;
+  blurred?: boolean;
 }) {
   return (
     <div
       className="flex-none flex flex-col z-[200] relative"
       style={{
-        background: "#282F33",
+        background: blurred ? "rgba(40,47,51,0.62)" : "#282F33",
+        backdropFilter: blurred ? "blur(14px)" : "none",
+        WebkitBackdropFilter: blurred ? "blur(14px)" : "none",
+        borderBottom: blurred ? "1px solid rgba(87,100,106,0.28)" : "none",
       }}
     >
       <div
-        className="flex items-center justify-between px-[24px]"
-        style={{ height: 50 }}
+        className="flex items-center justify-between px-[16px]"
+        style={{ height: 50, paddingTop: "env(safe-area-inset-top, 0px)", boxSizing: "content-box" }}
       >
         {/* Left: back button + title */}
-        <button
-          className="flex gap-[16px] items-center active:scale-90 transition-transform duration-75"
-          onClick={showBack ? onBack : undefined}
-          style={{ cursor: showBack ? "pointer" : "default" }}
-        >
-          {showBack && <BackChevron />}
+        <div className="flex gap-[16px] items-center">
+          {showBack && (
+            <button
+              className="active:scale-90 transition-transform duration-75 border-none bg-transparent outline-none p-[8px] -m-[8px]"
+              onClick={onBack}
+              style={{ touchAction: "manipulation", WebkitTapHighlightColor: "transparent", cursor: "pointer" }}
+            >
+              <BackChevron />
+            </button>
+          )}
           <p
-            className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[23.989px] text-[#f4f5fc] text-[22px] whitespace-nowrap"
-            style={{ margin: 0 }}
+            className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[23.989px] text-[#f4f5fc] text-[22px] truncate"
+            style={{ margin: 0, maxWidth: "calc(100vw - 160px)" }}
           >
             {title}
           </p>
-        </button>
+        </div>
 
         {/* Right: stats or custom */}
         <div className="flex gap-[20px] items-center">
@@ -88,30 +103,30 @@ export function MobileHeader({
             <>
               {/* Streak */}
               <div className="flex gap-[3px] items-center">
-                <img src="/fire-icon.svg" width={20} height={22} style={{ objectFit: "contain", filter: FIRE_FILTER }} />
+                <img src={streak > 0 ? "/fire-icon-active.png" : "/fire-icon-inactive.png"} width={20} height={22} style={{ objectFit: "contain" }} />
                 <span
                   className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[20px]"
-                  style={{
+                  style={streak > 0 ? {
                     backgroundImage: "linear-gradient(180deg, #ffb121 0%, #bb8116 100%)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
-                  }}
+                  } : { color: "#6b7280" }}
                 >
                   {streak}
                 </span>
               </div>
               {/* XP */}
               <div className="flex gap-[4px] items-center">
-                <img src="/zap-icon.svg" width={20} height={20} style={{ objectFit: "contain", filter: ZAP_FILTER }} />
+                <img src={xp > 0 ? "/zap-icon-active.png" : "/zap-icon-inactive.png"} width={20} height={20} style={{ objectFit: "contain" }} />
                 <span
                   className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[20px]"
-                  style={{
+                  style={xp > 0 ? {
                     backgroundImage: "linear-gradient(195.05deg, #FF6B21 48.665%, #994014 112.02%)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
-                  }}
+                  } : { color: "#6b7280" }}
                 >
-                  {xp}
+                  {formatXp(xp)}
                 </span>
               </div>
             </>
@@ -133,6 +148,9 @@ export default function MobileShell({
   headerRight,
   stickyBottom,
   stickyTop,
+  contentKey,
+  keepTabBarVisible = false,
+  blurHeader = false,
 }: MobileShellProps) {
   const navigate = useNavigate();
   const userData = useUserSafe();
@@ -141,12 +159,22 @@ export default function MobileShell({
 
   // ── Hide-on-scroll state ───────────────────────────────────────────────────
   const [tabBarVisible, setTabBarVisible] = useState(true);
+  const [showBottomFade, setShowBottomFade] = useState(false);
   const lastScrollY = useRef(0);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  const updateBottomFade = useCallback((el: HTMLDivElement | null) => {
+    if (!el) return;
+    const maxScroll = el.scrollHeight - el.clientHeight;
+    setShowBottomFade(maxScroll > 6 && el.scrollTop < maxScroll - 8);
+  }, []);
 
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     const currentY = el.scrollTop;
     const maxScroll = el.scrollHeight - el.clientHeight;
+    updateBottomFade(el);
+    if (keepTabBarVisible) return;
     // Don't trigger hide/show if we're bouncing at very top or bottom
     if (currentY <= 0 || currentY >= maxScroll - 4) return;
     const delta = currentY - lastScrollY.current;
@@ -154,13 +182,25 @@ export default function MobileShell({
       setTabBarVisible(delta < 0);
       lastScrollY.current = currentY;
     }
-  }, []);
+  }, [keepTabBarVisible, updateBottomFade]);
 
   // Heights for fixed elements
-  const TAB_H = tabBarVisible ? 52 : 0;
+  const effectiveTabBarVisible = keepTabBarVisible ? true : tabBarVisible;
+  const TAB_H = effectiveTabBarVisible ? 52 : 0;
   const STICKY_H = stickyBottom ? 72 : 0;
   // Total bottom padding for scroll area = tab + sticky + small gap
   const scrollPadBottom = TAB_H + STICKY_H + 8;
+  const pageTransition = {
+    initial: { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] as const },
+  };
+
+  useEffect(() => {
+    if (noScroll) return;
+    const id = requestAnimationFrame(() => updateBottomFade(scrollRef.current));
+    return () => cancelAnimationFrame(id);
+  }, [children, contentKey, noScroll, stickyBottom, keepTabBarVisible, updateBottomFade]);
 
   return (
     <div
@@ -174,6 +214,7 @@ export default function MobileShell({
         xp={xp}
         streak={streak}
         headerRight={headerRight}
+        blurred={blurHeader}
       />
 
       {/* Sticky top bar — between header and scroll area */}
@@ -185,25 +226,38 @@ export default function MobileShell({
 
       {/* Scrollable content */}
       {noScroll ? (
-        <div className="flex-1 overflow-hidden min-h-0">
-          {children}
-        </div>
-      ) : (
-        <div
-          className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide px-[16px] py-[16px] isolate"
-          style={{ paddingBottom: scrollPadBottom }}
-          onScroll={handleScroll}
+        <motion.div
+          key={contentKey}
+          className="flex-1 overflow-hidden min-h-0"
+          initial={pageTransition.initial}
+          animate={pageTransition.animate}
+          transition={pageTransition.transition}
         >
           {children}
-        </div>
+        </motion.div>
+      ) : (
+        <motion.div
+          key={contentKey}
+          ref={scrollRef}
+          className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide px-[16px] py-[16px] isolate"
+          style={{ paddingBottom: `calc(${scrollPadBottom}px + env(safe-area-inset-bottom, 0px))` }}
+          onScroll={handleScroll}
+          initial={pageTransition.initial}
+          animate={pageTransition.animate}
+          transition={pageTransition.transition}
+        >
+          {children}
+        </motion.div>
       )}
+
+      {/* bottom fade removed */}
 
       {/* Sticky bottom — FIXED, above tab bar, no background */}
       {stickyBottom && (
         <div
           className="fixed left-0 right-0 z-30 px-[16px] transition-[bottom] duration-300"
           style={{
-            bottom: tabBarVisible ? 52 : 0,
+            bottom: effectiveTabBarVisible ? 52 : 0,
             paddingBottom: "max(10px, env(safe-area-inset-bottom, 10px))",
             paddingTop: 10,
           }}
@@ -217,7 +271,7 @@ export default function MobileShell({
         className="fixed left-0 right-0 z-20 transition-transform duration-300"
         style={{
           bottom: 0,
-          transform: tabBarVisible ? "translateY(0)" : "translateY(100%)",
+          transform: effectiveTabBarVisible ? "translateY(0)" : "translateY(100%)",
         }}
       >
         <BottomTabBar />
@@ -225,7 +279,7 @@ export default function MobileShell({
 
       {/* Floating action circles */}
       <MobileFloatingCircles
-        tabBarVisible={tabBarVisible}
+        tabBarVisible={effectiveTabBarVisible}
         hasStickyButton={!!stickyBottom}
       />
     </div>

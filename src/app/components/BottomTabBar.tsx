@@ -171,7 +171,7 @@ function IconNotifications({ active: _active }: { active: boolean }) {
         {hasUnread && (
           <div className="absolute inset-[-0.78%_-4.76%_38.88%_42.86%]">
             <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 23.8333 23.8333">
-              <circle cx="11.9167" cy="11.9167" fill="#FF6B21" r="10.5417" stroke="#2C353A" strokeWidth="2.75" />
+              <circle cx="11.9167" cy="11.9167" fill="#FF6B21" r="10.5417" stroke="#282F33" strokeWidth="2.75" />
             </svg>
           </div>
         )}
@@ -236,54 +236,61 @@ export default function BottomTabBar() {
   return (
     <>
       <nav
-        className="flex-none flex items-center justify-around relative z-50 rounded-tl-[15px] rounded-tr-[15px]"
+        className="flex-none relative z-50 rounded-tl-[15px] rounded-tr-[15px]"
         style={{
-          height: 52,
+          height: "calc(52px + env(safe-area-inset-bottom, 0px))",
           background: "rgba(45,54,58,0.95)",
           backdropFilter: "blur(14px)",
           WebkitBackdropFilter: "blur(14px)",
           borderTop: "1px solid rgba(86,101,107,0.35)",
-          paddingLeft: 8,
-          paddingRight: 8,
-          paddingBottom: "env(safe-area-inset-bottom, 0px)",
         }}
       >
-        {/* Nav tabs */}
-        {NAV_TABS.map((tab) => {
-          const active = isActive(tab.matchPaths);
-          const { Icon } = tab;
-          return (
-            <button
-              key={tab.key}
-              onClick={() => navigate(tab.path)}
-              className="flex flex-col items-center justify-center flex-1 h-full cursor-pointer border-0 outline-none active:scale-90 transition-transform duration-75 relative"
-              style={{ background: "transparent" }}
-            >
-              {active && (
-                <div
-                  className="absolute inset-x-[6px] inset-y-[7px] rounded-[13px] pointer-events-none"
-                  style={{ background: "rgba(255,255,255,0.07)" }}
-                />
-              )}
-              <Icon active={active} />
-            </button>
-          );
-        })}
-
-        {/* More (···) button */}
-        <button
-          onClick={() => setShowMore(true)}
-          className="flex flex-col items-center justify-center flex-1 h-full cursor-pointer border-0 outline-none active:scale-90 transition-transform duration-75 relative"
-          style={{ background: "transparent" }}
+        <div
+          className="absolute left-0 right-0 flex items-center justify-around"
+          style={{
+            height: 52,
+            bottom: "env(safe-area-inset-bottom, 0px)",
+            paddingLeft: 8,
+            paddingRight: 8,
+          }}
         >
-          {showMore && (
-            <div
-              className="absolute inset-x-[6px] inset-y-[7px] rounded-[13px] pointer-events-none"
-              style={{ background: "rgba(255,255,255,0.07)" }}
-            />
-          )}
-          <IconMore active={showMore} />
-        </button>
+          {/* Nav tabs */}
+          {NAV_TABS.map((tab) => {
+            const active = isActive(tab.matchPaths);
+            const { Icon } = tab;
+            return (
+              <button
+                key={tab.key}
+                onClick={() => navigate(tab.path)}
+                className="flex flex-col items-center justify-center flex-1 h-full cursor-pointer border-0 outline-none active:scale-90 transition-transform duration-75 relative"
+                style={{ background: "transparent" }}
+              >
+                {active && (
+                  <div
+                    className="absolute inset-x-[6px] inset-y-[7px] rounded-[13px] pointer-events-none"
+                    style={{ background: "rgba(255,255,255,0.07)" }}
+                  />
+                )}
+                <Icon active={active} />
+              </button>
+            );
+          })}
+
+          {/* More (···) button */}
+          <button
+            onClick={() => setShowMore(true)}
+            className="flex flex-col items-center justify-center flex-1 h-full cursor-pointer border-0 outline-none active:scale-90 transition-transform duration-75 relative"
+            style={{ background: "transparent" }}
+          >
+            {showMore && (
+              <div
+                className="absolute inset-x-[6px] inset-y-[7px] rounded-[13px] pointer-events-none"
+                style={{ background: "rgba(255,255,255,0.07)" }}
+              />
+            )}
+            <IconMore active={showMore} />
+          </button>
+        </div>
       </nav>
 
       {/* MoreSheet — rendered via portal to escape transform stacking context */}

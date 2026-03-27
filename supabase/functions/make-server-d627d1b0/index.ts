@@ -1,6 +1,7 @@
 import { Hono } from "npm:hono";
 import { cors } from "npm:hono/cors";
 import { logger } from "npm:hono/logger";
+import { createClient } from "jsr:@supabase/supabase-js@2.49.8";
 import * as kv from "./kv_store.tsx";
 
 const app = new Hono();
@@ -24,6 +25,35 @@ app.use(
 app.get("/make-server-d627d1b0/health", (c) => {
   return c.json({ status: "ok" });
 });
+
+// Helper: run SQL via Supabase Management API
+async function sqlQuery(sql: string): Promise<any[]> {
+  const urlMatch = Deno.env.get("SUPABASE_URL")?.match(/https:\/\/([^.]+)\.supabase\.co/);
+  const projectRef = urlMatch?.[1] ?? "";
+  const token = Deno.env.get("MGMT_TOKEN") ?? "";
+  const res = await fetch(`https://api.supabase.com/v1/projects/${projectRef}/database/query`, {
+    method: "POST",
+    headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ query: sql }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(JSON.stringify(err));
+  }
+  return await res.json();
+}
+
+function esc(s: string): string {
+  return String(s ?? "").replace(/'/g, "''");
+}
+
+function adminClient() {
+  return createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    { auth: { persistSession: false } },
+  );
+}
 
 // Submit user feedback — stores via KV store
 app.post("/make-server-d627d1b0/feedback/submit", async (c) => {
@@ -315,6 +345,115 @@ app.post("/make-server-d627d1b0/user/registered", async (c) => {
     return c.json({ success: true });
   } catch (error) {
     return c.json({ error: `Failed: ${error}` }, 500);
+  }
+});
+
+// GET /make-server-d627d1b0/user/progress?userId=xxx
+app.get("/make-server-d627d1b0/user/progress", async (c) => {
+  try {
+    const userId = c.req.query("userId");
+    if (!userId) return c.json({ error: "userId required" }, 400);
+
+    const rows = await sqlQuery(
+      `SELECT user_id, xp, streak, last_streak_date, level, goal, daily_time, lesson_progress, weekly_challenges, updated_at
+       FROM public.user_progress WHERE user_id = '${esc(userId)}' LIMIT 1`
+    );
+
+    if (rows.length === 0) return c.json({ found: false });
+    return c.json({ found: true, data: rows[0] });
+  } catch (error) {
+    console.log(`Error getting user progress: ${error}`);
+    return c.json({ error: `Failed: ${error}` }, 500);
+  }
+});
+
+// POST /make-server-d627d1b0/user/progress
+app.post("/make-server-d627d1b0/user/progress", async (c) => {
+  try {
+    const {
+      userId,
+      xp,
+      streak,
+      lastStreakDate,
+      level,
+      goal,
+      dailyTime,
+      lessonProgress,
+      weeklyChallenges,
+    } = await c.req.json();
+
+    if (!userId) return c.json({ error: "userId required" }, 400);
+
+    const lpJson = JSON.stringify(lessonProgress ?? {}).replace(/'/g, "''");
+
+    await sqlQuery(`
+      INSERT INTO public.user_progress (
+        user_id, xp, streak, last_streak_date, level, goal, daily_time, lesson_progress, weekly_challenges, updated_at
+      )
+      VALUES (
+        '${esc(userId)}',
+        ${xp ?? 0},
+        ${streak ?? 0},
+        '${esc(lastStreakDate ?? "")}',
+        '${esc(level ?? "")}',
+        '${esc(goal ?? "")}',
+        '${esc(dailyTime ?? "")}',
+        '${lpJson}'::jsonb,
+        ${weeklyChallenges ?? 0},
+        NOW()
+      )
+      ON CONFLICT (user_id) DO UPDATE SET
+        xp = EXCLUDED.xp,
+        streak = EXCLUDED.streak,
+        last_streak_date = EXCLUDED.last_streak_date,
+        level = EXCLUDED.level,
+        goal = EXCLUDED.goal,
+        daily_time = EXCLUDED.daily_time,
+        lesson_progress = EXCLUDED.lesson_progress,
+        weekly_challenges = EXCLUDED.weekly_challenges,
+        updated_at = NOW()
+    `);
+
+    return c.json({ success: true });
+  } catch (error) {
+    console.log(`Error saving user progress: ${error}`);
+    return c.json({ error: `Failed: ${error}` }, 500);
+  }
+});
+
+// Delete current authenticated account
+app.post("/make-server-d627d1b0/account/delete", async (c) => {
+  try {
+    const authHeader = c.req.header("Authorization") ?? "";
+    const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+    if (!token) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    const supabase = adminClient();
+    const { data: userData, error: userError } = await supabase.auth.getUser(token);
+    const user = userData?.user;
+    if (userError || !user) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    const userId = user.id;
+
+    await sqlQuery(`DELETE FROM public.notifications WHERE user_id = '${esc(userId)}'`);
+    await sqlQuery(`DELETE FROM public.homeworks WHERE user_id = '${esc(userId)}'`);
+    await sqlQuery(`DELETE FROM public.challenges WHERE user_id = '${esc(userId)}'`);
+    await sqlQuery(`DELETE FROM public.user_progress WHERE user_id = '${esc(userId)}'`);
+    await sqlQuery(`DELETE FROM public.user_emails WHERE user_id = '${esc(userId)}'`);
+
+    const { error: deleteError } = await supabase.auth.admin.deleteUser(userId);
+    if (deleteError) {
+      throw deleteError;
+    }
+
+    return c.json({ success: true });
+  } catch (error) {
+    console.log(`Error deleting account: ${error}`);
+    return c.json({ error: `Failed to delete account: ${error}` }, 500);
   }
 });
 

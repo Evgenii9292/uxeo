@@ -3,11 +3,9 @@
  * Extracted from TheoryPage.tsx to keep the page file thin.
  */
 
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router";
 import svgPtPaths from "../../../../imports/svg-pt1cecsedx";
-import FreeIconGift from "../../../../imports/FreeIconGift81465531";
-import { FloatingCircle } from "../../../components/FloatingCircle";
 import { MobileFloatingCircles } from "../../../components/MobileFloatingCircles";
 import { TimeIcon, TheoryLevelIcon } from "../ui/Icons";
 import { AccordionSectionMobile } from "./AccordionSection";
@@ -25,6 +23,8 @@ interface TheoryMobileLayoutProps {
   lessonId: string;
   mobileScrollRef: React.RefObject<HTMLDivElement>;
   mobileScrollY: number;
+  completedSectionsCount: number;
+  totalSections: number;
   setMobileScrollY: (y: number) => void;
   openSections: Set<number>;
   accordionStates: AccordionState[];
@@ -47,6 +47,8 @@ export function TheoryMobileLayout({
   lessonId,
   mobileScrollRef,
   mobileScrollY,
+  completedSectionsCount,
+  totalSections,
   setMobileScrollY,
   openSections,
   accordionStates,
@@ -62,6 +64,13 @@ export function TheoryMobileLayout({
   setFeedbackText,
 }: TheoryMobileLayoutProps) {
   const navigate = useNavigate();
+
+  // Fade-in on mount
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setVisible(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   // Hide-on-scroll for tab bar
   const [tabBarVisible, setTabBarVisible] = useState(true);
@@ -79,7 +88,7 @@ export function TheoryMobileLayout({
   return (
     <div
       className="theory-page fixed inset-0 flex flex-col overflow-hidden"
-      style={{ background: "#282F33" }}
+      style={{ background: "#282F33", opacity: visible ? 1 : 0, transition: "opacity 0.25s ease" }}
     >
       {/* ── Sticky Header (shared MobileHeader) ── */}
       <MobileHeader
@@ -94,16 +103,16 @@ export function TheoryMobileLayout({
       <div
         ref={mobileScrollRef}
         className="flex-1 overflow-y-auto scrollbar-hide"
-        style={{ paddingBottom: (tabBarVisible ? 52 : 0) + 72 + 16 }}
+        style={{ paddingBottom: (tabBarVisible ? 52 : 0) + 22 }}
         onScroll={handleScroll}
       >
         {/* Hero icon — no bg, centered */}
         <div className="flex items-center justify-center" style={{ height: '200px' }}>
-          <div className="relative flex items-center justify-center" style={{ width: 160, height: 160 }}>
+          <div className="relative flex items-center justify-center" style={{ width: 128, height: 128 }}>
             <img
               src={getLessonIcon(lessonId)}
               alt=""
-              style={{ width: 130, height: 130, objectFit: "contain", filter: "brightness(0) invert(1)", maskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", transform: `translateY(${mobileScrollY * 0.25}px)`, opacity: Math.max(0.5, 1 - mobileScrollY / 180), willChange: "transform, opacity", willChange: "transform, opacity", position: "relative", zIndex: 1 }}
+              style={{ width: 104, height: 104, objectFit: "contain", filter: "brightness(0) invert(1)", maskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", transform: `translateY(${mobileScrollY * 0.25}px)`, opacity: Math.max(0.5, 1 - mobileScrollY / 180), willChange: "transform, opacity", willChange: "transform, opacity", position: "relative", zIndex: 1 }}
             />
           </div>
         </div>
@@ -114,9 +123,22 @@ export function TheoryMobileLayout({
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[28px]">
               {lessonData.title}
             </p>
-            <div className="flex gap-[5px] items-center shrink-0 pb-[4px]">
-              <TimeIcon />
-              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f7fb] text-[16px]">{lessonData.duration}</p>
+            <div className="flex flex-col items-end gap-[6px] shrink-0 pb-[4px]">
+              <div className="flex gap-[5px] items-center">
+                <TimeIcon />
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f7fb] text-[16px]">{lessonData.duration}</p>
+              </div>
+              <div
+                className="flex items-center gap-[6px] h-[24px] px-[9px] rounded-full"
+                style={{ background: "#404D52" }}
+              >
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-none text-[#798589] text-[11px] whitespace-nowrap">
+                  Микроквизы
+                </p>
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-none text-[#F1F2FB] text-[11px] whitespace-nowrap">
+                  {completedSectionsCount}/{totalSections}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -140,33 +162,28 @@ export function TheoryMobileLayout({
         </div>
       </div>
 
-      {/* ── Sticky CTA — fixed, above tab bar ── */}
-      <div
-        className="fixed left-0 right-0 z-30 px-[16px] transition-[bottom] duration-300"
-        style={{
-          bottom: tabBarVisible ? 52 : 0,
-          paddingBottom: "max(10px, env(safe-area-inset-bottom, 10px))",
-          paddingTop: 10,
+      {/* ── Floating quiz CTA — round button at bottom-right ── */}
+      <button
+        onClick={() => {
+          const quizId = LESSONS.find(l => l.lessonId === lessonId)?.quizId || lessonId;
+          navigate(`/lesson-quiz?quizId=${encodeURIComponent(quizId)}&lessonId=${encodeURIComponent(lessonId)}`, { state: { lessonId, quizId } });
         }}
+        className="fixed right-[16px] z-30 rounded-full flex items-center justify-center cursor-pointer select-none transition-transform duration-75 active:translate-y-[2px]"
+        style={{
+          width: 62,
+          height: 62,
+          bottom: tabBarVisible
+            ? "calc(52px + max(12px, env(safe-area-inset-bottom, 12px)))"
+            : "max(12px, env(safe-area-inset-bottom, 12px))",
+          background: "#FF6B21",
+          boxShadow: "0 4px 0 #C54A0A",
+        }}
+        aria-label="Начать квиз"
       >
-        <button
-          onClick={() => {
-            const quizId = LESSONS.find(l => l.lessonId === lessonId)?.quizId || lessonId;
-            navigate(`/lesson-quiz?quizId=${encodeURIComponent(quizId)}&lessonId=${encodeURIComponent(lessonId)}`, { state: { lessonId, quizId } });
-          }}
-          className="w-full rounded-[13px] flex items-center justify-center gap-[8px] cursor-pointer select-none active:translate-y-[3px] transition-transform duration-75"
-          style={{
-            height: 52,
-            background: "#FF5D39",
-            boxShadow: "0 4px 0 #b83a1f",
-          }}
-        >
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[20px]">Начать квиз</p>
-          <div className="bg-black/20 flex h-[24px] items-center justify-center px-[10px] rounded-full">
-            <p className="font-['Inter:Semi_Bold',sans-serif] font-medium text-[#eef5ff] text-[10px]">+125 XP</p>
-          </div>
-        </button>
-      </div>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8 6.75L17.25 12L8 17.25V6.75Z" fill="#F4F5FC" />
+        </svg>
+      </button>
 
       {/* ── Bottom Navigation — FIXED with translateY (no layout reflow = no bounce) ── */}
       <div
@@ -180,7 +197,7 @@ export function TheoryMobileLayout({
       </div>
 
       {/* ── Floating circles ── */}
-      <MobileFloatingCircles tabBarVisible={tabBarVisible} hasStickyButton />
+      <MobileFloatingCircles tabBarVisible={tabBarVisible} />
 
       {/* ── Feedback Modal ── */}
       {showFeedbackModal && (

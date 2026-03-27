@@ -25,6 +25,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const mobileScrollRef = useRef<HTMLDivElement>(null);
+  const syncedLessonKeyRef = useRef<string | null>(null);
   const [desktopScrollY, setDesktopScrollY] = useState(0);
   const [mobileScrollY, setMobileScrollY] = useState(0);
 
@@ -76,6 +77,61 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
       return { selectedAnswer: null, showFeedback: false, completed: false, hasIncorrectAnswer: false };
     });
   });
+
+  useEffect(() => {
+    const syncKey = `${resolvedLessonId}:${userCtx?.user?.id ?? "guest"}`;
+    if (syncedLessonKeyRef.current === syncKey) return;
+    syncedLessonKeyRef.current = syncKey;
+
+    const nextProgress = getLessonProgress(resolvedLessonId);
+
+    let nextMaxReached = 0;
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored !== null) {
+        nextMaxReached = parseInt(stored, 10) || 0;
+      } else {
+        for (let i = lastSectionIndex; i >= 0; i--) {
+          const qs = nextProgress.questions[`mini-quiz-${i}`];
+          if (qs?.correct) {
+            nextMaxReached = i;
+            break;
+          }
+        }
+      }
+    } catch {
+      for (let i = lastSectionIndex; i >= 0; i--) {
+        const qs = nextProgress.questions[`mini-quiz-${i}`];
+        if (qs?.correct) {
+          nextMaxReached = i;
+          break;
+        }
+      }
+    }
+
+    setMaxReached(nextMaxReached);
+    setOpenSections(new Set([0]));
+    setAccordionStates(
+      Array.from({ length: totalSections }, (_, index) => {
+        const quizId = `mini-quiz-${index}`;
+        const questionState = nextProgress.questions[quizId];
+        if (questionState?.correct) {
+          return {
+            selectedAnswer: "right",
+            showFeedback: true,
+            completed: true,
+            hasIncorrectAnswer: false,
+          };
+        }
+        return {
+          selectedAnswer: null,
+          showFeedback: false,
+          completed: false,
+          hasIncorrectAnswer: false,
+        };
+      }),
+    );
+  }, [resolvedLessonId, storageKey, totalSections, lastSectionIndex, userCtx?.user?.id]);
 
   const isUnlocked = (i: number): boolean => i <= maxReached;
 
@@ -135,14 +191,14 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
       try { localStorage.setItem(storageKey, String(nextToUnlock)); } catch {}
     }
 
-    // Scroll down ~100px so user sees feedback and Continue button
+    // Scroll further so feedback and the Continue button are immediately visible.
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         const sectionEl = document.querySelector(`[data-section="${sectionIndex}"]`) as HTMLElement | null;
         if (!sectionEl) return;
         const sc = findScrollContainer(sectionEl);
         if (!sc) return;
-        sc.scrollBy({ top: 100, behavior: 'smooth' });
+        sc.scrollBy({ top: isMobile ? 145 : 190, behavior: 'smooth' });
       });
     });
 
@@ -211,6 +267,8 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     mobileScrollRef,
     desktopScrollY,
     mobileScrollY,
+    completedSectionsCount: accordionStates.filter((state) => state.completed).length,
+    totalSections,
     setDesktopScrollY,
     setMobileScrollY,
     openSections,

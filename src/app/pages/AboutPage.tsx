@@ -2,7 +2,7 @@ import { useNavigate } from "react-router";
 import { useRef, useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import RightWidgets from "../components/RightWidgets";
-import uxeoLogo from "../../assets/uxeo-logo.svg";
+import skillumLongLogo from "../../assets/skillum-logo-long.svg";
 import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 import { isValidEmail } from "../components/FeedbackModal";
 
@@ -238,9 +238,9 @@ function HeroAbout() {
           style={{ transform: `translateY(${shiftLogo}px)`, willChange: "transform" }}
         >
           <img
-            src={uxeoLogo}
+            src={skillumLongLogo}
             alt="Скиллум"
-            style={{ width: 200, height: "auto", position: "relative", zIndex: 10 }}
+            style={{ width: 280, maxWidth: "88%", height: "auto", position: "relative", zIndex: 10 }}
           />
         </div>
       </div>

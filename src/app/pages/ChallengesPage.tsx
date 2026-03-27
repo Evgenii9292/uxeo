@@ -1,11 +1,98 @@
-import { useState, useId } from "react";
-import type { ReactNode } from "react";
+import { useState, useId, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router";
 import Layout from "../components/Layout";
 import { ChallengePhone1, ChallengePhone2, ChallengePhone3 } from "../../imports/Frame481451";
 import svgCardPaths from "../../imports/svg-u7gh1bm86c";
 import svgMfoan from "../../imports/svg-mfoan0qzpw";
 import { useWindowWidth } from "../hooks/useWindowWidth";
+
+// ── Challenge status storage ──────────────────────────────────────────────────
+
+export type ChallengeStatus = "pending" | "reviewed" | "rejected" | null;
+
+const STATUS_KEY = "uxeo_challenge_statuses";
+
+export function getChallengeStatus(id: string): ChallengeStatus {
+  try {
+    const stored = JSON.parse(localStorage.getItem(STATUS_KEY) ?? "{}");
+    return stored[id] ?? null;
+  } catch { return null; }
+}
+
+export function setChallengeStatus(id: string, status: "pending" | "reviewed" | "rejected") {
+  try {
+    const stored = JSON.parse(localStorage.getItem(STATUS_KEY) ?? "{}");
+    stored[id] = status;
+    localStorage.setItem(STATUS_KEY, JSON.stringify(stored));
+  } catch {}
+}
+
+function useAllChallengeStatuses(): Record<string, ChallengeStatus> {
+  const [statuses, setStatuses] = useState<Record<string, ChallengeStatus>>(() => {
+    try { return JSON.parse(localStorage.getItem(STATUS_KEY) ?? "{}"); }
+    catch { return {}; }
+  });
+  // Re-sync when page becomes visible (user returns from detail page)
+  useEffect(() => {
+    const sync = () => {
+      try { setStatuses(JSON.parse(localStorage.getItem(STATUS_KEY) ?? "{}")); }
+      catch {}
+    };
+    window.addEventListener("focus", sync);
+    document.addEventListener("visibilitychange", sync);
+    return () => {
+      window.removeEventListener("focus", sync);
+      document.removeEventListener("visibilitychange", sync);
+    };
+  }, []);
+  return statuses;
+}
+
+// ── Challenge data ────────────────────────────────────────────────────────────
+
+interface ChallengeData {
+  id: string;
+  title: string;
+  subtitle: string;
+  time: string;
+  level: string;
+  xp: number;
+  image?: string;
+  Phone: React.ComponentType;
+}
+
+const CHALLENGES: ChallengeData[] = [
+  {
+    id: "challenge-health",
+    title: "Интерфейс приложения здоровья",
+    subtitle: "Создайте главный экран трекера здоровья",
+    time: "25 мин",
+    level: "Джун",
+    xp: 1250,
+    Phone: ChallengePhone1,
+    image: "/challenge-health-preview.png",
+  },
+  {
+    id: "challenge-fintech",
+    title: "Онбординг для финтех-приложения",
+    subtitle: "Спроектируйте экран приветствия платёжного сервиса",
+    time: "30 мин",
+    level: "Джун",
+    xp: 1250,
+    Phone: ChallengePhone2,
+    image: "/challenge-fintech-preview.png",
+  },
+  {
+    id: "challenge-marketplace",
+    title: "Карточки товаров маркетплейса",
+    subtitle: "Разработайте карточки продуктов для e-commerce",
+    time: "35 мин",
+    level: "Мидл",
+    xp: 1500,
+    Phone: ChallengePhone3,
+    image: "/challenge-marketplace-preview.png",
+  },
+];
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 
@@ -73,22 +160,6 @@ function IconProcessingTime() {
   );
 }
 
-function IconVerify() {
-  return (
-    <div className="h-[13px] relative shrink-0 w-[12px]">
-      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 12 13">
-        <path d={svgCardPaths.p37971580} fill="url(#verify_grad)" />
-        <defs>
-          <linearGradient gradientUnits="userSpaceOnUse" id="verify_grad" x1="5.03886" x2="-0.208806" y1="5.84235" y2="14.2068">
-            <stop stopColor="#FF6B21" />
-            <stop offset="1" stopColor="#994014" />
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
-  );
-}
-
 function IconGreenCheck() {
   return (
     <div className="relative shrink-0 size-[17px]">
@@ -102,18 +173,11 @@ function IconGreenCheck() {
 
 // ── Tab Bar ───────────────────────────────────────────────────────────────────
 
-interface TabBarProps {
-  active: "current" | "archive";
-  onSwitch: (tab: "current" | "archive") => void;
-}
-
-function TabBar({ active, onSwitch }: TabBarProps) {
+function TabBar({ active, onSwitch }: { active: "current" | "archive"; onSwitch: (t: "current" | "archive") => void }) {
   return (
     <div className="flex items-start justify-between w-full">
       <div
-        className={`h-[40px] flex items-center gap-[10px] px-[20px] relative rounded-[12px] shrink-0 cursor-pointer select-none transition-colors duration-150 ${
-          active === "current" ? "bg-[#404d52]" : "bg-[#323d41] hover:bg-[#383f44]"
-        }`}
+        className={`h-[40px] flex items-center gap-[10px] px-[20px] relative rounded-[12px] shrink-0 cursor-pointer select-none transition-colors duration-150 ${active === "current" ? "bg-[#404d52]" : "bg-[#323d41] hover:bg-[#383f44]"}`}
         onClick={() => onSwitch("current")}
       >
         <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] shrink-0 text-[18px] whitespace-nowrap transition-colors duration-150 ${active === "current" ? "text-[#f4f5fc]" : "text-[#798589]"}`}>
@@ -127,9 +191,7 @@ function TabBar({ active, onSwitch }: TabBarProps) {
         </div>
       </div>
       <div
-        className={`h-[40px] flex items-center justify-center px-[20px] relative rounded-[12px] shrink-0 cursor-pointer select-none transition-colors duration-150 ${
-          active === "archive" ? "bg-[#404d52]" : "bg-[#323d41] hover:bg-[#383f44]"
-        }`}
+        className={`h-[40px] flex items-center justify-center px-[20px] relative rounded-[12px] shrink-0 cursor-pointer select-none transition-colors duration-150 ${active === "archive" ? "bg-[#404d52]" : "bg-[#323d41] hover:bg-[#383f44]"}`}
         onClick={() => onSwitch("archive")}
       >
         <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] shrink-0 text-[18px] whitespace-nowrap transition-colors duration-150 ${active === "archive" ? "text-[#f4f5fc]" : "text-[#798589]"}`}>
@@ -140,94 +202,160 @@ function TabBar({ active, onSwitch }: TabBarProps) {
   );
 }
 
-// ── Challenge Cards ───────────────────────────────────────────────────────────
+// ── Status pill ───────────────────────────────────────────────────────────────
 
-function Card1({ onClick }: { onClick?: () => void }) {
+function StatusPill({ status }: { status: ChallengeStatus }) {
+  if (!status) return null;
+
+  if (status === "pending") return (
+    <div className="bg-[#424d52] flex gap-[6px] h-[36px] items-center justify-center px-[12px] rounded-full shrink-0">
+      <IconProcessingTime />
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#ffb121] text-[14px] whitespace-nowrap">На проверке</p>
+    </div>
+  );
+
+  if (status === "reviewed") return (
+    <div className="bg-[#1c2e20] flex gap-[6px] h-[36px] items-center justify-center px-[12px] rounded-full shrink-0" style={{ border: "1px solid rgba(94,221,96,0.3)" }}>
+      <IconGreenCheck />
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#5edd60] text-[14px] whitespace-nowrap">Одобрено</p>
+    </div>
+  );
+
+  if (status === "rejected") return (
+    <div className="bg-[#2e1a10] flex gap-[6px] h-[36px] items-center justify-center px-[12px] rounded-full shrink-0" style={{ border: "1px solid rgba(255,107,33,0.3)" }}>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="shrink-0">
+        <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="#FF6B21" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#ff6b21] text-[14px] whitespace-nowrap">Переделать</p>
+    </div>
+  );
+
+  return null;
+}
+
+// ── Challenge Card ────────────────────────────────────────────────────────────
+
+function ChallengeCard({ challenge, status, onClick }: {
+  challenge: ChallengeData;
+  status: ChallengeStatus;
+  onClick: () => void;
+}) {
   const vw = useWindowWidth();
   const isMobile = vw < 768;
+  const { Phone } = challenge;
+
+  const isNotStarted = !status;
+  const cardBg = "#343e42";
+  const btnBg  = "#2c3438";
+
+  const buttonLabel =
+    status === "reviewed" ? "Смотреть фидбек" :
+    status === "rejected" ? "Исправить" :
+    status === "pending" ? "Открыть" :
+    "Начать";
 
   if (isMobile) {
     return (
-      <div className="bg-[#404d52] flex flex-col p-[16px] relative rounded-[15px] w-full gap-[14px]">
-        {/* Image */}
-        <div className="bg-[#38444a] rounded-[12px] w-full h-[140px] relative flex items-center justify-center overflow-hidden">
-          <ChallengePhone1 />
+      <div className={`flex flex-col p-[16px] relative rounded-[15px] w-full gap-[14px]`} style={{ background: cardBg }}>
+        <div className="bg-[#30383D] rounded-[12px] w-full h-[200px] relative flex items-center justify-center overflow-hidden">
+          {challenge.image ? (
+            <img src={challenge.image} alt={challenge.title} className="w-full h-full object-contain" style={{ padding: "20px 0" }} />
+          ) : (
+            <Phone />
+          )}
         </div>
-        {/* Info */}
         <div className="flex flex-col gap-[8px]">
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px] leading-[26px]">
-            Меню для приложения
+            {challenge.title}
           </p>
           <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#798589] text-[15px] leading-[19px]">
-            Создайте стартовый экран приложения
+            {challenge.subtitle}
           </p>
-          <div className="flex gap-[16px] items-center">
-            <div className="flex gap-[5px] items-center">
-              <IconSandClock />
-              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f1f2fb] text-[14px]">25 мин</p>
-            </div>
-            <div className="flex gap-[5px] items-center">
-              <IconFace />
-              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f1f2fb] text-[14px]">Мидл</p>
-            </div>
-          </div>
-          <button
-            className="group bg-[#343e42] h-[48px] relative rounded-[13px] w-full cursor-pointer select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75 mt-[2px]"
-            onClick={onClick}
-          >
-            <div aria-hidden="true" className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[13px] shadow-[0px_4px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none transition-shadow duration-75" />
-            <div className="flex flex-row items-center justify-center gap-[8px] size-full px-[16px]">
-              <IconPencilEdit />
-              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px]">Начать</p>
-              <div className="bg-[#404d52] flex h-[26px] items-center justify-center px-[10px] rounded-full">
-                <p className="font-['Inter:Semi_Bold',sans-serif] font-medium text-[#eef5ff] text-[10px]">+1250 XP</p>
+          {status ? (
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[13px]">Проверка занимает до 24 часов</p>
+          ) : (
+            <div className="flex gap-[16px] items-center">
+              <div className="flex gap-[5px] items-center">
+                <IconSandClock />
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f1f2fb] text-[14px]">{challenge.time}</p>
+              </div>
+              <div className="flex gap-[5px] items-center">
+                <IconFace />
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f1f2fb] text-[14px]">{challenge.level}</p>
               </div>
             </div>
-          </button>
+          )}
+          <div className="flex items-center gap-[12px] mt-[2px]">
+            <button
+              className={`group flex-1 h-[48px] relative rounded-[13px] cursor-pointer select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75`}
+              style={{ background: btnBg }}
+              onClick={onClick}
+            >
+              <div aria-hidden="true" className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[13px] shadow-[0px_4px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none transition-shadow duration-75" />
+              <div className="flex flex-row items-center justify-center gap-[8px] size-full px-[16px]">
+                {isNotStarted && <IconPencilEdit />}
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px]">{buttonLabel}</p>
+                {isNotStarted && (
+                  <div className="bg-[#404d52] flex h-[26px] items-center justify-center px-[10px] rounded-full">
+                    <p className="font-['Inter:Semi_Bold',sans-serif] font-medium text-[#eef5ff] text-[10px]">+{challenge.xp} XP</p>
+                  </div>
+                )}
+              </div>
+            </button>
+            {status && <StatusPill status={status} />}
+          </div>
         </div>
       </div>
     );
   }
 
+  // Desktop
   return (
-    <div className="bg-[#404d52] content-stretch flex flex-col items-center p-[20px] relative rounded-[15px] shrink-0 w-full">
-      {/* Content row */}
-      <div className="content-stretch flex gap-[20px] h-[159px] items-start relative shrink-0 w-full">
+    <div className="content-stretch flex flex-col items-center p-[20px] relative rounded-[15px] shrink-0 w-full" style={{ background: cardBg }}>
+      <div className="content-stretch flex gap-[20px] h-[200px] items-start relative shrink-0 w-full">
         {/* Image panel */}
         <div className="content-stretch flex flex-col h-full items-start relative shrink-0">
-          <div className="bg-[#38444a] flex-[1_0_0] min-h-px min-w-px relative rounded-[15px] w-[185px]">
+          <div className="bg-[#30383D] flex-[1_0_0] min-h-px min-w-px relative rounded-[15px] w-[185px] overflow-hidden">
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <ChallengePhone1 />
+              {challenge.image ? (
+                <img src={challenge.image} alt={challenge.title} className="w-full h-full object-contain" style={{ padding: "20px 0" }} />
+              ) : (
+                <Phone />
+              )}
             </div>
           </div>
         </div>
 
         {/* Info panel */}
-        <div className="content-stretch flex flex-[1_0_0] flex-col h-[159px] items-start justify-between min-h-px min-w-px relative">
-          {/* Top: title + badges */}
+        <div className="content-stretch flex flex-[1_0_0] flex-col h-[200px] items-start justify-between min-h-px min-w-px relative">
+          {/* Top: title + meta */}
           <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
-            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[28px] whitespace-nowrap">
-              Меню для приложения
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[26px]">
+              {challenge.title}
             </p>
-            <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[20px] text-[#798589] text-[18px]">
-              Создайте стартовый экран приложения
-            </p>
-            <div className="content-stretch flex flex-wrap gap-[5px_21px] items-center relative shrink-0 w-full">
-              <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
-                <IconSandClock />
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[16px] whitespace-nowrap">25 мин</p>
+            {status ? (
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[15px] text-[#798589] text-[14px]">
+                Проверка занимает до 24 часов
+              </p>
+            ) : (
+              <div className="content-stretch flex flex-wrap gap-[5px_21px] items-center relative shrink-0 w-full">
+                <div className="flex gap-[5px] items-center">
+                  <IconSandClock />
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap">{challenge.time}</p>
+                </div>
+                <div className="flex gap-[5px] items-center">
+                  <IconFace />
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap">{challenge.level}</p>
+                </div>
               </div>
-              <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
-                <IconFace />
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[16px] whitespace-nowrap">Мидл</p>
-              </div>
-            </div>
+            )}
           </div>
 
-          {/* Bottom: button */}
-          <div className="content-stretch flex flex-col items-start relative shrink-0 w-full">
+          {/* Bottom: button + status */}
+          <div className="flex items-center gap-[20px] w-full">
             <div
-              className="group bg-[#343e42] h-[55px] relative rounded-[15px] shrink-0 w-[210px] cursor-pointer select-none hover:translate-y-[3px] active:translate-y-[5px] transition-transform duration-75"
+              className="group h-[55px] relative rounded-[15px] shrink-0 w-[210px] cursor-pointer select-none hover:translate-y-[3px] active:translate-y-[5px] transition-transform duration-75"
+              style={{ background: btnBg }}
               onClick={onClick}
             >
               <div
@@ -235,183 +363,20 @@ function Card1({ onClick }: { onClick?: () => void }) {
                 className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[15px] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none transition-shadow duration-75"
               />
               <div className="flex flex-row items-center justify-center gap-[8px] size-full px-[16px]">
-                <IconPencilEdit />
+                {isNotStarted && <IconPencilEdit />}
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
-                  Начать
+                  {buttonLabel}
                 </p>
-                <div className="bg-[#404d52] content-stretch flex h-[28px] items-center justify-center px-[12px] relative rounded-full shrink-0">
-                  <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[15px] not-italic relative shrink-0 text-[#eef5ff] text-[10px] whitespace-nowrap">
-                    +1250 XP
-                  </p>
-                </div>
+                {isNotStarted && (
+                  <div className="bg-[#404d52] content-stretch flex h-[28px] items-center justify-center px-[12px] relative rounded-full shrink-0">
+                    <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[15px] not-italic relative shrink-0 text-[#eef5ff] text-[10px] whitespace-nowrap">
+                      +{challenge.xp} XP
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Card2() {
-  const vw = useWindowWidth();
-  const isMobile = vw < 768;
-
-  if (isMobile) {
-    return (
-      <div className="bg-[#343e42] flex flex-col p-[16px] relative rounded-[15px] w-full gap-[14px]">
-        {/* Image — no extra dark bg wrapper, direct on card surface */}
-        <div className="bg-[#38444a] rounded-[12px] w-full h-[140px] relative flex items-center justify-center overflow-hidden">
-          <ChallengePhone2 />
-        </div>
-        <div className="flex flex-col gap-[8px]">
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px] leading-[26px]">
-            Интерфейс приложения здоровья
-          </p>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[13px]">Это занимает до 24 часов</p>
-          <div className="flex items-center gap-[12px] mt-[2px]">
-            <button className="group bg-[#343e42] h-[48px] relative rounded-[13px] flex-1 cursor-pointer select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75">
-              <div aria-hidden="true" className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[13px] shadow-[0px_4px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none transition-shadow duration-75" />
-              <div className="flex items-center justify-center size-full">
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px]">Открыть</p>
-              </div>
-            </button>
-            <div className="bg-[#424d52] flex gap-[6px] h-[36px] items-center justify-center px-[12px] rounded-full shrink-0">
-              <IconProcessingTime />
-              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#ffb121] text-[14px] whitespace-nowrap">На проверке</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="bg-[#343e42] content-stretch flex flex-col items-center p-[20px] relative rounded-[15px] shrink-0 w-full">
-      {/* Content row */}
-      <div className="content-stretch flex gap-[20px] h-[159px] items-start relative shrink-0 w-full">
-        {/* Image panel */}
-        <div className="content-stretch flex flex-col h-full items-start relative shrink-0">
-          <div className="bg-[#38444a] flex-[1_0_0] min-h-px min-w-px relative rounded-[15px] w-[185px]">
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <ChallengePhone2 />
-            </div>
-          </div>
-        </div>
-
-        {/* Info panel */}
-        <div className="content-stretch flex flex-[1_0_0] flex-col h-[159px] items-start justify-between min-h-px min-w-px relative">
-          {/* Top: title + metadata */}
-          <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
-            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[28px] whitespace-nowrap">
-              Интерфейс приложения здоровья
-            </p>
-            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[15px] text-[#798589] text-[12px] whitespace-nowrap">Это занимает до 24 часов</p>
-          </div>
-
-          {/* Bottom: button + status */}
-          <div className="flex items-center gap-[20px]">
-            <div className="group bg-[#343e42] h-[55px] relative rounded-[15px] shrink-0 w-[210px] cursor-pointer select-none hover:translate-y-[3px] active:translate-y-[5px] transition-transform duration-75">
-              <div
-                aria-hidden="true"
-                className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[15px] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none transition-shadow duration-75"
-              />
-              <div className="flex flex-row items-center justify-center gap-[8px] size-full px-[16px]">
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
-                  Открыть
-                </p>
-              </div>
-            </div>
-            <div className="bg-[#424d52] flex gap-[8px] h-[36px] items-center justify-center px-[16px] rounded-full shrink-0">
-              <IconProcessingTime />
-              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#ffb121] text-[16px] whitespace-nowrap">На проверке</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Card3() {
-  const vw = useWindowWidth();
-  const isMobile = vw < 768;
-
-  if (isMobile) {
-    return (
-      <div className="bg-[#343e42] flex flex-col p-[16px] relative rounded-[15px] w-full gap-[14px]">
-        {/* Image — no extra dark bg wrapper, direct on card surface */}
-        <div className="bg-[#38444a] rounded-[12px] w-full h-[140px] relative flex items-center justify-center overflow-hidden">
-          <ChallengePhone3 />
-        </div>
-        <div className="flex flex-col gap-[8px]">
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px] leading-[26px]">
-            Интерфейс приложения здоровья
-          </p>
-          <div className="bg-[#3a464a] flex gap-[4px] h-[22px] items-center px-[8px] rounded-[10px] w-fit">
-            <IconVerify />
-            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#6a777b] text-[11px] whitespace-nowrap">Проверено ментором</p>
-          </div>
-          <div className="flex items-center gap-[12px] mt-[2px]">
-            <button className="group bg-[#343e42] h-[48px] relative rounded-[13px] flex-1 cursor-pointer select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75">
-              <div aria-hidden="true" className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[13px] shadow-[0px_4px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none transition-shadow duration-75" />
-              <div className="flex items-center justify-center size-full">
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px]">Смотреть фидбек</p>
-              </div>
-            </button>
-            <div className="bg-[#424d52] flex gap-[6px] h-[36px] items-center justify-center px-[12px] rounded-full shrink-0">
-              <IconGreenCheck />
-              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#5edd60] text-[14px] whitespace-nowrap">Готово</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="bg-[#343e42] content-stretch flex flex-col items-center p-[20px] relative rounded-[15px] shrink-0 w-full">
-      {/* Content row */}
-      <div className="content-stretch flex gap-[20px] h-[159px] items-start relative shrink-0 w-full">
-        {/* Image panel */}
-        <div className="content-stretch flex flex-col h-full items-start relative shrink-0">
-          <div className="bg-[#38444a] flex-[1_0_0] min-h-px min-w-px relative rounded-[15px] w-[185px]">
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <ChallengePhone3 />
-            </div>
-          </div>
-        </div>
-
-        {/* Info panel */}
-        <div className="content-stretch flex flex-[1_0_0] flex-col h-[159px] items-start justify-between min-h-px min-w-px relative">
-          {/* Top: title + mentor badge */}
-          <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
-            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[28px] whitespace-nowrap">
-              Интерфейс приложения здоровья
-            </p>
-            <div className="bg-[#3a464a] flex gap-[4.967px] h-[22.351px] items-center px-[9.934px] rounded-[12px]">
-              <IconVerify />
-              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[12px] text-[#6a777b] text-[10.99px] whitespace-nowrap">Проверено ментором</p>
-            </div>
-          </div>
-
-          {/* Bottom: button + done status */}
-          <div className="flex items-center gap-[20px]">
-            <div className="group bg-[#343e42] h-[55px] relative rounded-[15px] shrink-0 w-[210px] cursor-pointer select-none hover:translate-y-[3px] active:translate-y-[5px] transition-transform duration-75">
-              <div
-                aria-hidden="true"
-                className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[15px] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none transition-shadow duration-75"
-              />
-              <div className="flex flex-row items-center justify-center gap-[8px] size-full px-[16px]">
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
-                  Смотреть фидбек
-                </p>
-              </div>
-            </div>
-            <div className="bg-[#424d52] flex gap-[8px] h-[36px] items-center justify-center px-[16px] rounded-full shrink-0">
-              <IconGreenCheck />
-              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#5edd60] text-[16px] whitespace-nowrap">Готово</p>
-            </div>
+            {status && <StatusPill status={status} />}
           </div>
         </div>
       </div>
@@ -442,15 +407,21 @@ function ArchivePlaceholder() {
 export default function ChallengesPage() {
   const [activeTab, setActiveTab] = useState<"current" | "archive">("current");
   const navigate = useNavigate();
+  const statuses = useAllChallengeStatuses();
 
   return (
     <Layout title="Недельные вызовы" rightWidth="320px" stickyBar={<TabBar active={activeTab} onSwitch={setActiveTab} />}>
       <div className="flex flex-col gap-[20px] w-full">
         {activeTab === "current" ? (
           <div className="flex flex-col gap-[20px]">
-            <Card1 onClick={() => navigate("/challenge-detail")} />
-            <Card2 />
-            <Card3 />
+            {CHALLENGES.map(challenge => (
+              <ChallengeCard
+                key={challenge.id}
+                challenge={challenge}
+                status={statuses[challenge.id] ?? null}
+                onClick={() => navigate("/challenge-detail", { state: { challengeId: challenge.id, challengeName: challenge.title } })}
+              />
+            ))}
           </div>
         ) : (
           <ArchivePlaceholder />

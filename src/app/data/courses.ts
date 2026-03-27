@@ -67,6 +67,24 @@ export const COURSES: Course[] = [
       { id: "rombot-lesson-1", title: "Основы UI Kit", totalTasks: 4, xp: 175, durationMinutes: 0 },
     ],
   },
+  {
+    id: "product-design",
+    title: "Продуктовый дизайн",
+    level: "Мидл+",
+    unlockThreshold: 0.6,
+    lessons: [
+      { id: "pd-lesson-1",  title: "Что такое продуктовый дизайн",     totalTasks: 7, xp: 200, durationMinutes: 0 },
+      { id: "pd-lesson-2",  title: "Продуктовое мышление",             totalTasks: 8, xp: 200, durationMinutes: 0 },
+      { id: "pd-lesson-3",  title: "Метрики и аналитика",              totalTasks: 8, xp: 225, durationMinutes: 0 },
+      { id: "pd-lesson-4",  title: "Jobs To Be Done",                  totalTasks: 7, xp: 200, durationMinutes: 0 },
+      { id: "pd-lesson-5",  title: "UX-исследования",                  totalTasks: 9, xp: 225, durationMinutes: 0 },
+      { id: "pd-lesson-6",  title: "Дизайн-системы в продукте",        totalTasks: 8, xp: 225, durationMinutes: 0 },
+      { id: "pd-lesson-7",  title: "Работа с командой и стейкхолдерами", totalTasks: 7, xp: 200, durationMinutes: 0 },
+      { id: "pd-lesson-8",  title: "A/B тестирование",                 totalTasks: 8, xp: 225, durationMinutes: 0 },
+      { id: "pd-lesson-9",  title: "Прототипирование и MVP",           totalTasks: 9, xp: 250, durationMinutes: 0 },
+      { id: "pd-lesson-10", title: "Портфолио продуктового дизайнера", totalTasks: 8, xp: 250, durationMinutes: 0 },
+    ],
+  },
 ];
 
 // ─── Helper Functions ─────────────────────────────────────────────────────────
