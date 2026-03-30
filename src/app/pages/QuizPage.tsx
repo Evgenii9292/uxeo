@@ -138,7 +138,7 @@ export default function QuizPage() {
     return (
       <PageTransition>
         <div
-          className="relative h-[100dvh] w-full overflow-hidden"
+          className="relative h-screen w-full overflow-hidden"
           style={{ background: "#282F33" }}
         >
           {xpIndicator}
@@ -166,7 +166,7 @@ export default function QuizPage() {
                     onClick={isClickable ? () => { handleSelect(id); playSelectSound(); } : undefined}
                     className={`relative rounded-[15px] overflow-hidden flex-shrink-0 transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.99]" : ""}`}
                     style={{
-                      height: `calc((100dvh - ${heightSubtract}px) / 2)`,
+                      height: `calc((100vh - ${heightSubtract}px) / 2)`,
                       minHeight: containerH,
                       background: BG_GRADIENT[state],
                       boxShadow: borderColor ? `0 0 0 3px ${borderColor}` : undefined,
@@ -232,7 +232,7 @@ export default function QuizPage() {
     return (
       <PageTransition>
         <div
-          className="relative h-[100dvh] w-full overflow-hidden"
+          className="relative h-screen w-full overflow-hidden"
           style={{ backgroundImage: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46,57,62) 147.74%)" }}
         >
           {xpIndicator}

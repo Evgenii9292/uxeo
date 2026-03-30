@@ -200,7 +200,7 @@ export default function WelcomePage() {
     <div
       className="relative w-full flex items-center justify-center px-4 overflow-hidden"
       style={{
-        minHeight: "100dvh",
+        minHeight: "100%",
         paddingTop: "max(32px, env(safe-area-inset-top, 32px))",
         paddingBottom: "max(32px, env(safe-area-inset-bottom, 32px))",
         backgroundImage: "radial-gradient(ellipse at 50% 20%, rgba(255,93,57,0.09) 0%, transparent 60%), linear-gradient(165.05deg, #282F33 14.367%, rgb(46, 57, 62) 147.74%)",

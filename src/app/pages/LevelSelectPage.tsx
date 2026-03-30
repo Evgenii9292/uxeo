@@ -98,7 +98,7 @@ export default function LevelSelectPage() {
     <div
       className="relative min-h-screen w-full flex flex-col overflow-hidden"
       style={{
-        minHeight: "100dvh",
+        minHeight: "100%",
         paddingBottom: "max(10px, env(safe-area-inset-bottom, 10px))",
         backgroundImage: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46, 57, 62) 147.74%)",
       }}
