@@ -267,45 +267,28 @@ function ProfileCard() {
   const userCtx = useUserSafe();
   const { email } = useAuth();
   const autoTitle = getProfileTitleFromLevel(userCtx?.level);
+
+  // Read from UserContext (synced across devices); fall back to defaults
+  const name = userCtx?.userName ?? "Evgeniy";
+  const title = userCtx?.userTitle ?? autoTitle;
+  const avatarSrc = userCtx?.userAvatar ?? null;
+
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(() => {
-    const saved = localStorage.getItem(PROFILE_NAME_KEY);
-    if (saved) return saved;
-    // First time — persist default so LeaguePage can read it
-    localStorage.setItem(PROFILE_NAME_KEY, "Evgeniy");
-    return "Evgeniy";
-  });
-  const [title, setTitle] = useState(() => {
-    const saved = localStorage.getItem(PROFILE_TITLE_KEY);
-    if (saved) return saved;
-    localStorage.setItem(PROFILE_TITLE_KEY, autoTitle);
-    return autoTitle;
-  });
   const [editName, setEditName] = useState(name);
   const [editTitle, setEditTitle] = useState(title);
-  const [avatarSrc, setAvatarSrc] = useState<string | null>(() => localStorage.getItem(PROFILE_AVATAR_KEY));
   const [showPicker, setShowPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Keep edit fields in sync when UserContext loads fresh data from Supabase
   useEffect(() => {
-    const saved = localStorage.getItem(PROFILE_TITLE_KEY);
-    const autoTitles = new Set([
-      "Дизайнер",
-      "Джун-дизайнер",
-      "Мидл-дизайнер",
-      "Опытный дизайнер",
-      "Дизайнер мидл",
-    ]);
-    if (!saved || autoTitles.has(saved)) {
-      setTitle(autoTitle);
-      setEditTitle(autoTitle);
-      localStorage.setItem(PROFILE_TITLE_KEY, autoTitle);
+    if (!isEditing) {
+      setEditName(userCtx?.userName ?? "Evgeniy");
+      setEditTitle(userCtx?.userTitle ?? autoTitle);
     }
-  }, [autoTitle]);
+  }, [userCtx?.userName, userCtx?.userTitle, autoTitle, isEditing]);
 
   const handleAvatarSelect = (url: string) => {
-    setAvatarSrc(url);
-    localStorage.setItem(PROFILE_AVATAR_KEY, url);
+    userCtx?.setUserAvatar(url);
   };
 
   const handleEdit = () => {
@@ -316,10 +299,8 @@ function ProfileCard() {
   const handleSave = () => {
     const newName = editName.trim() || name;
     const newTitle = editTitle.trim() || title;
-    setName(newName);
-    setTitle(newTitle);
-    localStorage.setItem(PROFILE_NAME_KEY, newName);
-    localStorage.setItem(PROFILE_TITLE_KEY, newTitle);
+    userCtx?.setUserName(newName);
+    userCtx?.setUserTitle(newTitle);
     setIsEditing(false);
   };
   const handleCancel = () => setIsEditing(false);
@@ -338,8 +319,7 @@ function ProfileCard() {
     }
     try {
       const dataUrl = await resizeImageToDataUrl(file);
-      setAvatarSrc(dataUrl);
-      try { localStorage.setItem(PROFILE_AVATAR_KEY, dataUrl); } catch { /* quota exceeded */ }
+      userCtx?.setUserAvatar(dataUrl);
     } catch {
       alert('Не удалось загрузить фото. Попробуйте другой файл или формат.');
     }
@@ -662,14 +642,50 @@ function ProfileSkeleton() {
   );
 }
 
+function SignOutConfirmModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" onClick={onCancel} />
+      <div className="relative bg-[#f7f8fc] rounded-[24px] shadow-[0_10px_40px_rgba(0,0,0,0.3)] w-[520px] max-w-[calc(100vw-40px)] p-[40px] flex flex-col gap-[28px]">
+        <h2 className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#323c41] text-[32px] leading-[1.2] text-center">
+          Точно выйти?
+        </h2>
+        <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#5a6569] text-[18px] leading-[1.4] text-center">
+          Вы вернётесь на экран входа. Прогресс сохранится.
+        </p>
+        <div className="flex flex-col gap-[12px] w-full">
+          <button
+            onClick={onCancel}
+            className="group relative flex h-[56px] items-center justify-center px-[25px] rounded-[15px] bg-[#ff5d39] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px]"
+          >
+            <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_4px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[24px] whitespace-nowrap">
+              Остаться
+            </p>
+          </button>
+          <button
+            onClick={onConfirm}
+            className="group relative flex h-[56px] items-center justify-center px-[25px] rounded-[15px] bg-[#e8eaef] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px]"
+          >
+            <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_4px_0px_0px_#c5c8d3] group-hover:shadow-[0px_2px_0px_0px_#c5c8d3] group-active:shadow-none" />
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#5a6569] text-[24px] whitespace-nowrap">
+              Выйти
+            </p>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AccountActionsCard() {
   const navigate = useNavigate();
-  const { isAuthenticated, signOut } = useAuth();
-  const [isDeleting, setIsDeleting] = useState(false);
+  const { signOut } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSignOut = async () => {
-    if (isSigningOut || isDeleting) return;
+    if (isSigningOut) return;
     setIsSigningOut(true);
     try {
       await signOut();
@@ -679,82 +695,32 @@ function AccountActionsCard() {
     }
   };
 
-  const handleDeleteAccount = async () => {
-    if (isDeleting || isSigningOut) return;
-
-    const confirmed = window.confirm(
-      "Удалить аккаунт? Это действие нельзя отменить. Прогресс, домашки и профиль будут удалены."
-    );
-    if (!confirmed) return;
-
-    setIsDeleting(true);
-    try {
-      const { data } = await supabase.auth.getSession();
-      const accessToken = data.session?.access_token;
-      if (!accessToken) {
-        throw new Error("Сначала войди в аккаунт");
-      }
-
-      const res = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/account/delete`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      const payload = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        throw new Error(payload?.error || "Не удалось удалить аккаунт");
-      }
-
-      localStorage.removeItem(PROFILE_NAME_KEY);
-      localStorage.removeItem(PROFILE_TITLE_KEY);
-      localStorage.removeItem(PROFILE_AVATAR_KEY);
-      localStorage.removeItem(USER_ID_KEY);
-
-      await signOut();
-      navigate("/welcome", { replace: true });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Не удалось удалить аккаунт";
-      alert(message);
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
   return (
-    <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full mt-[32px] pb-[40px]">
-      <SectionTitle text="Аккаунт" />
-      <div className="bg-[#343e42] relative rounded-[15px] shrink-0 w-full">
-        <div className="content-stretch flex flex-col gap-[14px] items-start p-[20px] relative w-full">
-          <button
-            onClick={handleSignOut}
-            disabled={isSigningOut || isDeleting}
-            className="group relative flex h-[56px] items-center justify-center px-[18px] rounded-[15px] w-full shrink-0 bg-[#ff5d39] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px] disabled:opacity-60 disabled:cursor-default disabled:hover:translate-y-0 disabled:active:translate-y-0"
-          >
-            <div aria-hidden="true" className="absolute border-[#ff390d] border-[1px] border-solid inset-0 pointer-events-none rounded-[15px] shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_3px_0px_0px_#c24226] group-active:shadow-none transition-[box-shadow] duration-75" />
-            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[22px] leading-[22px] whitespace-nowrap relative">
-              {isSigningOut ? "Выходим..." : "Выйти"}
-            </p>
-          </button>
-
-          <button
-            onClick={handleDeleteAccount}
-            disabled={isDeleting || isSigningOut}
-            className="group relative flex h-[56px] items-center justify-center px-[18px] rounded-[15px] w-full shrink-0 bg-[#343e42] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px] disabled:opacity-60 disabled:cursor-default disabled:hover:translate-y-0 disabled:active:translate-y-0"
-          >
-            <div aria-hidden="true" className="absolute border-[1px] border-solid inset-0 pointer-events-none rounded-[15px] border-[rgba(255,93,57,0.35)] shadow-[0px_5px_0px_0px_#1d292d] group-hover:shadow-[0px_3px_0px_0px_#1d292d] group-active:shadow-none transition-[box-shadow] duration-75" />
-            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#ff8b73] text-[22px] leading-[22px] whitespace-nowrap relative">
-              {isDeleting ? "Удаляем..." : "Удалить аккаунт"}
-            </p>
-          </button>
+    <>
+      {showConfirm && (
+        <SignOutConfirmModal
+          onConfirm={handleSignOut}
+          onCancel={() => setShowConfirm(false)}
+        />
+      )}
+      <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full mt-[32px] pb-[40px]">
+        <SectionTitle text="Аккаунт" />
+        <div className="bg-[#343e42] relative rounded-[15px] shrink-0 w-full">
+          <div className="content-stretch flex flex-col gap-[14px] items-start p-[16px] relative w-full">
+            <button
+              onClick={() => setShowConfirm(true)}
+              disabled={isSigningOut}
+              className="group relative flex h-[44px] items-center justify-center px-[18px] rounded-[12px] w-full shrink-0 bg-[#2C3438] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px] disabled:opacity-60 disabled:cursor-default disabled:hover:translate-y-0 disabled:active:translate-y-0"
+            >
+              <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[12px] shadow-[0px_4px_0px_0px_#1B2428] group-hover:shadow-[0px_2px_0px_0px_#1B2428] group-active:shadow-none transition-[box-shadow] duration-75" style={{ border: "1px solid rgba(232,80,58,0.45)" }} />
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#E8503A] text-[18px] leading-none whitespace-nowrap relative">
+                {isSigningOut ? "Выходим..." : "Выйти из аккаунта"}
+              </p>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

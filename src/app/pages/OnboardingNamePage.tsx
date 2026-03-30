@@ -2,17 +2,20 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { CloseButton } from "./quiz/CloseButton";
 import { FlagReportButton } from "./quiz/FlagReportButton";
+import { useUserSafe } from "../context/UserContext";
 
 const PROFILE_NAME_KEY = "uxeo-profile-name";
 
 export default function OnboardingNamePage() {
   const navigate = useNavigate();
+  const userCtx = useUserSafe();
   const [name, setName] = useState("");
 
   const handleContinue = () => {
     const trimmed = name.trim();
     if (!trimmed) return;
     localStorage.setItem(PROFILE_NAME_KEY, trimmed);
+    userCtx?.setUserName(trimmed);
     navigate("/quiz");
   };
 

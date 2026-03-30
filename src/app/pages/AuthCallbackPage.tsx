@@ -1,68 +1,104 @@
 /**
  * AuthCallbackPage — handles redirect after OAuth (Google) or magic link.
  * Supabase auto-extracts tokens from the URL, then we redirect to the app.
+ *
+ * Important: the Supabase SDK processes PKCE / OTP tokens asynchronously.
+ * We must listen to onAuthStateChange instead of only calling getSession()
+ * once — otherwise we navigate away before the session is established.
  */
 
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { supabase } from "../../../utils/supabase/client";
-import { projectId, publicAnonKey } from "../../../utils/supabase/info";
+import { projectId } from "../../../utils/supabase/info";
+import type { Session } from "@supabase/supabase-js";
 
 export default function AuthCallbackPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
     let cancelled = false;
+    let resolved = false;
 
-    async function resolveRedirect() {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session) {
-        setTimeout(() => {
-          if (!cancelled) navigate("/", { replace: true });
-        }, 1500);
-        return;
-      }
+    async function handleSession(session: Session) {
+      if (resolved || cancelled) return;
+      resolved = true;
 
-      const user = data.session.user;
+      const user = session.user;
       try {
-        if (user.email) {
-          localStorage.setItem("uxeo-user-email", user.email);
-        }
+        if (user.email) localStorage.setItem("uxeo-user-email", user.email);
       } catch {}
 
-      let hasExistingProgress = true; // safe default: assume existing on API error
+      // null = API failed (unknown), true = confirmed existing, false = confirmed new
+      let hasExistingProgress: boolean | null = null;
       try {
         const res = await fetch(
-          `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/progress?userId=${encodeURIComponent(user.id)}`,
-          { headers: { Authorization: `Bearer ${publicAnonKey}` } }
+          `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/progress`,
+          { headers: { Authorization: `Bearer ${session.access_token}` } }
         );
         if (res.ok) {
           const payload = await res.json().catch(() => ({}));
           hasExistingProgress = Boolean(payload?.found);
         }
+        // if !res.ok → stays null (API error, e.g. missing columns) → fall back to HomeRedirect
       } catch {
-        // API unavailable — treat as existing user to avoid false "new user" notifications
-        hasExistingProgress = true;
+        // network error → null → fall back to HomeRedirect
       }
 
-      if (!hasExistingProgress) {
+      if (cancelled) return;
+
+      if (hasExistingProgress === false) {
+        // Confirmed new user → onboarding
         const provider = user.app_metadata?.provider ?? "email";
         fetch(`https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/registered`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${publicAnonKey}` },
           body: JSON.stringify({ email: user.email, provider, userId: user.id }),
         }).catch(() => {});
-        if (!cancelled) navigate("/level", { replace: true });
+        navigate("/level", { replace: true });
         return;
       }
 
-      if (!cancelled) navigate("/", { replace: true });
+      if (hasExistingProgress === true) {
+        // Confirmed existing user → skip HomeRedirect entirely (avoids onboarding on empty localStorage)
+        navigate("/lessons", { replace: true });
+        return;
+      }
+
+      // API failed → let HomeRedirect decide based on local state
+      navigate("/", { replace: true });
     }
 
-    resolveRedirect();
+    function handleNoSession() {
+      if (resolved || cancelled) return;
+      resolved = true;
+      navigate("/welcome", { replace: true });
+    }
+
+    // 1. Listen for auth state change — fires when SDK finishes processing the
+    //    callback URL (PKCE exchange, OTP token, etc.)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session && !resolved) {
+        handleSession(session);
+      }
+    });
+
+    // 2. Also check if session already exists (fast path for OAuth redirect)
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session && !resolved) {
+        handleSession(data.session);
+      }
+    });
+
+    // 3. Timeout: if nothing resolved in 8s, give up and go to welcome
+    const timeout = setTimeout(() => {
+      handleNoSession();
+    }, 8000);
 
     return () => {
       cancelled = true;
+      subscription.unsubscribe();
+      clearTimeout(timeout);
     };
   }, [navigate]);
 

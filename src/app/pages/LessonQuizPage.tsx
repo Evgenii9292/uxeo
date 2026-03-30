@@ -10,6 +10,7 @@ import PageTransition from "../components/PageTransition";
 import { QUIZ_BANK } from "../data/quiz-bank";
 import { LESSONS } from "../data/lessons";
 import { CloseButton } from "./quiz/CloseButton";
+import { hapticCorrect, hapticWrong } from "../utils/haptics";
 import { ExitConfirmationModal } from "./quiz/ExitModal";
 import { ProductCardMockup } from "./quiz/ProductCardMockup";
 import { QuizOptionCard, type CardState } from "./quiz/QuizOptionCard";
@@ -989,6 +990,7 @@ export default function LessonQuizPage() {
 
   /** Records the result of a new-type question without changing phase/selection */
   const handleAnswerNewType = (isCorrect: boolean) => {
+    isCorrect ? hapticCorrect() : hapticWrong();
     // ── Streak update ──────────────────────────────────────────────────────
     let newStreak = 0;
     if (isCorrect) {
@@ -1099,7 +1101,7 @@ export default function LessonQuizPage() {
         {/* ZONE 1 — Top controls */}
         {/* Mobile: one fixed row — X | progress | XP */}
         {isMobile ? (
-          <div className="fixed top-0 left-0 right-0 z-10 flex items-center gap-[10px] px-[14px]" style={{ height: 44 }}>
+          <div className="fixed top-0 left-0 right-0 z-10 flex items-center gap-[10px] px-[14px]" style={{ paddingTop: 'env(safe-area-inset-top, 0px)', height: 'calc(44px + env(safe-area-inset-top, 0px))', boxSizing: 'border-box' }}>
             <CloseButton onClick={() => setShowExitModal(true)} mobile />
             <div className="flex-1 relative h-[10px]">
               {/* Bar — centered with CloseButton and XP */}
@@ -1162,7 +1164,7 @@ export default function LessonQuizPage() {
         {/* ZONE 2+3 — conditional on question type */}
         {questionType === "multiple_select" ? (
           <PageTransition key={currentQuestionIndex} duration={0} scaleFrom={1}>
-          <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`}>
+          <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`} style={isMobile ? { paddingTop: 'calc(44px + env(safe-area-inset-top, 0px))' } : undefined}>
             <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-center" : isCompact ? "justify-center gap-[28px]" : "justify-center gap-[52px]"}`}>
               <MultipleChoiceQuiz
                 key={currentQuestionIndex}
@@ -1184,7 +1186,7 @@ export default function LessonQuizPage() {
           </PageTransition>
         ) : questionType === "matching" ? (
           <PageTransition key={currentQuestionIndex} duration={0} scaleFrom={1}>
-          <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`}>
+          <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`} style={isMobile ? { paddingTop: 'calc(44px + env(safe-area-inset-top, 0px))' } : undefined}>
             <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-start pt-[10px] gap-[10px]" : isCompact ? "justify-center gap-[28px]" : "justify-center gap-[52px]"}`}>
               <MatchingQuiz
                 key={currentQuestionIndex}
@@ -1200,7 +1202,7 @@ export default function LessonQuizPage() {
           </PageTransition>
         ) : questionType === "compare_ui" ? (
           <PageTransition key={currentQuestionIndex} duration={0} scaleFrom={1}>
-          <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`}>
+          <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`} style={isMobile ? { paddingTop: 'calc(44px + env(safe-area-inset-top, 0px))' } : undefined}>
             <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-start pt-[10px]" : isCompact ? "justify-center gap-[28px]" : "justify-center gap-[52px]"}`}>
               <CompareUIQuiz
                 key={currentQuestionIndex}
@@ -1224,7 +1226,7 @@ export default function LessonQuizPage() {
         ) : (
           <>
             {/* ZONE 2 — Center: question + options */}
-            <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pt-[44px] pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`}>
+            <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`} style={isMobile ? { paddingTop: 'calc(44px + env(safe-area-inset-top, 0px))' } : undefined}>
               <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-center" : isCompact ? "justify-center gap-[28px]" : "justify-center gap-[52px]"}`}>
 
                 {isMobile ? (

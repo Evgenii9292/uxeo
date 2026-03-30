@@ -153,6 +153,14 @@ function GoogleIcon() {
   );
 }
 
+// Detect PWA standalone mode (Home Screen app)
+function useIsStandalone() {
+  return (
+    (typeof window !== "undefined" && (window.navigator as any).standalone === true) ||
+    (typeof window !== "undefined" && window.matchMedia("(display-mode: standalone)").matches)
+  );
+}
+
 export default function WelcomePage() {
   const navigate = useNavigate();
   const { signInWithGoogle, signInWithEmail, isAuthenticated, loading } = useAuth();
@@ -161,6 +169,7 @@ export default function WelcomePage() {
   const [emailError, setEmailError] = useState("");
   const [emailLoading, setEmailLoading] = useState(false);
   const [showEmailInput, setShowEmailInput] = useState(false);
+  const isStandalone = useIsStandalone();
 
   // Если уже авторизован — отправить дальше (HomeRedirect разберётся)
   useEffect(() => {
@@ -189,37 +198,35 @@ export default function WelcomePage() {
 
   return (
     <div
-      className="relative min-h-screen w-full flex flex-col overflow-hidden"
+      className="relative w-full flex items-center justify-center px-4 overflow-hidden"
       style={{
         minHeight: "100dvh",
-        paddingBottom: "max(10px, env(safe-area-inset-bottom, 10px))",
+        paddingTop: "max(32px, env(safe-area-inset-top, 32px))",
+        paddingBottom: "max(32px, env(safe-area-inset-bottom, 32px))",
         backgroundImage: "radial-gradient(ellipse at 50% 20%, rgba(255,93,57,0.09) 0%, transparent 60%), linear-gradient(165.05deg, #282F33 14.367%, rgb(46, 57, 62) 147.74%)",
       }}
     >
-      {/* Logo */}
-      <div className="flex justify-center pt-[31px]">
+      {/* Single centred block: logo + headline + buttons */}
+      <div className="flex flex-col gap-[36px] items-center w-full max-w-[374px]">
+
+        {/* Logo */}
         <LogoContainer />
-      </div>
 
-      {/* Main content — centred vertically in remaining space */}
-      <div className="flex-1 flex items-center justify-center px-4">
-        <div className="flex flex-col gap-[36px] items-center w-full max-w-[374px]">
-
-          {/* Headline + subtitle */}
-          <div className="content-stretch flex flex-col gap-[25px] items-start justify-center relative shrink-0 w-full">
-            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[37px] min-w-full relative shrink-0 text-[32px] text-[rgba(244,245,252,0.9)] w-[min-content]">
-              Освойте веб-дизайн через игру и практику
+        {/* Headline + subtitle */}
+        <div className="flex flex-col gap-[25px] items-start w-full">
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[37px] w-full text-[32px] text-[rgba(244,245,252,0.9)]">
+            Освойте веб-дизайн через игру и практику
+          </p>
+          <div className="flex gap-[17px] items-start w-full">
+            <FreeIconPartyPopper />
+            <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] text-[#798589] text-[18px] flex-1">
+              Решайте реальные задачи интерфейсов и закрепляйте знания практикой.
             </p>
-            <div className="content-stretch flex gap-[17px] items-start relative shrink-0 w-[364px]">
-              <FreeIconPartyPopper />
-              <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] relative shrink-0 text-[#798589] text-[18px] w-[312px]">
-                Решайте реальные задачи интерфейсов и закрепляйте знания практикой.
-              </p>
-            </div>
           </div>
+        </div>
 
-          {/* Buttons */}
-          <div className="flex flex-col gap-[17px] w-full">
+        {/* Buttons */}
+        <div className="flex flex-col gap-[17px] w-full">
 
             {/* Google sign-in — primary */}
             <button
@@ -291,12 +298,15 @@ export default function WelcomePage() {
             )}
 
             {emailSent && (
-              <div className="text-center py-[8px]">
+              <div
+                className="rounded-[15px] px-[20px] py-[16px]"
+                style={{ background: "rgba(36,43,46,0.9)", border: "1px solid rgba(72,83,87,0.4)" }}
+              >
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[16px]">
                   Письмо отправлено! ✉️
                 </p>
-                <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] text-[14px] mt-[4px]">
-                  Проверь почту и нажми на ссылку
+                <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] text-[13px] mt-[6px] leading-[1.5]">
+                  Открой ссылку в письме <span style={{ color: "#ff8a6b" }}>на этом устройстве и в этом же браузере</span> — только так она сработает.
                 </p>
               </div>
             )}
@@ -311,15 +321,14 @@ export default function WelcomePage() {
               </button>
             )}
           </div>
-        </div>
-      </div>
 
-      {/* Character illustration peeking from bottom */}
-      <div className="flex justify-center pointer-events-none">
-        <div className="-scale-y-100 flex-none rotate-180">
-          <ProfileIcon />
+          {/* PWA standalone: subtle hint below buttons */}
+          {isStandalone && (
+            <p className="text-center font-['Roboto_Condensed:Regular',sans-serif] text-[11px] leading-[1.5]" style={{ color: "#3d4a4e" }}>
+              Войдите один раз — приложение запомнит сессию
+            </p>
+          )}
         </div>
-      </div>
 
       {/* Report error */}
       <div className="absolute left-[28px]" style={{ bottom: "calc(28px + env(safe-area-inset-bottom, 0px))" }}>
@@ -327,4 +336,6 @@ export default function WelcomePage() {
       </div>
     </div>
   );
+
+
 }

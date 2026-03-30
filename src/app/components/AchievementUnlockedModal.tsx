@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from "react";
 import { ACHIEVEMENTS, AchievementId } from "../context/AchievementsContext";
+import { hapticSuccess } from "../utils/haptics";
 
 // ─── Confetti particle ────────────────────────────────────────────────────────
 
@@ -99,6 +100,8 @@ export function AchievementUnlockedModal({ achievementId, onDismiss }: Props) {
   useEffect(() => {
     // Tiny delay so CSS transition has a starting state
     const t = requestAnimationFrame(() => setVisible(true));
+
+    hapticSuccess();
 
     // Victory jingle: ascending 4-note fanfare
     const audioCtx = new AudioContext();

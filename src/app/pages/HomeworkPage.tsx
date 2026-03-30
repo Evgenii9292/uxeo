@@ -309,6 +309,55 @@ function RequirementsContent({ hw }: { hw: HomeworkData }) {
   );
 }
 
+// ── Combined Task + Requirements (single accordion, priority order) ───────────
+
+function TaskAndRequirementsContent({ hw }: { hw: HomeworkData }) {
+  return (
+    <div className="flex flex-col gap-[28px]">
+
+      {/* 1. Задача — главное, выделено */}
+      <div className="flex flex-col gap-[10px]">
+        <p className={`${TEXT_TITLE} leading-[22px] text-[#f1f2fb] text-[18px]`}>Ваша задача:</p>
+        <div
+          className="rounded-[12px] px-[20px] py-[18px]"
+          style={{ background: "linear-gradient(135deg, #2a3d44 0%, #344149 100%)", border: "1px solid rgba(255,107,33,0.25)" }}
+        >
+          <p className={`${TEXT_TITLE} leading-[24px] text-[#f4f5fc] text-[18px]`}>{hw.task}</p>
+        </div>
+      </div>
+
+      {/* 2. Требования — что должно быть на экране */}
+      <div className="flex flex-col gap-[12px]">
+        <p className={`${TEXT_TITLE} leading-[22px] text-[#f1f2fb] text-[18px]`}>Экран должен содержать:</p>
+        <div className="bg-[#394449] rounded-[12px] px-[20px] py-[16px] flex flex-col gap-[10px]">
+          {hw.requirements.map((r, i) => (
+            <div key={i} className="flex items-start gap-[10px]">
+              <div className="shrink-0 w-[6px] h-[6px] rounded-full bg-[#FF6B21] mt-[8px]" />
+              <p className={`${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[16px]`}>{r}</p>
+            </div>
+          ))}
+        </div>
+        {/* Screen size */}
+        <div className={`${TEXT_BODY} flex items-center justify-between leading-[20px] text-[rgba(244,245,252,0.5)] text-[14px] px-[4px]`}>
+          <span>Размер экрана:</span>
+          <span>{hw.screenSize}</span>
+        </div>
+      </div>
+
+      {/* 3. Контекст — фон задачи */}
+      <div className="flex flex-col gap-[12px]">
+        <p className={`${TEXT_TITLE} leading-[22px] text-[rgba(244,245,252,0.6)] text-[15px]`}>Контекст:</p>
+        <div className="bg-[#394449] rounded-[12px] px-[20px] py-[16px]">
+          <div className={`${TEXT_BODY} leading-[22px] text-[rgba(244,245,252,0.7)] text-[15px] flex flex-col gap-[6px]`}>
+            {hw.context.map((line, i) => <p key={i}>{line}</p>)}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
 function ExampleContent({ hw }: { hw: HomeworkData }) {
   return (
     <div className={`${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[18px] opacity-80 flex flex-col gap-[14px]`}>
@@ -420,23 +469,21 @@ function HeroCard({ hw, isMobile }: { hw: HomeworkData; isMobile?: boolean }) {
 
   return (
     <div className="flex flex-col items-center gap-[20px] w-full py-[10px]">
-      <div
-        className="flex items-center justify-center overflow-hidden rounded-[28px] w-full"
-        style={{
-          minHeight: 220,
-          maxHeight: 360,
-          background: "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)",
-          border: "1px solid rgba(255,255,255,0.08)",
-        }}
-      >
-        {hw.previewImage ? (
+      {hw.previewImage ? (
+        <div className="relative w-full overflow-hidden" style={{ maxHeight: 360 }}>
           <img
             src={hw.previewImage}
             alt={hw.title}
-            className="block w-full h-full object-contain"
-            style={{ padding: 20, maxHeight: 360 }}
+            className="block w-full object-contain"
+            style={{
+              maxHeight: 360,
+              maskImage: "linear-gradient(to bottom, black 50%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, black 50%, transparent 100%)",
+            }}
           />
-        ) : (
+        </div>
+      ) : (
+        <div className="flex items-center justify-center w-full" style={{ height: 220 }}>
           <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#f1f2fb" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5 }}>
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
             <polyline points="14 2 14 8 20 8" />
@@ -444,10 +491,10 @@ function HeroCard({ hw, isMobile }: { hw: HomeworkData; isMobile?: boolean }) {
             <line x1="16" y1="17" x2="8" y2="17" />
             <polyline points="10 9 9 9 8 9" />
           </svg>
-        )}
-      </div>
+        </div>
+      )}
       {/* Title left, time right */}
-      <div className="flex items-center justify-between w-full">
+      <div className="flex items-end justify-between w-full">
         <p className={`${TEXT_TITLE} leading-[35px] text-[#f4f5fc] text-[32px]`}>{hw.title}</p>
         <div className="flex gap-[5px] items-center shrink-0">
           <div className="overflow-clip relative shrink-0 size-[14px]">
@@ -524,7 +571,14 @@ function PCGuidanceBanner() {
       style={{ background: "rgba(255,107,33,0.07)", border: "1px solid rgba(255,107,33,0.18)" }}
     >
       <div className="flex items-start gap-[8px]">
-        <span style={{ fontSize: 15, lineHeight: 1, flexShrink: 0, marginTop: 2 }}>💻</span>
+        {/* Figma logo */}
+        <svg width="12" height="18" viewBox="0 0 10 15" fill="none" style={{ flexShrink: 0, marginTop: 1 }}>
+          <path d="M2.5 15C3.88 15 5 13.88 5 12.5V10H2.5C1.12 10 0 11.12 0 12.5C0 13.88 1.12 15 2.5 15Z" fill="#0ACF83"/>
+          <path d="M0 7.5C0 6.12 1.12 5 2.5 5H5V10H2.5C1.12 10 0 8.88 0 7.5Z" fill="#A259FF"/>
+          <path d="M0 2.5C0 1.12 1.12 0 2.5 0H5V5H2.5C1.12 5 0 3.88 0 2.5Z" fill="#F24E1E"/>
+          <path d="M5 0H7.5C8.88 0 10 1.12 10 2.5C10 3.88 8.88 5 7.5 5H5V0Z" fill="#FF7262"/>
+          <path d="M10 7.5C10 8.88 8.88 10 7.5 10C6.12 10 5 8.88 5 7.5C5 6.12 6.12 5 7.5 5C8.88 5 10 6.12 10 7.5Z" fill="#1ABCFE"/>
+        </svg>
         <p className={`${TEXT_BODY} text-[13px] leading-[18px]`} style={{ color: "rgba(244,245,252,0.55)" }}>
           Домашнее задание выполняется в Figma. Удобнее открыть на компьютере.
         </p>
@@ -1297,7 +1351,7 @@ export default function HomeworkPage() {
             <HeroCard hw={hw} isMobile={isMobile} />
           </div>
 
-          {/* 1. Задание — первым, включает описание + контекст + задачу */}
+          {/* 1. Задание + Требования (combined, open by default) */}
           <AccordionSection
             icon={<div className="relative shrink-0" style={{ width: 26, height: 26 }}><TaskIcon /></div>}
             title="Задание"
@@ -1305,7 +1359,7 @@ export default function HomeworkPage() {
             onToggle={() => toggleSection(0)}
             sectionIdx={0}
           >
-            <TaskContent hw={hw} />
+            <TaskAndRequirementsContent hw={hw} />
           </AccordionSection>
 
           {/* 2. Что вы прокачаете */}
@@ -1319,24 +1373,13 @@ export default function HomeworkPage() {
             <SkillsContent hw={hw} />
           </AccordionSection>
 
-          {/* 3. Требования */}
-          <AccordionSection
-            icon={<div className="relative shrink-0" style={{ width: 26, height: 26 }}><RequirementsIcon /></div>}
-            title="Требования"
-            isOpen={openSections.has(2)}
-            onToggle={() => toggleSection(2)}
-            sectionIdx={2}
-          >
-            <RequirementsContent hw={hw} />
-          </AccordionSection>
-
-          {/* 4. Пример */}
+          {/* 3. Рекомендации */}
           <AccordionSection
             icon={<div className="relative shrink-0" style={{ width: 28, height: 28 }}><ExampleIcon /></div>}
             title="Рекомендации"
-            isOpen={openSections.has(3)}
-            onToggle={() => toggleSection(3)}
-            sectionIdx={3}
+            isOpen={openSections.has(2)}
+            onToggle={() => toggleSection(2)}
+            sectionIdx={2}
           >
             <ExampleContent hw={hw} />
           </AccordionSection>
@@ -1390,7 +1433,7 @@ export default function HomeworkPage() {
       {isMobile && (
         <button
           onClick={() => submitRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
-          className="fixed right-[16px] z-30 rounded-full flex items-center justify-center cursor-pointer select-none transition-transform duration-75 active:scale-90"
+          className="fixed right-[16px] z-30 rounded-full flex items-center justify-center cursor-pointer select-none transition-all duration-75"
           style={{
             width: 54,
             height: 54,
@@ -1398,6 +1441,12 @@ export default function HomeworkPage() {
             background: "#FF6B21",
             boxShadow: "0 4px 0 #C54A0A",
           }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(2px)'; e.currentTarget.style.boxShadow = '0 2px 0 #C54A0A'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 4px 0 #C54A0A'; }}
+          onMouseDown={e => { e.currentTarget.style.transform = 'translateY(4px)'; e.currentTarget.style.boxShadow = 'none'; }}
+          onMouseUp={e => { e.currentTarget.style.transform = 'translateY(2px)'; e.currentTarget.style.boxShadow = '0 2px 0 #C54A0A'; }}
+          onTouchStart={e => { e.currentTarget.style.transform = 'translateY(4px)'; e.currentTarget.style.boxShadow = 'none'; }}
+          onTouchEnd={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 4px 0 #C54A0A'; }}
           aria-label="К домашнему заданию"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">

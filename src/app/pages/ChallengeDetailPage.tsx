@@ -1,4 +1,4 @@
-import { useState, useRef, useId, useEffect } from "react";
+import { useState, useRef, useId } from "react";
 import { useIsMobile } from "../components/ui/use-mobile";
 import { useLocation } from "react-router";
 import Layout from "../components/Layout";
@@ -44,7 +44,7 @@ const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
     subtitle: "Создайте стартовый экран приложения для отслеживания здоровья.",
     time: "25 мин",
     level: "Джун",
-    xp: 1250,
+    xp: 800,
     skills: [
       "визуальная иерархия интерфейса",
       "использование контраста",
@@ -73,7 +73,7 @@ const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
     subtitle: "Спроектируйте экран приветствия платёжного сервиса.",
     time: "30 мин",
     level: "Джун",
-    xp: 1250,
+    xp: 800,
     skills: [
       "проектирование CTA",
       "визуальная иерархия",
@@ -394,7 +394,7 @@ function HeroCard({ content }: { content: ChallengeContent }) {
           <p className={`${TEXT_TITLE} leading-[35px] text-[#f4f5fc] text-[32px]`}>{content.title}</p>
           <p className={`${TEXT_BODY} leading-[22px] text-[#f1f2fb] text-[18px] opacity-80`}>{content.subtitle}</p>
         </div>
-        <div className="flex flex-wrap gap-[5px_20px] items-center">
+        <div className="flex flex-wrap gap-[5px_20px] items-end">
           <div className="flex gap-[5px] items-center">
             <div className="overflow-clip relative shrink-0 size-[14px]">
               <div className="absolute inset-[0_11.67%_0_11.66%]">
@@ -562,7 +562,7 @@ function SubmitBlock({ challengeId, challengeName }: { challengeId: string; chal
             </div>
             <p className={`${TEXT_TITLE} text-[13px] leading-[18px] whitespace-nowrap`} style={{ color: "#00C143" }}>Одобрено</p>
           </div>
-          <p className={`${TEXT_MEDIUM} text-[13px] whitespace-nowrap`} style={{ color: "rgba(94,221,96,0.7)" }}>+{CHALLENGE_CONTENT[challengeId]?.xp ?? 1250} XP начислено</p>
+          <p className={`${TEXT_MEDIUM} text-[13px] whitespace-nowrap`} style={{ color: "rgba(94,221,96,0.7)" }}>+{CHALLENGE_CONTENT[challengeId]?.xp ?? 800} XP начислено</p>
           <div className="rounded-[12px]" style={{ background: "#394449", padding: "20px" }}>
             <p className={`${TEXT_BODY} text-[15px] leading-[22px]`} style={{ color: "rgba(244,245,252,0.4)" }}>
               Работа проверена ментором. Отличный результат!
@@ -705,24 +705,8 @@ export default function ChallengeDetailPage() {
   const content = CHALLENGE_CONTENT[challengeId] ?? DEFAULT_CHALLENGE;
 
   const [openSections, setOpenSections] = useState<Set<number>>(new Set([0, 1]));
-  const [submitVisible, setSubmitVisible] = useState(true);
-  const lastScrollRef = useRef(0);
-
-  useEffect(() => {
-    if (!isMobile) return;
-    const scrollEl = document.querySelector<HTMLElement>('.overflow-y-auto.overflow-x-hidden.scrollbar-hide');
-    if (!scrollEl) return;
-    const onScroll = () => {
-      const currentY = scrollEl.scrollTop;
-      const delta = currentY - lastScrollRef.current;
-      if (Math.abs(delta) > 6) {
-        setSubmitVisible(delta < 0);
-        lastScrollRef.current = currentY;
-      }
-    };
-    scrollEl.addEventListener('scroll', onScroll, { passive: true });
-    return () => scrollEl.removeEventListener('scroll', onScroll);
-  }, [isMobile]);
+  const submitRef = useRef<HTMLDivElement>(null);
+  const [circlePressed, setCirclePressed] = useState(false);
 
   const toggleSection = (i: number) => {
     setOpenSections(prev => {
@@ -783,36 +767,54 @@ export default function ChallengeDetailPage() {
             </AccordionSection>
           )}
 
-          <div style={{ height: isMobile ? 140 : 110 }} />
+          {/* Mobile submit block — inside scroll */}
+          {isMobile && (
+            <div ref={submitRef} className="pt-[4px]">
+              <SubmitBlock challengeId={challengeId} challengeName={challengeName} />
+            </div>
+          )}
+
+          <div style={{ height: isMobile ? 32 : 110 }} />
         </div>
       </Layout>
 
-      <div
-        style={isMobile ? {
-          position: "fixed",
-          bottom: submitVisible ? 52 : 4,
-          left: 0,
-          right: 0,
-          padding: "10px 16px 14px",
-          zIndex: 25,
-          background: "linear-gradient(to top, #282F33 60%, transparent)",
-          transition: "bottom 0.3s ease",
-        } : {
+      {/* Mobile: floating orange circle → scrolls to submit */}
+      {isMobile && (
+        <button
+          onClick={() => submitRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+          className="fixed right-[16px] z-30 rounded-full flex items-center justify-center cursor-pointer select-none"
+          style={{
+            width: 54,
+            height: 54,
+            bottom: "calc(82px + env(safe-area-inset-bottom, 0px))",
+            background: "#FF6B21",
+            boxShadow: circlePressed ? "0 0px 0 #C54A0A" : "0 4px 0 #C54A0A",
+            transform: circlePressed ? "translateY(4px)" : "translateY(0)",
+            transition: "transform 75ms, box-shadow 75ms",
+          }}
+          onTouchStart={() => setCirclePressed(true)}
+          onTouchEnd={() => setCirclePressed(false)}
+          onTouchCancel={() => setCirclePressed(false)}
+          aria-label="К отправке работы"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M22 2L11 13M22 2L15 22 11 13 2 9l20-7z" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      )}
+
+      {/* Desktop: fixed right panel */}
+      {!isMobile && (
+        <div style={{
           position: "fixed",
           bottom: 20,
           right: "max(40px, calc((100vw - 1440px) / 2 + 40px))",
           width: 280,
           zIndex: 50,
-        }}
-      >
-        {isMobile ? (
-          <div style={{ background: "#2C3538", borderRadius: 18, padding: "14px 14px 12px", boxShadow: "0 -2px 20px 0 rgba(0,0,0,0.35)" }}>
-            <SubmitBlock challengeId={challengeId} challengeName={challengeName} />
-          </div>
-        ) : (
+        }}>
           <SubmitBlock challengeId={challengeId} challengeName={challengeName} />
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 }

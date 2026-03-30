@@ -73,6 +73,7 @@ function ClockIcon() {
 
 const POPUP_W = 410;
 const POPUP_H = 318;
+const POPUP_H_HW = 265; // shorter popup for homework/challenge nodes
 
 // ─── Popup background SVG ────────────────────────────────────────────────────
 
@@ -246,7 +247,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
       }
       if (!container || container === document.documentElement) return;
       const scale = pos.scale ?? 1;
-      const neededBelow = NODE_H + 15 + POPUP_H * scale + 60;
+      const neededBelow = NODE_H + 15 + (isHomework ? POPUP_H_HW : POPUP_H) * scale + 60;
       const anchorRect = anchor.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
       const spaceBelow = containerRect.bottom - anchorRect.bottom;
@@ -391,8 +392,11 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
                 </div>
               )}
 
-              {/* Info row */}
-              <div className="flex items-center justify-between w-full h-[20px] mt-[20px]">
+            </div>
+
+            {/* Info row + Buttons */}
+            <div className="flex flex-col gap-[20px] w-full">
+              <div className="flex items-center justify-between w-full h-[20px]">
                 <div className="flex gap-[6px] items-center">
                   <ClockIcon />
                   <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#232a2d] text-[16px] whitespace-nowrap">
@@ -408,11 +412,21 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
                   </span>
                 </div>
               </div>
-
-            </div>
-
-            {/* Buttons */}
-            <div className="flex gap-[17px] items-start w-full mt-[4px]">
+              {isLocked ? (
+                <div
+                  className="flex items-center justify-center gap-[10px] rounded-[15px] w-full"
+                  style={{ height: 60, background: "rgba(35,42,45,0.15)" }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="11" width="18" height="11" rx="2" stroke="rgba(35,42,45,0.45)" strokeWidth="2"/>
+                    <path d="M7 11V7a5 5 0 0110 0v4" stroke="rgba(35,42,45,0.45)" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[20px] leading-[27.5px] whitespace-nowrap" style={{ color: "rgba(35,42,45,0.45)" }}>
+                    Сначала пройди предыдущий урок
+                  </p>
+                </div>
+              ) : (
+              <div className="flex gap-[17px] items-start w-full">
               {isHomework ? (
                 hwStatus === "reviewed" ? (
                   <button
@@ -492,6 +506,8 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
                 </>
               )}
             </div>
+              )}
+            </div>
           </div>
         </div>
       </>,
@@ -512,7 +528,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
         top:             pos.top,
         left:            pos.left,
         width:           POPUP_W,
-        height:          POPUP_H,
+        height:          isHomework ? POPUP_H_HW : POPUP_H,
         zIndex:          100,
         transform:       `${pos.scale < 1 ? `scale(${pos.scale})` : ""} translateY(${visible ? 0 : 8}px)`.trim(),
         transition:      `transform ${transitionDuration} ease-out`,
@@ -531,7 +547,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
           top: 43,
           width: 360,
           minHeight: 140,
-          height: isHomework ? POPUP_H - 43 - 20 : undefined,
+          height: isHomework ? POPUP_H_HW - 43 - 20 : undefined,
         }}
       >
         {/* Title + Description */}
@@ -585,8 +601,11 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
             </div>
           )}
 
-          {/* Info row */}
-          <div className="flex items-center justify-between w-full h-[20px] mt-[20px]">
+        </div>
+
+        {/* Info row + Buttons — grouped at bottom */}
+        <div className={`flex flex-col gap-[20px] w-full ${isHomework ? "mt-auto" : "mt-[4px]"}`}>
+          <div className="flex items-center justify-between w-full h-[20px]">
             <div className="flex gap-[6px] items-center">
               <ClockIcon />
               <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#232a2d] text-[16px] whitespace-nowrap">
@@ -602,11 +621,21 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
               </span>
             </div>
           </div>
-
-        </div>
-
-        {/* Buttons */}
-        <div className={`flex gap-[17px] items-start w-full ${isHomework ? "mt-auto" : "mt-[4px] pb-[20px]"}`}>
+          {isLocked ? (
+            <div
+              className="flex items-center justify-center gap-[10px] rounded-[15px] w-full"
+              style={{ height: 60, background: "rgba(35,42,45,0.15)" }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="11" width="18" height="11" rx="2" stroke="rgba(35,42,45,0.45)" strokeWidth="2"/>
+                <path d="M7 11V7a5 5 0 0110 0v4" stroke="rgba(35,42,45,0.45)" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[27.5px] whitespace-nowrap" style={{ color: "rgba(35,42,45,0.45)" }}>
+                Сначала пройди предыдущий урок
+              </p>
+            </div>
+          ) : (
+          <div className={`flex gap-[17px] items-start w-full ${!isHomework ? "pb-[20px]" : ""}`}>
           {isHomework ? (
             hwStatus === "reviewed" ? (
               <button
@@ -686,6 +715,8 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
                 </p>
               </button>
             </>
+          )}
+        </div>
           )}
         </div>
       </div>

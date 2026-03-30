@@ -126,7 +126,7 @@ export function TheoryMobileLayout({
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[28px]">
               {lessonData.title}
             </p>
-            <div className="flex flex-col items-end gap-[6px] shrink-0 pb-[4px]">
+            <div className="flex flex-col items-end gap-[10px] shrink-0 pb-[4px]">
               <div className="flex gap-[5px] items-center">
                 <TimeIcon />
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f7fb] text-[16px]">{lessonData.duration}</p>
@@ -138,9 +138,17 @@ export function TheoryMobileLayout({
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-none text-[#798589] text-[11px] whitespace-nowrap">
                   Микроквизы
                 </p>
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-none text-[#F1F2FB] text-[11px] whitespace-nowrap">
-                  {completedSectionsCount}/{totalSections}
-                </p>
+                {completedSectionsCount === totalSections ? (
+                  <div className="flex items-center justify-center w-[16px] h-[16px] rounded-full bg-[#00d043]">
+                    <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
+                      <path d="M1 3.5L3.5 6L8 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                ) : (
+                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-none text-[#F1F2FB] text-[11px] whitespace-nowrap">
+                    {completedSectionsCount}/{totalSections}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -166,6 +174,7 @@ export function TheoryMobileLayout({
       </div>
 
       {/* ── Floating quiz CTA — round button at bottom-right ── */}
+      {/* Hide when last section is open (quiz cards visible there) */}
       <button
         onClick={() => {
           const quizId = LESSONS.find(l => l.lessonId === lessonId)?.quizId || lessonId;
@@ -176,10 +185,13 @@ export function TheoryMobileLayout({
           width: 62,
           height: 62,
           bottom: tabBarVisible
-            ? "calc(52px + max(12px, env(safe-area-inset-bottom, 12px)))"
+            ? "calc(67px + max(12px, env(safe-area-inset-bottom, 12px)))"
             : "max(12px, env(safe-area-inset-bottom, 12px))",
           background: "#FF6B21",
           boxShadow: "0 4px 0 #C54A0A",
+          opacity: openSections.has(lessonData.sections.length - 1) ? 0 : 1,
+          pointerEvents: openSections.has(lessonData.sections.length - 1) ? "none" : "auto",
+          transition: "opacity 0.25s ease, transform 75ms",
         }}
         aria-label="Начать квиз"
       >
@@ -222,8 +234,19 @@ export function TheoryMobileLayout({
               <div className="flex gap-[8px]">
                 {[1,2,3,4,5].map(n => (
                   <button key={n} onClick={() => setFeedbackRating(n)}
-                    className="flex-1 h-[44px] rounded-[12px] flex items-center justify-center transition-all active:scale-90"
-                    style={{ background: feedbackRating >= n ? '#FF6B21' : '#374348', border: feedbackRating >= n ? 'none' : '1px solid #4B595E' }}>
+                    className="flex-1 h-[44px] rounded-[12px] flex items-center justify-center cursor-pointer select-none transition-all duration-75"
+                    style={{
+                      background: feedbackRating >= n ? '#FF6B21' : '#374348',
+                      border: feedbackRating >= n ? 'none' : '1px solid #4B595E',
+                      boxShadow: feedbackRating >= n ? '0 3px 0 #C54A0A' : '0 3px 0 #1D292D',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(1px)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = ''; }}
+                    onMouseDown={e => { e.currentTarget.style.transform = 'translateY(3px)'; e.currentTarget.style.boxShadow = 'none'; }}
+                    onMouseUp={e => { e.currentTarget.style.transform = 'translateY(1px)'; e.currentTarget.style.boxShadow = feedbackRating >= n ? '0 2px 0 #C54A0A' : '0 2px 0 #1D292D'; }}
+                    onTouchStart={e => { e.currentTarget.style.transform = 'translateY(3px)'; e.currentTarget.style.boxShadow = 'none'; }}
+                    onTouchEnd={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = feedbackRating >= n ? '0 3px 0 #C54A0A' : '0 3px 0 #1D292D'; }}
+                  >
                     <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f1f2fb] text-[18px]">{n}</span>
                   </button>
                 ))}

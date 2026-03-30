@@ -1,26 +1,31 @@
-import React from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { createBrowserRouter, Outlet, Navigate } from "react-router";
-import CoursesPage from "./pages/CoursesPage";
-import ModulesPage from "./pages/ModulesPage";
-import LessonPage from "./pages/LessonPage";
+
+// ── Eager: нужны сразу на первом экране ───────────────────────────────────────
 import WelcomePage from "./pages/WelcomePage";
-import QuizPage from "./pages/QuizPage";
-import LessonQuizPage from "./pages/LessonQuizPage";
-import TheoryPage from "./pages/TheoryPage";
-import LevelSelectPage from "./pages/LevelSelectPage";
-import ProfilePage from "./pages/ProfilePage";
-import ChallengesPage from "./pages/ChallengesPage";
-import ChallengeDetailPage from "./pages/ChallengeDetailPage";
-import HomeworkPage from "./pages/HomeworkPage";
-import NotificationsPage from "./pages/NotificationsPage";
-import AdminHomeworksPage from "./pages/AdminHomeworksPage";
-import AboutPage from "./pages/AboutPage";
-import EmailCapturePage from "./pages/EmailCapturePage";
-import LeaguePage from "./pages/LeaguePage";
 import AuthCallbackPage from "./pages/AuthCallbackPage";
-import OnboardingGoalPage from "./pages/OnboardingGoalPage";
-import OnboardingTimePage from "./pages/OnboardingTimePage";
-import OnboardingNamePage from "./pages/OnboardingNamePage";
+
+// ── Lazy: грузятся только при переходе на страницу ────────────────────────────
+const CoursesPage        = lazy(() => import("./pages/CoursesPage"));
+const ModulesPage        = lazy(() => import("./pages/ModulesPage"));
+const LessonPage         = lazy(() => import("./pages/LessonPage"));
+const QuizPage           = lazy(() => import("./pages/QuizPage"));
+const LessonQuizPage     = lazy(() => import("./pages/LessonQuizPage"));
+const TheoryPage         = lazy(() => import("./pages/TheoryPage"));
+const LevelSelectPage    = lazy(() => import("./pages/LevelSelectPage"));
+const ProfilePage        = lazy(() => import("./pages/ProfilePage"));
+const ChallengesPage     = lazy(() => import("./pages/ChallengesPage"));
+const ChallengeDetailPage = lazy(() => import("./pages/ChallengeDetailPage"));
+const HomeworkPage       = lazy(() => import("./pages/HomeworkPage"));
+const NotificationsPage  = lazy(() => import("./pages/NotificationsPage"));
+const AdminHomeworksPage = lazy(() => import("./pages/AdminHomeworksPage"));
+const AboutPage          = lazy(() => import("./pages/AboutPage"));
+const EmailCapturePage   = lazy(() => import("./pages/EmailCapturePage"));
+const LeaguePage         = lazy(() => import("./pages/LeaguePage"));
+const OnboardingGoalPage = lazy(() => import("./pages/OnboardingGoalPage"));
+const OnboardingTimePage = lazy(() => import("./pages/OnboardingTimePage"));
+const OnboardingNamePage = lazy(() => import("./pages/OnboardingNamePage"));
+
 import { UserProvider, useUserSafe } from "./context/UserContext";
 import { LessonProvider } from "./context/LessonContext";
 import { HomeworkProvider } from "./context/HomeworkContext";
@@ -28,49 +33,39 @@ import { AuthProvider, useAuthSafe } from "./context/AuthContext";
 import { AchievementsProvider } from "./context/AchievementsContext";
 import { AchievementOverlay } from "./components/AchievementUnlockedModal";
 import { useNotificationWatcher } from "./hooks/useNotificationWatcher";
+import { usePushPermission } from "./hooks/usePushPermission";
+import { registerSW } from "./utils/pushSubscription";
 
-// ── HomeRedirect: нет auth → /welcome, нет level → /level (онбординг), иначе → courses/lessons ──
+// Register SW as early as possible (no permission needed)
+registerSW();
+
+// ── Заглушка во время загрузки страницы ───────────────────────────────────────
+function PageLoader() {
+  return <div style={{ height: "100%", background: "#282F33" }} />;
+}
+
+// ── HomeRedirect: нет auth → /welcome, нет level → /level (онбординг), иначе → /lessons ──
 
 function HomeRedirect() {
   const auth = useAuthSafe();
   const userCtx = useUserSafe();
 
-  // Ждём загрузку auth и user data
-  if (auth?.loading || userCtx?.userLoading) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: "100vh",
-          background: "linear-gradient(163.733deg, #282F33 14.367%, rgb(46, 57, 62) 147.74%)",
-          color: "#f4f5fc",
-          fontFamily: "Roboto Condensed, sans-serif",
-          fontSize: "22px",
-          padding: "24px",
-        }}
-      >
-        Загружаем Skillum...
-      </div>
-    );
-  }
+  const isLoading = auth?.loading || userCtx?.userLoading;
 
-  // Не авторизован → страница входа
-  if (!auth?.isAuthenticated) {
-    return <Navigate to="/welcome" replace />;
-  }
+  // Signal splash to hide once loading is done
+  useEffect(() => {
+    if (!isLoading) {
+      window.dispatchEvent(new CustomEvent("app-ready"));
+    }
+  }, [isLoading]);
 
-  // Авторизован, но не прошёл онбординг → выбор уровня
-  if (!userCtx?.level) {
-    return <Navigate to="/level" replace />;
-  }
+  // While loading — render nothing (native splash covers everything)
+  if (isLoading) return null;
 
-  const hasProgress =
-    userCtx !== null &&
-    Object.keys(userCtx.user.lessonProgress).length > 0;
+  if (!auth?.isAuthenticated) return <Navigate to="/welcome" replace />;
+  if (!userCtx?.level) return <Navigate to="/level" replace />;
 
-  return <Navigate to={hasProgress ? "/lessons" : "/courses"} replace />;
+  return <Navigate to="/lessons" replace />;
 }
 
 // ── RequireAuth: редирект на /welcome если не авторизован ─────────────────────
@@ -87,6 +82,12 @@ function NotificationWatcher() {
   return null;
 }
 
+// Push permission — delayed request after login
+function PushInit() {
+  usePushPermission();
+  return null;
+}
+
 // Root component that provides UserContext to all routes
 function Root() {
   return (
@@ -96,7 +97,10 @@ function Root() {
           <LessonProvider>
             <HomeworkProvider>
               <NotificationWatcher />
-              <Outlet />
+              <PushInit />
+              <Suspense fallback={<PageLoader />}>
+                <Outlet />
+              </Suspense>
               <AchievementOverlay />
             </HomeworkProvider>
           </LessonProvider>

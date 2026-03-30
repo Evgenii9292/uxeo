@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { projectId, publicAnonKey } from "../../../utils/supabase/info";
+import { projectId } from "../../../utils/supabase/info";
+import { supabase } from "../../../utils/supabase/client";
+
+async function getAuthToken(): Promise<string> {
+  const { data } = await supabase.auth.getSession();
+  return data.session?.access_token ?? "";
+}
 
 const ADMIN_PIN = "uxeo2024";
 
@@ -103,12 +109,13 @@ export default function AdminHomeworksPage() {
     setLoading(true);
     setError(null);
     try {
+      const token = await getAuthToken();
       const [homeworksRes, challengesRes] = await Promise.all([
         fetch(`https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/homework/all`, {
-          headers: { Authorization: `Bearer ${publicAnonKey}` },
+          headers: { Authorization: `Bearer ${token}` },
         }),
         fetch(`https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/challenge/all`, {
-          headers: { Authorization: `Bearer ${publicAnonKey}` },
+          headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
 
@@ -169,12 +176,13 @@ export default function AdminHomeworksPage() {
     try {
       const ext = file.name.split(".").pop() ?? "jpg";
       const path = `screenshots/${itemId}/${Date.now()}.${ext}`;
+      const token = await getAuthToken();
       const res = await fetch(
         `https://${projectId}.supabase.co/storage/v1/object/${storageBucket}/${path}`,
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${publicAnonKey}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": file.type,
             "x-upsert": "true",
           },
@@ -206,7 +214,7 @@ export default function AdminHomeworksPage() {
     try {
       const res = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/${statusEndpointBase}/${itemId}`,
-        { method: "DELETE", headers: { Authorization: `Bearer ${publicAnonKey}` } }
+        { method: "DELETE", headers: { Authorization: `Bearer ${await getAuthToken()}` } }
       );
       if (!res.ok) {
         const payload = await res.json().catch(() => ({}));
@@ -230,7 +238,7 @@ export default function AdminHomeworksPage() {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${publicAnonKey}`,
+            Authorization: `Bearer ${await getAuthToken()}`,
           },
           body: JSON.stringify({ status: newStatus, comment, image_url }),
         }

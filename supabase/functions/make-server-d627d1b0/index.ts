@@ -55,6 +55,27 @@ function adminClient() {
   );
 }
 
+// Extract verified user ID from Authorization header via Supabase SDK
+async function getAuthUserId(authHeader: string | undefined): Promise<string | null> {
+  if (!authHeader) return null;
+  try {
+    const { data: { user }, error } = await createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      {
+        global: { headers: { Authorization: authHeader } },
+        auth: { persistSession: false },
+      }
+    ).auth.getUser();
+    console.log("getAuthUserId user:", user?.id ?? null, "error:", error?.message ?? null);
+    if (error || !user) return null;
+    return user.id;
+  } catch (e) {
+    console.log("getAuthUserId catch:", e);
+    return null;
+  }
+}
+
 // Submit user feedback — stores via KV store
 app.post("/make-server-d627d1b0/feedback/submit", async (c) => {
   try {
@@ -228,6 +249,24 @@ app.put("/make-server-d627d1b0/homework/:homeworkId/status", async (c) => {
     if (image_url !== undefined) updated.image_url = image_url;
     await kv.set(`homework:${homeworkId}`, updated);
 
+    // Send push notification on approval/rejection
+    const userId: string | undefined = existing.user_id;
+    if (userId) {
+      if (status === "approved" || status === "reviewed") {
+        pushToUser(userId, {
+          title: "Домашка проверена! 🎨",
+          body: comment ? `Комментарий: ${comment}` : "Посмотри комментарий ментора",
+          data: { url: "/homework" },
+        });
+      } else if (status === "rejected") {
+        pushToUser(userId, {
+          title: "Домашка требует доработки",
+          body: comment || "Ментор оставил комментарий — посмотри",
+          data: { url: "/homework" },
+        });
+      }
+    }
+
     console.log(`Homework ${homeworkId} status updated to ${status}`);
     return c.json({ success: true, homework: updated });
   } catch (error) {
@@ -321,6 +360,47 @@ app.post("/make-server-d627d1b0/challenge/submit", async (c) => {
   }
 });
 
+// Update challenge status (admin only)
+app.put("/make-server-d627d1b0/challenge/:challengeId/status", async (c) => {
+  try {
+    const challengeId = c.req.param("challengeId");
+    const { status, comment } = await c.req.json();
+
+    if (!["pending", "reviewed", "rejected"].includes(status)) {
+      return c.json({ error: "Invalid status" }, 400);
+    }
+
+    const existing: any = await kv.get(`challenge:${challengeId}`);
+    if (!existing) return c.json({ error: "Challenge not found" }, 404);
+
+    const updated: any = { ...existing, status };
+    if (comment !== undefined) updated.comment = comment;
+    await kv.set(`challenge:${challengeId}`, updated);
+
+    // Send push notification
+    const userId: string | undefined = existing.user_id;
+    if (userId) {
+      if (status === "reviewed") {
+        pushToUser(userId, {
+          title: "Вызов одобрен! 🔥",
+          body: "+800 XP зачислено. Отличная работа!",
+          data: { url: "/challenges" },
+        });
+      } else if (status === "rejected") {
+        pushToUser(userId, {
+          title: "Вызов требует доработки",
+          body: comment || "Ментор оставил комментарий",
+          data: { url: "/challenges" },
+        });
+      }
+    }
+
+    return c.json({ success: true, challenge: updated });
+  } catch (error) {
+    return c.json({ error: `Failed: ${error}` }, 500);
+  }
+});
+
 // New user registered notification
 app.post("/make-server-d627d1b0/user/registered", async (c) => {
   try {
@@ -348,30 +428,47 @@ app.post("/make-server-d627d1b0/user/registered", async (c) => {
   }
 });
 
-// GET /make-server-d627d1b0/user/progress?userId=xxx
+// GET /make-server-d627d1b0/user/progress — userId from JWT
 app.get("/make-server-d627d1b0/user/progress", async (c) => {
-  try {
-    const userId = c.req.query("userId");
-    if (!userId) return c.json({ error: "userId required" }, 400);
+  const userId = await getAuthUserId(c.req.header("Authorization"));
+  if (!userId) return c.json({ error: "Unauthorized" }, 401);
 
-    const rows = await sqlQuery(
-      `SELECT user_id, xp, streak, last_streak_date, level, goal, daily_time, lesson_progress, weekly_challenges, updated_at
+  // Try full query (with profile columns); fall back to base query if columns not yet migrated
+  let rows: any[] = [];
+  let hasProfileCols = true;
+  try {
+    rows = await sqlQuery(
+      `SELECT user_id, xp, streak, last_streak_date, level, goal, daily_time, lesson_progress, weekly_challenges, user_name, user_title, user_avatar, updated_at
        FROM public.user_progress WHERE user_id = '${esc(userId)}' LIMIT 1`
     );
-
-    if (rows.length === 0) return c.json({ found: false });
-    return c.json({ found: true, data: rows[0] });
-  } catch (error) {
-    console.log(`Error getting user progress: ${error}`);
-    return c.json({ error: `Failed: ${error}` }, 500);
+  } catch {
+    hasProfileCols = false;
+    try {
+      rows = await sqlQuery(
+        `SELECT user_id, xp, streak, last_streak_date, level, goal, daily_time, lesson_progress, weekly_challenges, updated_at
+         FROM public.user_progress WHERE user_id = '${esc(userId)}' LIMIT 1`
+      );
+    } catch (err2) {
+      console.log(`Error getting user progress: ${err2}`);
+      return c.json({ error: `Failed: ${err2}` }, 500);
+    }
   }
+
+  if (rows.length === 0) return c.json({ found: false });
+  const row = rows[0];
+  return c.json({
+    found: true,
+    data: hasProfileCols ? row : { ...row, user_name: "", user_title: "", user_avatar: "" },
+  });
 });
 
-// POST /make-server-d627d1b0/user/progress
+// POST /make-server-d627d1b0/user/progress — userId from JWT
 app.post("/make-server-d627d1b0/user/progress", async (c) => {
+  const userId = await getAuthUserId(c.req.header("Authorization"));
+  if (!userId) return c.json({ error: "Unauthorized" }, 401);
+
   try {
     const {
-      userId,
       xp,
       streak,
       lastStreakDate,
@@ -380,39 +477,79 @@ app.post("/make-server-d627d1b0/user/progress", async (c) => {
       dailyTime,
       lessonProgress,
       weeklyChallenges,
+      userName,
+      userTitle,
+      userAvatar,
     } = await c.req.json();
-
-    if (!userId) return c.json({ error: "userId required" }, 400);
 
     const lpJson = JSON.stringify(lessonProgress ?? {}).replace(/'/g, "''");
 
-    await sqlQuery(`
-      INSERT INTO public.user_progress (
-        user_id, xp, streak, last_streak_date, level, goal, daily_time, lesson_progress, weekly_challenges, updated_at
-      )
-      VALUES (
-        '${esc(userId)}',
-        ${xp ?? 0},
-        ${streak ?? 0},
-        '${esc(lastStreakDate ?? "")}',
-        '${esc(level ?? "")}',
-        '${esc(goal ?? "")}',
-        '${esc(dailyTime ?? "")}',
-        '${lpJson}'::jsonb,
-        ${weeklyChallenges ?? 0},
-        NOW()
-      )
-      ON CONFLICT (user_id) DO UPDATE SET
-        xp = EXCLUDED.xp,
-        streak = EXCLUDED.streak,
-        last_streak_date = EXCLUDED.last_streak_date,
-        level = EXCLUDED.level,
-        goal = EXCLUDED.goal,
-        daily_time = EXCLUDED.daily_time,
-        lesson_progress = EXCLUDED.lesson_progress,
-        weekly_challenges = EXCLUDED.weekly_challenges,
-        updated_at = NOW()
-    `);
+    // Try full insert (with profile columns); fall back if columns not yet migrated
+    try {
+      await sqlQuery(`
+        INSERT INTO public.user_progress (
+          user_id, xp, streak, last_streak_date, level, goal, daily_time, lesson_progress, weekly_challenges,
+          user_name, user_title, user_avatar, updated_at
+        )
+        VALUES (
+          '${esc(userId)}',
+          ${xp ?? 0},
+          ${streak ?? 0},
+          '${esc(lastStreakDate ?? "")}',
+          '${esc(level ?? "")}',
+          '${esc(goal ?? "")}',
+          '${esc(dailyTime ?? "")}',
+          '${lpJson}'::jsonb,
+          ${weeklyChallenges ?? 0},
+          '${esc(userName ?? "")}',
+          '${esc(userTitle ?? "")}',
+          '${esc(userAvatar ?? "")}',
+          NOW()
+        )
+        ON CONFLICT (user_id) DO UPDATE SET
+          xp = GREATEST(public.user_progress.xp, EXCLUDED.xp),
+          streak = EXCLUDED.streak,
+          last_streak_date = EXCLUDED.last_streak_date,
+          level = CASE WHEN EXCLUDED.level <> '' THEN EXCLUDED.level ELSE public.user_progress.level END,
+          goal = CASE WHEN EXCLUDED.goal <> '' THEN EXCLUDED.goal ELSE public.user_progress.goal END,
+          daily_time = CASE WHEN EXCLUDED.daily_time <> '' THEN EXCLUDED.daily_time ELSE public.user_progress.daily_time END,
+          lesson_progress = public.user_progress.lesson_progress || EXCLUDED.lesson_progress,
+          weekly_challenges = GREATEST(public.user_progress.weekly_challenges, EXCLUDED.weekly_challenges),
+          user_name = CASE WHEN EXCLUDED.user_name <> '' THEN EXCLUDED.user_name ELSE public.user_progress.user_name END,
+          user_title = CASE WHEN EXCLUDED.user_title <> '' THEN EXCLUDED.user_title ELSE public.user_progress.user_title END,
+          user_avatar = CASE WHEN EXCLUDED.user_avatar <> '' THEN EXCLUDED.user_avatar ELSE public.user_progress.user_avatar END,
+          updated_at = NOW()
+      `);
+    } catch {
+      // Profile columns don't exist yet — save without them (migration pending)
+      await sqlQuery(`
+        INSERT INTO public.user_progress (
+          user_id, xp, streak, last_streak_date, level, goal, daily_time, lesson_progress, weekly_challenges, updated_at
+        )
+        VALUES (
+          '${esc(userId)}',
+          ${xp ?? 0},
+          ${streak ?? 0},
+          '${esc(lastStreakDate ?? "")}',
+          '${esc(level ?? "")}',
+          '${esc(goal ?? "")}',
+          '${esc(dailyTime ?? "")}',
+          '${lpJson}'::jsonb,
+          ${weeklyChallenges ?? 0},
+          NOW()
+        )
+        ON CONFLICT (user_id) DO UPDATE SET
+          xp = GREATEST(public.user_progress.xp, EXCLUDED.xp),
+          streak = EXCLUDED.streak,
+          last_streak_date = EXCLUDED.last_streak_date,
+          level = CASE WHEN EXCLUDED.level <> '' THEN EXCLUDED.level ELSE public.user_progress.level END,
+          goal = CASE WHEN EXCLUDED.goal <> '' THEN EXCLUDED.goal ELSE public.user_progress.goal END,
+          daily_time = CASE WHEN EXCLUDED.daily_time <> '' THEN EXCLUDED.daily_time ELSE public.user_progress.daily_time END,
+          lesson_progress = public.user_progress.lesson_progress || EXCLUDED.lesson_progress,
+          weekly_challenges = GREATEST(public.user_progress.weekly_challenges, EXCLUDED.weekly_challenges),
+          updated_at = NOW()
+      `);
+    }
 
     return c.json({ success: true });
   } catch (error) {
@@ -553,6 +690,208 @@ app.post("/make-server-d627d1b0/message/send", async (c) => {
     return c.json({ success: true });
   } catch (error) {
     return c.json({ error: `Failed: ${error}` }, 500);
+  }
+});
+
+// ── Web Push ──────────────────────────────────────────────────────────────────
+
+const VAPID_PUBLIC_KEY  = "BL_hbaNX4_LKT4o90dgOTkXXUXZ3ASR2wQKw1VR2iMvr0Py8cSMPwxdCtlCawBqg3yb7fVGSCRPCMx4O1RumsuE";
+const VAPID_PRIVATE_KEY = Deno.env.get("VAPID_PRIVATE_KEY") ?? "";
+const VAPID_SUBJECT     = "mailto:admin@skillum.ru";
+
+/** Encode base64url string to Uint8Array */
+function b64uDecode(s: string): Uint8Array {
+  const pad = "=".repeat((4 - s.length % 4) % 4);
+  return Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/") + pad), c => c.charCodeAt(0));
+}
+
+/** Encode Uint8Array to base64url */
+function b64uEncode(buf: Uint8Array): string {
+  return btoa(String.fromCharCode(...buf)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+}
+
+/** Build a VAPID JWT and send a Web Push message */
+async function sendWebPush(subscription: { endpoint: string; keys: { p256dh: string; auth: string } }, payload: object): Promise<boolean> {
+  try {
+    const endpoint = new URL(subscription.endpoint);
+    const audience = `${endpoint.protocol}//${endpoint.host}`;
+
+    // ── JWT ──
+    const header  = b64uEncode(new TextEncoder().encode(JSON.stringify({ typ: "JWT", alg: "ES256" })));
+    const claims  = b64uEncode(new TextEncoder().encode(JSON.stringify({
+      aud: audience,
+      exp: Math.floor(Date.now() / 1000) + 43200, // 12h
+      sub: VAPID_SUBJECT,
+    })));
+    const sigInput = `${header}.${claims}`;
+
+    const privKey = await crypto.subtle.importKey(
+      "raw", b64uDecode(VAPID_PRIVATE_KEY),
+      { name: "ECDSA", namedCurve: "P-256" },
+      false, ["sign"]
+    );
+    const sigBuf = await crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, privKey, new TextEncoder().encode(sigInput));
+    const jwt = `${sigInput}.${b64uEncode(new Uint8Array(sigBuf))}`;
+
+    // ── Encrypt payload (RFC 8291 / aesgcm) ──
+    const rawPayload = JSON.stringify(payload);
+    const clientPubKey = await crypto.subtle.importKey("raw", b64uDecode(subscription.keys.p256dh), { name: "ECDH", namedCurve: "P-256" }, true, []);
+    const serverKeyPair = await crypto.subtle.generateKey({ name: "ECDH", namedCurve: "P-256" }, true, ["deriveBits"]);
+    const serverPubRaw  = new Uint8Array(await crypto.subtle.exportKey("raw", serverKeyPair.publicKey));
+    const sharedBits    = await crypto.subtle.deriveBits({ name: "ECDH", public: clientPubKey }, serverKeyPair.privateKey, 256);
+
+    const authKey  = b64uDecode(subscription.keys.auth);
+    const salt     = crypto.getRandomValues(new Uint8Array(16));
+
+    // HKDF for content encryption key & nonce
+    const hkdfBase = await crypto.subtle.importKey("raw", new Uint8Array(sharedBits), { name: "HKDF" }, false, ["deriveBits"]);
+    const ikm = await crypto.subtle.deriveBits(
+      { name: "HKDF", hash: "SHA-256", salt: authKey, info: new TextEncoder().encode("Content-Encoding: auth\0") },
+      hkdfBase, 256
+    );
+    const keyBase = await crypto.subtle.importKey("raw", new Uint8Array(ikm), { name: "HKDF" }, false, ["deriveBits"]);
+    const keyInfo  = buildInfo("aesgcm", authKey, serverPubRaw, b64uDecode(subscription.keys.p256dh));
+    const nonceInfo = buildInfo("nonce", authKey, serverPubRaw, b64uDecode(subscription.keys.p256dh));
+    const aesKeyBits   = await crypto.subtle.deriveBits({ name: "HKDF", hash: "SHA-256", salt, info: keyInfo  }, keyBase, 128);
+    const nonceBits    = await crypto.subtle.deriveBits({ name: "HKDF", hash: "SHA-256", salt, info: nonceInfo }, keyBase, 96);
+    const aesKey = await crypto.subtle.importKey("raw", aesKeyBits, "AES-GCM", false, ["encrypt"]);
+    const paddedPayload = prependPadding(new TextEncoder().encode(rawPayload));
+    const ciphertext = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv: nonceBits }, aesKey, paddedPayload));
+
+    const res = await fetch(subscription.endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/octet-stream",
+        "Content-Encoding": "aesgcm",
+        "Encryption": `salt=${b64uEncode(salt)}`,
+        "Crypto-Key": `dh=${b64uEncode(serverPubRaw)};p256ecdsa=${VAPID_PUBLIC_KEY}`,
+        "Authorization": `WebPush ${jwt}`,
+        "TTL": "86400",
+      },
+      body: ciphertext,
+    });
+    return res.status === 201 || res.status === 200 || res.status === 204;
+  } catch (err) {
+    console.error("[push] sendWebPush error:", err);
+    return false;
+  }
+}
+
+function buildInfo(type: string, authKey: Uint8Array, serverPub: Uint8Array, clientPub: Uint8Array): Uint8Array {
+  const label = new TextEncoder().encode(`Content-Encoding: ${type}\0P-256\0`);
+  const buf = new Uint8Array(label.length + 2 + clientPub.length + 2 + serverPub.length);
+  let i = 0;
+  buf.set(label, i); i += label.length;
+  new DataView(buf.buffer).setUint16(i, clientPub.length); i += 2;
+  buf.set(clientPub, i); i += clientPub.length;
+  new DataView(buf.buffer).setUint16(i, serverPub.length); i += 2;
+  buf.set(serverPub, i);
+  return buf;
+}
+
+function prependPadding(data: Uint8Array): Uint8Array {
+  const out = new Uint8Array(2 + data.length);
+  new DataView(out.buffer).setUint16(0, 0); // 0 bytes of padding
+  out.set(data, 2);
+  return out;
+}
+
+/** Save push subscription for a user */
+app.post("/make-server-d627d1b0/push/subscribe", async (c) => {
+  try {
+    const { userId, subscription } = await c.req.json();
+    if (!userId || !subscription?.endpoint) return c.json({ error: "Missing fields" }, 400);
+    await kv.set(`push_sub:${userId}`, subscription);
+    console.log(`[push] Saved subscription for ${userId}`);
+    return c.json({ success: true });
+  } catch (err) {
+    return c.json({ error: String(err) }, 500);
+  }
+});
+
+/** Remove push subscription */
+app.post("/make-server-d627d1b0/push/unsubscribe", async (c) => {
+  try {
+    const { userId } = await c.req.json();
+    if (!userId) return c.json({ error: "Missing userId" }, 400);
+    await kv.delete(`push_sub:${userId}`);
+    return c.json({ success: true });
+  } catch (err) {
+    return c.json({ error: String(err) }, 500);
+  }
+});
+
+/** Internal helper: send push to userId */
+async function pushToUser(userId: string, payload: { title: string; body: string; data?: object }): Promise<boolean> {
+  const sub: any = await kv.get(`push_sub:${userId}`);
+  if (!sub) return false;
+  return sendWebPush(sub, { icon: "/icon-192.png", badge: "/icon-192.png", ...payload });
+}
+
+// ── Daily push reminder (cron) ─────────────────────────────────────────────────
+app.post("/make-server-d627d1b0/cron/daily-push", async (c) => {
+  // Verify cron secret (set CRON_SECRET in Supabase secrets)
+  const cronSecret = Deno.env.get("CRON_SECRET") ?? "";
+  if (cronSecret && c.req.header("x-cron-secret") !== cronSecret) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  try {
+    const supabase = adminClient();
+
+    // Get all push subscriptions from KV store
+    const { data: subRows } = await supabase
+      .from("kv_store_d627d1b0")
+      .select("key, value")
+      .like("key", "push_sub:%");
+
+    if (!subRows?.length) return c.json({ sent: 0, total: 0 });
+
+    const userIds = subRows.map((r: { key: string }) => r.key.replace("push_sub:", ""));
+
+    // Get progress for all subscribed users
+    const escapedIds = userIds.map((id: string) => `'${esc(id)}'`).join(", ");
+    const rows = await sqlQuery(
+      `SELECT user_id, streak, last_streak_date FROM public.user_progress WHERE user_id IN (${escapedIds})`
+    );
+
+    // Today in Moscow time (UTC+3), format YYYY-MM-DD
+    const todayMoscow = new Date(Date.now() + 3 * 60 * 60 * 1000)
+      .toISOString()
+      .slice(0, 10);
+
+    let sent = 0;
+
+    for (const row of rows) {
+      const sub = subRows.find((s: { key: string }) => s.key === `push_sub:${row.user_id}`)?.value;
+      if (!sub) continue;
+
+      const lastDate = (row.last_streak_date ?? "").slice(0, 10);
+      const studiedToday = lastDate === todayMoscow;
+      if (studiedToday) continue; // already studied today — don't spam
+
+      const streak = row.streak ?? 0;
+      const payload = streak > 0
+        ? {
+            title: `Стрик ${streak} ${streak === 1 ? "день" : streak < 5 ? "дня" : "дней"} под угрозой! 🔥`,
+            body: "Зайди на 5 минут — сохрани прогресс",
+            data: { url: "/lessons" },
+          }
+        : {
+            title: "Время учиться! 📚",
+            body: "5 минут в день — и скоро ты станешь дизайнером",
+            data: { url: "/lessons" },
+          };
+
+      const ok = await sendWebPush(sub, { icon: "/icon-192.png", badge: "/icon-192.png", ...payload });
+      if (ok) sent++;
+    }
+
+    console.log(`[cron/daily-push] Sent ${sent}/${rows.length} reminders (${subRows.length} subs total)`);
+    return c.json({ sent, total: rows.length });
+  } catch (err) {
+    console.error("[cron/daily-push] Error:", err);
+    return c.json({ error: String(err) }, 500);
   }
 });
 

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useUserSafe, type LessonProgress } from "../../context/UserContext";
 import { LESSONS } from "../../data/lessons";
+import { hapticCorrect, hapticWrong } from "../../utils/haptics";
 
 export interface AccordionState {
   selectedAnswer: string | null;
@@ -133,7 +134,9 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     );
   }, [resolvedLessonId, storageKey, totalSections, lastSectionIndex, userCtx?.user?.id]);
 
-  const isUnlocked = (i: number): boolean => i <= maxReached;
+  const completedUpTo = accordionStates.reduce((max, s, idx) => s.completed ? Math.max(max, idx + 1) : max, 0);
+  const effectiveMaxReached = Math.max(maxReached, completedUpTo);
+  const isUnlocked = (i: number): boolean => i <= effectiveMaxReached;
 
   // Handle URL section parameter
   useEffect(() => {
@@ -176,12 +179,13 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
   };
 
   const handleAnswerSelect = (sectionIndex: number, answer: string, isCorrect: boolean) => {
+    isCorrect ? hapticCorrect() : hapticWrong();
     const newStates = [...accordionStates];
     newStates[sectionIndex] = { 
       selectedAnswer: answer, 
       showFeedback: true, 
       completed: isCorrect,
-      hasIncorrectAnswer: !isCorrect || newStates[sectionIndex].hasIncorrectAnswer
+      hasIncorrectAnswer: !isCorrect || (newStates[sectionIndex]?.hasIncorrectAnswer ?? false)
     };
     setAccordionStates(newStates);
 

@@ -13,6 +13,7 @@ import { getLeague } from "../pages/LeaguePage";
 import { useUserSafe } from "../context/UserContext";
 import { NOTIF_COUNT_KEY, NOTIF_INITIAL_UNREAD } from "../pages/NotificationsPage";
 import { ReportErrorModal } from "../pages/quiz/ReportErrorModal";
+import { FeedbackModal } from "./FeedbackModal";
 
 /** Read + track the global notification unread count from localStorage */
 function useNotifCount() {
@@ -380,6 +381,7 @@ function NavItems({ activePath }: { activePath: string }) {
 function SidebarFooter() {
   const navigate = useNavigate();
   const [showReport, setShowReport] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
   const handleResetData = () => {
     if (confirm('Вы уверены, что хотите сбросить весь прогресс? Это действие нельзя отменить.')) {
       try {
@@ -417,7 +419,7 @@ function SidebarFooter() {
       </div>
 
       {/* Написать отзыв — одна кнопка с иконкой подарка */}
-      <div className="group flex items-center gap-[8px] h-[40px] px-[12px] rounded-[12px] shrink-0 w-full cursor-pointer select-none hover:bg-[#343e42]">
+      <div onClick={() => setShowFeedback(true)} className="group flex items-center gap-[8px] h-[40px] px-[12px] rounded-[12px] shrink-0 w-full cursor-pointer select-none hover:bg-[#343e42]">
         <div className="relative shrink-0 size-[20px] flex items-center justify-center">
           <FreeIconGift />
         </div>
@@ -438,6 +440,7 @@ function SidebarFooter() {
       </div>
 
       {showReport && <ReportErrorModal onClose={() => setShowReport(false)} />}
+      {showFeedback && <FeedbackModal onClose={() => setShowFeedback(false)} />}
     </div>
   );
 }

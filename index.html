@@ -7,13 +7,14 @@
     <meta http-equiv="Content-Language" content="ru" />
     <meta name="google" content="notranslate" />
     <meta name="theme-color" content="#282F33" />
+    <meta name="color-scheme" content="dark" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Skillum" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="icon" href="/app-icon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <title>uxeo 2.0 (beta) (КВИЗЫ)</title>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-K75VZFCQYC"></script>
@@ -25,7 +26,46 @@
     </script>
   </head>
 
+  <style>
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      background-color: #1e262a;
+      background-image: url('/bg-splash.jpg');
+      background-size: cover;
+      background-position: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #splash.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    #splash img {
+      width: min(286px, 52vw);
+      height: auto;
+    }
+    #splash p {
+      font-family: 'Roboto Condensed', sans-serif;
+      font-size: 16px;
+      line-height: 1.45;
+      color: rgba(121, 133, 137, 0.7);
+      letter-spacing: 0.02em;
+      text-align: center;
+      margin: 0;
+    }
+  </style>
   <body>
+    <div id="splash">
+      <img src="/logo-splash.svg" alt="UXEO" />
+      <p>Интерактивное обучение дизайну<br>через практику</p>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

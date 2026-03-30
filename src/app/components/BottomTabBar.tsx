@@ -11,6 +11,7 @@ import { MoreSheet } from "./MoreSheet";
 import { getLeague } from "../pages/LeaguePage";
 import { useUserSafe } from "../context/UserContext";
 import { NOTIF_COUNT_KEY, NOTIF_INITIAL_UNREAD } from "../pages/NotificationsPage";
+import { hapticTap } from "../utils/haptics";
 
 // ── Figma icon components ─────────────────────────────────────────────────────
 
@@ -238,7 +239,7 @@ export default function BottomTabBar() {
       <nav
         className="flex-none relative z-50 rounded-tl-[15px] rounded-tr-[15px]"
         style={{
-          height: "calc(52px + env(safe-area-inset-bottom, 0px) + 15px)",
+          height: "calc(52px + max(env(safe-area-inset-bottom, 0px), 34px))",
           background: "rgba(45,54,58,0.95)",
           backdropFilter: "blur(14px)",
           WebkitBackdropFilter: "blur(14px)",
@@ -261,7 +262,7 @@ export default function BottomTabBar() {
             return (
               <button
                 key={tab.key}
-                onClick={() => navigate(tab.path)}
+                onClick={() => { hapticTap(); navigate(tab.path); }}
                 className="flex flex-col items-center justify-center flex-1 h-full cursor-pointer border-0 outline-none active:scale-90 transition-transform duration-75 relative"
                 style={{ background: "transparent" }}
               >
@@ -278,7 +279,7 @@ export default function BottomTabBar() {
 
           {/* More (···) button */}
           <button
-            onClick={() => setShowMore(true)}
+            onClick={() => { hapticTap(); setShowMore(true); }}
             className="flex flex-col items-center justify-center flex-1 h-full cursor-pointer border-0 outline-none active:scale-90 transition-transform duration-75 relative"
             style={{ background: "transparent" }}
           >

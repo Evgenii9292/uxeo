@@ -57,8 +57,8 @@ app.post("/make-server-d627d1b0/feedback/submit", async (c) => {
     console.log(`Feedback submitted: ${feedbackId} | rating=${rating} | email=${email}`);
 
     // Send Telegram notification
-    const tgToken = Deno.env.get("TELEGRAM_BOT_TOKEN") ?? "8435487532:AAGwv6tK-uF3aR8OzewOReWDtJwjeXS1-js";
-    const tgChatId = Deno.env.get("TELEGRAM_CHAT_ID") ?? "573283449";
+    const tgToken = Deno.env.get("TELEGRAM_BOT_TOKEN");
+    const tgChatId = Deno.env.get("TELEGRAM_CHAT_ID");
     if (tgToken && tgChatId) {
       const stars = "⭐".repeat(rating);
       const msg = [
@@ -88,7 +88,7 @@ app.post("/make-server-d627d1b0/feedback/submit", async (c) => {
 // List all feedback (admin)
 app.get("/make-server-d627d1b0/feedback/list", async (c) => {
   const secret = c.req.query("secret");
-  const adminSecret = Deno.env.get("ADMIN_SECRET") ?? "skillum_admin_2025";
+  const adminSecret = Deno.env.get("ADMIN_SECRET") ?? "";
   if (secret !== adminSecret) {
     return c.json({ error: "Unauthorized" }, 401);
   }
@@ -125,8 +125,8 @@ app.post("/make-server-d627d1b0/report/submit", async (c) => {
     await kv.set("report_all", allIds);
 
     // Telegram notification
-    const tgToken = Deno.env.get("TELEGRAM_BOT_TOKEN") ?? "8435487532:AAGwv6tK-uF3aR8OzewOReWDtJwjeXS1-js";
-    const tgChatId = Deno.env.get("TELEGRAM_CHAT_ID") ?? "573283449";
+    const tgToken = Deno.env.get("TELEGRAM_BOT_TOKEN");
+    const tgChatId = Deno.env.get("TELEGRAM_CHAT_ID");
     const msg = [
       `🐛 *Новый репорт об ошибке*`,
       ``,
@@ -153,7 +153,7 @@ app.post("/make-server-d627d1b0/report/submit", async (c) => {
 // List all reports (admin)
 app.get("/make-server-d627d1b0/report/list", async (c) => {
   const secret = c.req.query("secret");
-  const adminSecret = Deno.env.get("ADMIN_SECRET") ?? "skillum_admin_2025";
+  const adminSecret = Deno.env.get("ADMIN_SECRET") ?? "";
   if (secret !== adminSecret) {
     return c.json({ error: "Unauthorized" }, 401);
   }
@@ -189,6 +189,36 @@ function adminClient() {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     { auth: { persistSession: false } },
   );
+}
+
+/** Verifies JWT and checks that caller owns the given userId. Returns 401/403 response or null. */
+async function requireSelf(c: any, userId: string): Promise<Response | null> {
+  const authHeader = c.req.header("Authorization") ?? "";
+  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+  if (!token) return c.json({ error: "Unauthorized" }, 401);
+
+  const supabase = adminClient();
+  const { data, error } = await supabase.auth.getUser(token);
+  if (error || !data.user) return c.json({ error: "Unauthorized" }, 401);
+  if (data.user.id !== userId) return c.json({ error: "Forbidden" }, 403);
+
+  return null; // OK
+}
+
+/** Verifies JWT and checks that caller is the admin user. Returns 401 response or null. */
+async function requireAdmin(c: any): Promise<Response | null> {
+  const authHeader = c.req.header("Authorization") ?? "";
+  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+  if (!token) return c.json({ error: "Unauthorized" }, 401);
+
+  const supabase = adminClient();
+  const { data, error } = await supabase.auth.getUser(token);
+  if (error || !data.user) return c.json({ error: "Unauthorized" }, 401);
+
+  const adminUserId = Deno.env.get("ADMIN_USER_ID") ?? "";
+  if (!adminUserId || data.user.id !== adminUserId) return c.json({ error: "Forbidden" }, 403);
+
+  return null; // OK
 }
 
 // Submit homework
@@ -273,6 +303,8 @@ app.get("/make-server-d627d1b0/homework/user/:userId", async (c) => {
 
 // Get all homeworks (admin)
 app.get("/make-server-d627d1b0/homework/all", async (c) => {
+  const authErr = await requireAdmin(c);
+  if (authErr) return authErr;
   try {
     const rows = await sqlQuery(
       `SELECT id, user_id, lesson_name, lesson_id, figma_link, status, comment, image_url, created_at FROM public.homeworks ORDER BY created_at DESC`
@@ -286,6 +318,8 @@ app.get("/make-server-d627d1b0/homework/all", async (c) => {
 
 // Update homework status (admin)
 app.put("/make-server-d627d1b0/homework/:homeworkId/status", async (c) => {
+  const authErr = await requireAdmin(c);
+  if (authErr) return authErr;
   try {
     const homeworkId = c.req.param("homeworkId");
     const { status, comment, image_url } = await c.req.json();
@@ -319,6 +353,8 @@ app.put("/make-server-d627d1b0/homework/:homeworkId/status", async (c) => {
 
 // Delete homework (admin)
 app.delete("/make-server-d627d1b0/homework/:homeworkId", async (c) => {
+  const authErr = await requireAdmin(c);
+  if (authErr) return authErr;
   try {
     const homeworkId = c.req.param("homeworkId");
     const result = await sqlQuery(
@@ -374,6 +410,8 @@ app.post("/make-server-d627d1b0/challenge/submit", async (c) => {
 
 // Get all challenges (admin)
 app.get("/make-server-d627d1b0/challenge/all", async (c) => {
+  const authErr = await requireAdmin(c);
+  if (authErr) return authErr;
   try {
     const rows = await sqlQuery(
       `SELECT id, user_id, challenge_name, challenge_id, figma_link, status, comment, image_url, created_at
@@ -389,6 +427,8 @@ app.get("/make-server-d627d1b0/challenge/all", async (c) => {
 
 // Update challenge status (admin)
 app.put("/make-server-d627d1b0/challenge/:challengeRowId/status", async (c) => {
+  const authErr = await requireAdmin(c);
+  if (authErr) return authErr;
   try {
     const challengeRowId = c.req.param("challengeRowId");
     const { status, comment, image_url } = await c.req.json();
@@ -413,6 +453,8 @@ app.put("/make-server-d627d1b0/challenge/:challengeRowId/status", async (c) => {
 
 // Delete challenge (admin)
 app.delete("/make-server-d627d1b0/challenge/:challengeRowId", async (c) => {
+  const authErr = await requireAdmin(c);
+  if (authErr) return authErr;
   try {
     const challengeRowId = c.req.param("challengeRowId");
     const result = await sqlQuery(
@@ -525,6 +567,9 @@ app.post("/make-server-d627d1b0/user/progress", async (c) => {
   try {
     const { userId, xp, streak, lastStreakDate, level, goal, dailyTime, lessonProgress, weeklyChallenges } = await c.req.json();
     if (!userId) return c.json({ error: "userId required" }, 400);
+
+    const authErr = await requireSelf(c, userId);
+    if (authErr) return authErr;
 
     const lpJson = JSON.stringify(lessonProgress ?? {}).replace(/'/g, "''");
 
@@ -649,7 +694,7 @@ app.delete("/make-server-d627d1b0/notifications/:id", async (c) => {
 // Inserts a daily_reminder for each user who wasn't active today.
 // Protected by x-admin-secret header or ?secret= query param.
 app.post("/make-server-d627d1b0/notifications/send-daily", async (c) => {
-  const adminSecret = Deno.env.get("ADMIN_SECRET") ?? "skillum_admin_2025";
+  const adminSecret = Deno.env.get("ADMIN_SECRET") ?? "";
   const secret = c.req.header("x-admin-secret") ?? c.req.query("secret");
   if (secret !== adminSecret) {
     return c.json({ error: "Unauthorized" }, 401);

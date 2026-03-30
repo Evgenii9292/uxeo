@@ -54,9 +54,13 @@ function TyZdesAnnotation({ hasStarted, mobile }: { hasStarted: boolean; mobile?
     );
   }
 
+  // Desktop: 20% smaller than original; Mobile: original size (CSS scale(0.75) applied externally)
+  const startScale = mobile ? 1.05 : 1.05 * 0.8;
+  const startW = Math.round(87 * startScale);
+  const startH = Math.round(105 * startScale);
   return (
-    <div style={{ width: Math.round(87 * 1.05), height: Math.round(105 * 1.05), position: "relative" }}>
-      <img src={roadmapStart} width={Math.round(87 * 1.05)} height={Math.round(105 * 1.05)} alt="" loading="lazy" />
+    <div style={{ width: startW, height: startH, position: "relative" }}>
+      <img src={roadmapStart} width={startW} height={startH} alt="" loading="lazy" />
     </div>
   );
 }
@@ -361,10 +365,10 @@ export function Roadmap({
               const annotW = hasStarted
                 ? Math.round(194.895 * 0.56 * 0.75)
                 : Math.round(87 * 1.05 * 0.75);
-              left = pos.x - annotW - (hasStarted ? 14 : 21);
+              left = pos.x - annotW - (hasStarted ? 14 : 17);
               top  = pos.y + NODE_H * 0.4 - 22;
             } else {
-              left = pos.x - (hasStarted ? 70 : 80);
+              left = pos.x - (hasStarted ? 70 : 86);
               top  = pos.y - 30;
             }
 
@@ -376,7 +380,7 @@ export function Roadmap({
                   top,
                   transform: mobile
                     ? "scale(0.75) rotate(-13deg)"
-                    : undefined,
+                    : !hasStarted ? "rotate(-10deg)" : undefined,
                   transformOrigin: "top left",
                 }}
               >

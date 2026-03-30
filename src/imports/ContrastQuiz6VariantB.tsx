@@ -272,7 +272,7 @@ function Container() {
 
 export default function ContrastQuiz6VariantB() {
   return (
-    <div className="bg-white content-stretch flex flex-col items-start overflow-clip pt-[10px] px-[10px] relative rounded-[14.99px] size-full" data-name="ContrastQuiz6VariantB">
+    <div className="bg-[#343e42] content-stretch flex flex-col items-start overflow-clip pt-[10px] px-[10px] relative rounded-[14.99px] size-full" data-name="ContrastQuiz6VariantB">
       <Container />
     </div>
   );

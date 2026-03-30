@@ -4,7 +4,7 @@ import Layout from "../components/Layout";
 import RightWidgets from "../components/RightWidgets";
 import { useUserSafe } from "../context/UserContext";
 import { useWindowWidth } from "../hooks/useWindowWidth";
-import { LESSON_CONTENT, type LessonContentData } from "../data/lesson-content";
+import type { LessonContentData } from "../data/lesson-content";
 import { TimeIcon, TheoryLevelIcon } from "./theory/ui/Icons";
 import { AccordionSectionDesktop } from "./theory/components/AccordionSection";
 import { useTheory } from "./theory/useTheory";
@@ -20,7 +20,14 @@ export default function TheoryPage() {
   const lessonId = searchParams.get("lessonId")
     || (location.state as any)?.lessonId
     || (location.pathname === "/contrast" ? "contrast-lesson" : "color-lesson");
-  const lessonData: LessonContentData = LESSON_CONTENT[lessonId] || LESSON_CONTENT["color-lesson"];
+
+  // Lazy-load lesson content — lesson-content.tsx is a separate chunk
+  const [lessonData, setLessonData] = useState<LessonContentData | null>(null);
+  useEffect(() => {
+    import("../data/lesson-content").then(mod => {
+      setLessonData(mod.LESSON_CONTENT[lessonId] || mod.LESSON_CONTENT["color-lesson"]);
+    });
+  }, [lessonId]);
 
   const vw = useWindowWidth();
   const isMobile = vw < 768;
@@ -28,6 +35,18 @@ export default function TheoryPage() {
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [feedbackRating, setFeedbackRating] = useState(0);
   const [feedbackText, setFeedbackText] = useState("");
+
+  // All hooks must be called unconditionally
+  const heroRef = useRef<HTMLDivElement>(null);
+  const [scrollY, setScrollY] = useState(0);
+  useEffect(() => {
+    if (isMobile) return;
+    const el = heroRef.current?.closest(".overflow-y-auto") as HTMLElement | null;
+    if (!el) return;
+    const onScroll = () => setScrollY(el.scrollTop);
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [isMobile]);
 
   const {
     mobileScrollRef,
@@ -41,7 +60,14 @@ export default function TheoryPage() {
     handleToggle,
     handleAnswerSelect,
     handleContinue,
-  } = useTheory(isMobile, lessonId, lessonData.sections.length);
+  } = useTheory(isMobile, lessonId, lessonData?.sections.length ?? 5);
+
+  // Loading state — dark background matches app theme, no flash
+  if (!lessonData) {
+    return <div style={{ height: "100%", background: "#282F33" }} />;
+  }
+
+  const shift   = scrollY * 0.25;
 
   if (isMobile) {
     return (
@@ -72,18 +98,6 @@ export default function TheoryPage() {
     );
   }
 
-  const heroRef = useRef<HTMLDivElement>(null);
-  const [scrollY, setScrollY] = useState(0);
-  useEffect(() => {
-    const el = heroRef.current?.closest(".overflow-y-auto") as HTMLElement | null;
-    if (!el) return;
-    const onScroll = () => setScrollY(el.scrollTop);
-    el.addEventListener("scroll", onScroll, { passive: true });
-    return () => el.removeEventListener("scroll", onScroll);
-  }, []);
-  const shift   = scrollY * 0.25;
-  const opacity = Math.max(0.5, 1 - scrollY / 180);
-
   return (
     <div key={lessonId} className="theory-page size-full">
       <Layout title="Теория" showBack backPath="/lessons" rightContent={<RightWidgets />} leftWidth="660px" rightWidth="320px">
@@ -93,7 +107,7 @@ export default function TheoryPage() {
             <div className="relative flex items-center justify-center" style={{ width: 160, height: 160 }}>
               <img src={getLessonIcon(lessonId)} alt="" style={{ width: 128, height: 128, objectFit: "contain", filter: "brightness(0) invert(1)", maskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", transform: `translateY(${shift}px)`, opacity: Math.max(0.5, 1 - scrollY / 180), willChange: "transform, opacity", position: "relative", zIndex: 1 }} />
             </div>
-            <div className="flex items-center justify-between w-full">
+            <div className="flex items-end justify-between w-full">
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[35px] text-[#f4f5fc] text-[32px]">
                 {lessonData.title}
               </p>
@@ -109,9 +123,17 @@ export default function TheoryPage() {
                   <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-none text-[#798589] text-[13px] whitespace-nowrap">
                     Микроквизы
                   </p>
-                  <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-none text-[#F1F2FB] text-[13px] whitespace-nowrap">
-                    {completedSectionsCount}/{totalSections}
-                  </p>
+                  {completedSectionsCount === totalSections ? (
+                    <div className="flex items-center justify-center w-[18px] h-[18px] rounded-full bg-[#00d043]">
+                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                        <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                  ) : (
+                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-none text-[#F1F2FB] text-[13px] whitespace-nowrap">
+                      {completedSectionsCount}/{totalSections}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

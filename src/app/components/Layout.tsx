@@ -213,7 +213,7 @@ export default function Layout({
             style={{
               maxWidth: `${MAX_CONTENT_ZONE}px`,
               paddingLeft: `${SIDE_PAD}px`,
-              paddingRight: `${SIDE_PAD}px`,
+              paddingRight: `${ZONE_GAP}px`,
               marginLeft: 'auto',
               marginRight: 'auto',
             }}
@@ -265,7 +265,7 @@ export default function Layout({
                 className="flex flex-col gap-[36px] items-start w-full pb-[40px]"
                 style={{
                   paddingLeft: `${SIDE_PAD}px`,
-                  paddingRight: `${SIDE_PAD}px`,
+                  paddingRight: `${ZONE_GAP}px`,
                   paddingTop: stickyBar ? '16px' : '36px',
                 }}
               >

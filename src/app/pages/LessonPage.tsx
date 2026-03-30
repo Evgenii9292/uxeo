@@ -207,18 +207,6 @@ export default function LessonPage() {
       const threshold  = totalQ > 0 ? unlockThreshold(totalQ) : Infinity;
       const isCompleted = effectiveCorrect >= threshold;
 
-      console.log("[LessonPage] useMemo check:", {
-        lessonId: lesson.lessonId,
-        quizId: lesson.quizId,
-        progressKey,
-        effectiveCorrect,
-        totalQFromLessons: lesson.totalQuestions,
-        totalQFromBank: QUIZ_BANK[progressKey]?.length ?? "n/a",
-        totalQUsed: totalQ,
-        threshold,
-        isCompleted,
-        calculatedPct: totalQ > 0 ? effectiveCorrect / totalQ : 0,
-      });
 
       let status: LessonStatus;
       if (totalQ === 0) {

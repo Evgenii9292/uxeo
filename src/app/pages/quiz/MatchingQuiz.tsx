@@ -156,6 +156,22 @@ export function MatchingQuiz({
   const bottomCardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const bottomDotRefs  = useRef<Record<string, HTMLDivElement | null>>({});
 
+  // ── Touch drag refs (mobile) ───────────────────────────────────────────────
+  // Refs mirror state so native (non-passive) handlers always see current values
+  const selectedIdRef     = useRef<string | null>(null);
+  const selectedBottomRef = useRef<string | null>(null);
+  const touchStartPos     = useRef({ x: 0, y: 0 });
+  const touchIsDrag       = useRef(false);
+  const touchHandled      = useRef(false); // suppress click that fires after touch
+
+  // Keep refs in sync with state
+  useEffect(() => { selectedIdRef.current = selectedId; }, [selectedId]);
+  useEffect(() => { selectedBottomRef.current = selectedBottomId; }, [selectedBottomId]);
+
+  // Stable wrappers that update ref + state atomically
+  const selectTop    = (id: string | null) => { selectedIdRef.current = id;     setSelectedId(id); };
+  const selectBottom = (id: string | null) => { selectedBottomRef.current = id; setSelectedBottomId(id); };
+
   // ── Derived ────────────────────────────────────────────────────────────────
 
   const allConnected = pairs.every((p) => connections[p.id] !== undefined);
@@ -163,6 +179,9 @@ export function MatchingQuiz({
   const vw = useWindowWidth();
   const isMobile = vw < 1024; // mobile + tablet both use the compact tap-to-connect layout
   const quizW = Math.min(1042, vw - 48);
+
+  // Viewport height — used to scale card/container sizes on small screens
+  const vh = typeof window !== 'undefined' ? window.innerHeight : 800;
 
   // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -310,6 +329,70 @@ export function MatchingQuiz({
       setHoveredTopId(null);
     }
   };
+
+  // ── Native touch handlers for mobile drag (non-passive to allow preventDefault) ──
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (!selectedIdRef.current && !selectedBottomRef.current) return;
+      const t = e.touches[0];
+      const dx = t.clientX - touchStartPos.current.x;
+      const dy = t.clientY - touchStartPos.current.y;
+      if (Math.sqrt(dx * dx + dy * dy) > 6) {
+        touchIsDrag.current = true;
+        e.preventDefault(); // prevent page scroll while dragging
+      }
+      setCursor({ x: t.clientX, y: t.clientY });
+      if (selectedIdRef.current)     setHoveredBottomId(findBottomAt(t.clientX, t.clientY));
+      if (selectedBottomRef.current) setHoveredTopId(findTopAt(t.clientX, t.clientY));
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (!touchIsDrag.current) return; // tap already handled in onTouchStart
+      const t = e.changedTouches[0];
+
+      if (selectedIdRef.current) {
+        const tId = selectedIdRef.current;
+        const bottomId = findBottomAt(t.clientX, t.clientY);
+        const newTopId = findTopAt(t.clientX, t.clientY);
+        if (bottomId) {
+          setConnections(prev => {
+            const n = { ...prev };
+            for (const [k, v] of Object.entries(n)) { if (v === bottomId && k !== tId) delete n[k]; }
+            n[tId] = bottomId;
+            return n;
+          });
+          playConnectSound();
+          selectTop(null); setCursor(null); setHoveredBottomId(null);
+        } else if (newTopId && newTopId !== tId) {
+          setConnections(prev => { const n = { ...prev }; delete n[newTopId]; return n; });
+          selectTop(newTopId); selectBottom(null); setCursor(null);
+        } else {
+          selectTop(null); setCursor(null); setHoveredBottomId(null);
+        }
+      } else if (selectedBottomRef.current) {
+        const bId = selectedBottomRef.current;
+        const topId = findTopAt(t.clientX, t.clientY);
+        if (topId) {
+          setConnections(prev => { const n = { ...prev }; delete n[topId]; n[topId] = bId; return n; });
+          playConnectSound();
+          selectBottom(null); setCursor(null); setHoveredTopId(null);
+        } else {
+          selectBottom(null); setCursor(null); setHoveredTopId(null);
+        }
+      }
+    };
+
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    el.addEventListener('touchend', onTouchEnd);
+    return () => {
+      el.removeEventListener('touchmove', onTouchMove);
+      el.removeEventListener('touchend', onTouchEnd);
+    };
+  }, []); // stable: uses only refs, not state closures
 
   // ── Check answers (on Continue press) ────────────────────────────────────
 
@@ -464,7 +547,17 @@ export function MatchingQuiz({
   // ── Mobile render — vertical tap-to-connect ────────────────────────────────
   if (isMobile) {
     const topCardW = Math.floor((vw - 48) / pairs.length) - 8;
-    const topCardH = Math.max(72, Math.min(110, topCardW));
+
+    // Scale card height based on viewport height so cards fit without overlapping button.
+    // Overhead: header(44) + outer-pb(140) + inner-pt(10) + question(80) + hint(28) + gaps(20) ≈ 322px
+    const availForContainer = Math.max(180, vh - 322);
+    // Two card rows + minimum line gap; solve for maxCardH: availH = 2*h + 76 + 50 + 16 → h = (availH-142)/2
+    const maxCardHFromVH = Math.floor((availForContainer - 142) / 2);
+    const topCardH = Math.max(56, Math.min(Math.min(maxCardHFromVH, 100), topCardW));
+
+    // Container fits both rows + 50px visible line gap + 16px top/bottom padding
+    const bottomCardH = 76; // minHeight(56) + paddingTop(10) + paddingBottom(10)
+    const containerMinH = Math.max(200, topCardH + bottomCardH + 66);
 
     return (
       <>
@@ -479,7 +572,7 @@ export function MatchingQuiz({
         <div
           ref={containerRef}
           className="relative w-full px-[16px]"
-          style={{ userSelect: "none", minHeight: 340, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 10 }}
+          style={{ userSelect: "none", minHeight: containerMinH, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 10 }}
         >
           {/* SVG lines */}
           <svg
@@ -499,7 +592,33 @@ export function MatchingQuiz({
                 <div key={pair.id} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                   <div
                     ref={(el) => { topCardRefs.current[pair.id] = el; }}
+                    onTouchStart={(e) => {
+                      if (checked) return;
+                      touchHandled.current = true;
+                      touchIsDrag.current = false;
+                      const t = e.touches[0];
+                      touchStartPos.current = { x: t.clientX, y: t.clientY };
+                      if (selectedBottomRef.current) {
+                        // bottom already selected → connect immediately
+                        const bId = selectedBottomRef.current;
+                        setConnections(prev => {
+                          const n = { ...prev };
+                          delete n[pair.id];
+                          for (const [k, v] of Object.entries(n)) { if (v === bId) delete n[k]; }
+                          n[pair.id] = bId;
+                          return n;
+                        });
+                        playConnectSound();
+                        selectTop(null); selectBottom(null); setCursor(null); setHoveredTopId(null);
+                      } else if (selectedIdRef.current === pair.id) {
+                        selectTop(null); // deselect
+                      } else {
+                        setConnections(prev => { const n = { ...prev }; delete n[pair.id]; return n; });
+                        selectTop(pair.id); selectBottom(null); setCursor(null); setHoveredBottomId(null);
+                      }
+                    }}
                     onClick={() => {
+                      if (touchHandled.current) { touchHandled.current = false; return; }
                       if (checked) return;
                       if (selectedBottomId) {
                         setConnections(prev => {
@@ -510,12 +629,12 @@ export function MatchingQuiz({
                           return n;
                         });
                         playConnectSound();
-                        setSelectedBottomId(null);
+                        selectBottom(null);
                       } else if (selectedId === pair.id) {
-                        setSelectedId(null);
+                        selectTop(null);
                       } else {
                         setConnections(prev => { const n = { ...prev }; delete n[pair.id]; return n; });
-                        setSelectedId(pair.id);
+                        selectTop(pair.id);
                       }
                     }}
                     style={{
@@ -552,10 +671,38 @@ export function MatchingQuiz({
                 <div key={pair.id} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                   <div
                     ref={(el) => { bottomCardRefs.current[pair.id] = el; }}
+                    onTouchStart={(e) => {
+                      if (checked) return;
+                      touchHandled.current = true;
+                      touchIsDrag.current = false;
+                      const t = e.touches[0];
+                      touchStartPos.current = { x: t.clientX, y: t.clientY };
+                      if (selectedIdRef.current) {
+                        // top already selected → connect immediately
+                        const tId = selectedIdRef.current;
+                        setConnections(prev => {
+                          const n = { ...prev };
+                          for (const [k, v] of Object.entries(n)) { if (v === pair.id && k !== tId) delete n[k]; }
+                          n[tId] = pair.id;
+                          return n;
+                        });
+                        playConnectSound();
+                        selectTop(null); selectBottom(null); setCursor(null); setHoveredBottomId(null);
+                      } else if (selectedBottomRef.current === pair.id) {
+                        selectBottom(null); // deselect
+                      } else {
+                        setConnections(prev => {
+                          const n = { ...prev };
+                          for (const [k, v] of Object.entries(n)) { if (v === pair.id) delete n[k]; }
+                          return n;
+                        });
+                        selectBottom(pair.id); selectTop(null); setCursor(null); setHoveredTopId(null);
+                      }
+                    }}
                     onClick={() => {
+                      if (touchHandled.current) { touchHandled.current = false; return; }
                       if (checked) return;
                       if (selectedId) {
-                        // Complete: top → bottom connection
                         setConnections(prev => {
                           const n = { ...prev };
                           for (const [k, v] of Object.entries(n)) { if (v === pair.id && k !== selectedId) delete n[k]; }
@@ -563,18 +710,16 @@ export function MatchingQuiz({
                           return n;
                         });
                         playConnectSound();
-                        setSelectedId(null);
+                        selectTop(null);
                       } else if (selectedBottomId === pair.id) {
-                        // Deselect
-                        setSelectedBottomId(null);
+                        selectBottom(null);
                       } else {
-                        // Select this bottom card — clear connections TO it first
                         setConnections(prev => {
                           const n = { ...prev };
                           for (const [k, v] of Object.entries(n)) { if (v === pair.id) delete n[k]; }
                           return n;
                         });
-                        setSelectedBottomId(pair.id);
+                        selectBottom(pair.id);
                       }
                     }}
                     style={{

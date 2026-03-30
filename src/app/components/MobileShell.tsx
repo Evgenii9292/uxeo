@@ -7,10 +7,12 @@ import React, { useRef, useState, useCallback, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { motion } from "motion/react";
 import { formatXp } from "../pages/LeaguePage";
+import { APP_VERSION } from "../../version";
 import svgPaths from "../../imports/svg-ns2c3tgkyt";
 import { useUserSafe } from "../context/UserContext";
 import BottomTabBar from "./BottomTabBar";
 import { MobileFloatingCircles } from "./MobileFloatingCircles";
+import { PWAInstallBanner } from "./PWAInstallBanner";
 
 interface MobileShellProps {
   children: React.ReactNode;
@@ -95,6 +97,9 @@ export function MobileHeader({
           >
             {title}
           </p>
+          <span style={{ fontSize: 10, color: "#3a4a52", fontFamily: "monospace", lineHeight: 1, marginLeft: 4, alignSelf: "flex-end", paddingBottom: 2 }}>
+            v{APP_VERSION}
+          </span>
         </div>
 
         {/* Right: stats or custom */}
@@ -219,7 +224,7 @@ export default function MobileShell({
 
   // Heights for fixed elements
   const effectiveTabBarVisible = keepTabBarVisible ? true : tabBarVisible;
-  const TAB_H = effectiveTabBarVisible ? 52 : 0;
+  const TAB_H = effectiveTabBarVisible ? 72 : 0;
   const STICKY_H = stickyBottom ? 72 : 0;
   // Total bottom padding for scroll area = tab + sticky + small gap
   const scrollPadBottom = TAB_H + STICKY_H + 8;
@@ -275,7 +280,7 @@ export default function MobileShell({
           key={contentKey}
           ref={scrollRef}
           className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide px-[16px] py-[16px] isolate"
-          style={{ paddingBottom: `calc(${scrollPadBottom}px + env(safe-area-inset-bottom, 0px))` }}
+          style={{ paddingBottom: `calc(${scrollPadBottom}px + max(env(safe-area-inset-bottom, 0px), 20px))` }}
           onScroll={handleScroll}
           initial={pageTransition.initial}
           animate={pageTransition.animate}
@@ -293,7 +298,7 @@ export default function MobileShell({
           className="fixed left-0 right-0 z-30 px-[16px] transition-[bottom] duration-300"
           style={{
             bottom: effectiveTabBarVisible
-              ? "calc(67px + env(safe-area-inset-bottom, 0px))"
+              ? "calc(67px + max(env(safe-area-inset-bottom, 0px), 20px))"
               : 0,
             paddingBottom: effectiveTabBarVisible
               ? 10
@@ -311,10 +316,14 @@ export default function MobileShell({
         style={{
           bottom: 0,
           transform: effectiveTabBarVisible ? "translateY(0)" : "translateY(100%)",
+          background: "rgba(45,54,58,0.95)",
         }}
       >
         <BottomTabBar />
       </div>
+
+      {/* PWA install banner — above tab bar */}
+      <PWAInstallBanner tabBarBottom="calc(52px + env(safe-area-inset-bottom, 0px) + 15px)" />
 
       {/* Floating action circles */}
       <MobileFloatingCircles

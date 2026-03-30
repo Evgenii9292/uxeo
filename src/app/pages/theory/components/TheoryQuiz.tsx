@@ -46,7 +46,7 @@ function QuizVariantSlot({ node, vPad = 50, hPad = 20 }: { node: React.ReactNode
       ref={wrapperRef}
       style={{ display: 'flex', justifyContent: 'center', padding: `${vPad}px ${hPad}px` }}
     >
-      <div style={{ width: scaledW, height: scaledH, overflow: 'hidden', flexShrink: 0 }}>
+      <div style={{ width: scaledW, height: scaledH, overflow: 'hidden', flexShrink: 0, pointerEvents: 'none' }}>
         <div style={{ width: 186, height: 231, transform: `scale(${scale})`, transformOrigin: 'top left', flexShrink: 0 }}>
           {node}
         </div>
@@ -69,13 +69,13 @@ export function QuizCardLeft({ isSelected, isCorrect, showFeedback, onClick, dis
         ...(isSelected ? isCorrect
           ? { background: `linear-gradient(#2D3B36, #2D3B36) padding-box, linear-gradient(to bottom, #00932F, #002D0E) border-box`, borderColor: "transparent" }
           : { background: `linear-gradient(#3B3736, #3B3736) padding-box, linear-gradient(to bottom, #932E00, #2D0000) border-box`, borderColor: "transparent" }
-          : { background: "#3c4a52", borderColor: "#3c4a52" }),
+          : { background: "#2F383B", borderColor: "#2F383B" }),
       }}
     >
       {contentNode ? (
         <QuizVariantSlot node={contentNode} vPad={vPad} hPad={hPad} />
       ) : (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '247px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '247px', pointerEvents: 'none' }}>
           <div style={{ position: 'relative', width: '138px', height: '150px', transform: 'scale(1.4)', transformOrigin: 'center', flexShrink: 0 }}>
             <Group481362 />
           </div>
@@ -99,13 +99,13 @@ export function QuizCardRight({ isSelected, isCorrect, showFeedback, onClick, di
         ...(isSelected ? isCorrect
           ? { background: `linear-gradient(#2D3B36, #2D3B36) padding-box, linear-gradient(to bottom, #00932F, #002D0E) border-box`, borderColor: "transparent" }
           : { background: `linear-gradient(#3B3736, #3B3736) padding-box, linear-gradient(to bottom, #932E00, #2D0000) border-box`, borderColor: "transparent" }
-          : { background: "#3c4a52", borderColor: "#3c4a52" }),
+          : { background: "#2F383B", borderColor: "#2F383B" }),
       }}
     >
       {contentNode ? (
         <QuizVariantSlot node={contentNode} vPad={vPad} hPad={hPad} />
       ) : (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '247px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '247px', pointerEvents: 'none' }}>
           <div style={{ position: 'relative', width: '138px', height: '150px', transform: 'scale(1.4)', transformOrigin: 'center', flexShrink: 0 }}>
             <Group481363 />
           </div>

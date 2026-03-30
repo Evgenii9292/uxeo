@@ -85,7 +85,7 @@ export default function QuizPage() {
         o.start(); o.stop(ctx.currentTime + (isCorrect ? 0.33 : 0.18));
       } catch (_) {}
     } else {
-      navigate("/courses");
+      navigate("/lessons");
     }
   };
 

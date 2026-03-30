@@ -133,10 +133,7 @@ export function AccordionSectionMobile({
                         </div>
                       ) : (
                         <div className="flex flex-col gap-[8px]">
-                          <div className="flex gap-[8px] items-center">
-                            <FistIcon />
-                            <p className="font-['Roboto_Condensed:Medium',sans-serif] text-[#ffbaaa] text-[16px]">Почти получилось!</p>
-                          </div>
+                          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#ffbaaa] text-[14px]">Почти получилось!</p>
                           <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#ffd8d2] text-[14px] leading-[1.3]">{section.incorrectFeedback}</p>
                         </div>
                       )}

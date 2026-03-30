@@ -153,7 +153,7 @@ function Container() {
 
 export default function ContrastQuiz4VariantA() {
   return (
-    <div className="bg-white content-stretch flex flex-col items-start pt-[10px] px-[10px] relative rounded-[14.99px] size-full" data-name="ContrastQuiz4VariantA">
+    <div className="bg-[#343e42] content-stretch flex flex-col items-start pt-[10px] px-[10px] relative rounded-[14.99px] size-full" data-name="ContrastQuiz4VariantA">
       <Container />
     </div>
   );

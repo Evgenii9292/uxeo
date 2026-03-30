@@ -68,7 +68,7 @@ const CHALLENGES: ChallengeData[] = [
     subtitle: "Создайте главный экран трекера здоровья",
     time: "25 мин",
     level: "Джун",
-    xp: 1250,
+    xp: 800,
     Phone: ChallengePhone1,
     image: "/challenge-health-preview.png",
   },
@@ -78,7 +78,7 @@ const CHALLENGES: ChallengeData[] = [
     subtitle: "Спроектируйте экран приветствия платёжного сервиса",
     time: "30 мин",
     level: "Джун",
-    xp: 1250,
+    xp: 800,
     Phone: ChallengePhone2,
     image: "/challenge-fintech-preview.png",
   },
@@ -293,7 +293,7 @@ function ChallengeCard({ challenge, status, onClick }: {
             >
               <div aria-hidden="true" className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[13px] shadow-[0px_4px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none transition-shadow duration-75" />
               <div className="flex flex-row items-center justify-center gap-[8px] size-full px-[16px]">
-                {isNotStarted && <IconPencilEdit />}
+
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px]">{buttonLabel}</p>
                 {isNotStarted && (
                   <div className="bg-[#404d52] flex h-[26px] items-center justify-center px-[10px] rounded-full">
@@ -363,7 +363,7 @@ function ChallengeCard({ challenge, status, onClick }: {
                 className="absolute border border-[#57646a] border-solid inset-0 pointer-events-none rounded-[15px] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none transition-shadow duration-75"
               />
               <div className="flex flex-row items-center justify-center gap-[8px] size-full px-[16px]">
-                {isNotStarted && <IconPencilEdit />}
+
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[22px] whitespace-nowrap">
                   {buttonLabel}
                 </p>

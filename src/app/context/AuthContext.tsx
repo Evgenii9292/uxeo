@@ -10,8 +10,10 @@ import type { Session } from "@supabase/supabase-js";
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 export interface AuthContextValue {
-  /** Supabase user.id when logged in, otherwise stable anonymous UUID */
-  userId: string;
+  /** Supabase user.id when logged in, null otherwise */
+  userId: string | null;
+  /** JWT access token from current session, null if not logged in */
+  accessToken: string | null;
   loading: boolean;
   isAdmin: boolean;
   isAuthenticated: boolean;
@@ -23,20 +25,7 @@ export interface AuthContextValue {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const USER_ID_KEY = "uxeo-user-id";
 const ADMIN_EMAILS: string[] = []; // Add admin emails here
-
-function getOrCreateAnonymousId(): string {
-  try {
-    const existing = localStorage.getItem(USER_ID_KEY);
-    if (existing) return existing;
-    const newId = crypto.randomUUID();
-    localStorage.setItem(USER_ID_KEY, newId);
-    return newId;
-  } catch {
-    return crypto.randomUUID();
-  }
-}
 
 // ── Context ───────────────────────────────────────────────────────────────────
 
@@ -87,7 +76,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const userId = session?.user?.id ?? getOrCreateAnonymousId();
+  const userId = session?.user?.id ?? null;
+  const accessToken = session?.access_token ?? null;
   const email = session?.user?.email;
   const isAuthenticated = !!session;
   const isAdmin = ADMIN_EMAILS.includes(email ?? "");
@@ -119,6 +109,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{
       userId,
+      accessToken,
       loading,
       isAdmin,
       isAuthenticated,
