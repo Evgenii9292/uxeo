@@ -240,7 +240,7 @@ export default function BottomTabBar() {
         className="flex-none relative z-50 rounded-tl-[15px] rounded-tr-[15px]"
         style={{
           height: "calc(52px + max(env(safe-area-inset-bottom, 0px), 34px))",
-          background: "rgba(45,54,58,0.95)",
+          background: "linear-gradient(to bottom, rgba(45,54,58,0.95) 52px, rgba(20,24,26,0.98) 52px)",
           backdropFilter: "blur(14px)",
           WebkitBackdropFilter: "blur(14px)",
           borderTop: "1px solid rgba(86,101,107,0.35)",
