@@ -6,7 +6,7 @@
 html {
   height: 100%;
   overscroll-behavior: none;
-  background: red !important;
+  background-color: #2D363A;
   color-scheme: dark;
 }
 
@@ -14,14 +14,13 @@ body {
   overflow: hidden;
   height: 100%;
   overscroll-behavior: none;
-  background: blue !important;
+  background-color: #2D363A;
 }
 
 #root {
   overflow: hidden;
   height: 100%;
   overscroll-behavior: none;
-  background: green !important;
 }
 
 /* ── Prevent double-tap zoom on all interactive elements ───────────────────── */
