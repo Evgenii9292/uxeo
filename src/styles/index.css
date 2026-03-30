@@ -6,9 +6,7 @@
 html {
   height: 100%;
   overscroll-behavior: none;
-  /* #2D363A = opaque equivalent of tab-bar rgba(45,54,58,0.95):              */
-  /* makes home-indicator zone match the tab bar color in iOS PWA standalone.  */
-  background-color: #2D363A;
+  background: red !important;
   color-scheme: dark;
 }
 
@@ -16,13 +14,14 @@ body {
   overflow: hidden;
   height: 100%;
   overscroll-behavior: none;
-  background-color: #2D363A;
+  background: blue !important;
 }
 
 #root {
   overflow: hidden;
   height: 100%;
   overscroll-behavior: none;
+  background: green !important;
 }
 
 /* ── Prevent double-tap zoom on all interactive elements ───────────────────── */
