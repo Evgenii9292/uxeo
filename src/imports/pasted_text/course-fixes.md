@@ -29,13 +29,13 @@ body {
 }
 
 .page-wrapper {
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
 }
 
 .main-content {
   overflow-y: auto;
-  height: calc(100vh - HEADER_HEIGHT);
+  height: calc(100% - HEADER_HEIGHT);
 }
 
 

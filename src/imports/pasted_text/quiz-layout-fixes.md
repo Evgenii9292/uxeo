@@ -106,7 +106,7 @@ NO transforms
 Ensure parent containers DO NOT collapse:
 
 Use:
-min-height: 100vh;
+min-height: 100%;
 padding-top: 100px;
 padding-bottom: 120px;
 

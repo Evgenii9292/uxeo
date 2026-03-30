@@ -197,8 +197,8 @@ export function CompareUIQuiz({
                   className={`relative rounded-[15px] overflow-hidden transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.99]" : ""}`}
                   style={{
                     height: mobileCardMinHeight
-                      ? `calc((100vh - 290px) / 2)`
-                      : `calc((100vh - 296px) / 2)`,
+                      ? `calc((100% - 290px) / 2)`
+                      : `calc((100% - 296px) / 2)`,
                     minHeight: containerH,
                     background: "linear-gradient(172deg, rgb(30,37,41) 2%, rgb(38,46,50) 99%)",
                     boxShadow: borderColor ? `0 0 0 3px ${borderColor}` : undefined,

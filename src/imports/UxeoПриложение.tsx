@@ -189,7 +189,7 @@ function Frame4() {
 
 function Frame5() {
   return (
-    <div className="absolute content-stretch flex flex-col h-[calc(100vh-40px)] items-start left-[20px] pl-[12px] pr-[11px] py-[20px] rounded-[24px] top-[20px] w-[238px]">
+    <div className="absolute content-stretch flex flex-col h-[calc(100%-40px)] items-start left-[20px] pl-[12px] pr-[11px] py-[20px] rounded-[24px] top-[20px] w-[238px]">
       <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[24px] size-full" src={imgFrame481335} />
       <Frame4 />
     </div>

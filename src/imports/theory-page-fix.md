@@ -5,7 +5,7 @@ Important rule:
 
 Do NOT use fixed heights like:
 
-h-[calc(100vh-176px)]
+h-[calc(100%-176px)]
 
 This breaks the flex layout and causes the theory content to disappear.
 

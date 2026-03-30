@@ -196,7 +196,7 @@ export default function Layout({
   const handleBack = () => navigate(backPath);
 
   return (
-    <div className="relative size-full overflow-hidden" style={{ background: bgColor ?? PAGE_BG, height: '100vh' }}>
+    <div className="relative size-full overflow-hidden" style={{ background: bgColor ?? PAGE_BG, height: '100%' }}>
       {/* Sidebar — never changes */}
       <Sidebar activePath={location.pathname} />
 

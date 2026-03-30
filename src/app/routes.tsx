@@ -117,7 +117,7 @@ function ErrorPage() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      minHeight: "100vh",
+      minHeight: "100%",
       background: "linear-gradient(163.733deg, #282F33 14.367%, rgb(46, 57, 62) 147.74%)",
       color: "#f4f5fc",
       fontFamily: "Roboto Condensed, sans-serif",

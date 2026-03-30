@@ -166,7 +166,7 @@ export default function QuizPage() {
                     onClick={isClickable ? () => { handleSelect(id); playSelectSound(); } : undefined}
                     className={`relative rounded-[15px] overflow-hidden flex-shrink-0 transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.99]" : ""}`}
                     style={{
-                      height: `calc((100vh - ${heightSubtract}px) / 2)`,
+                      height: `calc((100% - ${heightSubtract}px) / 2)`,
                       minHeight: containerH,
                       background: BG_GRADIENT[state],
                       boxShadow: borderColor ? `0 0 0 3px ${borderColor}` : undefined,
