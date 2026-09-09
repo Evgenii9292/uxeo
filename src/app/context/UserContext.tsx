@@ -35,6 +35,7 @@ interface User {
 export type ExperienceLevel = "beginner" | "some_experience" | "designer";
 export type OnboardingGoal = "change_career" | "improve_skills" | "work_use";
 export type DailyTime = "5min" | "15min" | "30min";
+export type SyncStatus = "local" | "syncing" | "synced" | "error";
 
 interface UserContextValue {
   user: User;
@@ -48,6 +49,7 @@ interface UserContextValue {
   userTitle: string | null;
   userAvatar: string | null;
   userLoading: boolean;
+  syncStatus: SyncStatus;
   setLevel: (level: ExperienceLevel) => void;
   setGoal: (goal: OnboardingGoal) => void;
   setDailyTime: (dailyTime: DailyTime) => void;
@@ -112,14 +114,18 @@ function mergeLessonProgress(
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function UserProvider({ children }: { children: ReactNode }) {
+  const { userId, accessToken, loading: authLoading, isDemo } = useAuthSafe()
+    ?? { userId: null, accessToken: null, loading: true, isDemo: false };
+  const storageKey = isDemo ? "skillum-demo-user-data" : "uxeo-user-data";
+
   // Load initial state from localStorage
   const [user, setUser] = useState<User>(() => {
     try {
-      const saved = localStorage.getItem('uxeo-user-data');
+      const saved = localStorage.getItem(storageKey);
       const parsed = saved ? JSON.parse(saved) : {};
 
       // name/title/avatar: check uxeo-user-data first, fall back to legacy keys
-      const rawTitle = parsed.userTitle ?? localStorage.getItem('uxeo-profile-title') ?? null;
+      const rawTitle = parsed.userTitle ?? (!isDemo ? localStorage.getItem('uxeo-profile-title') : null) ?? null;
 
       return {
         lessonProgress: parsed.lessonProgress || {},
@@ -129,10 +135,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
         goal: parsed.goal || null,
         dailyTime: parsed.dailyTime || null,
         weeklyChallengesCompleted: typeof parsed.weeklyChallengesCompleted === 'number' ? parsed.weeklyChallengesCompleted : 0,
-        userName: parsed.userName ?? localStorage.getItem('uxeo-profile-name') ?? null,
+        userName: parsed.userName ?? (!isDemo ? localStorage.getItem('uxeo-profile-name') : null) ?? null,
         // Treat auto-generated titles as null (so they stay in sync with level)
         userTitle: (rawTitle && !AUTO_TITLES.has(rawTitle)) ? rawTitle : null,
-        userAvatar: parsed.userAvatar ?? localStorage.getItem('uxeo-profile-avatar') ?? null,
+        userAvatar: parsed.userAvatar ?? (!isDemo ? localStorage.getItem('uxeo-profile-avatar') : null) ?? null,
       };
     } catch (e) {
       console.error('Failed to load user data from localStorage:', e);
@@ -144,8 +150,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
     };
   });
 
-  const { userId, accessToken, loading: authLoading } = useAuthSafe() ?? { userId: null, accessToken: null, loading: true };
   const [userLoading, setUserLoading] = useState(true);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>(isDemo ? "local" : "synced");
 
   // Debounce ref for Supabase sync
   const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -163,7 +169,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const u = userRef.current;
     const uid = userIdRef.current;
     const token = accessTokenRef.current;
-    if (!uid || !token) return;
+    if (!uid || !token || isDemo) return;
 
     const xpVal = Object.values(u.lessonProgress).reduce((total, lesson) =>
       total + Object.values(lesson.questions || {})
@@ -175,6 +181,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       || (u.goal && u.goal !== "")
       || Object.keys(u.lessonProgress).length > 0;
     if (!hasProgress) return;
+    setSyncStatus("syncing");
 
     // Skip data URLs > 80KB to avoid large payloads; sync http(s) URLs always
     const avatarToSync = u.userAvatar
@@ -190,6 +197,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          userId: uid,
           xp: xpVal,
           streak: u.streak,
           lastStreakDate: u.lastStreakDate ?? "",
@@ -203,8 +211,16 @@ export function UserProvider({ children }: { children: ReactNode }) {
           userAvatar: avatarToSync,
         }),
       }
-    ).catch(() => { /* silent */ });
-  }, []); // stable — reads only refs
+    )
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        setSyncStatus("synced");
+      })
+      .catch((error) => {
+        console.error("Progress sync failed:", error);
+        setSyncStatus("error");
+      });
+  }, [isDemo]); // stable refs; demo never reaches the server
 
   // Track whether we've already loaded for this user (to skip loading spinner on token refresh)
   const loadedUserIdRef = useRef<string | null>(null);
@@ -213,6 +229,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
   // accessToken is a dependency so the effect retries when an expired token gets refreshed
   useEffect(() => {
     if (authLoading) return;
+    if (isDemo) {
+      setSyncStatus("local");
+      setUserLoading(false);
+      return;
+    }
     if (!userId || !accessToken) {
       setUserLoading(false);
       return;
@@ -222,7 +243,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     if (isFirstLoad) setUserLoading(true);
 
     fetch(
-      `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/progress`,
+      `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/progress?userId=${encodeURIComponent(userId)}`,
       { headers: { Authorization: `Bearer ${accessToken}` } }
     )
       .then(r => {
@@ -256,13 +277,17 @@ export function UserProvider({ children }: { children: ReactNode }) {
           };
         });
       })
-      .catch(() => { /* silent — use localStorage, retry on next token refresh */ })
+      .then(() => setSyncStatus("synced"))
+      .catch((error) => {
+        console.error("Progress load failed:", error);
+        setSyncStatus("error");
+      })
       .finally(() => setUserLoading(false));
-  }, [userId, authLoading, accessToken]);
+  }, [userId, authLoading, accessToken, isDemo]);
 
   // Debounced sync to Supabase on user changes (3s)
   useEffect(() => {
-    if (!userId) return;
+    if (!userId || isDemo) return;
     if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
     syncTimerRef.current = setTimeout(syncToSupabase, 3000);
     return () => {
@@ -304,17 +329,19 @@ export function UserProvider({ children }: { children: ReactNode }) {
         userTitle: user.userTitle,
         userAvatar: user.userAvatar,
       };
-      localStorage.setItem('uxeo-user-data', JSON.stringify(toSave));
-      // Keep legacy keys in sync for backward compat (LessonPage, LeaguePage, etc.)
-      if (user.userName) localStorage.setItem('uxeo-profile-name', user.userName);
-      if (user.userTitle) localStorage.setItem('uxeo-profile-title', user.userTitle);
-      if (user.userAvatar) {
-        try { localStorage.setItem('uxeo-profile-avatar', user.userAvatar); } catch { /* quota */ }
+      localStorage.setItem(storageKey, JSON.stringify(toSave));
+      // Preserve existing account data during a demo session.
+      if (!isDemo) {
+        if (user.userName) localStorage.setItem('uxeo-profile-name', user.userName);
+        if (user.userTitle) localStorage.setItem('uxeo-profile-title', user.userTitle);
+        if (user.userAvatar) {
+          try { localStorage.setItem('uxeo-profile-avatar', user.userAvatar); } catch { /* quota */ }
+        }
       }
     } catch (e) {
       // If localStorage fails, just continue
     }
-  }, [user]);
+  }, [user, storageKey, isDemo]);
 
   // Compute XP dynamically from all xpAwarded flags (single source of truth)
   const xp = Object.values(user.lessonProgress).reduce((total, lesson) => {
@@ -525,6 +552,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       userTitle: user.userTitle,
       userAvatar: user.userAvatar,
       userLoading,
+      syncStatus,
       setLevel,
       setGoal,
       setDailyTime,

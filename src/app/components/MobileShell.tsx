@@ -10,6 +10,7 @@ import { formatXp } from "../pages/LeaguePage";
 import { APP_VERSION } from "../../version";
 import svgPaths from "../../imports/svg-ns2c3tgkyt";
 import { useUserSafe } from "../context/UserContext";
+import { useAuthSafe } from "../context/AuthContext";
 import BottomTabBar from "./BottomTabBar";
 import { MobileFloatingCircles } from "./MobileFloatingCircles";
 import { PWAInstallBanner } from "./PWAInstallBanner";
@@ -160,6 +161,10 @@ export default function MobileShell({
   const navigate = useNavigate();
   const location = useLocation();
   const userData = useUserSafe();
+  const auth = useAuthSafe();
+  const syncLabel = auth?.isDemo
+    ? "Демо: прогресс хранится только на этом устройстве"
+    : userData?.syncStatus === "error" ? "Прогресс не синхронизирован. Проверьте соединение." : null;
   const xp = userData?.xp ?? 0;
   const streak = userData?.streak ?? 0;
 
@@ -256,6 +261,11 @@ export default function MobileShell({
         headerRight={headerRight}
         blurred={blurHeader}
       />
+      {syncLabel && (
+        <div className="flex-none px-[16px] pb-[6px] text-[11px] font-['Roboto_Condensed:Regular',sans-serif]" style={{ color: userData?.syncStatus === "error" ? "#ff9b84" : "#798589", background: "#282F33" }}>
+          {syncLabel}
+        </div>
+      )}
 
       {/* Sticky top bar — between header and scroll area */}
       {stickyTop && (

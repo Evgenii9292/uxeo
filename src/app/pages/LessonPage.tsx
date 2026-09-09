@@ -28,7 +28,7 @@ function LightningButtonIcon() {
   );
 }
 
-function ContinueButton({ onClick }: { onClick: () => void }) {
+function ContinueButton({ onClick, xpReward }: { onClick: () => void; xpReward: number }) {
   return (
     <button
       onClick={() => {
@@ -79,7 +79,7 @@ function ContinueButton({ onClick }: { onClick: () => void }) {
         </p>
         <div className="bg-[#d65e43] h-[28.585px] rounded-[12296925px] shrink-0 flex items-center justify-center px-[11.727px]">
           <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[15.392px] text-[#eef5ff] text-[10.261px] whitespace-nowrap">
-            +125 XP
+            +{xpReward} XP
           </p>
         </div>
       </div>
@@ -89,7 +89,7 @@ function ContinueButton({ onClick }: { onClick: () => void }) {
 
 // ── Mobile sticky continue button ─────────────────────────────────────────────
 
-function MobileContinueButton({ onClick }: { onClick: () => void }) {
+function MobileContinueButton({ onClick, xpReward }: { onClick: () => void; xpReward: number }) {
   return (
     <button
       onClick={onClick}
@@ -110,7 +110,7 @@ function MobileContinueButton({ onClick }: { onClick: () => void }) {
       </p>
       <div className="bg-black/20 flex h-[24px] items-center justify-center px-[10px] rounded-full">
         <p className="font-['Inter:Semi_Bold',sans-serif] font-medium text-[#eef5ff] text-[10px]">
-          +125 XP
+          +{xpReward} XP
         </p>
       </div>
     </button>
@@ -119,11 +119,11 @@ function MobileContinueButton({ onClick }: { onClick: () => void }) {
 
 // ── Right column: widgets + continue button ───────────────────────────────────
 
-function RightColumn({ onContinue }: { onContinue: () => void }) {
+function RightColumn({ onContinue, xpReward }: { onContinue: () => void; xpReward: number }) {
   return (
     <div className="flex flex-col gap-[19px] items-start w-full">
       <RightWidgets />
-      <ContinueButton onClick={onContinue} />
+      <ContinueButton onClick={onContinue} xpReward={xpReward} />
     </div>
   );
 }
@@ -157,13 +157,13 @@ export default function LessonPage() {
   const navigate = useNavigate();
   const vw = useWindowWidth();
   const isMobile = vw < 768;
-  const [userName, setUserName] = useState(() => deriveUserName(auth?.email));
+  const [userName, setUserName] = useState(() => userData?.userName ?? deriveUserName(auth?.email));
 
   useEffect(() => {
-    const nextName = deriveUserName(auth?.email);
+    const nextName = auth?.isDemo ? (userData?.userName ?? "") : deriveUserName(auth?.email);
     setUserName(prev => prev === nextName ? prev : nextName);
 
-    if (!nextName) return;
+    if (auth?.isDemo || !nextName) return;
 
     try {
       const savedName = localStorage.getItem(PROFILE_NAME_KEY)?.trim();
@@ -176,7 +176,7 @@ export default function LessonPage() {
     } catch {
       // Ignore storage errors and keep the in-memory name.
     }
-  }, [auth?.email]);
+  }, [auth?.email, auth?.isDemo, userData?.userName]);
 
   // Derive dynamic lesson statuses from UserContext progress.
   // NODE STATE RULES:
@@ -237,30 +237,23 @@ export default function LessonPage() {
   }, [userData]);
 
 
-  // Popup state: which lesson's popup is open
+  // Popup state is reserved for manual roadmap navigation.
   const [popupLessonId, setPopupLessonId] = useState<number | null>(null);
-
-  // Scroll-to-current state for the "Продолжить" button
-  const [scrollToLessonId, setScrollToLessonId] = useState<number | null>(null);
+  const currentLesson = lessons.find(l => l.status === "current") ?? lessons[0];
+  const currentXpReward = currentLesson?.xpReward ?? 0;
 
   const handleContinue = useCallback(() => {
-    // If any popup is open (opened via node click or previous continue) — close it
-    if (popupLessonId !== null) {
-      setPopupLessonId(null);
+    if (!currentLesson) return;
+    if (currentLesson.totalQuestions === 0) {
+      navigate(`/homework?lessonId=${encodeURIComponent(currentLesson.lessonId)}`);
       return;
     }
-    const currentLesson = lessons.find(l => l.status === "current");
-    if (currentLesson) {
-      setScrollToLessonId(currentLesson.id);
-    } else {
-      const firstLesson = lessons[0];
-      navigate(`/lesson-quiz?quizId=${encodeURIComponent(firstLesson?.quizId || "quiz_contrast")}&lessonId=${encodeURIComponent(firstLesson?.lessonId || "contrast-lesson")}`, { state: { lessonId: firstLesson?.lessonId || "contrast-lesson", quizId: firstLesson?.quizId || "quiz_contrast" } });
-    }
-  }, [lessons, navigate, popupLessonId]);
-
-  const handleScrollComplete = useCallback(() => {
-    setScrollToLessonId(null);
-  }, []);
+    // The main CTA advances immediately into the next learning step; the roadmap
+    // stays available for people who want to choose a node themselves.
+    navigate(`/theory?lessonId=${encodeURIComponent(currentLesson.lessonId)}`, {
+      state: { lessonId: currentLesson.lessonId, quizId: currentLesson.quizId },
+    });
+  }, [currentLesson, navigate]);
 
   const pageTitle = userName
     ? <>Привет, <span style={{ color: "#798589" }}>{userName}</span> 👋</>
@@ -272,19 +265,17 @@ export default function LessonPage() {
       bgColor="#282F33"
       showBack={false}
       backPath="/courses"
-      rightContent={<RightColumn onContinue={handleContinue} />}
+      rightContent={<RightColumn onContinue={handleContinue} xpReward={currentXpReward} />}
       rightWidth="320px"
       noTopPad
       mobileStickyBottom={
-        isMobile ? <MobileContinueButton onClick={handleContinue} /> : undefined
+        isMobile ? <MobileContinueButton onClick={handleContinue} xpReward={currentXpReward} /> : undefined
       }
     >
       <RoadmapPanel
           lessons={lessons}
           popupLessonId={popupLessonId}
           onSelectLesson={setPopupLessonId}
-          scrollToLessonId={scrollToLessonId}
-          onScrollComplete={handleScrollComplete}
         />
     </Layout>
   );

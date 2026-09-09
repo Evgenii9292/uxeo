@@ -696,6 +696,9 @@ export default function LeaguePage() {
             {league.name}
           </div>
           <WeekTimer />
+          <p style={{ color: "#798589", fontSize: "12px", fontFamily: "Roboto Condensed, sans-serif", margin: 0, textAlign: "center" }}>
+            Тренировочная лига: позиции симулируются для практики
+          </p>
         </div>
 
         {/* Motivational text */}

@@ -163,7 +163,7 @@ function useIsStandalone() {
 
 export default function WelcomePage() {
   const navigate = useNavigate();
-  const { signInWithGoogle, signInWithEmail, isAuthenticated, loading } = useAuth();
+  const { signInWithGoogle, signInWithEmail, isAuthenticated, loading, startDemo } = useAuth();
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
   const [emailError, setEmailError] = useState("");
@@ -311,15 +311,15 @@ export default function WelcomePage() {
               </div>
             )}
 
-            {/* Removed "Начать без входа" — all users should register for cross-device sync */}
-            {false && (
-              <button
-                onClick={() => { playClick(); goToLevel(); }}
-                className="hidden"
-              >
-                Начать без входа
-              </button>
-            )}
+            <button
+              onClick={() => { playClick(); startDemo(); window.location.assign("/level"); }}
+              className="w-full py-[3px] text-center font-['Roboto_Condensed:Regular',sans-serif] text-[15px] text-[#9aa8ad] hover:text-[#f4f5fc] transition-colors"
+            >
+              Посмотреть демо без регистрации
+            </button>
+            <p className="text-center font-['Roboto_Condensed:Regular',sans-serif] text-[12px] leading-[1.45] text-[#66757b] -mt-[10px]">
+              Демо хранится только на этом устройстве. Отправка работ недоступна.
+            </p>
           </div>
 
           {/* PWA standalone: subtle hint below buttons */}

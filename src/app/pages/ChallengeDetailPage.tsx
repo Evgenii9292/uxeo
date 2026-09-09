@@ -13,7 +13,7 @@ import SkillsIcon from "../../imports/ЧтоВыПрокачиваете";
 import TaskIcon from "../../imports/Задание";
 import RequirementsIcon from "../../imports/Требования";
 import ExampleIcon from "../../imports/Пример";
-import { projectId, publicAnonKey } from "../../../utils/supabase/info";
+import { projectId } from "../../../utils/supabase/info";
 import { useUserSafe } from "../context/UserContext";
 import { useAuthSafe } from "../context/AuthContext";
 import svgMfoan from "../../imports/svg-mfoan0qzpw";
@@ -476,6 +476,14 @@ function SubmitBlock({ challengeId, challengeName }: { challengeId: string; chal
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
+    if (auth?.isDemo) {
+      alert("В демо можно изучить задание, но отправка работ недоступна.");
+      return;
+    }
+    if (!auth?.accessToken) {
+      alert("Войдите в аккаунт, чтобы отправить работу на проверку.");
+      return;
+    }
     if (!url.trim()) {
       alert("Пожалуйста, вставьте ссылку на Figma");
       return;
@@ -490,12 +498,11 @@ function SubmitBlock({ challengeId, challengeName }: { challengeId: string; chal
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${publicAnonKey}`,
+          "Authorization": `Bearer ${auth.accessToken}`,
         },
         body: JSON.stringify({
           challengeId,
           challengeName,
-          userId: auth?.userId ?? userData?.email ?? "anonymous",
           figmaLink: url,
         }),
       });

@@ -9,7 +9,7 @@ import SkillsIcon from "../../imports/ЧтоВыПрокачиваете";
 import TaskIcon from "../../imports/Задание";
 import RequirementsIcon from "../../imports/Требования";
 import ExampleIcon from "../../imports/Пример";
-import { projectId, publicAnonKey } from "../../../utils/supabase/info";
+import { projectId } from "../../../utils/supabase/info";
 import { useUserSafe } from "../context/UserContext";
 import { useHomeworkSafe } from "../context/HomeworkContext";
 import { useAuthSafe } from "../context/AuthContext";
@@ -753,6 +753,14 @@ function SubmitBlock({ homeworkLessonId, lessonName, mobileCompact }: { homework
   const isPending   = localSubmitted || (serverStatus === "pending" && !hasAdminFeedback);
 
   const handleSubmit = async () => {
+    if (auth?.isDemo) {
+      alert("В демо можно пройти урок, но отправка работ недоступна.");
+      return;
+    }
+    if (!auth?.accessToken) {
+      alert("Войдите в аккаунт, чтобы отправить работу на проверку.");
+      return;
+    }
     if (!url.trim()) {
       alert("Пожалуйста, вставьте ссылку на Figma");
       return;
@@ -765,12 +773,11 @@ function SubmitBlock({ homeworkLessonId, lessonName, mobileCompact }: { homework
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${publicAnonKey}`,
+          "Authorization": `Bearer ${auth.accessToken}`,
         },
         body: JSON.stringify({
           lessonName,
           lessonId: homeworkLessonId ?? "",
-          userId: auth?.userId ?? "anonymous",
           figmaLink: url,
         }),
       });

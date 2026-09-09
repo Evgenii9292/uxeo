@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import svgPaths from "../../imports/svg-pt1cecsedx";
 import { useUserSafe } from "../context/UserContext";
+import { useAuthSafe } from "../context/AuthContext";
 import { APP_VERSION } from "../../version";
 import { formatXp } from "../pages/LeaguePage";
 import { useEffect, useRef, useState } from "react";
@@ -176,6 +177,11 @@ interface AppHeaderProps {
 export default function AppHeader({ title, subtitle, showBack = false, onBack, icon, noBottomBorder, tabletFullWidthBorder, desktopFullWidthBorder, blurredBackground = false }: AppHeaderProps) {
   const navigate = useNavigate();
   const userData = useUserSafe();
+  const auth = useAuthSafe();
+  const syncLabel = auth?.isDemo
+    ? "Демо: локально"
+    : userData?.syncStatus === "error" ? "Прогресс не синхронизирован"
+    : null;
   
   // Read XP and streak directly from UserContext
   const xp = userData?.xp ?? 0;
@@ -269,7 +275,13 @@ export default function AppHeader({ title, subtitle, showBack = false, onBack, i
             </div>
           </div>
 
-          {/* Right: stats icons */}
+          {/* Right: explicit local/error state plus stats */}
+          <div className="flex items-center gap-[12px] shrink-0">
+            {syncLabel && (
+              <span className="text-[12px] font-['Roboto_Condensed:Regular',sans-serif] whitespace-nowrap" style={{ color: userData?.syncStatus === "error" ? "#ff9b84" : "#798589" }}>
+                {syncLabel}
+              </span>
+            )}
           <div className="h-[40px] relative shrink-0">
             <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[30px] h-full items-center relative">
               {/* Fire */}
@@ -334,6 +346,7 @@ export default function AppHeader({ title, subtitle, showBack = false, onBack, i
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       {/* Tablet: full-width border stretching from sidebar to screen edge */}

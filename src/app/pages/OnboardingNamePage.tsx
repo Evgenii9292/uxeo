@@ -3,18 +3,21 @@ import { useNavigate } from "react-router";
 import { CloseButton } from "./quiz/CloseButton";
 import { FlagReportButton } from "./quiz/FlagReportButton";
 import { useUserSafe } from "../context/UserContext";
+import { useAuthSafe } from "../context/AuthContext";
 
 const PROFILE_NAME_KEY = "uxeo-profile-name";
 
 export default function OnboardingNamePage() {
   const navigate = useNavigate();
   const userCtx = useUserSafe();
+  const auth = useAuthSafe();
   const [name, setName] = useState("");
 
   const handleContinue = () => {
     const trimmed = name.trim();
     if (!trimmed) return;
-    localStorage.setItem(PROFILE_NAME_KEY, trimmed);
+    // Demo identity must not overwrite the signed-in profile's legacy key.
+    if (!auth?.isDemo) localStorage.setItem(PROFILE_NAME_KEY, trimmed);
     userCtx?.setUserName(trimmed);
     navigate("/quiz");
   };

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useUserSafe, type LessonProgress } from "../../context/UserContext";
+import { useAuthSafe } from "../../context/AuthContext";
 import { LESSONS } from "../../data/lessons";
 import { hapticCorrect, hapticWrong } from "../../utils/haptics";
 
@@ -15,6 +16,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
   const location = useLocation();
   const navigate = useNavigate();
   const userCtx = useUserSafe();
+  const auth = useAuthSafe();
   const updateQuestionState = userCtx?.updateQuestionState ?? (() => ({ xpEarned: 0 }));
   const getLessonProgress = userCtx?.getLessonProgress ?? ((id: string): LessonProgress => ({
     lessonId: id,
@@ -47,7 +49,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     || (location.pathname === "/contrast" ? "contrast-lesson" : "color-lesson");
 
   // Use per-lesson localStorage key so different lessons don't share state
-  const storageKey = `theory-max-reached-${resolvedLessonId}`;
+  const storageKey = `${auth?.isDemo ? "skillum-demo" : "skillum"}-theory-max-reached-${resolvedLessonId}`;
 
   // Load lesson progress using the resolved lessonId
   const progress = getLessonProgress(resolvedLessonId);
@@ -132,7 +134,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
         };
       }),
     );
-  }, [resolvedLessonId, storageKey, totalSections, lastSectionIndex, userCtx?.user?.id]);
+  }, [resolvedLessonId, storageKey, totalSections, lastSectionIndex, auth?.isDemo]);
 
   const completedUpTo = accordionStates.reduce((max, s, idx) => s.completed ? Math.max(max, idx + 1) : max, 0);
   const effectiveMaxReached = Math.max(maxReached, completedUpTo);
@@ -189,10 +191,14 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     };
     setAccordionStates(newStates);
 
-    const nextToUnlock = Math.min(sectionIndex + 1, lastSectionIndex);
-    if (nextToUnlock > maxReached) {
-      setMaxReached(nextToUnlock);
-      try { localStorage.setItem(storageKey, String(nextToUnlock)); } catch {}
+    // A new section is proof-of-learning gated: an incorrect answer keeps the
+    // learner on the current explanation and feedback until they retry.
+    if (isCorrect) {
+      const nextToUnlock = Math.min(sectionIndex + 1, lastSectionIndex);
+      if (nextToUnlock > maxReached) {
+        setMaxReached(nextToUnlock);
+        try { localStorage.setItem(storageKey, String(nextToUnlock)); } catch {}
+      }
     }
 
     // Scroll further so feedback and the Continue button are immediately visible.
@@ -235,6 +241,9 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
   };
 
   const handleContinue = (sectionIndex: number) => {
+    // The button may remain visible after wrong-answer feedback; it must not
+    // bypass the validation rule.
+    if (!accordionStates[sectionIndex]?.completed) return;
     if (sectionIndex === lastSectionIndex) {
       // Last section — navigate to quiz with correct lessonId and quizId
       const container = isMobile ? mobileScrollRef.current : null;

@@ -7,6 +7,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
 import { useUserSafe } from "./UserContext";
+import { useAuthSafe } from "./AuthContext";
 
 // ─── Achievement Definitions ──────────────────────────────────────────────────
 
@@ -280,18 +281,18 @@ const AchievementsContext = createContext<AchievementsContextValue | undefined>(
 
 const LS_KEY = "uxeo-achievements";
 
-function loadFromStorage(): Record<string, UnlockedAchievement> {
+function loadFromStorage(storageKey: string): Record<string, UnlockedAchievement> {
   try {
-    const saved = localStorage.getItem(LS_KEY);
+    const saved = localStorage.getItem(storageKey);
     return saved ? JSON.parse(saved) : {};
   } catch {
     return {};
   }
 }
 
-function saveToStorage(data: Record<string, UnlockedAchievement>) {
+function saveToStorage(storageKey: string, data: Record<string, UnlockedAchievement>) {
   try {
-    localStorage.setItem(LS_KEY, JSON.stringify(data));
+    localStorage.setItem(storageKey, JSON.stringify(data));
   } catch {}
 }
 
@@ -299,7 +300,9 @@ function saveToStorage(data: Record<string, UnlockedAchievement>) {
 
 export function AchievementsProvider({ children }: { children: ReactNode }) {
   const userCtx = useUserSafe();
-  const [unlocked, setUnlocked] = useState<Record<string, UnlockedAchievement>>(loadFromStorage);
+  const auth = useAuthSafe();
+  const storageKey = auth?.isDemo ? "skillum-demo-achievements" : LS_KEY;
+  const [unlocked, setUnlocked] = useState<Record<string, UnlockedAchievement>>(() => loadFromStorage(storageKey));
   const [queue, setQueue] = useState<AchievementId[]>([]);
 
   // Core unlock function — idempotent, only fires once per achievement
@@ -309,13 +312,13 @@ export function AchievementsProvider({ children }: { children: ReactNode }) {
       if (prev[id]) return prev;
       isNew = true;
       const next = { ...prev, [id]: { unlockedAt: new Date().toISOString() } };
-      saveToStorage(next);
+      saveToStorage(storageKey, next);
       return next;
     });
     if (isNew) {
       setQueue((prev) => (prev.includes(id) ? prev : [...prev, id]));
     }
-  }, []);
+  }, [storageKey]);
 
   // Explicit trigger — for things like quiz streaks that need to be called manually
   const triggerAchievement = useCallback(

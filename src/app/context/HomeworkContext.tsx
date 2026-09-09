@@ -4,7 +4,7 @@
  */
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
-import { projectId, publicAnonKey } from "../../../utils/supabase/info";
+import { projectId } from "../../../utils/supabase/info";
 import { useAuthSafe } from "./AuthContext";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -53,6 +53,8 @@ const HomeworkContext = createContext<HomeworkContextValue | undefined>(undefine
 export function HomeworkProvider({ children }: { children: ReactNode }) {
   const auth = useAuthSafe();
   const userId = auth?.userId ?? null;
+  const accessToken = auth?.accessToken ?? null;
+  const isDemo = auth?.isDemo ?? false;
   const [homeworks, setHomeworks] = useState<HomeworkRecord[]>(() => {
     try { return JSON.parse(localStorage.getItem(CACHE_KEY) ?? "[]"); }
     catch { return []; }
@@ -65,12 +67,12 @@ export function HomeworkProvider({ children }: { children: ReactNode }) {
   });
 
   const fetchHomeworks = useCallback(async () => {
-    if (!userId) return;
+    if (!userId || !accessToken || isDemo) return;
     setLoading(true);
     try {
       const res = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/homework/user/${encodeURIComponent(userId)}`,
-        { headers: { Authorization: `Bearer ${publicAnonKey}` } }
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
       if (!res.ok) return;
       const data = await res.json();
@@ -82,7 +84,7 @@ export function HomeworkProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false);
     }
-  }, [userId]);
+  }, [userId, accessToken, isDemo]);
 
   // Fetch on mount
   useEffect(() => { fetchHomeworks(); }, [fetchHomeworks]);

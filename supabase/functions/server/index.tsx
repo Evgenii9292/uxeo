@@ -191,8 +191,8 @@ function adminClient() {
   );
 }
 
-/** Verifies JWT and checks that caller owns the given userId. Returns 401/403 response or null. */
-async function requireSelf(c: any, userId: string): Promise<Response | null> {
+/** Returns the authenticated user id. Never trust a client-provided owner id. */
+async function requireUser(c: any): Promise<{ userId: string } | Response> {
   const authHeader = c.req.header("Authorization") ?? "";
   const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
   if (!token) return c.json({ error: "Unauthorized" }, 401);
@@ -200,9 +200,15 @@ async function requireSelf(c: any, userId: string): Promise<Response | null> {
   const supabase = adminClient();
   const { data, error } = await supabase.auth.getUser(token);
   if (error || !data.user) return c.json({ error: "Unauthorized" }, 401);
-  if (data.user.id !== userId) return c.json({ error: "Forbidden" }, 403);
+  return { userId: data.user.id };
+}
 
-  return null; // OK
+/** Verifies JWT and checks that caller owns the given userId. Returns 401/403 response or null. */
+async function requireSelf(c: any, userId: string): Promise<Response | null> {
+  const identity = await requireUser(c);
+  if (identity instanceof Response) return identity;
+  if (identity.userId !== userId) return c.json({ error: "Forbidden" }, 403);
+  return null;
 }
 
 /** Verifies JWT and checks that caller is the admin user. Returns 401 response or null. */
@@ -221,11 +227,14 @@ async function requireAdmin(c: any): Promise<Response | null> {
   return null; // OK
 }
 
-// Submit homework
+// Submit homework — owner comes exclusively from the verified JWT.
 app.post("/make-server-d627d1b0/homework/submit", async (c) => {
+  const identity = await requireUser(c);
+  if (identity instanceof Response) return identity;
   try {
-    const { lessonName, userId, figmaLink, lessonId } = await c.req.json();
-    if (!lessonName || !userId || !figmaLink) {
+    const { lessonName, figmaLink, lessonId } = await c.req.json();
+    const userId = identity.userId;
+    if (!lessonName || !figmaLink) {
       return c.json({ error: "Missing required fields" }, 400);
     }
     // Check if already submitted for this lesson
@@ -287,10 +296,12 @@ app.post("/make-server-d627d1b0/account/delete", async (c) => {
   }
 });
 
-// Get homework by userId
+// Get homework by userId — only the owner can read it.
 app.get("/make-server-d627d1b0/homework/user/:userId", async (c) => {
+  const userId = c.req.param("userId");
+  const authErr = await requireSelf(c, userId);
+  if (authErr) return authErr;
   try {
-    const userId = c.req.param("userId");
     const rows = await sqlQuery(
       `SELECT id, user_id, lesson_name, lesson_id, figma_link, status, comment, image_url, created_at FROM public.homeworks WHERE user_id = '${esc(userId)}' ORDER BY created_at DESC`
     );
@@ -374,11 +385,14 @@ app.delete("/make-server-d627d1b0/homework/:homeworkId", async (c) => {
   }
 });
 
-// Submit challenge
+// Submit challenge — owner comes exclusively from the verified JWT.
 app.post("/make-server-d627d1b0/challenge/submit", async (c) => {
+  const identity = await requireUser(c);
+  if (identity instanceof Response) return identity;
   try {
-    const { challengeName, userId, figmaLink, challengeId } = await c.req.json();
-    if (!challengeName || !userId || !figmaLink) {
+    const { challengeName, figmaLink, challengeId } = await c.req.json();
+    const userId = identity.userId;
+    if (!challengeName || !figmaLink) {
       return c.json({ error: "Missing required fields" }, 400);
     }
 
@@ -545,10 +559,11 @@ app.post("/make-server-d627d1b0/user/email", async (c) => {
 
 // GET /make-server-d627d1b0/user/progress?userId=xxx
 app.get("/make-server-d627d1b0/user/progress", async (c) => {
+  const userId = c.req.query("userId");
+  if (!userId) return c.json({ error: "userId required" }, 400);
+  const authErr = await requireSelf(c, userId);
+  if (authErr) return authErr;
   try {
-    const userId = c.req.query("userId");
-    if (!userId) return c.json({ error: "userId required" }, 400);
-
     const rows = await sqlQuery(
       `SELECT user_id, xp, streak, last_streak_date, level, goal, daily_time, lesson_progress, weekly_challenges, updated_at
        FROM public.user_progress WHERE user_id = '${esc(userId)}' LIMIT 1`

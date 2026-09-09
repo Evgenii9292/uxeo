@@ -17,15 +17,20 @@ export interface AuthContextValue {
   loading: boolean;
   isAdmin: boolean;
   isAuthenticated: boolean;
+  /** Local-only preview session. It never has a JWT or access to server actions. */
+  isDemo: boolean;
   email?: string;
   signInWithGoogle: () => Promise<void>;
   signInWithEmail: (email: string) => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
+  startDemo: () => void;
+  exitDemo: () => void;
 }
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const ADMIN_EMAILS: string[] = []; // Add admin emails here
+const DEMO_MODE_KEY = "skillum-demo-mode";
 
 // ── Context ───────────────────────────────────────────────────────────────────
 
@@ -36,6 +41,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isDemo, setIsDemo] = useState(() => localStorage.getItem(DEMO_MODE_KEY) === "1");
 
   useEffect(() => {
     let cancelled = false;
@@ -79,10 +85,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const userId = session?.user?.id ?? null;
   const accessToken = session?.access_token ?? null;
   const email = session?.user?.email;
-  const isAuthenticated = !!session;
+  const isAuthenticated = !!session || isDemo;
   const isAdmin = ADMIN_EMAILS.includes(email ?? "");
 
   const signInWithGoogle = async () => {
+    setIsDemo(false);
+    localStorage.removeItem(DEMO_MODE_KEY);
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -92,6 +100,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signInWithEmail = async (email: string): Promise<{ error?: string }> => {
+    setIsDemo(false);
+    localStorage.removeItem(DEMO_MODE_KEY);
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
@@ -106,6 +116,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
   };
 
+  const startDemo = () => {
+    localStorage.setItem(DEMO_MODE_KEY, "1");
+    setIsDemo(true);
+  };
+
+  const exitDemo = () => {
+    localStorage.removeItem(DEMO_MODE_KEY);
+    setIsDemo(false);
+  };
+
   return (
     <AuthContext.Provider value={{
       userId,
@@ -113,10 +133,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       isAdmin,
       isAuthenticated,
+      isDemo,
       email,
       signInWithGoogle,
       signInWithEmail,
       signOut,
+      startDemo,
+      exitDemo,
     }}>
       {children}
     </AuthContext.Provider>

@@ -76,6 +76,27 @@ async function getAuthUserId(authHeader: string | undefined): Promise<string | n
   }
 }
 
+async function requireUser(c: any): Promise<{ userId: string } | Response> {
+  const userId = await getAuthUserId(c.req.header("Authorization"));
+  if (!userId) return c.json({ error: "Unauthorized" }, 401);
+  return { userId };
+}
+
+async function requireSelf(c: any, userId: string): Promise<Response | null> {
+  const identity = await requireUser(c);
+  if (identity instanceof Response) return identity;
+  if (identity.userId !== userId) return c.json({ error: "Forbidden" }, 403);
+  return null;
+}
+
+async function requireAdmin(c: any): Promise<Response | null> {
+  const identity = await requireUser(c);
+  if (identity instanceof Response) return identity;
+  const adminUserId = Deno.env.get("ADMIN_USER_ID") ?? "";
+  if (!adminUserId || identity.userId !== adminUserId) return c.json({ error: "Forbidden" }, 403);
+  return null;
+}
+
 // Submit user feedback — stores via KV store
 app.post("/make-server-d627d1b0/feedback/submit", async (c) => {
   try {
@@ -133,14 +154,17 @@ app.post("/make-server-d627d1b0/feedback/submit", async (c) => {
   }
 });
 
-// Submit homework — stores via KV store
+// Submit homework — owner comes from the verified JWT, never from the client body.
 app.post("/make-server-d627d1b0/homework/submit", async (c) => {
+  const identity = await requireUser(c);
+  if (identity instanceof Response) return identity;
   try {
     const body = await c.req.json();
-    const { lessonName, userId, figmaLink } = body;
+    const { lessonName, figmaLink, lessonId } = body;
+    const userId = identity.userId;
 
-    if (!lessonName || !userId || !figmaLink) {
-      return c.json({ error: "Missing required fields: lessonName, userId, figmaLink" }, 400);
+    if (!lessonName || !figmaLink) {
+      return c.json({ error: "Missing required fields: lessonName, figmaLink" }, 400);
     }
 
     const homeworkId = `hw_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
@@ -148,6 +172,7 @@ app.post("/make-server-d627d1b0/homework/submit", async (c) => {
       id: homeworkId,
       user_id: userId,
       lesson_name: lessonName,
+      lesson_id: lessonId || "",
       figma_link: figmaLink,
       status: "pending",
       created_at: new Date().toISOString(),
@@ -196,9 +221,10 @@ app.post("/make-server-d627d1b0/homework/submit", async (c) => {
 
 // Get homework by userId
 app.get("/make-server-d627d1b0/homework/user/:userId", async (c) => {
+  const userId = c.req.param("userId");
+  const authErr = await requireSelf(c, userId);
+  if (authErr) return authErr;
   try {
-    const userId = c.req.param("userId");
-
     const userKey = `homework_user:${userId}`;
     const ids: string[] = (await kv.get(userKey)) ?? [];
     const homeworks = await Promise.all(ids.map((id) => kv.get(`homework:${id}`)));
@@ -214,6 +240,8 @@ app.get("/make-server-d627d1b0/homework/user/:userId", async (c) => {
 
 // Get all homeworks (admin only)
 app.get("/make-server-d627d1b0/homework/all", async (c) => {
+  const authErr = await requireAdmin(c);
+  if (authErr) return authErr;
   try {
     const allKey = `homework_all`;
     const ids: string[] = (await kv.get(allKey)) ?? [];
@@ -230,6 +258,8 @@ app.get("/make-server-d627d1b0/homework/all", async (c) => {
 
 // Update homework status (admin only)
 app.put("/make-server-d627d1b0/homework/:homeworkId/status", async (c) => {
+  const authErr = await requireAdmin(c);
+  if (authErr) return authErr;
   try {
     const homeworkId = c.req.param("homeworkId");
     const body = await c.req.json();
@@ -277,6 +307,8 @@ app.put("/make-server-d627d1b0/homework/:homeworkId/status", async (c) => {
 
 // Delete homework (admin only)
 app.delete("/make-server-d627d1b0/homework/:homeworkId", async (c) => {
+  const authErr = await requireAdmin(c);
+  if (authErr) return authErr;
   try {
     const homeworkId = c.req.param("homeworkId");
 
@@ -308,12 +340,15 @@ app.delete("/make-server-d627d1b0/homework/:homeworkId", async (c) => {
 
 // Submit challenge
 app.post("/make-server-d627d1b0/challenge/submit", async (c) => {
+  const identity = await requireUser(c);
+  if (identity instanceof Response) return identity;
   try {
     const body = await c.req.json();
-    const { challengeName, userId, figmaLink } = body;
+    const { challengeName, figmaLink, challengeId: sourceChallengeId } = body;
+    const userId = identity.userId;
 
-    if (!challengeName || !userId || !figmaLink) {
-      return c.json({ error: "Missing required fields: challengeName, userId, figmaLink" }, 400);
+    if (!challengeName || !figmaLink) {
+      return c.json({ error: "Missing required fields: challengeName, figmaLink" }, 400);
     }
 
     const challengeId = `ch_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
@@ -321,6 +356,7 @@ app.post("/make-server-d627d1b0/challenge/submit", async (c) => {
       id: challengeId,
       user_id: userId,
       challenge_name: challengeName,
+      challenge_id: sourceChallengeId || "",
       figma_link: figmaLink,
       status: "pending",
       created_at: new Date().toISOString(),
@@ -362,6 +398,8 @@ app.post("/make-server-d627d1b0/challenge/submit", async (c) => {
 
 // Update challenge status (admin only)
 app.put("/make-server-d627d1b0/challenge/:challengeId/status", async (c) => {
+  const authErr = await requireAdmin(c);
+  if (authErr) return authErr;
   try {
     const challengeId = c.req.param("challengeId");
     const { status, comment } = await c.req.json();
