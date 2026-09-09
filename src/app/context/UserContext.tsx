@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect, useRef, useCallback } from "react";
 import { projectId } from "../../../utils/supabase/info";
+import { supabase } from "../../../utils/supabase/client";
 import { useAuthSafe } from "./AuthContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -76,6 +77,12 @@ UserContext.displayName = 'UserContext';
 
 // Auto-generated titles — treated as "no custom title"
 const AUTO_TITLES = new Set(["Дизайнер", "Джун-дизайнер", "Мидл-дизайнер", "Опытный дизайнер", "Дизайнер мидл"]);
+
+async function refreshProgressAccessToken(): Promise<string | null> {
+  const { data, error } = await supabase.auth.refreshSession();
+  if (error || !data.session?.access_token) return null;
+  return data.session.access_token;
+}
 
 // Merge two lesson progress maps: take union, max correctAnswers, OR isCompleted
 function mergeLessonProgress(
@@ -188,31 +195,41 @@ export function UserProvider({ children }: { children: ReactNode }) {
       ? (u.userAvatar.startsWith('data:') && u.userAvatar.length > 80000 ? "" : u.userAvatar)
       : "";
 
-    fetch(
+    const requestBody = JSON.stringify({
+      userId: uid,
+      xp: xpVal,
+      streak: u.streak,
+      lastStreakDate: u.lastStreakDate ?? "",
+      level: u.level ?? "",
+      goal: u.goal ?? "",
+      dailyTime: u.dailyTime ?? "",
+      lessonProgress: u.lessonProgress,
+      weeklyChallenges: u.weeklyChallengesCompleted,
+      userName: u.userName ?? "",
+      userTitle: u.userTitle ?? "",
+      userAvatar: avatarToSync,
+    });
+    const postProgress = (nextToken: string) => fetch(
       `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/progress`,
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${nextToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          userId: uid,
-          xp: xpVal,
-          streak: u.streak,
-          lastStreakDate: u.lastStreakDate ?? "",
-          level: u.level ?? "",
-          goal: u.goal ?? "",
-          dailyTime: u.dailyTime ?? "",
-          lessonProgress: u.lessonProgress,
-          weeklyChallenges: u.weeklyChallengesCompleted,
-          userName: u.userName ?? "",
-          userTitle: u.userTitle ?? "",
-          userAvatar: avatarToSync,
-        }),
+        body: requestBody,
       }
-    )
+    );
+
+    postProgress(token)
       .then(async (response) => {
+        if (response.status === 401) {
+          const refreshedToken = await refreshProgressAccessToken();
+          if (refreshedToken) {
+            accessTokenRef.current = refreshedToken;
+            response = await postProgress(refreshedToken);
+          }
+        }
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         setSyncStatus("synced");
       })
@@ -242,11 +259,20 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const isFirstLoad = loadedUserIdRef.current !== userId;
     if (isFirstLoad) setUserLoading(true);
 
-    fetch(
+    const getProgress = (nextToken: string) => fetch(
       `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/progress?userId=${encodeURIComponent(userId)}`,
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    )
-      .then(r => {
+      { headers: { Authorization: `Bearer ${nextToken}` } }
+    );
+
+    getProgress(accessToken)
+      .then(async r => {
+        if (r.status === 401) {
+          const refreshedToken = await refreshProgressAccessToken();
+          if (refreshedToken) {
+            accessTokenRef.current = refreshedToken;
+            r = await getProgress(refreshedToken);
+          }
+        }
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
       })
