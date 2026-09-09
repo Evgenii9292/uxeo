@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router";
 import Layout from "../components/Layout";
-import RightWidgets from "../components/RightWidgets";
 import { useUserSafe } from "../context/UserContext";
 import { useWindowWidth } from "../hooks/useWindowWidth";
 import type { LessonContentData } from "../data/lesson-content";
@@ -100,7 +99,7 @@ export default function TheoryPage() {
 
   return (
     <div key={lessonId} className="theory-page size-full">
-      <Layout title="Теория" showBack backPath="/lessons" rightContent={<RightWidgets />} leftWidth="660px" rightWidth="320px">
+      <Layout title="Теория" showBack backPath="/lessons" leftWidth="660px" rightWidth="320px">
         <div className="flex flex-col gap-[20px] w-full">
           {/* Hero — icon centered, no bg, parallax */}
           <div ref={heroRef} className="flex flex-col items-center gap-[20px] w-full py-[10px]">

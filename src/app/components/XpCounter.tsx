@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useUserSafe } from "../context/UserContext";
-import { formatXp } from "../pages/LeaguePage";
+import { formatXp } from "../utils/league";
 import svgPaths from "../../imports/svg-pt1cecsedx";
 
 function ZapIcon({ isActive }: { isActive: boolean }) {

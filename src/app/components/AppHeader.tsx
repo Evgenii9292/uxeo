@@ -3,7 +3,7 @@ import svgPaths from "../../imports/svg-pt1cecsedx";
 import { useUserSafe } from "../context/UserContext";
 import { useAuthSafe } from "../context/AuthContext";
 import { APP_VERSION } from "../../version";
-import { formatXp } from "../pages/LeaguePage";
+import { formatXp } from "../utils/league";
 import { useEffect, useRef, useState } from "react";
 
 function FireIcon({ isActive }: { isActive: boolean }) {

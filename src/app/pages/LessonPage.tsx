@@ -1,7 +1,6 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { lazy, Suspense, useState, useMemo, useCallback, useEffect } from "react";
 import Layout from "../components/Layout";
 import RoadmapPanel from "../components/RoadmapPanel";
-import RightWidgets from "../components/RightWidgets";
 import { LESSONS, Lesson, LessonStatus } from "../data/lessons";
 import { QUIZ_BANK } from "../data/quiz-bank";
 import { useUserSafe } from "../context/UserContext";
@@ -119,14 +118,7 @@ function MobileContinueButton({ onClick, xpReward }: { onClick: () => void; xpRe
 
 // ── Right column: widgets + continue button ───────────────────────────────────
 
-function RightColumn({ onContinue, xpReward }: { onContinue: () => void; xpReward: number }) {
-  return (
-    <div className="flex flex-col gap-[19px] items-start w-full">
-      <RightWidgets />
-      <ContinueButton onClick={onContinue} xpReward={xpReward} />
-    </div>
-  );
-}
+const LessonRightColumn = lazy(() => import("../components/LessonRightColumn"));
 
 const PROFILE_NAME_KEY = "uxeo-profile-name";
 const EMAIL_KEY = "uxeo-user-email";
@@ -265,7 +257,11 @@ export default function LessonPage() {
       bgColor="#282F33"
       showBack={false}
       backPath="/courses"
-      rightContent={<RightColumn onContinue={handleContinue} xpReward={currentXpReward} />}
+      rightContent={isMobile ? undefined : (
+        <Suspense fallback={<ContinueButton onClick={handleContinue} xpReward={currentXpReward} />}>
+          <LessonRightColumn onContinue={handleContinue} xpReward={currentXpReward} />
+        </Suspense>
+      )}
       rightWidth="320px"
       noTopPad
       mobileStickyBottom={

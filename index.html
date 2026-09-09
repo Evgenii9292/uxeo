@@ -15,18 +15,17 @@
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="icon" href="/app-icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" href="/logo-splash.svg" as="image" fetchpriority="high" />
     <title>Skillum — обучение через практику</title>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K75VZFCQYC"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-K75VZFCQYC');
-    </script>
   </head>
 
+  <script>
+    document.documentElement.dataset.skillumSplash = location.pathname === "/welcome" || location.pathname === "/" ? "on" : "off";
+  </script>
   <style>
+    html[data-skillum-splash="off"] #splash {
+      display: none;
+    }
     #splash {
       position: fixed;
       inset: 0;
@@ -36,10 +35,7 @@
       align-items: center;
       justify-content: center;
       gap: 20px;
-      background-color: #1e262a;
-      background-image: url('/bg-splash.jpg');
-      background-size: cover;
-      background-position: center;
+      background: linear-gradient(165.05deg, #282F33 14.367%, rgb(46, 57, 62) 147.74%);
       transition: opacity 0.5s ease, visibility 0.5s ease;
     }
     #splash.hidden {
@@ -63,10 +59,25 @@
   </style>
   <body>
     <div id="splash">
-      <img src="/logo-splash.svg" alt="Skillum" />
+      <img src="/logo-splash.svg" alt="Skillum" width="286" height="69" fetchpriority="high" />
       <p>Интерактивное обучение дизайну<br>через практику</p>
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function(){ window.dataLayer.push(arguments); };
+      function loadAnalytics(){
+        if (window.__skillumAnalyticsLoaded) return;
+        window.__skillumAnalyticsLoaded = true;
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-K75VZFCQYC';
+        document.head.appendChild(script);
+        window.gtag('js', new Date());
+        window.gtag('config', 'G-K75VZFCQYC');
+      }
+      window.addEventListener('load', function(){ setTimeout(loadAnalytics, 8000); }, { once: true });
+    </script>
   </body>
 </html>

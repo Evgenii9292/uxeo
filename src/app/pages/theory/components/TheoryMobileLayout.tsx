@@ -6,7 +6,6 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router";
 import svgPtPaths from "../../../../imports/svg-pt1cecsedx";
-import { MobileFloatingCircles } from "../../../components/MobileFloatingCircles";
 import { TimeIcon, TheoryLevelIcon } from "../ui/Icons";
 import { AccordionSectionMobile } from "./AccordionSection";
 import { getLessonIcon } from "../../../data/lesson-icons";
@@ -74,6 +73,7 @@ export function TheoryMobileLayout({
 
   // Hide-on-scroll for tab bar
   const [tabBarVisible, setTabBarVisible] = useState(true);
+  const [showFloatingControls, setShowFloatingControls] = useState(false);
   const lastScrollY = useRef(0);
   const handleScroll = useCallback(() => {
     const currentY = mobileScrollRef.current?.scrollTop ?? 0;
@@ -115,7 +115,7 @@ export function TheoryMobileLayout({
             <img
               src={getLessonIcon(lessonId)}
               alt=""
-              style={{ width: 104, height: 104, objectFit: "contain", filter: "brightness(0) invert(1)", maskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", transform: `translateY(${mobileScrollY * 0.25}px)`, opacity: Math.max(0.5, 1 - mobileScrollY / 180), willChange: "transform, opacity", willChange: "transform, opacity", position: "relative", zIndex: 1 }}
+              style={{ width: 104, height: 104, objectFit: "contain", filter: "brightness(0) invert(1)", maskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.3) 100%)", transform: `translateY(${mobileScrollY * 0.25}px)`, opacity: Math.max(0.5, 1 - mobileScrollY / 180), willChange: "transform, opacity", position: "relative", zIndex: 1 }}
             />
           </div>
         </div>
@@ -212,7 +212,11 @@ export function TheoryMobileLayout({
       </div>
 
       {/* ── Floating circles ── */}
-      <MobileFloatingCircles tabBarVisible={tabBarVisible} />
+      {showFloatingControls && (
+        <Suspense fallback={null}>
+          <MobileFloatingCircles tabBarVisible={tabBarVisible} />
+        </Suspense>
+      )}
 
       {/* ── Feedback Modal ── */}
       {showFeedbackModal && (

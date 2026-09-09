@@ -51,10 +51,16 @@ function PortraitGuard() {
 // Main application entry point
 export default function App() {
   useEffect(() => {
-    ["/fire-icon-active.png", "/fire-icon-inactive.png", "/zap-icon-active.png", "/zap-icon-inactive.png"].forEach((src) => {
-      const img = new Image();
-      img.src = src;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => window.dispatchEvent(new CustomEvent("app-ready")));
     });
+
+    window.setTimeout(() => {
+      ["/fire-icon-active.png", "/fire-icon-inactive.png", "/zap-icon-active.png", "/zap-icon-inactive.png"].forEach((src) => {
+        const img = new Image();
+        img.src = src;
+      });
+    }, 6000);
   }, []);
 
   return (

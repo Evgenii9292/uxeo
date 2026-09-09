@@ -1,9 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import type { ReactNode } from "react";
-
-// ─── Shared notification count (localStorage) ─────────────────────────────────
-export const NOTIF_COUNT_KEY = "skillum_notif_unread_count";
-export const NOTIF_INITIAL_UNREAD = 8; // DATA items with isRead: false
+import { NOTIF_COUNT_KEY } from "../utils/notifications";
 
 import {
   getEvents,

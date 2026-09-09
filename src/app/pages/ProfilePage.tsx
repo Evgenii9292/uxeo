@@ -9,7 +9,7 @@ import svgPaths from "../../imports/svg-mo1fvfhy71";
 import imgAvatar from "figma:asset/906790c4d803b2b6f01b6bc1dc6703b587d8a0d9.png";
 import { ActiveCourseCard, COURSE_DISPLAY } from "../components/CoursesContent";
 import { useAchievementsSafe, ACHIEVEMENTS, ACHIEVEMENT_ORDER, AchievementId } from "../context/AchievementsContext";
-import { getLeague, formatXp } from "./LeaguePage";
+import { getLeague, formatXp } from "../utils/league";
 
 // ─── Pencil icon (orange gradient, from Figma) ────────────────────────────────
 function PencilIcon() {

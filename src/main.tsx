@@ -8,7 +8,7 @@
   // Hide splash screen: wait for app-ready event + minimum 1.8s display time
   const splash = document.getElementById("splash");
   if (splash) {
-    const MIN_MS = 1800;
+    const MIN_MS = 500;
     const splashStart = Date.now();
     let hidden = false;
 
@@ -24,6 +24,6 @@
     };
 
     window.addEventListener("app-ready", hideSplash, { once: true });
-    // Fallback: hide after 5s if app-ready never fires
-    setTimeout(hideSplash, 5000);
+    // Fallback: hide quickly if a route forgets to signal readiness
+    setTimeout(hideSplash, 2500);
   }

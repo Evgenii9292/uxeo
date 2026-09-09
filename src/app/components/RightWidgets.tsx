@@ -8,7 +8,7 @@ import { useNavigate, useLocation } from "react-router";
 import { LESSONS } from "../data/lessons";
 import { Zap } from "lucide-react";
 import { FloatingCircle } from "./FloatingCircle";
-import { getLeague, LEAGUES, formatXp } from "../pages/LeaguePage";
+import { getLeague, LEAGUES, formatXp } from "../utils/league";
 import FreeIconGift from "../../imports/FreeIconGift81465531";
 
 // --- Weekly Challenge (Figma icon) ---

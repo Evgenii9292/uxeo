@@ -1,11 +1,11 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import React, { lazy, Suspense } from "react";
 import { createBrowserRouter, Outlet, Navigate } from "react-router";
 
 // ── Eager: нужны сразу на первом экране ───────────────────────────────────────
 import WelcomePage from "./pages/WelcomePage";
-import AuthCallbackPage from "./pages/AuthCallbackPage";
 
 // ── Lazy: грузятся только при переходе на страницу ────────────────────────────
+const AuthCallbackPage   = lazy(() => import("./pages/AuthCallbackPage"));
 const CoursesPage        = lazy(() => import("./pages/CoursesPage"));
 const ModulesPage        = lazy(() => import("./pages/ModulesPage"));
 const LessonPage         = lazy(() => import("./pages/LessonPage"));
@@ -26,86 +26,30 @@ const OnboardingGoalPage = lazy(() => import("./pages/OnboardingGoalPage"));
 const OnboardingTimePage = lazy(() => import("./pages/OnboardingTimePage"));
 const OnboardingNamePage = lazy(() => import("./pages/OnboardingNamePage"));
 
-import { UserProvider, useUserSafe } from "./context/UserContext";
-import { LessonProvider } from "./context/LessonContext";
-import { HomeworkProvider } from "./context/HomeworkContext";
 import { AuthProvider, useAuthSafe } from "./context/AuthContext";
-import { AchievementsProvider } from "./context/AchievementsContext";
-import { AchievementOverlay } from "./components/AchievementUnlockedModal";
-import { useNotificationWatcher } from "./hooks/useNotificationWatcher";
-import { usePushPermission } from "./hooks/usePushPermission";
-import { registerSW } from "./utils/pushSubscription";
 
-// Register SW as early as possible (no permission needed)
-registerSW();
+const AppProviders = lazy(() => import("./components/AppProviders"));
+const AppHomeRoute = lazy(() => import("./components/AppHomeRoute"));
 
 // ── Заглушка во время загрузки страницы ───────────────────────────────────────
 function PageLoader() {
   return <div style={{ height: "100%", background: "#282F33" }} />;
 }
 
-// ── HomeRedirect: нет auth → /welcome, нет level → /level (онбординг), иначе → /lessons ──
-
-function HomeRedirect() {
-  const auth = useAuthSafe();
-  const userCtx = useUserSafe();
-
-  const isLoading = auth?.loading || userCtx?.userLoading;
-
-  // Signal splash to hide once loading is done
-  useEffect(() => {
-    if (!isLoading) {
-      window.dispatchEvent(new CustomEvent("app-ready"));
-    }
-  }, [isLoading]);
-
-  // While loading — render nothing (native splash covers everything)
-  if (isLoading) return null;
-
-  if (!auth?.isAuthenticated) return <Navigate to="/welcome" replace />;
-  if (!userCtx?.level) return <Navigate to="/level" replace />;
-
-  return <Navigate to="/lessons" replace />;
-}
-
 // ── RequireAuth: редирект на /welcome если не авторизован ─────────────────────
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const auth = useAuthSafe();
-  if (auth?.loading) return null; // ждём загрузку
+  if (auth?.loading && !auth?.isDemo) return null; // ждём загрузку
   if (!auth?.isAuthenticated) return <Navigate to="/welcome" replace />;
   return <>{children}</>;
 }
 
-// Inner watcher — must be inside all context providers
-function NotificationWatcher() {
-  useNotificationWatcher();
-  return null;
-}
-
-// Push permission — delayed request after login
-function PushInit() {
-  usePushPermission();
-  return null;
-}
-
-// Root component that provides UserContext to all routes
 function Root() {
   return (
     <AuthProvider>
-      <UserProvider>
-        <AchievementsProvider>
-          <LessonProvider>
-            <HomeworkProvider>
-              <NotificationWatcher />
-              <PushInit />
-              <Suspense fallback={<PageLoader />}>
-                <Outlet />
-              </Suspense>
-              <AchievementOverlay />
-            </HomeworkProvider>
-          </LessonProvider>
-        </AchievementsProvider>
-      </UserProvider>
+      <Suspense fallback={<PageLoader />}>
+        <Outlet />
+      </Suspense>
     </AuthProvider>
   );
 }
@@ -136,7 +80,9 @@ function ErrorPage() {
 function ProtectedLayout() {
   return (
     <RequireAuth>
-      <Outlet />
+      <AppProviders>
+        <Outlet />
+      </AppProviders>
     </RequireAuth>
   );
 }
@@ -149,7 +95,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        Component: HomeRedirect,
+        Component: AppHomeRoute,
       },
       // ── Публичные маршруты (без авторизации) ──────────────────────────────
       { path: "welcome",        Component: WelcomePage },
@@ -186,7 +132,7 @@ export const router = createBrowserRouter([
           { path: "league",           Component: LeaguePage },
         ],
       },
-      { path: "*", Component: HomeRedirect },
+      { path: "*", Component: AppHomeRoute },
     ],
   },
 ]);

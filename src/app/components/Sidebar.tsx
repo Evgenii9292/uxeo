@@ -9,9 +9,9 @@ import Group1 from "../../imports/Group481513";
 import imgVector from "figma:asset/fbd1a4de6983385b09d8ab2cc1ccfe34c3361ab2.png";
 import skillumLongLogo from "../../assets/skillum-logo-long.svg";
 import { useHomeworkSafe } from "../context/HomeworkContext";
-import { getLeague } from "../pages/LeaguePage";
+import { getLeague } from "../utils/league";
 import { useUserSafe } from "../context/UserContext";
-import { NOTIF_COUNT_KEY, NOTIF_INITIAL_UNREAD } from "../pages/NotificationsPage";
+import { NOTIF_COUNT_KEY, NOTIF_INITIAL_UNREAD } from "../utils/notifications";
 import { ReportErrorModal } from "../pages/quiz/ReportErrorModal";
 import { FeedbackModal } from "./FeedbackModal";
 

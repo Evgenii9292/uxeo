@@ -4,8 +4,8 @@
  */
 
 import { createContext, useContext, ReactNode, useState, useEffect } from "react";
-import { supabase } from "../../../utils/supabase/client";
 import type { Session } from "@supabase/supabase-js";
+import { projectId } from "../../../utils/supabase/info";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -32,6 +32,56 @@ export interface AuthContextValue {
 const ADMIN_EMAILS: string[] = []; // Add admin emails here
 const DEMO_MODE_KEY = "skillum-demo-mode";
 
+type SupabaseClient = typeof import("../../../utils/supabase/client").supabase;
+let supabasePromise: Promise<SupabaseClient> | null = null;
+
+function getSupabase(): Promise<SupabaseClient> {
+  supabasePromise ??= import("../../../utils/supabase/client").then((mod) => mod.supabase);
+  return supabasePromise;
+}
+
+function isDemoRequestedFromUrl(): boolean {
+  try {
+    return new URLSearchParams(window.location.search).get("demo") === "1";
+  } catch {
+    return false;
+  }
+}
+
+function ensureDemoBootstrap(): boolean {
+  try {
+    const requested = isDemoRequestedFromUrl();
+    const existing = localStorage.getItem(DEMO_MODE_KEY) === "1";
+    if (!requested && !existing) return false;
+
+    localStorage.setItem(DEMO_MODE_KEY, "1");
+    if (!localStorage.getItem("skillum-demo-user-data")) {
+      localStorage.setItem("skillum-demo-user-data", JSON.stringify({
+        level: "beginner",
+        goal: "change_career",
+        dailyTime: "5min",
+        lessonProgress: {},
+        streak: 0,
+        lastStreakDate: null,
+        weeklyChallengesCompleted: 0,
+        userName: "Demo",
+      }));
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function hasStoredSupabaseSession(): boolean {
+  try {
+    const prefix = `sb-${projectId}-auth-token`;
+    return Object.keys(localStorage).some((key) => key === prefix || key.startsWith(`${prefix}.`));
+  } catch {
+    return false;
+  }
+}
+
 // ── Context ───────────────────────────────────────────────────────────────────
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -40,10 +90,15 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isDemo, setIsDemo] = useState(() => localStorage.getItem(DEMO_MODE_KEY) === "1");
+  const [isDemo, setIsDemo] = useState(() => ensureDemoBootstrap());
+  const [loading, setLoading] = useState(() => !isDemo);
 
   useEffect(() => {
+    if (isDemo) {
+      setLoading(false);
+      return;
+    }
+
     let cancelled = false;
 
     // Safety fallback: never keep the app on white screen if auth call hangs.
@@ -51,13 +106,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!cancelled) setLoading(false);
     }, 3000);
 
-    // Get current session on mount
-    (async () => {
+    let unsubscribe: (() => void) | null = null;
+
+    const loadAuth = async () => {
       try {
+        const supabase = await getSupabase();
+        if (cancelled) return;
+
         const { data } = await supabase.auth.getSession();
         if (!cancelled) {
           setSession(data.session);
         }
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+          setSession(session);
+          setLoading(false);
+        });
+        unsubscribe = () => subscription.unsubscribe();
       } catch {
         if (!cancelled) {
           setSession(null);
@@ -67,20 +132,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setLoading(false);
         }
       }
-    })();
+    };
 
-    // Listen for auth state changes (login, logout, token refresh)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setLoading(false);
-    });
+    const canDelayPublicAuth = window.location.pathname === "/welcome" && !hasStoredSupabaseSession();
+    const authDelay = canDelayPublicAuth ? window.setTimeout(loadAuth, 6000) : null;
+    if (!canDelayPublicAuth) void loadAuth();
 
     return () => {
       cancelled = true;
       window.clearTimeout(loadingTimeout);
-      subscription.unsubscribe();
+      if (authDelay) window.clearTimeout(authDelay);
+      unsubscribe?.();
     };
-  }, []);
+  }, [isDemo]);
 
   const userId = session?.user?.id ?? null;
   const accessToken = session?.access_token ?? null;
@@ -91,6 +155,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithGoogle = async () => {
     setIsDemo(false);
     localStorage.removeItem(DEMO_MODE_KEY);
+    const supabase = await getSupabase();
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -102,6 +167,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithEmail = async (email: string): Promise<{ error?: string }> => {
     setIsDemo(false);
     localStorage.removeItem(DEMO_MODE_KEY);
+    const supabase = await getSupabase();
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
@@ -113,6 +179,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
+    const supabase = await getSupabase();
     await supabase.auth.signOut();
   };
 

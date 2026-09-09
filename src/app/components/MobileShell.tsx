@@ -3,17 +3,17 @@
  * Header styled to match TheoryMobileLayout (glassmorphism, Figma back-chevron, XP/streak stats).
  */
 
-import React, { useRef, useState, useCallback, useEffect } from "react";
+import React, { lazy, Suspense, useRef, useState, useCallback, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
-import { motion } from "motion/react";
-import { formatXp } from "../pages/LeaguePage";
+import { formatXp } from "../utils/league";
 import { APP_VERSION } from "../../version";
 import svgPaths from "../../imports/svg-ns2c3tgkyt";
 import { useUserSafe } from "../context/UserContext";
 import { useAuthSafe } from "../context/AuthContext";
 import BottomTabBar from "./BottomTabBar";
-import { MobileFloatingCircles } from "./MobileFloatingCircles";
 import { PWAInstallBanner } from "./PWAInstallBanner";
+
+const MobileFloatingCircles = lazy(() => import("./MobileFloatingCircles").then((mod) => ({ default: mod.MobileFloatingCircles })));
 
 interface MobileShellProps {
   children: React.ReactNode;
@@ -202,6 +202,7 @@ export default function MobileShell({
 
   // ── Hide-on-scroll state ───────────────────────────────────────────────────
   const [tabBarVisible, setTabBarVisible] = useState(true);
+  const [showFloatingControls, setShowFloatingControls] = useState(false);
   const [showBottomFade, setShowBottomFade] = useState(false);
   const lastScrollY = useRef(0);
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -233,11 +234,10 @@ export default function MobileShell({
   const STICKY_H = stickyBottom ? 72 : 0;
   // Total bottom padding for scroll area = tab + sticky + small gap
   const scrollPadBottom = TAB_H + STICKY_H + 8;
-  const pageTransition = {
-    initial: { opacity: 0, y: 10 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] as const },
-  };
+  useEffect(() => {
+    const id = window.setTimeout(() => setShowFloatingControls(true), 8000);
+    return () => window.clearTimeout(id);
+  }, []);
 
   useEffect(() => {
     if (noScroll) return;
@@ -276,28 +276,22 @@ export default function MobileShell({
 
       {/* Scrollable content */}
       {noScroll ? (
-        <motion.div
+        <div
           key={contentKey}
           className="flex-1 overflow-hidden min-h-0"
-          initial={pageTransition.initial}
-          animate={pageTransition.animate}
-          transition={pageTransition.transition}
         >
           {children}
-        </motion.div>
+        </div>
       ) : (
-        <motion.div
+        <div
           key={contentKey}
           ref={scrollRef}
           className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide px-[16px] py-[16px] isolate"
           style={{ paddingBottom: `calc(${scrollPadBottom}px + max(env(safe-area-inset-bottom, 0px), 20px))` }}
           onScroll={handleScroll}
-          initial={pageTransition.initial}
-          animate={pageTransition.animate}
-          transition={pageTransition.transition}
         >
           {children}
-        </motion.div>
+        </div>
       )}
 
       {/* bottom fade removed */}
@@ -336,10 +330,14 @@ export default function MobileShell({
       <PWAInstallBanner tabBarBottom="calc(52px + env(safe-area-inset-bottom, 0px) + 15px)" />
 
       {/* Floating action circles */}
-      <MobileFloatingCircles
-        tabBarVisible={effectiveTabBarVisible}
-        hasStickyButton={!!stickyBottom}
-      />
+      {showFloatingControls && (
+        <Suspense fallback={null}>
+          <MobileFloatingCircles
+            tabBarVisible={effectiveTabBarVisible}
+            hasStickyButton={!!stickyBottom}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }
