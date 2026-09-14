@@ -43,9 +43,23 @@ export default function AuthCallbackPage() {
       if (session && !resolved) handleSession(session);
     });
 
-    supabase.auth.getSession().then(({ data }) => {
+    const completeAuth = async () => {
+      const code = new URLSearchParams(window.location.search).get("code");
+      if (code) {
+        const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error) throw error;
+        if (data.session && !resolved) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+          handleSession(data.session);
+          return;
+        }
+      }
+
+      const { data } = await supabase.auth.getSession();
       if (data.session && !resolved) handleSession(data.session);
-    }).catch(() => {
+    };
+
+    completeAuth().catch(() => {
       // Timeout below remains the fallback.
     });
 
