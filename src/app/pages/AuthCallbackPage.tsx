@@ -1,16 +1,14 @@
 /**
  * AuthCallbackPage — handles redirect after OAuth (Google) or magic link.
- * Supabase auto-extracts tokens from the URL, then we redirect to the app.
  *
- * Important: the Supabase SDK processes PKCE / OTP tokens asynchronously.
- * We must listen to onAuthStateChange instead of only calling getSession()
- * once — otherwise we navigate away before the session is established.
+ * Authentication must not depend on the progress API. Once Supabase has a
+ * valid session, redirect into the app immediately. AppHomeRoute/UserContext
+ * will handle onboarding and progress loading separately.
  */
 
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { supabase } from "../../../utils/supabase/client";
-import { projectId } from "../../../utils/supabase/info";
 import type { Session } from "@supabase/supabase-js";
 
 export default function AuthCallbackPage() {
@@ -20,52 +18,18 @@ export default function AuthCallbackPage() {
     let cancelled = false;
     let resolved = false;
 
-    async function handleSession(session: Session) {
+    function handleSession(session: Session) {
       if (resolved || cancelled) return;
       resolved = true;
 
-      const user = session.user;
       try {
-        if (user.email) localStorage.setItem("uxeo-user-email", user.email);
+        if (session.user.email) {
+          localStorage.setItem("uxeo-user-email", session.user.email);
+        }
       } catch {}
 
-      // null = API failed (unknown), true = confirmed existing, false = confirmed new
-      let hasExistingProgress: boolean | null = null;
-      try {
-        const res = await fetch(
-          `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/progress`,
-          { headers: { Authorization: `Bearer ${session.access_token}` } }
-        );
-        if (res.ok) {
-          const payload = await res.json().catch(() => ({}));
-          hasExistingProgress = Boolean(payload?.found);
-        }
-        // if !res.ok → stays null (API error, e.g. missing columns) → fall back to HomeRedirect
-      } catch {
-        // network error → null → fall back to HomeRedirect
-      }
-
-      if (cancelled) return;
-
-      if (hasExistingProgress === false) {
-        // Confirmed new user → onboarding
-        const provider = user.app_metadata?.provider ?? "email";
-        fetch(`https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/registered`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${publicAnonKey}` },
-          body: JSON.stringify({ email: user.email, provider, userId: user.id }),
-        }).catch(() => {});
-        navigate("/level", { replace: true });
-        return;
-      }
-
-      if (hasExistingProgress === true) {
-        // Confirmed existing user → skip HomeRedirect entirely (avoids onboarding on empty localStorage)
-        navigate("/lessons", { replace: true });
-        return;
-      }
-
-      // API failed → let HomeRedirect decide based on local state
+      // Do not wait for /user/progress here. A progress-sync failure must never
+      // prevent a successfully authenticated user from entering the app.
       navigate("/", { replace: true });
     }
 
@@ -75,30 +39,22 @@ export default function AuthCallbackPage() {
       navigate("/welcome", { replace: true });
     }
 
-    // 1. Listen for auth state change — fires when SDK finishes processing the
-    //    callback URL (PKCE exchange, OTP token, etc.)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session && !resolved) {
-        handleSession(session);
-      }
+      if (session && !resolved) handleSession(session);
     });
 
-    // 2. Also check if session already exists (fast path for OAuth redirect)
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session && !resolved) {
-        handleSession(data.session);
-      }
+      if (data.session && !resolved) handleSession(data.session);
+    }).catch(() => {
+      // Timeout below remains the fallback.
     });
 
-    // 3. Timeout: if nothing resolved in 8s, give up and go to welcome
-    const timeout = setTimeout(() => {
-      handleNoSession();
-    }, 8000);
+    const timeout = window.setTimeout(handleNoSession, 8000);
 
     return () => {
       cancelled = true;
       subscription.unsubscribe();
-      clearTimeout(timeout);
+      window.clearTimeout(timeout);
     };
   }, [navigate]);
 
