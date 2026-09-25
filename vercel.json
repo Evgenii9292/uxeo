@@ -1,3 +1,50 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "routes": [
+    {
+      "src": "/index.html",
+      "status": 308,
+      "headers": {
+        "Location": "/"
+      }
+    },
+    {
+      "src": "/welcome.html",
+      "status": 308,
+      "headers": {
+        "Location": "/welcome"
+      }
+    },
+    {
+      "src": "/app.html",
+      "status": 308,
+      "headers": {
+        "Location": "/"
+      }
+    },
+    {
+      "src": "/welcome/?",
+      "dest": "/welcome.html"
+    },
+    {
+      "src": "/(auth/callback|level|onboarding-goal|onboarding-time|onboarding-name|quiz|email|courses|modules|lessons|lesson-quiz|theory|contrast|profile|challenges|challenge-detail|homework|notifications|admin-homeworks|about|league)/?",
+      "dest": "/app.html",
+      "headers": {
+        "X-Robots-Tag": "noindex, follow"
+      }
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "status": 404,
+      "dest": "/404.html",
+      "headers": {
+        "X-Robots-Tag": "noindex, follow"
+      }
+    }
+  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist"
 }

@@ -89,19 +89,19 @@ function ChevronRight() {
 
 function ZapGradient() {
   return (
-    <img src="/zap-icon-active.png" width={16} height={18} className="shrink-0" style={{ display: 'block', objectFit: 'contain' }} />
+    <img alt="Очки опыта" src="/zap-icon-active.png" width={16} height={18} className="shrink-0" style={{ display: 'block', objectFit: 'contain' }} />
   );
 }
 
 function ZapWhite() {
   return (
-    <img src="/zap-icon-active.png" width={16} height={18} className="shrink-0" style={{ display: 'block', objectFit: 'contain' }} />
+    <img alt="Очки опыта" src="/zap-icon-active.png" width={16} height={18} className="shrink-0" style={{ display: 'block', objectFit: 'contain' }} />
   );
 }
 
 function FireInline() {
   return (
-    <img src="/fire-icon-active.png" width={16} height={18} className="shrink-0" style={{ display: 'block', objectFit: 'contain' }} />
+    <img alt="Серия дней обучения" src="/fire-icon-active.png" width={16} height={18} className="shrink-0" style={{ display: 'block', objectFit: 'contain' }} />
   );
 }
 

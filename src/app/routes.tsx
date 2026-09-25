@@ -3,6 +3,8 @@ import { createBrowserRouter, Outlet, Navigate } from "react-router";
 
 // ── Eager: нужны сразу на первом экране ───────────────────────────────────────
 import WelcomePage from "./pages/WelcomePage";
+import NotFoundPage from "./pages/NotFoundPage";
+import { RouteSeo } from "./seo/RouteSeo";
 
 // ── Lazy: грузятся только при переходе на страницу ────────────────────────────
 const AuthCallbackPage   = lazy(() => import("./pages/AuthCallbackPage"));
@@ -44,9 +46,15 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function PublicHomeRoute() {
+  const auth = useAuthSafe();
+  return auth?.isAuthenticated ? <AppHomeRoute /> : <WelcomePage />;
+}
+
 function Root() {
   return (
     <AuthProvider>
+      <RouteSeo />
       <Suspense fallback={<PageLoader />}>
         <Outlet />
       </Suspense>
@@ -95,7 +103,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        Component: AppHomeRoute,
+        Component: PublicHomeRoute,
       },
       // ── Публичные маршруты (без авторизации) ──────────────────────────────
       { path: "welcome",        Component: WelcomePage },
@@ -132,7 +140,7 @@ export const router = createBrowserRouter([
           { path: "league",           Component: LeaguePage },
         ],
       },
-      { path: "*", Component: AppHomeRoute },
+      { path: "*", Component: NotFoundPage },
     ],
   },
 ]);

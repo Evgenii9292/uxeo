@@ -211,7 +211,7 @@ function LeagueProgress() {
             </div>
             {/* Current league trophy */}
             <div className="content-stretch flex h-[51px] items-center relative shrink-0">
-              <img
+              <img alt="Кубок лиги"
                 src={league.trophy}
                 width={26}
                 height={26}
@@ -452,7 +452,7 @@ export function CompactWidgets() {
 
       {/* League trophy — current tier */}
       <FloatingCircle size={S} title="Лига" progress={leagueProgress} bg={SB_BG} onClick={() => navigate("/league")}>
-        <img src={currentLeague.trophy} width={28} height={28} style={{ objectFit: "contain" }} />
+        <img alt="Кубок лиги" src={currentLeague.trophy} width={28} height={28} style={{ objectFit: "contain" }} />
       </FloatingCircle>
 
       {/* Flag — daily challenge */}

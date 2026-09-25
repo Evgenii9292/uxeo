@@ -109,7 +109,7 @@ export function MobileHeader({
             <>
               {/* Streak */}
               <div className="flex gap-[3px] items-center">
-                <img src={streak > 0 ? "/fire-icon-active.png" : "/fire-icon-inactive.png"} width={20} height={22} style={{ objectFit: "contain" }} />
+                <img alt="Серия дней обучения" src={streak > 0 ? "/fire-icon-active.png" : "/fire-icon-inactive.png"} width={20} height={22} style={{ objectFit: "contain" }} />
                 <span
                   className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[20px]"
                   style={streak > 0 ? {
@@ -123,7 +123,7 @@ export function MobileHeader({
               </div>
               {/* XP */}
               <div className="flex gap-[4px] items-center">
-                <img src={xp > 0 ? "/zap-icon-active.png" : "/zap-icon-inactive.png"} width={20} height={20} style={{ objectFit: "contain" }} />
+                <img alt="Очки опыта" src={xp > 0 ? "/zap-icon-active.png" : "/zap-icon-inactive.png"} width={20} height={20} style={{ objectFit: "contain" }} />
                 <span
                   className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[20px]"
                   style={xp > 0 ? {

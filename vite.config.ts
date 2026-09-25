@@ -2,6 +2,7 @@ import { defineConfig } from "vite"
 import path from "path"
 import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
+import { renderSeoHead } from "./src/app/seo/metadata.mjs"
 
 export default defineConfig({
   define: {
@@ -13,13 +14,10 @@ export default defineConfig({
     react(),
     tailwindcss(),
     {
-      name: "skillum-non-blocking-css",
+      name: "skillum-seo-head",
       transformIndexHtml(html) {
-        return html.replace(
-          /<link rel="stylesheet" crossorigin href="([^"]+)">/,
-          '<link rel="preload" crossorigin href="$1" as="style" onload="this.onload=null;this.rel=\'stylesheet\'">' +
-            '',
-        );
+        return html.replace(/<!--seo:start-->[\s\S]*?<!--seo:end-->/,
+          `<!--seo:start-->${renderSeoHead("/")}<!--seo:end-->`);
       },
     },
   ],

@@ -329,7 +329,7 @@ function LockedCourseCard({ course }: { course: CourseDisplay }) {
         <div className="flex items-center gap-[14px]">
           <div className="rounded-[12px] shrink-0 flex items-center justify-center opacity-60" style={{ width: 64, height: 64, background: "#2D373A" }}>
             {course.image
-              ? <img src={course.image} style={{ width: 40, height: 40, objectFit: "contain" }} />
+              ? <img alt="" src={course.image} style={{ width: 40, height: 40, objectFit: "contain" }} />
               : Icon ? <div style={{ width: 40, height: 36 }}><Icon /></div> : null}
           </div>
           <div className="flex flex-col gap-[4px] min-w-0">
@@ -365,7 +365,7 @@ function LockedCourseCard({ course }: { course: CourseDisplay }) {
           <div className="flex-[1_0_0] min-h-px min-w-px relative rounded-[15px] w-[185px]" style={{ background: "#2D373A" }}>
             <div className="absolute inset-0 flex items-center justify-center opacity-60 pointer-events-none">
               {course.image
-                ? <img src={course.image} style={{ width: 105, height: 95, objectFit: "contain" }} />
+                ? <img alt="" src={course.image} style={{ width: 105, height: 95, objectFit: "contain" }} />
                 : Icon ? <div style={{ width: 105, height: 95 }}><Icon /></div> : null}
             </div>
           </div>

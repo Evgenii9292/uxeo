@@ -3,7 +3,7 @@
 <html lang="ru" translate="no">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta http-equiv="Content-Language" content="ru" />
     <meta name="google" content="notranslate" />
     <meta name="theme-color" content="#282F33" />
@@ -16,13 +16,15 @@
     <link rel="icon" href="/app-icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preload" href="/logo-splash.svg" as="image" fetchpriority="high" />
-    <title>Skillum — обучение через практику</title>
-  </head>
-
+    <!--seo:start-->
+    <!--seo:end-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <script>
     document.documentElement.dataset.skillumSplash = location.pathname === "/welcome" || location.pathname === "/" ? "on" : "off";
   </script>
   <style>
+    html[data-prerendered="true"] #splash,
     html[data-skillum-splash="off"] #splash {
       display: none;
     }
@@ -57,6 +59,7 @@
       margin: 0;
     }
   </style>
+  </head>
   <body>
     <div id="splash">
       <img src="/logo-splash.svg" alt="Skillum" width="286" height="69" fetchpriority="high" />

@@ -291,7 +291,7 @@ function NavItems({ activePath }: { activePath: string }) {
       >
         <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[10px] items-center pl-[12px] relative size-full">
           <div className="relative shrink-0 size-[20px] flex items-center justify-center">
-            <img src={currentLeague.trophy} width={18} height={18} style={{ objectFit: "contain" }} />
+            <img alt="" src={currentLeague.trophy} width={18} height={18} style={{ objectFit: "contain" }} />
           </div>
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[21px] relative shrink-0 text-[#f1f2fb] text-[18px] whitespace-nowrap">Лига</p>
         </div>
@@ -565,7 +565,7 @@ function CompactSidebar({ activePath }: { activePath: string }) {
         {iconBtn(isLearningActive,   () => navigate("/lessons"),       "Обучение",    bookIcon)}
         {iconBtn(isCoursesActive,    () => navigate("/courses"),       "Курсы",       <svg width="26" height="26" viewBox="0 0 29 29" fill="none"><rect x="3" y="3" width="10" height="10.5" rx="3" fill={isCoursesActive ? "#FF6B21" : "#4E6068"} /><rect x="16" y="3" width="10" height="10.5" rx="3" fill={isCoursesActive ? "#FF9A5C" : "#3A4A52"} /><rect x="3" y="15.5" width="10" height="10.5" rx="3" fill={isCoursesActive ? "#FF9A5C" : "#3A4A52"} /><rect x="16" y="15.5" width="10" height="10.5" rx="3" fill={isCoursesActive ? "#FF6B21" : "#4E6068"} /></svg>)}
         {iconBtn(isChallengesActive, () => navigate("/challenges"),    "Вызовы",      medalIcon)}
-        {iconBtn(isLeagueActive,     () => navigate("/league"),        "Лига",        <img src={currentLeague.trophy} width={22} height={22} style={{ objectFit: "contain" }} />)}
+        {iconBtn(isLeagueActive,     () => navigate("/league"),        "Лига",        <img alt="" src={currentLeague.trophy} width={22} height={22} style={{ objectFit: "contain" }} />)}
         {iconBtn(isProfileActive,    () => navigate("/profile"),       "Профиль",     profileIcon)}
         {iconBtn(isNotifActive,      () => navigate("/notifications"), "Уведомления", notifIcon)}
       </div>
