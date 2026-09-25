@@ -48,6 +48,12 @@ function PortraitGuard() {
   );
 }
 
+function PublicAwarePortraitGuard() {
+  const [path, setPath] = useState(router.state.location.pathname);
+  useEffect(() => router.subscribe((state) => setPath(state.location.pathname)), []);
+  return path === "/" || path === "/welcome" ? null : <PortraitGuard />;
+}
+
 // Main application entry point
 export default function App() {
   useEffect(() => {
@@ -66,7 +72,8 @@ export default function App() {
   return (
     <>
       <RouterProvider router={router} />
-      <PortraitGuard />
+      {/* Public content remains usable in landscape; the learning app keeps its guard. */}
+      <PublicAwarePortraitGuard />
     </>
   );
 }

@@ -47,3 +47,8 @@ button, a, [role="button"], input, select, textarea, label {
   padding-right: 25px !important;
   padding-inline: 25px !important;
 }
+
+/* The public screen must remain readable on short screens and at 200% zoom. */
+#root:has(.welcome-page) {
+  overflow-y: auto;
+}

@@ -33,7 +33,7 @@ function PencilIcon() {
 // ─── Fire icon (matches AppHeader) ───────────────────────────────────────────
 function FireStatIcon() {
   return (
-    <img
+    <img alt="Серия дней обучения"
       src="/fire-icon-active.png"
       width={22}
       height={24}
@@ -45,7 +45,7 @@ function FireStatIcon() {
 // ─── Zap icon (matches AppHeader) ────────────────────────────────────────────
 function ZapStatIcon() {
   return (
-    <img
+    <img alt="Очки опыта"
       src="/zap-icon-active.png"
       width={22}
       height={22}
@@ -228,7 +228,7 @@ function AvatarPickerModal({ current, onSelect, onClose }: {
                 flexShrink: 0,
               }}
             >
-              <img src={url} width={60} height={60} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%", display: "block" }} loading="lazy" />
+              <img alt="Вариант аватара" src={url} width={60} height={60} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%", display: "block" }} loading="lazy" />
             </button>
           ))}
         </div>
@@ -458,7 +458,7 @@ function StatisticsCard({ streak, xp }: { streak: number; xp: number }) {
         {/* League row */}
         <div className="content-stretch flex items-end justify-between relative shrink-0 w-full">
           <div className="content-stretch flex gap-[8px] items-center relative shrink-0">
-            <img src={league.trophy} width={28} height={28} style={{ flexShrink: 0 }} />
+            <img alt="" src={league.trophy} width={28} height={28} style={{ flexShrink: 0 }} />
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22px] relative shrink-0 text-[22px] whitespace-nowrap"
               style={{ color: league.color }}>
               {league.name}

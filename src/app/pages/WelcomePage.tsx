@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 import svgPaths from "../../imports/svg-0jdjpvfhdv";
 import { FlagReportButton } from "./quiz/FlagReportButton";
@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 // ─── Logo ─────────────────────────────────────────────────────────────────────
 function LogoContainer() {
   return (
-    <svg width="174" height="42" viewBox="0 0 435 105" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg role="img" aria-label="Skillum" width="174" height="42" viewBox="0 0 435 105" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M398.649 4.0002L121.664 4.00026C98.664 4.00025 96.432 29.5002 96.432 29.5002L96.3512 21.8111C96.2475 11.9443 88.2403 4.00025 78.3729 4.00025L28.1462 4.00025C19.8619 4.00025 13.1641 10.716 13.1641 19.0002L13.1641 67.0004C13.1641 75.2847 19.8798 82.0004 28.1641 82.0004L78.1641 82.0003C88.1052 82.0003 96.1641 73.9414 96.1641 64.0003L96.1641 55.5002C96.1641 55.5002 98.9057 82.0003 121.664 82.0003L391.535 81.4874C398.496 81.4742 404.391 76.348 405.369 69.4557L412.397 19.9685C413.594 11.5381 407.164 4.0002 398.649 4.0002Z" fill="#354146"/>
       <path d="M51.0341 21.5259C47.5055 18.7401 43.3164 16.5303 38.706 15.0227C30.9469 12.4854 24.1641 19.3569 24.1641 27.5203L24.1641 57.9579C24.1641 66.1213 30.9469 72.9928 38.706 70.4555C43.3164 68.9478 47.5055 66.7381 51.0341 63.9523C54.5627 61.1665 57.3618 57.8594 59.2715 54.2196C61.1812 50.5798 62.1641 46.6788 62.1641 42.7391C62.1641 38.7994 61.1812 34.8984 59.2715 31.2586C57.3618 27.6188 54.5628 24.3117 51.0341 21.5259Z" fill="#64B6FF"/>
       <path d="M58.1641 21.9994C61.5998 19.1207 66.5157 16.6567 71.0048 15.0988C78.5291 12.4875 85.1641 19.1957 85.1641 27.1602L85.1641 58.3343C85.1641 66.2898 78.5464 72.9883 71.0048 70.4555C66.5157 68.9478 62.4369 66.7381 59.0011 63.9523C55.5653 61.1665 52.8399 57.8594 50.9805 54.2196C49.1211 50.5798 48.1641 46.6787 48.1641 42.7391C48.6641 32.9994 54.7283 24.878 58.1641 21.9994Z" fill="#FF6B21"/>
@@ -33,7 +33,7 @@ function ProfileIcon() {
 // ─── Party-popper icon (exact from Figma) ────────────────────────────────────
 function FreeIconPartyPopper() {
   return (
-    <div className="relative shrink-0 size-[27px]">
+    <div aria-hidden="true" className="relative shrink-0 size-[27px]">
       <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 27 27">
         <g clipPath="url(#clip0_welcome_party)">
           <path d={svgPaths.p2f718f80} fill="#FDC70E" id="Vector" />
@@ -163,6 +163,7 @@ function useIsStandalone() {
 
 export default function WelcomePage() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { signInWithGoogle, signInWithEmail, isAuthenticated, loading, startDemo } = useAuth();
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
@@ -173,10 +174,10 @@ export default function WelcomePage() {
 
   // Если уже авторизован — отправить дальше (HomeRedirect разберётся)
   useEffect(() => {
-    if (!loading && isAuthenticated) {
+    if (!loading && isAuthenticated && pathname !== "/") {
       navigate("/", { replace: true });
     }
-  }, [loading, isAuthenticated, navigate]);
+  }, [loading, isAuthenticated, navigate, pathname]);
 
   const goToLevel = () => navigate("/level");
 
@@ -197,8 +198,8 @@ export default function WelcomePage() {
   };
 
   return (
-    <div
-      className="relative w-full flex items-center justify-center px-4 overflow-hidden"
+    <main
+      className="welcome-page relative w-full flex items-center justify-center px-4 overflow-hidden"
       style={{
         minHeight: "100%",
         paddingTop: "max(32px, env(safe-area-inset-top, 32px))",
@@ -214,9 +215,9 @@ export default function WelcomePage() {
 
         {/* Headline + subtitle */}
         <div className="flex flex-col gap-[25px] items-start w-full">
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[37px] w-full text-[32px] text-[rgba(244,245,252,0.9)]">
-            Освойте веб-дизайн через игру и практику
-          </p>
+          <h1 className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[37px] w-full text-[32px] text-[rgba(244,245,252,0.9)]">
+            Освой UX/UI-дизайн на практике
+          </h1>
           <div className="flex gap-[17px] items-start w-full">
             <FreeIconPartyPopper />
             <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] text-[#798589] text-[18px] flex-1">
@@ -273,6 +274,7 @@ export default function WelcomePage() {
                     onKeyDown={e => e.key === "Enter" && handleEmailSubmit()}
                     placeholder="example@mail.com"
                     name="email"
+                    aria-label="Email для входа"
                     autoComplete="email"
                     autoFocus
                     className="bg-transparent flex-1 outline-none border-none font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[18px] placeholder-[#798589]"
@@ -334,7 +336,7 @@ export default function WelcomePage() {
       <div className="absolute left-[28px]" style={{ bottom: "calc(28px + env(safe-area-inset-bottom, 0px))" }}>
         <FlagReportButton />
       </div>
-    </div>
+    </main>
   );
 
 

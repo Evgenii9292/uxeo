@@ -1123,7 +1123,7 @@ export default function LessonQuizPage() {
             </div>
               <div className="flex gap-[4px] items-center shrink-0">
                 <div className="relative shrink-0 size-[18px]">
-                <img src="/zap-icon-inactive.png" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                <img alt="Очки опыта" src="/zap-icon-inactive.png" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
               </div>
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[21px] text-[#798589] whitespace-nowrap text-[18px]">{totalXp}</p>
             </div>

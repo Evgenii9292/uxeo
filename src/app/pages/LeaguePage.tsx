@@ -297,7 +297,7 @@ function ParticipantRow({ participant, position }: { participant: Participant; p
       {/* Avatar */}
       {participant.avatarUrl ? (
         <div style={{ position: "relative", width: 40, height: 40, borderRadius: "50%", flexShrink: 0, overflow: "hidden", background: "#3a4549" }}>
-          <img
+          <img alt="Аватар участника"
             src={participant.avatarUrl}
             width={40}
             height={40}
@@ -433,7 +433,7 @@ function RelegationZone() {
 // ─── Trophy icon ──────────────────────────────────────────────────────────────
 
 function TrophyIcon({ trophy, size = 96 }: { trophy: string; size?: number }) {
-  return <img src={trophy} width={size} height={size} style={{ objectFit: "contain" }} />;
+  return <img alt="Кубок лиги" src={trophy} width={size} height={size} style={{ objectFit: "contain" }} />;
 }
 
 // ─── Right sidebar widget ─────────────────────────────────────────────────────

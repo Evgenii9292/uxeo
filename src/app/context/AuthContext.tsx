@@ -134,7 +134,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    const canDelayPublicAuth = window.location.pathname === "/welcome" && !hasStoredSupabaseSession();
+    const canDelayPublicAuth = ["/", "/welcome"].includes(window.location.pathname) && !hasStoredSupabaseSession();
     const authDelay = canDelayPublicAuth ? window.setTimeout(loadAuth, 6000) : null;
     if (!canDelayPublicAuth) void loadAuth();
 
