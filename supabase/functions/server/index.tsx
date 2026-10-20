@@ -1,3 +1,4 @@
+import { mergeProgressSql, progressXpSql } from "./progressSql.ts";
 import { Hono } from "npm:hono";
 import { cors } from "npm:hono/cors";
 import { logger } from "npm:hono/logger";
@@ -588,18 +589,18 @@ app.post("/make-server-d627d1b0/user/progress", async (c) => {
 
     const lpJson = JSON.stringify(lessonProgress ?? {}).replace(/'/g, "''");
 
+    const mergedProgress = mergeProgressSql("user_progress.lesson_progress", "EXCLUDED.lesson_progress");
     await sqlQuery(`
       INSERT INTO public.user_progress (user_id, xp, streak, last_streak_date, level, goal, daily_time, lesson_progress, weekly_challenges, updated_at)
       VALUES ('${esc(userId)}', ${xp ?? 0}, ${streak ?? 0}, '${esc(lastStreakDate ?? "")}', '${esc(level ?? "")}', '${esc(goal ?? "")}', '${esc(dailyTime ?? "")}', '${lpJson}'::jsonb, ${weeklyChallenges ?? 0}, NOW())
       ON CONFLICT (user_id) DO UPDATE SET
-        xp = EXCLUDED.xp,
-        streak = EXCLUDED.streak,
-        last_streak_date = EXCLUDED.last_streak_date,
+        (lesson_progress, xp) = (SELECT merged, ${progressXpSql("merged")} FROM (SELECT ${mergedProgress} AS merged) progress),
+        streak = GREATEST(user_progress.streak, EXCLUDED.streak),
+        last_streak_date = GREATEST(user_progress.last_streak_date, EXCLUDED.last_streak_date),
         level = EXCLUDED.level,
         goal = EXCLUDED.goal,
         daily_time = EXCLUDED.daily_time,
-        lesson_progress = EXCLUDED.lesson_progress,
-        weekly_challenges = EXCLUDED.weekly_challenges,
+        weekly_challenges = GREATEST(user_progress.weekly_challenges, EXCLUDED.weekly_challenges),
         updated_at = NOW()
     `);
 

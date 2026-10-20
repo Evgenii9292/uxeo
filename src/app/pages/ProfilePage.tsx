@@ -682,14 +682,19 @@ function AccountActionsCard() {
   const navigate = useNavigate();
   const { signOut } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSignOut = async () => {
     if (isSigningOut) return;
     setIsSigningOut(true);
+    setSignOutError("");
     try {
       await signOut();
       navigate("/welcome", { replace: true });
+    } catch (error) {
+      setShowConfirm(false);
+      setSignOutError(error instanceof Error ? error.message : "Не удалось выйти. Попробуйте ещё раз.");
     } finally {
       setIsSigningOut(false);
     }
@@ -705,6 +710,7 @@ function AccountActionsCard() {
       )}
       <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full mt-[32px] pb-[40px]">
         <SectionTitle text="Аккаунт" />
+        {signOutError && <p role="alert" className="text-[#E8503A] text-[16px]">{signOutError}</p>}
         <div className="bg-[#343e42] relative rounded-[15px] shrink-0 w-full">
           <div className="content-stretch flex flex-col gap-[14px] items-start p-[16px] relative w-full">
             <button

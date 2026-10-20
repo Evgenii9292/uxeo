@@ -1,3 +1,4 @@
+import { flushProgressBeforeSignOut } from "../utils/progressLifecycle";
 /**
  * AuthContext — Supabase Auth (Google OAuth + Email magic link).
  * Falls back to a stable anonymous UUID when not signed in.
@@ -180,8 +181,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
+    if (!await flushProgressBeforeSignOut()) throw new Error("Не удалось сохранить прогресс. Проверьте интернет и попробуйте выйти снова.");
     const supabase = await getSupabase();
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut({ scope: "local" });
+    if (error) throw error;
   };
 
   const startDemo = () => {
