@@ -70,7 +70,7 @@ function OrangeButton({ label, onClick, isMobile }: { label: string; onClick: ()
     <button
       onClick={() => { onClick(); playClick(true); }}
       className="group relative flex h-[59px] items-center justify-center px-[40px]
-        rounded-[15px] shrink-0 bg-[#ff5d39] cursor-pointer select-none outline-none
+        rounded-[15px] shrink-0 bg-[#ff6b21] cursor-pointer select-none outline-none
         transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
     >
       <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
@@ -278,7 +278,7 @@ export default function LessonCompletionScreen({
                 Попробуйте ещё раз
               </h1>
               <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] leading-[1.2] text-center ${isMobile ? "text-[14px]" : "text-[18px]"}`}>
-                Нужно {Math.ceil(totalQuestions * 0.5)} из {totalQuestions}, чтобы пройти урок
+                Чтобы пройти урок, ответьте правильно хотя бы на {Math.ceil(totalQuestions * 0.5)} из {totalQuestions} вопросов
               </p>
             </div>
 
@@ -310,7 +310,7 @@ export default function LessonCompletionScreen({
                 className="cursor-pointer select-none outline-none transition-opacity duration-150 hover:opacity-80"
               >
                 <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] leading-[1.2] ${isMobile ? "text-[15px]" : "text-[20px]"}`}>
-                  Вернуться на Roadmap
+                  Вернуться к урокам
                 </p>
               </button>
             </div>

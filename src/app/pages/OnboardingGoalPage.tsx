@@ -50,9 +50,9 @@ function OptionCard({ text, emoji, state, onClick }: { text: string; emoji?: str
 }
 
 const GOALS: { id: OnboardingGoal; text: string; emoji: string }[] = [
-  { id: "change_career",   text: "Хочу сменить профессию",    emoji: "🚀" },
-  { id: "improve_skills",  text: "Прокачать навыки дизайнера", emoji: "🎨" },
-  { id: "work_use",        text: "Использую дизайн в работе", emoji: "💼" },
+  { id: "change_career",   text: "Сменить профессию",    emoji: "🚀" },
+  { id: "improve_skills",  text: "Улучшить навыки дизайна", emoji: "🎨" },
+  { id: "work_use",        text: "Применять дизайн в работе", emoji: "💼" },
 ];
 
 export default function OnboardingGoalPage() {
@@ -85,7 +85,7 @@ export default function OnboardingGoalPage() {
       <div className="flex-1 flex flex-col items-center justify-center px-[24px]">
         <div className="flex flex-col items-center gap-[36px] w-full max-w-[526px]">
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[32px] text-center">
-            Зачем учишься?
+            Какая у вас цель?
           </p>
           <div className="flex flex-col gap-[19px] w-full">
             {GOALS.map((g) => (

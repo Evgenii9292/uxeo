@@ -94,7 +94,7 @@ function IconsContainer() {
             </svg>
           </div>
         </div>
-        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#232a2d] text-[16px] whitespace-nowrap">Новичек</p>
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#232a2d] text-[16px] whitespace-nowrap">Новичок</p>
       </div>
       <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
         <div className="relative shrink-0 size-[14px]" data-name="Icon/Cube">

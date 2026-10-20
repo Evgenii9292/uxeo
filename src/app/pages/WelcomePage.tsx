@@ -77,7 +77,7 @@ function PrimaryButton({ onClick }: { onClick: () => void }) {
         active:translate-y-[5px]
       "
     >
-      <div className="bg-[#ff5d39] content-stretch flex items-center justify-center px-[25.835px] py-[0.835px] relative rounded-[15px] size-full">
+      <div className="bg-[#ff6b21] content-stretch flex items-center justify-center px-[25.835px] py-[0.835px] relative rounded-[15px] size-full">
         <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-[0px_0px_0px_0px_#c24226]" />
         <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] relative shrink-0 text-[24px] md:text-[26px] text-[rgba(247,248,252,0.9)] whitespace-nowrap">
           Начать обучение
@@ -163,11 +163,11 @@ function useIsStandalone() {
 
 export default function WelcomePage() {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const { signInWithGoogle, signInWithEmail, isAuthenticated, loading, startDemo } = useAuth();
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
-  const [emailError, setEmailError] = useState("");
+  const [emailError, setEmailError] = useState(() => new URLSearchParams(search).has("authError") ? "Не удалось войти. Ссылка могла устареть. Попробуйте войти снова." : "");
   const [emailLoading, setEmailLoading] = useState(false);
   const [showEmailInput, setShowEmailInput] = useState(false);
   const isStandalone = useIsStandalone();
@@ -188,7 +188,9 @@ export default function WelcomePage() {
     }
     setEmailLoading(true);
     setEmailError("");
-    const { error } = await signInWithEmail(email.trim());
+    let error: string | undefined;
+    try { ({ error } = await signInWithEmail(email.trim())); }
+    catch { error = "network"; }
     setEmailLoading(false);
     if (error) {
       setEmailError("Ошибка. Попробуйте ещё раз.");
@@ -216,12 +218,12 @@ export default function WelcomePage() {
         {/* Headline + subtitle */}
         <div className="flex flex-col gap-[25px] items-start w-full">
           <h1 className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[37px] w-full text-[32px] text-[rgba(244,245,252,0.9)]">
-            Освой UX/UI-дизайн на практике
+            Освойте UX/UI-дизайн на практике
           </h1>
           <div className="flex gap-[17px] items-start w-full">
             <FreeIconPartyPopper />
             <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] text-[#798589] text-[18px] flex-1">
-              Решайте реальные задачи интерфейсов и закрепляйте знания практикой.
+              Решайте реальные задачи интерфейсов и закрепляйте знания практикой.
             </p>
           </div>
         </div>
@@ -231,7 +233,7 @@ export default function WelcomePage() {
 
             {/* Google sign-in — primary */}
             <button
-              onClick={() => { playClick(); signInWithGoogle(); }}
+              onClick={async () => { playClick(); setEmailError(""); try { await signInWithGoogle(); } catch { setEmailError("Не удалось войти через Google. Попробуйте ещё раз или войдите по почте."); } }}
               className="group relative w-full h-[59px] rounded-[15px] flex items-center justify-center gap-[10px] select-none cursor-pointer outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
               style={{ background: "#242B2E" }}
             >
@@ -289,7 +291,7 @@ export default function WelcomePage() {
                   onClick={handleEmailSubmit}
                   disabled={emailLoading}
                   className="group relative w-full h-[59px] rounded-[15px] flex items-center justify-center select-none cursor-pointer outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
-                  style={{ background: "#FF5D39", opacity: emailLoading ? 0.7 : 1 }}
+                  style={{ background: "#FF6B21", opacity: emailLoading ? 0.7 : 1 }}
                 >
                   <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" style={{ border: "1px solid #ff390d" }} />
                   <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[rgba(247,248,252,0.9)] text-[22px]">
@@ -308,7 +310,7 @@ export default function WelcomePage() {
                   Письмо отправлено! ✉️
                 </p>
                 <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] text-[13px] mt-[6px] leading-[1.5]">
-                  Открой ссылку в письме <span style={{ color: "#ff8a6b" }}>на этом устройстве и в этом же браузере</span> — только так она сработает.
+                  Откройте ссылку в письме <span style={{ color: "#ff8a6b" }}>на этом устройстве и в этом же браузере</span> — только так она сработает.
                 </p>
               </div>
             )}
@@ -319,10 +321,9 @@ export default function WelcomePage() {
             >
               Посмотреть демо без регистрации
             </button>
-            <p className="text-center font-['Roboto_Condensed:Regular',sans-serif] text-[12px] leading-[1.45] text-[#66757b] -mt-[10px]">
-              Демо хранится только на этом устройстве. Отправка работ недоступна.
-            </p>
           </div>
+
+          {emailError && !showEmailInput && <p role="alert" className="text-[#ff6b6b] text-[16px] text-center">{emailError}</p>}
 
           {/* PWA standalone: subtle hint below buttons */}
           {isStandalone && (

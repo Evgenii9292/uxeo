@@ -503,7 +503,7 @@ function Frame10() {
   return (
     <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
       <FreeIconVolumeLevelIndicator />
-      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[16px] whitespace-nowrap">новичек</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[16px] whitespace-nowrap">Новичок</p>
     </div>
   );
 }
@@ -882,7 +882,7 @@ function Frame28() {
   return (
     <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
       <FreeIconVolumeLevelIndicator2 />
-      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#798489] text-[16px] whitespace-nowrap">новичек</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#798489] text-[16px] whitespace-nowrap">Новичок</p>
     </div>
   );
 }

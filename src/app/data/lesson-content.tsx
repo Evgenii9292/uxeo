@@ -308,7 +308,7 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
         title: "Простое правило цвета",
         content: (
           <>
-            <TextSection emoji="🧠" title="Задай себе вопрос">
+            <TextSection emoji="🧠" title="Задайте себе вопрос">
               <p>Перед использованием цвета полезно задать себе вопрос:</p>
               <p><em>Что на этом экране самое важное?</em></p>
               <p>И сделать именно этот элемент {H("самым заметным по цвету")}.</p>
@@ -1623,7 +1623,7 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
         content: (
           <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[24px] text-[#f1f2fb] opacity-80 w-full flex flex-col gap-[8px]">
             <p>Компонент — это элемент, который можно {H("переиспользовать")}.</p>
-            <p>Ты создаёшь кнопку один раз → используешь везде.</p>
+            <p>Вы создаёте кнопку один раз → используете везде.</p>
           </div>
         ),
         quizQuestion: "Где используется компонент?",
@@ -1661,7 +1661,7 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
         title: "Переиспользование",
         content: (
           <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[24px] text-[#f1f2fb] opacity-80 w-full flex flex-col gap-[8px]">
-            <p>Когда ты используешь компонент:</p>
+            <p>Когда вы используете компонент:</p>
             <ul className="list-disc flex flex-col gap-[4px]">
               <li className="ms-[27px]">изменяешь его в одном месте</li>
               <li className="ms-[27px]">→ он обновляется везде</li>

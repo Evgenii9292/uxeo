@@ -27,3 +27,11 @@
     // Fallback: hide quickly if a route forgets to signal readiness
     setTimeout(hideSplash, 2500);
   }
+
+  // Install/update the app worker independently of notification permission.
+  if (import.meta.env.PROD && "serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" })
+        .catch(error => console.error("Service worker registration failed:", error));
+    }, { once: true });
+  }

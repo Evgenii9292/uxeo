@@ -1148,7 +1148,7 @@ function Frame15() {
     <div className="content-stretch flex gap-[5px] items-start relative shrink-0 w-full">
       <FreeIconGift />
       <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[0] relative shrink-0 text-[#798589] text-[18px] w-[140px]">
-        <span className="leading-[20px]">{`И получи `}</span>
+        <span className="leading-[20px]">{`И получите `}</span>
         <span className="leading-[20px] text-[#ff6b21]">месяц</span>
         <span className="leading-[20px]">{` бесплатно`}</span>
       </p>
@@ -1438,7 +1438,7 @@ function IconsContainer1() {
             </svg>
           </div>
         </div>
-        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#232a2d] text-[16px] whitespace-nowrap">Новичек</p>
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#232a2d] text-[16px] whitespace-nowrap">Новичок</p>
       </div>
       <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
         <div className="relative shrink-0 size-[14px]" data-name="Icon/Cube">

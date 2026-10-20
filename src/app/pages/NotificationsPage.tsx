@@ -1,3 +1,4 @@
+import { SeenNotification } from "../components/SeenNotification";
 import { useState, useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 import { NOTIF_COUNT_KEY } from "../utils/notifications";
@@ -191,12 +192,12 @@ function ModuleThumb() {
 
 // ─── Warning icon ─────────────────────────────────────────────────────────────
 
-function WarningIcon() {
+function WarningIcon({ highlighted = false }: { highlighted?: boolean }) {
   return (
     <div className="h-[18px] relative shrink-0 w-[13px]">
       <div className="absolute inset-[15.72%_-3.5%_15.71%_-1.18%]">
         <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 13.6079 12.3425">
-          <path clipRule="evenodd" d={svgPaths.p3bc0b780} fill="#BABEC4" fillRule="evenodd" />
+          <path clipRule="evenodd" d={svgPaths.p3bc0b780} fill={highlighted ? "#FF6B21" : "#BABEC4"} fillRule="evenodd" />
         </svg>
       </div>
     </div>
@@ -208,11 +209,13 @@ function WarningIcon() {
 function FilterBar({
   active,
   unreadCount,
+  hasRequiredAction,
   onChange,
   onDeleteAll,
 }: {
   active: Filter;
   unreadCount: number;
+  hasRequiredAction: boolean;
   onChange: (f: Filter) => void;
   onDeleteAll: () => void;
 }) {
@@ -241,7 +244,7 @@ function FilterBar({
   ) : undefined;
 
   return (
-    <div className="flex gap-[10px] h-[40px] items-center w-full">
+    <div className="flex gap-[10px] h-[40px] items-center w-[calc(100%+32px)] -mx-[16px] px-[16px]">
       {/* Scrollable tabs */}
       <div
         className="flex gap-[10px] h-full items-start flex-1 min-w-0"
@@ -249,7 +252,7 @@ function FilterBar({
       >
         {tab("all", "Все")}
         {tab("unread", "Непрочитанные", badge)}
-        {tab("action", "Требуют действия", <WarningIcon />)}
+        {tab("action", "Требуют действия", <WarningIcon highlighted={hasRequiredAction} />)}
       </div>
       {/* Delete all button */}
       <button
@@ -294,15 +297,9 @@ function CardShell({ isRead, hasAction = true, onToggleRead, onOpen, time, subti
       )}
       <div className="relative flex items-stretch py-[20px]">
         {/* Status dot */}
-        <button
-          className="shrink-0 outline-none bg-transparent border-none cursor-pointer"
-          style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }}
-          onClick={e => { e.stopPropagation(); onToggleRead(); }}
-          aria-label={isRead ? 'Отметить как непрочитанное' : 'Отметить как прочитанное'}
-          title={isRead ? 'Отметить как непрочитанное' : 'Отметить как прочитанное'}
-        >
-          <DotIndicator isRead={isRead} />
-        </button>
+        <span aria-hidden="true" className="shrink-0" style={{ alignSelf: "flex-start", marginTop: 7, marginRight: 15 }}>
+<DotIndicator isRead={isRead} />
+        </span>
         {/* Left: title + subtitle */}
         <div className="flex-1 min-w-0 flex flex-col gap-[5px]">
           <div style={{ opacity: isRead ? 0.5 : 1 }}>
@@ -649,6 +646,7 @@ function ServerNotifCard({
 
   if (notif.type === "daily_reminder") {
     return (
+      <SeenNotification isRead={notif.read} onRead={() => onRead(notif.id)}>
       <SwipeToDelete onDelete={() => onDelete(notif.id)}>
         <div
           className="group relative w-full cursor-pointer"
@@ -656,13 +654,9 @@ function ServerNotifCard({
         >
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: '#2A3236' }} />
           <div className="relative flex items-stretch py-[20px]">
-            <button
-              className="shrink-0 outline-none bg-transparent border-none cursor-pointer"
-              style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }}
-              onClick={toggle}
-            >
-              <div style={{ width: 9, height: 9, borderRadius: '50%', background: notif.read ? '#2D3539' : '#FE6B21' }} />
-            </button>
+            <span aria-hidden="true" className="shrink-0" style={{ alignSelf: "flex-start", marginTop: 7, marginRight: 15 }}>
+<div style={{ width: 9, height: 9, borderRadius: '50%', background: notif.read ? '#2D3539' : '#FE6B21' }} />
+            </span>
             <div className="flex-1 min-w-0 flex flex-col gap-[5px]">
               <div style={{ opacity: notif.read ? 0.5 : 1 }}>
                 <div className="flex gap-[5px] items-center">
@@ -691,22 +685,20 @@ function ServerNotifCard({
           </div>
         </div>
       </SwipeToDelete>
+      </SeenNotification>
     );
   }
 
   // Fallback for unknown server notif types
   return (
-    <SwipeToDelete onDelete={() => onDelete(notif.id)}>
+    <SeenNotification isRead={notif.read} onRead={() => onRead(notif.id)}>
+      <SwipeToDelete onDelete={() => onDelete(notif.id)}>
       <div className="group relative w-full">
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: '#2A3236' }} />
         <div className="relative flex items-stretch py-[20px]">
-          <button
-            className="shrink-0 outline-none bg-transparent border-none cursor-pointer"
-            style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }}
-            onClick={toggle}
-          >
-            <div style={{ width: 9, height: 9, borderRadius: '50%', background: notif.read ? '#2D3539' : '#FE6B21' }} />
-          </button>
+          <span aria-hidden="true" className="shrink-0" style={{ alignSelf: "flex-start", marginTop: 7, marginRight: 15 }}>
+<div style={{ width: 9, height: 9, borderRadius: '50%', background: notif.read ? '#2D3539' : '#FE6B21' }} />
+          </span>
           <div className="flex-1 min-w-0 flex flex-col gap-[5px]">
             <div style={{ opacity: notif.read ? 0.5 : 1 }}>
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc]">
@@ -725,6 +717,7 @@ function ServerNotifCard({
         </div>
       </div>
     </SwipeToDelete>
+      </SeenNotification>
   );
 }
 
@@ -899,7 +892,7 @@ function RealNotifCard({ event, filter }: { event: NotifEvent; filter: string })
   const timeStr = formatNotifTime(timestamp);
 
   if (filter === "unread" && read) return null;
-  if (filter === "action" && type !== "lesson_completed") return null;
+  if (filter === "action") return null;
 
   const renderContent = () => {
     if (type === "lesson_completed") {
@@ -911,9 +904,9 @@ function RealNotifCard({ event, filter }: { event: NotifEvent; filter: string })
         >
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: '#2A3236' }} />
           <div className="relative flex items-stretch py-[20px]">
-            <button className="shrink-0 outline-none bg-transparent border-none cursor-pointer" style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }} onClick={toggle}>
-              <div style={{ width: 9, height: 9, borderRadius: '50%', background: read ? '#2D3539' : '#FE6B21' }} />
-            </button>
+            <span aria-hidden="true" className="shrink-0" style={{ alignSelf: "flex-start", marginTop: 7, marginRight: 15 }}>
+<div style={{ width: 9, height: 9, borderRadius: '50%', background: read ? '#2D3539' : '#FE6B21' }} />
+            </span>
             <div className="flex-1 min-w-0 flex flex-col gap-[5px]">
               <div style={{ opacity: read ? 0.5 : 1 }}>
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc]">
@@ -949,9 +942,9 @@ function RealNotifCard({ event, filter }: { event: NotifEvent; filter: string })
         <div className="group relative w-full">
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: '#2A3236' }} />
           <div className="relative flex items-stretch py-[20px]">
-            <button className="shrink-0 outline-none bg-transparent border-none cursor-pointer" style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }} onClick={toggle}>
-              <div style={{ width: 9, height: 9, borderRadius: '50%', background: read ? '#2D3539' : '#FE6B21' }} />
-            </button>
+            <span aria-hidden="true" className="shrink-0" style={{ alignSelf: "flex-start", marginTop: 7, marginRight: 15 }}>
+<div style={{ width: 9, height: 9, borderRadius: '50%', background: read ? '#2D3539' : '#FE6B21' }} />
+            </span>
             <div className="flex-1 min-w-0 flex flex-col gap-[5px]">
               <div style={{ opacity: read ? 0.5 : 1 }}>
                 <div className="flex gap-[5px] items-center min-w-0">
@@ -977,9 +970,9 @@ function RealNotifCard({ event, filter }: { event: NotifEvent; filter: string })
         <div className="group relative w-full cursor-pointer" onClick={open("/league")}>
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: '#2A3236' }} />
           <div className="relative flex items-stretch py-[20px]">
-            <button className="shrink-0 outline-none bg-transparent border-none cursor-pointer" style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }} onClick={toggle}>
-              <div style={{ width: 9, height: 9, borderRadius: '50%', background: read ? '#2D3539' : '#FE6B21' }} />
-            </button>
+            <span aria-hidden="true" className="shrink-0" style={{ alignSelf: "flex-start", marginTop: 7, marginRight: 15 }}>
+<div style={{ width: 9, height: 9, borderRadius: '50%', background: read ? '#2D3539' : '#FE6B21' }} />
+            </span>
             <div className="flex-1 min-w-0 flex flex-col gap-[5px]">
               <div style={{ opacity: read ? 0.5 : 1 }}>
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc]">
@@ -1005,9 +998,9 @@ function RealNotifCard({ event, filter }: { event: NotifEvent; filter: string })
         <div className="group relative w-full">
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: '#2A3236' }} />
           <div className="relative flex items-stretch py-[20px]">
-            <button className="shrink-0 outline-none bg-transparent border-none cursor-pointer" style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }} onClick={toggle}>
-              <div style={{ width: 9, height: 9, borderRadius: '50%', background: read ? '#2D3539' : '#FE6B21' }} />
-            </button>
+            <span aria-hidden="true" className="shrink-0" style={{ alignSelf: "flex-start", marginTop: 7, marginRight: 15 }}>
+<div style={{ width: 9, height: 9, borderRadius: '50%', background: read ? '#2D3539' : '#FE6B21' }} />
+            </span>
             <div className="flex-1 min-w-0 flex flex-col gap-[5px]">
               <div style={{ opacity: read ? 0.5 : 1 }}>
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] text-[#f4f5fc]">
@@ -1031,9 +1024,11 @@ function RealNotifCard({ event, filter }: { event: NotifEvent; filter: string })
   if (content === null) return null;
 
   return (
-    <SwipeToDelete onDelete={() => deleteEvent(event.id)}>
-      {content}
-    </SwipeToDelete>
+    <SeenNotification isRead={read} onRead={() => markEventRead(event.id)}>
+      <SwipeToDelete onDelete={() => deleteEvent(event.id)}>
+        {content}
+      </SwipeToDelete>
+    </SeenNotification>
   );
 }
 
@@ -1054,14 +1049,16 @@ export default function NotificationsPage() {
   // Group localStorage events by date label
   const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
   const yesterdayStart = new Date(todayStart); yesterdayStart.setDate(yesterdayStart.getDate() - 1);
-  const realToday     = events.filter(e => e.timestamp >= todayStart.getTime());
-  const realYesterday = events.filter(e => e.timestamp >= yesterdayStart.getTime() && e.timestamp < todayStart.getTime());
-  const realEarlier   = events.filter(e => e.timestamp < yesterdayStart.getTime());
+  const visibleEvents = events.filter(event => filter === "all" || (filter === "unread" && !event.read));
+  const visibleServerNotifs = serverNotifs.filter(notif => filter === "all" || (filter === "unread" && !notif.read));
+  const realToday     = visibleEvents.filter(e => e.timestamp >= todayStart.getTime());
+  const realYesterday = visibleEvents.filter(e => e.timestamp >= yesterdayStart.getTime() && e.timestamp < todayStart.getTime());
+  const realEarlier   = visibleEvents.filter(e => e.timestamp < yesterdayStart.getTime());
 
   // Group server notifications by date label
-  const srvToday     = serverNotifs.filter(n => new Date(n.created_at).getTime() >= todayStart.getTime());
-  const srvYesterday = serverNotifs.filter(n => { const t = new Date(n.created_at).getTime(); return t >= yesterdayStart.getTime() && t < todayStart.getTime(); });
-  const srvEarlier   = serverNotifs.filter(n => new Date(n.created_at).getTime() < yesterdayStart.getTime());
+  const srvToday     = visibleServerNotifs.filter(n => new Date(n.created_at).getTime() >= todayStart.getTime());
+  const srvYesterday = visibleServerNotifs.filter(n => { const t = new Date(n.created_at).getTime(); return t >= yesterdayStart.getTime() && t < todayStart.getTime(); });
+  const srvEarlier   = visibleServerNotifs.filter(n => new Date(n.created_at).getTime() < yesterdayStart.getTime());
 
   const realUnread   = events.filter(e => !e.read).length;
   const serverUnread = serverNotifs.filter(n => !n.read).length;
@@ -1073,18 +1070,13 @@ export default function NotificationsPage() {
   const [hwRead, setHwRead] = useState<Record<string, boolean>>({});
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
 
-  // Mark all as seen when page opens
-  useEffect(() => {
-    hwCtx?.markAllSeen();
-    // Also pre-mark all hw notifs as read in local display
-    const init: Record<string, boolean> = {};
-    for (const hw of hwCtx?.homeworks ?? []) {
-      if (hw.status === "reviewed" || hw.status === "rejected") init[hw.id] = false;
-    }
-    setHwRead(init);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const readHomework = (id: string, lessonId: string) => {
+    setHwRead(previous => ({ ...previous, [id]: true }));
+    hwCtx?.markSeen(lessonId);
+  };
 
-  const hwUnreadCount = hwNotifs.filter(hw => !hwRead[hw.id]).length;
+  const visibleHomeworkNotifs = hwNotifs.filter(hw => filter === "all" || (filter === "action" ? hw.status === "rejected" : !(hwRead[hw.id] ?? !hwCtx?.isUnseen(hw.lesson_id || hw.lesson_name))));
+  const hwUnreadCount = hwNotifs.filter(hw => !(hwRead[hw.id] ?? !hwCtx?.isUnseen(hw.lesson_id || hw.lesson_name))).length;
   const unreadCount = realUnread + serverUnread + hwUnreadCount;
 
   // Sync count to localStorage so Sidebar badge can read it
@@ -1102,6 +1094,10 @@ export default function NotificationsPage() {
     events.length === 0 &&
     serverNotifs.length === 0;
 
+  const visibleCount = filter === "action"
+    ? hwNotifs.filter(hw => hw.status === "rejected").length
+    : filter === "unread" ? unreadCount : events.length + serverNotifs.length + hwNotifs.length;
+
   const handleDeleteAll = () => {
     // Clear localStorage events
     clearAllEvents();
@@ -1111,8 +1107,9 @@ export default function NotificationsPage() {
   };
 
   return (
-    <Layout title="Уведомления" rightWidth="320px" stickyBar={<FilterBar active={filter} unreadCount={unreadCount} onChange={setFilter} onDeleteAll={() => setShowDeleteAllConfirm(true)} />}>
+    <Layout title="Уведомления" rightWidth="320px" stickyBar={<FilterBar active={filter} unreadCount={unreadCount} hasRequiredAction={hwNotifs.some(hw => hw.status === "rejected")} onChange={setFilter} onDeleteAll={() => setShowDeleteAllConfirm(true)} />}>
       <div className="flex flex-col gap-[25px] w-full">
+        {!listEmpty && visibleCount === 0 && <p role="status" className="py-10 text-center text-[#b5c0c5]">{filter === "unread" ? "Всё прочитано" : "Нет уведомлений, требующих действия"}</p>}
 
         {/* Notification list */}
         <div className="content-stretch flex flex-col gap-[30px] items-start relative shrink-0 w-full pb-[40px]">
@@ -1120,10 +1117,10 @@ export default function NotificationsPage() {
           {listEmpty && <EmptyState />}
 
           {/* ── Homework status notifications (real, from backend) ── */}
-          {hwNotifs.length > 0 && (filter === "all" || filter === "action" || filter === "unread") && (
+          {visibleHomeworkNotifs.length > 0 && (filter === "all" || filter === "action" || filter === "unread") && (
             <DateGroup label="Домашние работы">
-              {hwNotifs.map(hw => {
-                const isRead = hwRead[hw.id] ?? false;
+              {visibleHomeworkNotifs.map(hw => {
+                const isRead = hwRead[hw.id] ?? !hwCtx?.isUnseen(hw.lesson_id || hw.lesson_name);
                 const label = hw.status === "reviewed" ? "Работа проверена ✅" : "Нужно переделать ↩";
                 const desc  = hw.status === "reviewed"
                   ? `Мы проверили задание «${hw.lesson_name}». Посмотрите результат.`
@@ -1131,35 +1128,32 @@ export default function NotificationsPage() {
                 const color = hw.status === "reviewed" ? "#5EDD60" : "#FF6B21";
                 const lessonId = hw.lesson_id || hw.lesson_name;
                 if (filter === "unread" && isRead) return null;
+                if (filter === "action" && hw.status !== "rejected") return null;
                 return (
+                  <SeenNotification key={hw.id} isRead={isRead} onRead={() => readHomework(hw.id, lessonId)}>
                   <div
-                    key={hw.id}
                     className="group relative w-full cursor-pointer"
                     onClick={() => {
-                      setHwRead(p => ({ ...p, [hw.id]: true }));
+                      readHomework(hw.id, lessonId);
                       navigate("/homework", { state: { homeworkId: lessonId } });
                     }}
                   >
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: '#2A3236' }} />
                     <div className="relative flex items-stretch py-[20px]">
                       {/* Dot */}
-                      <button
-                        className="shrink-0 outline-none bg-transparent border-none cursor-pointer"
-                        style={{ alignSelf: 'flex-start', marginTop: 7, marginRight: 15 }}
-                        onClick={e => { e.stopPropagation(); setHwRead(p => ({ ...p, [hw.id]: !p[hw.id] })); }}
-                      >
-                        <div style={{ width: 9, height: 9, borderRadius: '50%', background: isRead ? '#2D3539' : '#FE6B21' }} />
-                      </button>
+                      <span aria-hidden="true" className="shrink-0" style={{ alignSelf: "flex-start", marginTop: 7, marginRight: 15 }}>
+<div style={{ width: 9, height: 9, borderRadius: '50%', background: isRead ? '#2D3539' : '#FE6B21' }} />
+                      </span>
                       {/* Left */}
                       <div className="flex-1 min-w-0 flex flex-col gap-[10px]">
-                        <div style={{ opacity: isRead ? 0.5 : 1 }}>
+                        <div>
                           <div className="flex items-center gap-[6px]">
                             {hw.status === "rejected" ? (
                               <svg width="14" height="14" viewBox="0 0 512 512" fill="none">
                                 <path d="m48 256c0 114.87 93.13 208 208 208s208-93.13 208-208-93.13-208-208-208-208 93.13-208 208zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6l84.55 79.74a8.2 8.2 0 0 1 0 11.94l-84.42 79.77a8.32 8.32 0 0 1 -14-6v-37.29c-57.07 0-84.51 13.47-108.58 38.68-5.49 5.65-15.07 1.32-14.42-6.43z" fill="#FF6B21" />
                               </svg>
                             ) : null}
-                            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] whitespace-nowrap" style={{ color: hw.status === "reviewed" ? color : "#f4f5fc" }}>
+                            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[22px] whitespace-nowrap" style={{ color: hw.status === "reviewed" ? color : "#f4f5fc", opacity: isRead ? 0.5 : 1 }}>
                               {label}
                             </p>
                           </div>
@@ -1176,7 +1170,7 @@ export default function NotificationsPage() {
                             alt="Скриншот от проверяющего"
                             className="rounded-[8px] object-cover cursor-zoom-in"
                             style={{ width: 72, height: 54 }}
-                            onClick={e => { e.stopPropagation(); setLightboxImg(hw.image_url!); }}
+                            onClick={e => { e.stopPropagation(); readHomework(hw.id, lessonId); setLightboxImg(hw.image_url!); }}
                           />
                         )}
                       </div>
@@ -1188,7 +1182,7 @@ export default function NotificationsPage() {
                         <button
                           className="flex items-center gap-[6px] border-none bg-transparent outline-none cursor-pointer"
                           style={{ color: "#596367" }}
-                          onClick={e => { e.stopPropagation(); setHwRead(p => ({ ...p, [hw.id]: true })); navigate("/homework", { state: { homeworkId: lessonId } }); }}
+                          onClick={e => { e.stopPropagation(); readHomework(hw.id, lessonId); navigate("/homework", { state: { homeworkId: lessonId } }); }}
                         >
                           <span className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[14px] whitespace-nowrap">
                             {hw.status === "reviewed" ? "Смотреть результат" : "Переделать работу"}
@@ -1198,6 +1192,7 @@ export default function NotificationsPage() {
                       </div>
                     </div>
                   </div>
+                  </SeenNotification>
                 );
               })}
             </DateGroup>

@@ -8,7 +8,7 @@ test("public HTML contains crawlable visible content and correct metadata withou
   for (const file of ["index", "welcome"]) {
     const html = await read(`dist/${file}.html`);
     assert.equal((html.match(/<h1\b/g) || []).length, 1);
-    assert.match(html, /<h1[^>]*>Освой UX\/UI-дизайн на практике<\/h1>/);
+    assert.match(html, /<h1[^>]*>Освойте UX\/UI-дизайн на(?:\s|&nbsp;)практике<\/h1>/);
     assert.match(html, /<main\b/);
     assert.match(html, /<link rel="canonical" href="https:\/\/skillum.tech\/"/);
     assert.match(html, /name="robots" content="index, follow"/);

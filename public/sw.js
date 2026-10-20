@@ -32,16 +32,18 @@ self.addEventListener("push", (e) => {
 // ── Notification click ────────────────────────────────────────────────────────
 self.addEventListener("notificationclick", (e) => {
   e.notification.close();
-  const url = e.notification.data?.url || "/";
+  let url;
+  try {
+    const target = new URL(e.notification.data?.url || "/", self.location.origin);
+    url = target.origin === self.location.origin ? target.href : self.location.origin + "/";
+  } catch { url = self.location.origin + "/"; }
 
   e.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
       // Focus existing tab if open
       for (const client of clientList) {
-        if (new URL(client.url).pathname !== "/" || client.url.includes(self.location.origin)) {
-          client.focus();
-          client.navigate(url);
-          return;
+        if (new URL(client.url).origin === self.location.origin) {
+          return client.navigate(url).then(() => client.focus());
         }
       }
       // Open new tab

@@ -1,3 +1,4 @@
+import { shuffled } from "../../utils/quizSession";
 /**
  * MatchingQuiz — click-or-drag to connect pairs.
  *
@@ -16,7 +17,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import type { MatchingPair } from "../../data/quiz-bank";
 import { ContinueDisabled, ContinueActive, ContinueCorrect } from "./ContinueButtons";
-import { CorrectFeedback } from "./QuizFeedback";
+import { CorrectFeedback, IncorrectFeedback } from "./QuizFeedback";
 import { useWindowWidth } from "../../hooks/useWindowWidth";
 import { FlagReportButton } from "./FlagReportButton";
 
@@ -105,6 +106,7 @@ function playCheckSound(correct: boolean) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function MatchingQuiz({
+  continueLabel = "Следующий вопрос",
   question,
   pairs,
   explanation,
@@ -112,6 +114,7 @@ export function MatchingQuiz({
   onContinue,
   earnedXP,
 }: {
+  continueLabel?: string;
   question: string;
   pairs: MatchingPair[];
   explanation: string;
@@ -120,10 +123,7 @@ export function MatchingQuiz({
   earnedXP: number;
 }) {
   // Shuffle bottom row once on mount (rotate by 1)
-  const shuffledPairs = useMemo(() => {
-    const n = pairs.length;
-    return pairs.map((_, i) => pairs[(i + 1) % n]);
-  }, []);
+  const shuffledPairs = useMemo(() => shuffled(pairs), []);
 
   // topId → bottomId. All shown as gray until checked.
   const [connections, setConnections] = useState<Record<string, string>>({});
@@ -747,7 +747,7 @@ export function MatchingQuiz({
         {/* Hint */}
         {!checked && (
           <p className="text-center text-[#798589] text-[13px] font-['Roboto_Condensed:Regular',sans-serif] px-4">
-            Нажми или перетащи карточки, чтобы соединить
+            Нажмите или перетащите карточки, чтобы соединить
           </p>
         )}
 
@@ -759,26 +759,19 @@ export function MatchingQuiz({
           {checked && (
             <div className="mb-[10px]">
               {allCorrect ? (
-                <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
+                <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} xp={earnedXP} />
               ) : (
-                <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 4, flexShrink: 0 }}>
-                    <p style={{ fontFamily: "'Roboto Condensed', sans-serif", fontWeight: 700, color: "#ffbaaa", fontSize: 16, lineHeight: 1.2, whiteSpace: "nowrap" }}>Попробуй ещё</p>
-                  </div>
-                  <p style={{ fontFamily: "'Roboto Condensed', sans-serif", fontWeight: 400, color: "#f4f5fc", fontSize: 14, lineHeight: 1.2, flex: 1, minWidth: 0 }}>
-                    {explanation}
-                  </p>
-                </div>
+                <IncorrectFeedback correctAnswer="" explanation={explanation} hideAnswer />
               )}
             </div>
           )}
           <div className="flex items-center gap-[20px]">
             <FlagReportButton />
             <div className="flex-1">
-              {!allConnected && !checked && <ContinueDisabled fullWidth />}
-              {allConnected && !checked && <ContinueActive onClick={handleCheck} fullWidth />}
-              {checked && allCorrect && <ContinueCorrect onClick={onContinue} fullWidth />}
-              {checked && !allCorrect && <ContinueActive onClick={onContinue} fullWidth />}
+              {!allConnected && !checked && <ContinueDisabled label="Проверить ответ" fullWidth />}
+              {allConnected && !checked && <ContinueActive label="Проверить ответ" onClick={handleCheck} fullWidth />}
+              {checked && allCorrect && <ContinueCorrect label={continueLabel} onClick={onContinue} fullWidth />}
+              {checked && !allCorrect && <ContinueActive label={continueLabel} onClick={onContinue} fullWidth />}
             </div>
           </div>
         </div>
@@ -1007,25 +1000,19 @@ export function MatchingQuiz({
           {/* Left: feedback */}
           <div className="flex-1 flex items-center">
             {checked && allCorrect && (
-              <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
+              <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} xp={earnedXP} />
             )}
             {checked && !allCorrect && (
-              <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                <span style={{ fontSize: 28, lineHeight: 1 }}>✊</span>
-                <p style={{ fontFamily: "'Roboto Condensed', sans-serif", fontWeight: 400, color: "#f4f5fc", fontSize: 18, lineHeight: 1.3 }}>
-                  <span style={{ color: "#ffbaaa", fontWeight: 700 }}>Попробуй ещё раз. </span>
-                  {explanation}
-                </p>
-              </div>
+              <IncorrectFeedback correctAnswer="" explanation={explanation} hideAnswer />
             )}
           </div>
 
           {/* Right: button */}
           <div className="flex-none flex items-center justify-end gap-[20px]">
             <FlagReportButton />
-            {!allConnected && !checked && <ContinueDisabled />}
-            {allConnected && !checked && <ContinueActive onClick={handleCheck} />}
-            {checked && <ContinueCorrect onClick={onContinue} />}
+            {!allConnected && !checked && <ContinueDisabled label="Проверить ответ" />}
+            {allConnected && !checked && <ContinueActive label="Проверить ответ" onClick={handleCheck} />}
+            {checked && <ContinueCorrect label={continueLabel} onClick={onContinue} />}
           </div>
         </div>
       </div>

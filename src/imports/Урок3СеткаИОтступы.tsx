@@ -2258,7 +2258,7 @@ export function CQGridCompare3A() {
       <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
         <div style={{ padding: "18px 14px" }}>
           <div style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "#8e9199", marginBottom: 30 }}>UX Дизайн Курс</div>
-          <div style={{ fontSize: 11, fontFamily: "Inter, sans-serif", fontWeight: 600, color: "#364146", marginBottom: 20, width: "60%" }}>Начни учиться сегодня</div>
+          <div style={{ fontSize: 11, fontFamily: "Inter, sans-serif", fontWeight: 600, color: "#364146", marginBottom: 20, width: "60%" }}>Начните учиться сегодня</div>
           <div style={{ background: "#3b82f6", borderRadius: 4, height: 22, width: "52%", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span style={{ color: "white", fontSize: 9, fontFamily: "Inter, sans-serif" }}>Начать</span>
           </div>
@@ -2273,7 +2273,7 @@ export function CQGridCompare3B() {
     <div style={{ position: "relative", width: 260, height: 180, overflow: "hidden", borderRadius: 15, background: "white" }}>
       <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "14px 20px", gap: 10, overflow: "hidden" }}>
         <div style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "#8e9199" }}>UX Дизайн Курс</div>
-        <div style={{ fontSize: 13, fontFamily: "Inter, sans-serif", fontWeight: 700, color: "#364146", textAlign: "center" }}>Начни учиться сегодня</div>
+        <div style={{ fontSize: 13, fontFamily: "Inter, sans-serif", fontWeight: 700, color: "#364146", textAlign: "center" }}>Начните учиться сегодня</div>
         <div style={{ background: "#3b82f6", borderRadius: 6, height: 28, width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <span style={{ color: "white", fontSize: 10, fontFamily: "Inter, sans-serif" }}>Начать обучение</span>
         </div>

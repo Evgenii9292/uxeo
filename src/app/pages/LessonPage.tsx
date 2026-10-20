@@ -1,3 +1,4 @@
+import { getQuizResult } from "../utils/learningProgress";
 import { lazy, Suspense, useState, useMemo, useCallback, useEffect } from "react";
 import Layout from "../components/Layout";
 import RoadmapPanel from "../components/RoadmapPanel";
@@ -7,7 +8,7 @@ import { useUserSafe } from "../context/UserContext";
 import { useAuthSafe } from "../context/AuthContext";
 import { useNavigate } from "react-router";
 import { useWindowWidth } from "../hooks/useWindowWidth";
-import svgPathsLightning from "../../imports/svg-mya2oswe4l";
+import { Zap } from "lucide-react";
 
 // ── Threshold: unlock next lesson when >= 50% questions are answered correctly ──
 // A lesson is completed when correctAnswers >= Math.ceil(totalQuestions * 0.5)
@@ -15,16 +16,10 @@ function unlockThreshold(totalQuestions: number): number {
   return Math.ceil(totalQuestions * 0.5);
 }
 
-// ── "Продолжить" button (matches Figma: #ff5d39 bg, #ff390d border, #c24226 shadow) ──
+// ── "Продолжить" button ──
 
 function LightningButtonIcon() {
-  return (
-    <div className="h-[41px] relative shrink-0 w-[28px]">
-      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 28 41">
-        <path d={svgPathsLightning.p1c93cf00} fill="#F7F8FC" />
-      </svg>
-    </div>
-  );
+  return <Zap className="h-[32px] w-[22px] shrink-0 text-[#F7F8FC]" fill="currentColor" />;
 }
 
 function ContinueButton({ onClick, xpReward }: { onClick: () => void; xpReward: number }) {
@@ -45,42 +40,18 @@ function ContinueButton({ onClick, xpReward }: { onClick: () => void; xpReward: 
         } catch (_) {}
         onClick();
       }}
-      className="group relative cursor-pointer select-none outline-none rounded-[15px] bg-[#FF5D39] transition-all duration-75 w-full"
-      style={{ 
-        height: 70,
-        boxShadow: '0 6px 0 #b83a1f',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(2px)';
-        e.currentTarget.style.boxShadow = '0 4px 0 #b83a1f';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = '0 6px 0 #b83a1f';
-      }}
-      onMouseDown={(e) => {
-        e.currentTarget.style.transform = 'translateY(6px)';
-        e.currentTarget.style.boxShadow = '0 0 0 #b83a1f';
-      }}
-      onMouseUp={(e) => {
-        e.currentTarget.style.transform = 'translateY(2px)';
-        e.currentTarget.style.boxShadow = '0 4px 0 #b83a1f';
-      }}
+      className="group relative cursor-pointer select-none outline-none rounded-[15px] bg-[#FF6B21] transition-transform duration-75 w-full hover:translate-y-[2px] active:translate-y-[6px]"
+      style={{ height: 70 }}
     >
       <div
         aria-hidden="true"
-        className="absolute border-[0.835px] border-[#ff390d] border-solid inset-0 pointer-events-none rounded-[15px]"
+        className="absolute border-[0.835px] border-[#FF7403] border-solid inset-0 pointer-events-none rounded-[15px] shadow-[0_6px_0_#C54A0A] group-hover:shadow-[0_4px_0_#C54A0A] group-active:shadow-none transition-shadow duration-75"
       />
       <div className="flex gap-[6.678px] items-center justify-center px-[25.835px] size-full">
         <LightningButtonIcon />
         <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[26px] whitespace-nowrap">
           Продолжить
         </p>
-        <div className="bg-[#d65e43] h-[28.585px] rounded-[12296925px] shrink-0 flex items-center justify-center px-[11.727px]">
-          <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[15.392px] text-[#eef5ff] text-[10.261px] whitespace-nowrap">
-            +{xpReward} XP
-          </p>
-        </div>
       </div>
     </button>
   );
@@ -92,26 +63,17 @@ function MobileContinueButton({ onClick, xpReward }: { onClick: () => void; xpRe
   return (
     <button
       onClick={onClick}
-      className="w-full rounded-[13px] flex items-center justify-center gap-[8px] cursor-pointer select-none active:translate-y-[3px] transition-transform duration-75"
+      className="group relative w-full rounded-[13px] flex items-center justify-center gap-[8px] cursor-pointer select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75"
       style={{
         height: 52,
-        background: "#FF5D39",
-        boxShadow: "0 4px 0 #b83a1f",
+        background: "#FF6B21",
       }}
     >
-      <div className="h-[22px] relative shrink-0 w-[15px]">
-        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 28 41">
-          <path d={svgPathsLightning.p1c93cf00} fill="#F7F8FC" />
-        </svg>
-      </div>
+      <div aria-hidden="true" className="absolute inset-0 rounded-[13px] pointer-events-none shadow-[0_4px_0_#C54A0A] group-hover:shadow-[0_2px_0_#C54A0A] group-active:shadow-none transition-shadow duration-75" />
+      <Zap className="h-[24px] w-[17px] shrink-0 text-[#F7F8FC]" fill="currentColor" />
       <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[20px]">
         Продолжить
       </p>
-      <div className="bg-black/20 flex h-[24px] items-center justify-center px-[10px] rounded-full">
-        <p className="font-['Inter:Semi_Bold',sans-serif] font-medium text-[#eef5ff] text-[10px]">
-          +{xpReward} XP
-        </p>
-      </div>
     </button>
   );
 }
@@ -184,7 +146,7 @@ export default function LessonPage() {
       // CRITICAL: Use lesson.quizId (stored in data) to get progress per quiz
       // Each lesson has its own unique quizId — no shared progress possible
       const progressKey = lesson.quizId || lesson.lessonId;
-      const progressData    = userData?.getLessonProgress(progressKey);
+      const progressData = lesson.quizId ? getQuizResult(lesson.quizId, lesson.lessonId, userData?.user.lessonProgress ?? {}) : userData?.getLessonProgress(progressKey);
       const hasContextData  = progressData && (progressData.correctAnswers > 0 || Object.keys(progressData.questions).length > 0);
 
       // Completion uses correctAnswers (best-ever score, set by saveBestScore at quiz end).

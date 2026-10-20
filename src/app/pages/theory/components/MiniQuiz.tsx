@@ -1,3 +1,4 @@
+import { QuizFeedbackIcon } from "../../quiz/QuizFeedbackIcon";
 /**
  * MiniQuiz components for theory lesson sections.
  * Three variants: MiniQuiz (image cards), MiniQuiz2 (text options), MiniQuizText (universal).
@@ -60,7 +61,7 @@ export function MiniQuiz({ sectionIndex, state, isCorrect, onAnswerSelect, onCon
               <div className="content-stretch flex flex-col gap-[10px] items-start justify-center relative shrink-0 pr-[20px]" style={{ width: '50%' }}>
                 <div className="content-stretch flex gap-[12px] items-center justify-end relative shrink-0">
                   <div className="content-stretch flex gap-[9px] items-end relative shrink-0">
-                    <PartyPopperIcon />
+                    <QuizFeedbackIcon correct />
                     <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] relative shrink-0 text-[#cdf6db] text-[18px] whitespace-nowrap">Верно!</p>
                   </div>
                   <div className="content-stretch flex items-center justify-between relative shrink-0 w-[47px]">
@@ -75,7 +76,7 @@ export function MiniQuiz({ sectionIndex, state, isCorrect, onAnswerSelect, onCon
             ) : (
               <div className="content-stretch flex flex-col gap-[10px] items-start justify-center relative shrink-0 pr-[20px]" style={{ width: '50%' }}>
                 <div className="flex gap-[10px] items-center">
-                  <FistIcon />
+                  <QuizFeedbackIcon correct={false} />
                   <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.2] relative text-[#ffbaaa] text-[18px]">Почти получилось!</p>
                 </div>
                 <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[1.2] relative shrink-0 text-[16px] text-[#ffd8d2]">
@@ -163,7 +164,7 @@ export function MiniQuiz2({ sectionIndex, state, isCorrect, onAnswerSelect, onCo
               <div className="content-stretch flex flex-col gap-[10px] items-start justify-center relative shrink-0 pr-[20px]" style={{ flex: '1 1 160px' }}>
                 <div className="content-stretch flex gap-[12px] items-center justify-end relative shrink-0">
                   <div className="content-stretch flex gap-[9px] items-end relative shrink-0">
-                    <PartyPopperIcon />
+                    <QuizFeedbackIcon correct />
                     <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] relative shrink-0 text-[#cdf6db] text-[18px] whitespace-nowrap">Верно!</p>
                   </div>
                   <div className="content-stretch flex items-center justify-between relative shrink-0 w-[47px]">
@@ -178,7 +179,7 @@ export function MiniQuiz2({ sectionIndex, state, isCorrect, onAnswerSelect, onCo
             ) : (
               <div className="content-stretch flex flex-col gap-[10px] items-start justify-center relative shrink-0 pr-[20px]" style={{ flex: '1 1 160px' }}>
                 <div className="flex gap-[10px] items-center">
-                  <FistIcon />
+                  <QuizFeedbackIcon correct={false} />
                   <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.2] relative text-[#ffbaaa] text-[18px]">Почти получилось!</p>
                 </div>
                 <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[1.2] relative shrink-0 text-[16px] text-[#ffd8d2]">
@@ -216,11 +217,11 @@ export function MiniQuiz2({ sectionIndex, state, isCorrect, onAnswerSelect, onCo
               </button>
               {isCorrect ? (
                 <div className="flex items-center gap-[6px]">
+                  <QuizFeedbackIcon correct />
                   <p className="font-['Roboto_Condensed:Medium',sans-serif] text-[#cdf6db] text-[18px]">Верно! +15</p>
-                  <SparkleIcon />
                 </div>
               ) : (
-                <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#ffbaaa] text-[16px]">Ещё раз!</p>
+                <div className="flex items-center gap-[8px]"><QuizFeedbackIcon correct={false} /><p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#ffbaaa] text-[16px]">Ещё раз!</p></div>
               )}
             </div>
             {isCorrect ? (
@@ -316,7 +317,7 @@ export function MiniQuizText({
               <div className="content-stretch flex flex-col gap-[10px] items-start justify-center relative shrink-0 pr-[20px]" style={{ flex: '1 1 160px' }}>
                 <div className="content-stretch flex gap-[12px] items-center justify-end relative shrink-0">
                   <div className="content-stretch flex gap-[9px] items-end relative shrink-0">
-                    <PartyPopperIcon />
+                    <QuizFeedbackIcon correct />
                     <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] relative shrink-0 text-[#cdf6db] text-[18px] whitespace-nowrap">Верно 👍</p>
                   </div>
                   <div className="content-stretch flex items-center justify-between relative shrink-0 w-[47px]">
@@ -329,7 +330,7 @@ export function MiniQuizText({
             ) : (
               <div className="content-stretch flex flex-col gap-[10px] items-start justify-center relative shrink-0 pr-[20px]" style={{ flex: '1 1 160px' }}>
                 <div className="flex gap-[10px] items-center">
-                  <FistIcon />
+                  <QuizFeedbackIcon correct={false} />
                   <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.2] relative text-[#ffbaaa] text-[18px]">Почти получилось!</p>
                 </div>
                 <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[1.2] relative shrink-0 text-[16px] text-[#ffd8d2]">{incorrectFeedback}</p>
@@ -365,11 +366,11 @@ export function MiniQuizText({
               </button>
               {isCorrect ? (
                 <div className="flex items-center gap-[6px]">
+                  <QuizFeedbackIcon correct />
                   <p className="font-['Roboto_Condensed:Medium',sans-serif] text-[#cdf6db] text-[18px]">Верно! +15</p>
-                  <SparkleIcon />
                 </div>
               ) : (
-                <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#ffbaaa] text-[16px]">Ещё раз!</p>
+                <div className="flex items-center gap-[8px]"><QuizFeedbackIcon correct={false} /><p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#ffbaaa] text-[16px]">Ещё раз!</p></div>
               )}
             </div>
             {isCorrect ? (

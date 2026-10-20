@@ -1,3 +1,4 @@
+import { QUIZ_CARD_BACKGROUNDS, QUIZ_CARD_BORDERS } from "./quiz/quizCardStyles";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useUser } from "../context/UserContext";
@@ -21,19 +22,10 @@ type CardState = "idle" | "selected" | "correct" | "incorrect" | "dimmed";
 const MOCK_W = 404;
 const MOCK_H = 367;
 
-const BG_GRADIENT: Record<CardState, string> = {
-  idle:      "linear-gradient(172deg, rgb(44,53,56) 2%, rgb(56,67,72) 99%)",
-  selected:  "linear-gradient(172deg, rgb(55,66,70) 2%, rgb(56,67,72) 99%)",
-  correct:   "linear-gradient(172deg, rgba(58,81,67,0.5) 2%, rgba(56,72,62,0.5) 99%)",
-  incorrect: "linear-gradient(172deg, rgba(92,53,53,0.5) 2%, rgba(72,58,56,0.5) 99%)",
-  dimmed:    "linear-gradient(172deg, rgba(44,53,56,0.5) 2%, rgba(56,67,72,0.5) 99%)",
-};
+const BG_GRADIENT = QUIZ_CARD_BACKGROUNDS;
 
 function getBorderColor(state: CardState): string | undefined {
-  if (state === "selected")  return "#636670";
-  if (state === "correct")   return "rgba(0, 147, 47, 0.6)";
-  if (state === "incorrect") return "#9f3500";
-  return undefined;
+  return QUIZ_CARD_BORDERS[state];
 }
 
 export default function QuizPage() {
@@ -151,8 +143,8 @@ export default function QuizPage() {
             className="absolute inset-0 px-[16px] flex flex-col"
             style={{ paddingTop: 76, gap: 10 }}
           >
-            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.25] text-[#f4f5fc] text-[20px] text-center w-full whitespace-nowrap">
-              Что лучше?
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.25] text-[#f4f5fc] text-[20px] text-center w-full">
+              На каком экране легче заметить основную кнопку?
             </p>
 
             <div className="flex flex-col" style={{ gap: 10 }}>
@@ -164,7 +156,7 @@ export default function QuizPage() {
                   <div
                     key={id}
                     onClick={isClickable ? () => { handleSelect(id); playSelectSound(); } : undefined}
-                    className={`relative rounded-[15px] overflow-hidden flex-shrink-0 transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.99]" : ""}`}
+                    className={`relative rounded-[15px] overflow-hidden flex-shrink-0 transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.98]" : ""}`}
                     style={{
                       height: `calc((100% - ${heightSubtract}px) / 2)`,
                       minHeight: containerH,
@@ -192,7 +184,7 @@ export default function QuizPage() {
             {phase === "feedback" && (
               <div className="mb-[10px]">
                 {isCorrect
-                  ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} />
+                  ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} xp={earnedXP} />
                   : <IncorrectFeedback correctAnswer="А" explanation={EXPLANATION} />
                 }
               </div>
@@ -202,11 +194,11 @@ export default function QuizPage() {
               <div className="flex-1">
                 {phase === "selecting"
                   ? selection === null
-                    ? <ContinueDisabled fullWidth />
-                    : <ContinueActive onClick={handleContinue} fullWidth />
+                    ? <ContinueDisabled label="Проверить ответ" fullWidth />
+                    : <ContinueActive label={phase === "selecting" ? "Проверить ответ" : "Перейти к урокам"} onClick={handleContinue} fullWidth />
                   : isCorrect
-                    ? <ContinueCorrect onClick={handleContinue} fullWidth />
-                    : <ContinueActive onClick={handleContinue} fullWidth />
+                    ? <ContinueCorrect label="Перейти к урокам" onClick={handleContinue} fullWidth />
+                    : <ContinueActive label={phase === "selecting" ? "Проверить ответ" : "Перейти к урокам"} onClick={handleContinue} fullWidth />
                 }
               </div>
             </div>
@@ -245,8 +237,8 @@ export default function QuizPage() {
             className="absolute inset-0 flex flex-col items-center justify-center"
             style={{ paddingBottom: 140, paddingTop: 80 }}
           >
-            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[28px] text-center mb-[28px]">
-              Что лучше?
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.2] text-[#f4f5fc] text-[28px] text-center mb-[28px]">
+              На каком экране легче заметить основную кнопку?
             </p>
             <div className="flex items-start" style={{ gap }}>
               {cards.map(({ id, Mockup }) => {
@@ -257,7 +249,7 @@ export default function QuizPage() {
                   <div
                     key={id}
                     onClick={isClickable ? () => { handleSelect(id); playSelectSound(); } : undefined}
-                    className={`relative rounded-[20px] overflow-hidden transition-all duration-200 ${isClickable ? "cursor-pointer" : ""}`}
+                    className={`relative rounded-[20px] overflow-hidden transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.98]" : ""}`}
                     style={{
                       width: cardW,
                       height: cardH,
@@ -283,7 +275,7 @@ export default function QuizPage() {
               <div className="flex-1 flex items-center min-w-0">
                 {phase === "feedback" && (
                   isCorrect
-                    ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} />
+                    ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} xp={earnedXP} />
                     : <IncorrectFeedback correctAnswer="А" explanation={EXPLANATION} />
                 )}
               </div>
@@ -291,11 +283,11 @@ export default function QuizPage() {
                 <FlagReportButton />
                 {phase === "selecting"
                   ? selection === null
-                    ? <ContinueDisabled />
-                    : <ContinueActive onClick={handleContinue} />
+                    ? <ContinueDisabled label="Проверить ответ" />
+                    : <ContinueActive label={phase === "selecting" ? "Проверить ответ" : "Перейти к урокам"} onClick={handleContinue} />
                   : isCorrect
-                    ? <ContinueCorrect onClick={handleContinue} />
-                    : <ContinueActive onClick={handleContinue} />
+                    ? <ContinueCorrect label="Перейти к урокам" onClick={handleContinue} />
+                    : <ContinueActive label={phase === "selecting" ? "Проверить ответ" : "Перейти к урокам"} onClick={handleContinue} />
                 }
               </div>
             </div>
@@ -321,8 +313,8 @@ export default function QuizPage() {
 
         {/* Cards */}
         <div className="flex flex-col items-center justify-center gap-[24px] min-h-screen pb-[160px] pt-[80px]">
-          <p className="text-center font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[32px] mx-[0px] mt-[0px] mb-[40px]">
-            Что лучше?
+          <p className="text-center font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.2] text-[#f4f5fc] text-[32px] mx-[0px] mt-[0px] mb-[40px]">
+            На каком экране легче заметить основную кнопку?
           </p>
           <div className="flex items-start justify-center gap-[32px]">
             <QuizCard state={getCardState("A")} onClick={() => { handleSelect("A"); playSelectSound(); }}>
@@ -340,18 +332,18 @@ export default function QuizPage() {
             <div className="w-[460px] flex items-center">
               {phase === "feedback" && (
                 isCorrect
-                  ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} />
+                  ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} xp={earnedXP} />
                   : <IncorrectFeedback correctAnswer="А" explanation={EXPLANATION} />
               )}
             </div>
             <div className="w-[460px] flex items-center justify-end gap-[20px]">
               <FlagReportButton />
               {phase === "selecting" ? (
-                selection === null ? <ContinueDisabled /> : <ContinueActive onClick={handleContinue} />
+                selection === null ? <ContinueDisabled label="Проверить ответ" /> : <ContinueActive label={phase === "selecting" ? "Проверить ответ" : "Перейти к урокам"} onClick={handleContinue} />
               ) : isCorrect ? (
-                <ContinueCorrect onClick={handleContinue} />
+                <ContinueCorrect label="Перейти к урокам" onClick={handleContinue} />
               ) : (
-                <ContinueActive onClick={handleContinue} />
+                <ContinueActive label={phase === "selecting" ? "Проверить ответ" : "Перейти к урокам"} onClick={handleContinue} />
               )}
             </div>
           </div>

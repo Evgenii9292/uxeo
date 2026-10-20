@@ -1,7 +1,10 @@
+import { earnedXpOnDay, localDayKey } from "../utils/dailyProgress";
+import { mergeLessonProgress } from "../utils/progressMerge";
 import { createContext, useContext, useState, ReactNode, useEffect, useRef, useCallback } from "react";
 import { projectId } from "../../../utils/supabase/info";
 import { supabase } from "../../../utils/supabase/client";
 import { useAuthSafe } from "./AuthContext";
+import { registerProgressFlush } from "../utils/progressLifecycle";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -9,6 +12,7 @@ interface QuestionState {
   correct: boolean;
   xpAwarded: boolean; // Whether XP was already awarded for this question
   xpValue: number; // How much XP this question awards
+  awardedAt?: string; // First earned time; legacy rewards have no known date.
 }
 
 export interface LessonProgress {
@@ -41,6 +45,7 @@ export type SyncStatus = "local" | "syncing" | "synced" | "error";
 interface UserContextValue {
   user: User;
   xp: number;
+  todayXp: number;
   streak: number;
   level: ExperienceLevel | null;
   goal: OnboardingGoal | null;
@@ -84,46 +89,18 @@ async function refreshProgressAccessToken(): Promise<string | null> {
   return data.session.access_token;
 }
 
-// Merge two lesson progress maps: take union, max correctAnswers, OR isCompleted
-function mergeLessonProgress(
-  local: Record<string, LessonProgress>,
-  remote: Record<string, LessonProgress>
-): Record<string, LessonProgress> {
-  const result: Record<string, LessonProgress> = { ...remote };
-  for (const [id, lp] of Object.entries(local)) {
-    if (!result[id]) {
-      result[id] = lp;
-    } else {
-      const r = result[id];
-      // Merge questions: OR for correct/xpAwarded so XP is never lost
-      const mergedQuestions: Record<string, QuestionState> = { ...r.questions };
-      for (const [qId, lq] of Object.entries(lp.questions ?? {})) {
-        const rq = mergedQuestions[qId];
-        mergedQuestions[qId] = rq ? {
-          correct: lq.correct || rq.correct,
-          xpAwarded: lq.xpAwarded || rq.xpAwarded,
-          xpValue: lq.xpValue || rq.xpValue,
-        } : lq;
-      }
-      result[id] = {
-        ...r,
-        correctAnswers: Math.max(lp.correctAnswers ?? 0, r.correctAnswers ?? 0),
-        isCompleted: lp.isCompleted || r.isCompleted,
-        questions: mergedQuestions,
-        rating: lp.rating ?? r.rating,
-        totalTasks: r.totalTasks || lp.totalTasks,
-      };
-    }
-  }
-  return result;
-}
-
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function UserProvider({ children }: { children: ReactNode }) {
+  const auth = useAuthSafe();
+  const owner = auth?.isDemo ? "demo" : auth?.userId ?? "guest";
+  return <UserSessionProvider key={owner}>{children}</UserSessionProvider>;
+}
+
+function UserSessionProvider({ children }: { children: ReactNode }) {
   const { userId, accessToken, loading: authLoading, isDemo } = useAuthSafe()
     ?? { userId: null, accessToken: null, loading: true, isDemo: false };
-  const storageKey = isDemo ? "skillum-demo-user-data" : "uxeo-user-data";
+  const storageKey = isDemo ? "skillum-demo-user-data" : userId ? `skillum-user-data:${userId}` : "uxeo-user-data";
 
   // Load initial state from localStorage
   const [user, setUser] = useState<User>(() => {
@@ -132,7 +109,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       const parsed = saved ? JSON.parse(saved) : {};
 
       // name/title/avatar: check uxeo-user-data first, fall back to legacy keys
-      const rawTitle = parsed.userTitle ?? (!isDemo ? localStorage.getItem('uxeo-profile-title') : null) ?? null;
+      const rawTitle = parsed.userTitle ?? (!isDemo && !userId ? localStorage.getItem('uxeo-profile-title') : null) ?? null;
 
       return {
         lessonProgress: parsed.lessonProgress || {},
@@ -142,10 +119,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
         goal: parsed.goal || null,
         dailyTime: parsed.dailyTime || null,
         weeklyChallengesCompleted: typeof parsed.weeklyChallengesCompleted === 'number' ? parsed.weeklyChallengesCompleted : 0,
-        userName: parsed.userName ?? (!isDemo ? localStorage.getItem('uxeo-profile-name') : null) ?? null,
+        userName: parsed.userName ?? (!isDemo && !userId ? localStorage.getItem('uxeo-profile-name') : null) ?? null,
         // Treat auto-generated titles as null (so they stay in sync with level)
         userTitle: (rawTitle && !AUTO_TITLES.has(rawTitle)) ? rawTitle : null,
-        userAvatar: parsed.userAvatar ?? (!isDemo ? localStorage.getItem('uxeo-profile-avatar') : null) ?? null,
+        userAvatar: parsed.userAvatar ?? (!isDemo && !userId ? localStorage.getItem('uxeo-profile-avatar') : null) ?? null,
       };
     } catch (e) {
       console.error('Failed to load user data from localStorage:', e);
@@ -158,10 +135,28 @@ export function UserProvider({ children }: { children: ReactNode }) {
   });
 
   const [userLoading, setUserLoading] = useState(true);
+  const [refreshVersion, setRefreshVersion] = useState(0);
+  const [currentDay, setCurrentDay] = useState(() => localDayKey());
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    const tick = () => {
+      setCurrentDay(localDayKey());
+      clearTimeout(timer);
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 100);
+      timer = setTimeout(tick, midnight.getTime() - Date.now());
+    };
+    tick();
+    window.addEventListener("focus", tick);
+    document.addEventListener("visibilitychange", tick);
+    return () => { clearTimeout(timer); window.removeEventListener("focus", tick); document.removeEventListener("visibilitychange", tick); };
+  }, []);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>(isDemo ? "local" : "synced");
 
   // Debounce ref for Supabase sync
   const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const syncQueueRef = useRef<Promise<boolean>>(Promise.resolve(true));
+  const readyRef = useRef(false);
 
   // Refs for latest data — used by syncToSupabase (avoids stale closures)
   const userRef = useRef(user);
@@ -172,11 +167,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
   useEffect(() => { accessTokenRef.current = accessToken ?? null; }, [accessToken]);
 
   // ─── Sync to Supabase ──────────────────────────────────────────────────────
-  const syncToSupabase = useCallback(() => {
+  const syncToSupabase = useCallback((): Promise<boolean> => {
     const u = userRef.current;
     const uid = userIdRef.current;
     const token = accessTokenRef.current;
-    if (!uid || !token || isDemo) return;
+    if (isDemo || !uid) return Promise.resolve(true);
+    if (!token || !readyRef.current) return Promise.resolve(false);
 
     const xpVal = Object.values(u.lessonProgress).reduce((total, lesson) =>
       total + Object.values(lesson.questions || {})
@@ -187,7 +183,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       || (u.level && u.level !== "")
       || (u.goal && u.goal !== "")
       || Object.keys(u.lessonProgress).length > 0;
-    if (!hasProgress) return;
+    if (!hasProgress) return syncQueueRef.current;
     setSyncStatus("syncing");
 
     // Skip data URLs > 80KB to avoid large payloads; sync http(s) URLs always
@@ -209,7 +205,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
       userTitle: u.userTitle ?? "",
       userAvatar: avatarToSync,
     });
-    const postProgress = (nextToken: string) => fetch(
+    const postProgress = (nextToken: string) => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
+      return fetch(
       `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/progress`,
       {
         method: "POST",
@@ -218,10 +217,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
           "Content-Type": "application/json",
         },
         body: requestBody,
+        signal: controller.signal,
+        keepalive: new Blob([requestBody]).size < 60000,
       }
-    );
+    ).finally(() => clearTimeout(timeout));
+    };
 
-    postProgress(token)
+    const pending = syncQueueRef.current.catch(() => false).then(() => postProgress(accessTokenRef.current ?? token))
       .then(async (response) => {
         if (response.status === 401) {
           const refreshedToken = await refreshProgressAccessToken();
@@ -232,11 +234,15 @@ export function UserProvider({ children }: { children: ReactNode }) {
         }
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         setSyncStatus("synced");
+        return true;
       })
       .catch((error) => {
         console.error("Progress sync failed:", error);
         setSyncStatus("error");
+        return false;
       });
+    syncQueueRef.current = pending;
+    return pending;
   }, [isDemo]); // stable refs; demo never reaches the server
 
   // Track whether we've already loaded for this user (to skip loading spinner on token refresh)
@@ -278,6 +284,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       })
       .then((res) => {
         loadedUserIdRef.current = userId;
+        readyRef.current = true;
         if (!res.found) return;
         const d = res.data;
         setUser(prev => {
@@ -309,17 +316,37 @@ export function UserProvider({ children }: { children: ReactNode }) {
         setSyncStatus("error");
       })
       .finally(() => setUserLoading(false));
-  }, [userId, authLoading, accessToken, isDemo]);
+  }, [userId, authLoading, accessToken, isDemo, refreshVersion]);
 
   // Debounced sync to Supabase on user changes (3s)
   useEffect(() => {
-    if (!userId || isDemo) return;
+    if (!userId || isDemo || userLoading || !readyRef.current) return;
     if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
     syncTimerRef.current = setTimeout(syncToSupabase, 3000);
     return () => {
       if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
     };
-  }, [user, userId, syncToSupabase]);
+  }, [user, userId, userLoading, syncToSupabase]);
+
+  useEffect(() => registerProgressFlush(async () => {
+    if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
+    return syncToSupabase();
+  }), [syncToSupabase]);
+
+  // Refresh remote progress when returning from another device or reconnecting.
+  useEffect(() => {
+    const refresh = () => {
+      if (document.visibilityState === "visible") setRefreshVersion(value => value + 1);
+    };
+    window.addEventListener("online", refresh);
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      window.removeEventListener("online", refresh);
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, []);
 
   // Immediate sync when app goes to background (mobile PWA reliability)
   useEffect(() => {
@@ -357,7 +384,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       };
       localStorage.setItem(storageKey, JSON.stringify(toSave));
       // Preserve existing account data during a demo session.
-      if (!isDemo) {
+      if (!isDemo && !userId) {
         if (user.userName) localStorage.setItem('uxeo-profile-name', user.userName);
         if (user.userTitle) localStorage.setItem('uxeo-profile-title', user.userTitle);
         if (user.userAvatar) {
@@ -415,7 +442,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
         [questionId]: {
           correct: questionState.correct || isCorrect,
           xpAwarded: questionState.xpAwarded || isCorrect,
-          xpValue: finalXpValue,
+          xpValue: questionState.xpAwarded ? questionState.xpValue : finalXpValue,
+          awardedAt: questionState.awardedAt ?? (!questionState.xpAwarded && isCorrect ? new Date().toISOString() : undefined),
         },
       };
 
@@ -429,7 +457,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
           [lessonId]: {
             ...lessonProgress,
             questions: updatedQuestions,
-            isCompleted: isPassed,
+            isCompleted: lessonProgress.isCompleted,
           },
         },
       };
@@ -460,6 +488,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
           [lessonId]: {
             ...lessonProgress,
             correctAnswers: newBest,
+            totalTasks: totalQuestions,
             isCompleted: isPassed,
           },
         },
@@ -472,7 +501,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       const lessonProgress = prev.lessonProgress[lessonId];
       if (!lessonProgress) return prev;
 
-      const correctCount = Object.values(lessonProgress.questions || {}).filter(q => q.correct).length;
+      const correctCount = lessonProgress.correctAnswers ?? 0;
       const isPassed = correctCount >= Math.ceil(lessonProgress.totalTasks * 0.5);
       const newBest = Math.max(lessonProgress.correctAnswers ?? 0, correctCount);
 
@@ -569,6 +598,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     <UserContext.Provider value={{
       user,
       xp,
+      todayXp: earnedXpOnDay(user.lessonProgress, currentDay),
       streak: user.streak,
       level: user.level,
       goal: user.goal,

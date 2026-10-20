@@ -524,7 +524,7 @@ function IconsContainer1() {
             </svg>
           </div>
         </div>
-        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#232a2d] text-[16px] whitespace-nowrap">Новичек</p>
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#232a2d] text-[16px] whitespace-nowrap">Новичок</p>
       </div>
       {/* Второй бейдж — Квизы */}
       <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">

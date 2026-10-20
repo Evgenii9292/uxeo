@@ -15,7 +15,7 @@ function playClickSound() {
   } catch (_) {}
 }
 
-export function ContinueDisabled({ fullWidth }: { fullWidth?: boolean }) {
+export function ContinueDisabled({ fullWidth, label = "Продолжить" }: { fullWidth?: boolean; label?: string }) {
   return (
     <div className={`bg-[#333d41] content-stretch flex h-[56px] items-center justify-center px-[25px] relative rounded-[15px] shadow-[0px_5px_0px_0px_#212226] shrink-0 ${fullWidth ? "w-full" : ""}`}>
       <p
@@ -23,17 +23,17 @@ export function ContinueDisabled({ fullWidth }: { fullWidth?: boolean }) {
         className="font-medium leading-[22.955px] relative shrink-0 text-[#465256] text-[22px] whitespace-nowrap"
         style={{ fontFamily: '"Roboto Condensed", sans-serif', WebkitFontSmoothing: "antialiased" }}
       >
-        Продолжить
+        {label}
       </p>
     </div>
   );
 }
 
-export function ContinueActive({ onClick, fullWidth }: { onClick: () => void; fullWidth?: boolean }) {
+export function ContinueActive({ onClick, fullWidth, label = "Продолжить" }: { onClick: () => void; fullWidth?: boolean; label?: string }) {
   return (
     <button
       onClick={() => { onClick(); playClickSound(); }}
-      className={`group relative flex h-[56px] items-center justify-center px-[25.835px] py-[0.835px] rounded-[15px] shrink-0 bg-[#ff5d39] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px] ${fullWidth ? "w-full" : ""}`}
+      className={`group relative flex h-[56px] items-center justify-center px-[25.835px] py-[0.835px] rounded-[15px] shrink-0 bg-[#ff6b21] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px] ${fullWidth ? "w-full" : ""}`}
       translate="no"
     >
       <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
@@ -42,13 +42,13 @@ export function ContinueActive({ onClick, fullWidth }: { onClick: () => void; fu
         className="font-medium leading-[22.955px] text-[#f4f5fc] text-[22px] whitespace-nowrap"
         style={{ fontFamily: '"Roboto Condensed", sans-serif', WebkitFontSmoothing: "antialiased" }}
       >
-        Продолжить
+        {label}
       </p>
     </button>
   );
 }
 
-export function ContinueCorrect({ onClick, fullWidth }: { onClick: () => void; fullWidth?: boolean }) {
+export function ContinueCorrect({ onClick, fullWidth, label = "Продолжить" }: { onClick: () => void; fullWidth?: boolean; label?: string }) {
   return (
     <button
       onClick={() => { onClick(); playClickSound(); }}
@@ -61,7 +61,7 @@ export function ContinueCorrect({ onClick, fullWidth }: { onClick: () => void; f
         className="font-medium leading-[22.955px] text-[#f4f5fc] text-[22px] whitespace-nowrap"
         style={{ fontFamily: '"Roboto Condensed", sans-serif', WebkitFontSmoothing: "antialiased" }}
       >
-        Продолжить
+        {label}
       </p>
     </button>
   );

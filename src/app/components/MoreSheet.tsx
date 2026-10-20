@@ -2,15 +2,15 @@
  * MoreSheet — bottom sheet opened by the "···" tab.
  */
 
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import skillumLongLogo from "../../assets/skillum-logo-long.svg";
 import { useUserSafe } from "../context/UserContext";
 import { FeedbackModal } from "./FeedbackModal";
-import { ReportErrorModal } from "../pages/quiz/ReportErrorModal";
 
 interface MoreSheetProps {
   onClose: () => void;
+  open: boolean;
 }
 
 // Gray color for menu icons
@@ -146,25 +146,39 @@ function AchievementsSection({ xp, streak }: { xp: number; streak: number }) {
 
 // ── MoreSheet ─────────────────────────────────────────────────────────────────
 
-export function MoreSheet({ onClose }: MoreSheetProps) {
+export function MoreSheet({ onClose, open }: MoreSheetProps) {
   const navigate = useNavigate();
   const userCtx = useUserSafe();
   const [visible, setVisible] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [showReport, setShowReport] = useState(false);
   const touchStartYRef = useRef<number | null>(null);
   const canDragRef = useRef(false);
+  const closingRef = useRef(false);
+  const closeTimerRef = useRef<number | null>(null);
   const SHEET_ANIMATION_MS = 260;
 
   useLayoutEffect(() => {
-    setVisible(true);
-  }, []);
+    if (open) {
+      closingRef.current = false;
+      setVisible(true);
+    }
+  }, [open]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
+    if (closingRef.current) return;
+    closingRef.current = true;
     setVisible(false);
-    setTimeout(onClose, SHEET_ANIMATION_MS);
-  };
+    closeTimerRef.current = window.setTimeout(onClose, SHEET_ANIMATION_MS);
+  }, [onClose]);
+
+  useEffect(() => {
+    if (!open) handleClose();
+  }, [open, handleClose]);
+
+  useEffect(() => () => {
+    if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
+  }, []);
 
   const handleNavigate = (path: string) => {
     handleClose();
@@ -201,9 +215,7 @@ export function MoreSheet({ onClose }: MoreSheetProps) {
     return <FeedbackModal onClose={() => setShowFeedback(false)} />;
   }
 
-  if (showReport) {
-    return <ReportErrorModal onClose={() => setShowReport(false)} context={`Страница: ${window.location.pathname}`} />;
-  }
+
 
   return (
     <div className="fixed inset-0 z-[80] flex items-end" onClick={handleClose}>
@@ -215,13 +227,14 @@ export function MoreSheet({ onClose }: MoreSheetProps) {
 
       {/* Sheet */}
       <div
-        className="relative w-full flex flex-col gap-[16px] px-[20px] pt-[20px] pb-[36px]"
+        className="relative w-full flex flex-col gap-[16px] px-[20px] pt-[20px]"
         style={{
           background: "#2C3438",
           borderRadius: "24px 24px 0 0",
           maxHeight: "80vh",
           overflowY: "auto",
           WebkitOverflowScrolling: "touch",
+          paddingBottom: "calc(36px + 52px + max(env(safe-area-inset-bottom, 0px), 34px))",
           transform: visible ? `translateY(${dragOffset}px)` : "translateY(100%)",
           transition:
             dragOffset > 0
@@ -278,18 +291,28 @@ export function MoreSheet({ onClose }: MoreSheetProps) {
               window.open("https://t.me/Evgeniy9292", "_blank");
             }}
           />
-          <MenuItem
-            icon={<IconFlag />}
-            label="Сообщить об ошибке"
-            onClick={() => setShowReport(true)}
-          />
+
         </div>
 
-        {/* App version */}
-        <p className="text-center font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#4A5A62] text-[12px] mt-[4px]">
-          Скиллум · версия 1.0.0
-        </p>
       </div>
+
+      {/* Keep the same bottom-right tap target while the sheet is open. */}
+      <button
+        type="button"
+        aria-label="Закрыть меню"
+        onClick={(event) => {
+          event.stopPropagation();
+          handleClose();
+        }}
+        className="fixed right-0 z-[100] flex h-[52px] w-1/5 items-center justify-center border-0 bg-transparent active:scale-90 transition-transform duration-75"
+        style={{ bottom: "max(env(safe-area-inset-bottom, 0px), 34px)" }}
+      >
+        <svg width="29" height="29" viewBox="0 0 29 29" fill="none" aria-hidden="true">
+          <circle cx="6.5" cy="14.5" r="2.5" fill="#FF6B21" />
+          <circle cx="14.5" cy="14.5" r="2.5" fill="#FF6B21" />
+          <circle cx="22.5" cy="14.5" r="2.5" fill="#FF6B21" />
+        </svg>
+      </button>
     </div>
   );
 }

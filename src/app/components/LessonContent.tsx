@@ -1,3 +1,4 @@
+import { DifficultyIcon } from "./DifficultyIcon";
 import imgImageColor   from "figma:asset/848cc9d9d2ee375b005fbdca2522ab616019dc08.png";
 import imgProgressRoot from "figma:asset/a1d523f018c959ced344d5cf7020c7ccabfebe3b.png";
 import { useNavigate }   from "react-router";
@@ -49,27 +50,7 @@ function LightningButtonIcon() {
 }
 
 function LessonLevelIcon() {
-  const uid    = useId().replace(/:/g, "");
-  const maskId = `lv-${uid}`;
-  return (
-    <div className="h-[15px] overflow-clip relative shrink-0 w-[17px]">
-      <div className="absolute inset-[22.57%_5.88%_15.9%_5.88%]">
-        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14.9997 9.23063">
-          <defs>
-            <mask id={maskId}>
-              <rect x="0" y="0" width="5.1" height="9.3" fill="white" />
-              <rect x="5" y="0" width="10"  height="9.3" fill="white" fillOpacity="0.6" />
-            </mask>
-          </defs>
-          <g mask={`url(#${maskId})`}>
-            <path d={svgMfoan.p1f3ddd00} fill="#232a2d" />
-            <path d={svgMfoan.p1dcc7b80} fill="#232a2d" />
-            <path d={svgMfoan.p36483400} fill="#232a2d" />
-          </g>
-        </svg>
-      </div>
-    </div>
-  );
+  return <DifficultyIcon level="Начальный" color="#232a2d" />;
 }
 
 // ─── Progress row ─────────────────────────────────────────────────────────────
@@ -131,7 +112,7 @@ function CourseBadgesRow({ xpReward }: { xpReward: number }) {
         <div className="flex gap-[5px] items-center relative shrink-0">
           <LessonLevelIcon />
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#232a2d] text-[16px] whitespace-nowrap">
-            Новичек
+            Начальный
           </p>
         </div>
         <div className="flex gap-[5px] items-center relative shrink-0">
@@ -145,7 +126,7 @@ function CourseBadgesRow({ xpReward }: { xpReward: number }) {
         <div className="flex gap-[5px] items-center relative shrink-0">
           <LightningXPIcon />
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#232a2d] text-[16px] whitespace-nowrap">
-            +{xpReward} XP
+            XP за ответы
           </p>
         </div>
       )}

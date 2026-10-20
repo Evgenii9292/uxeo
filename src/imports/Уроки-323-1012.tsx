@@ -1855,7 +1855,7 @@ function Frame12() {
     <div className="content-stretch flex gap-[5px] items-start relative shrink-0 w-full">
       <FreeIconGift />
       <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[0] relative shrink-0 text-[#798589] text-[0px] text-[16px] w-[140px]">
-        <span className="leading-[20px]">{`И получи `}</span>
+        <span className="leading-[20px]">{`И получите `}</span>
         <span className="leading-[20px] text-[#ff6b21]">месяц</span>
         <span className="leading-[20px]">{` бесплатно`}</span>
       </p>

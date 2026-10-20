@@ -12,7 +12,6 @@ import { useHomeworkSafe } from "../context/HomeworkContext";
 import { getLeague } from "../utils/league";
 import { useUserSafe } from "../context/UserContext";
 import { NOTIF_COUNT_KEY, NOTIF_INITIAL_UNREAD } from "../utils/notifications";
-import { ReportErrorModal } from "../pages/quiz/ReportErrorModal";
 import { FeedbackModal } from "./FeedbackModal";
 
 /** Read + track the global notification unread count from localStorage */
@@ -380,66 +379,31 @@ function NavItems({ activePath }: { activePath: string }) {
 
 function SidebarFooter() {
   const navigate = useNavigate();
-  const [showReport, setShowReport] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
-  const handleResetData = () => {
-    if (confirm('Вы уверены, что хотите сбросить весь прогресс? Это действие нельзя отменить.')) {
-      try {
-        localStorage.clear();
-        window.location.reload();
-      } catch (error) {
-        console.error('Failed to clear localStorage:', error);
-      }
-    }
-  };
 
   return (
-    <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 w-full mx-[0px] my-[20px]">
-      {/* О нас / Сбросить прогресс */}
+    <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full mx-[0px] my-[20px]">
+      {/* О нас */}
       <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
         {/* О нас */}
-        <div onClick={() => navigate("/about")} className="h-[44px] relative rounded-[14px] shrink-0 w-full cursor-pointer hover:bg-[#343e42] mt-[-10px]">
+        <div onClick={() => navigate("/about")} className="h-[41px] relative rounded-[10px] shrink-0 w-full cursor-pointer hover:bg-[#343e42]">
           <div className="flex flex-row items-center size-full m-[0px]">
             <div className="content-stretch flex items-center relative size-full pl-[12px] pr-[0px] py-[0px] m-[0px]">
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[21px] relative shrink-0 text-[#f2f4fb] text-[18px] whitespace-nowrap">О нас</p>
             </div>
           </div>
         </div>
-        {/* Сбросить прогресс */}
-        <div
-          onClick={handleResetData}
-          className="h-[44px] relative rounded-[14px] shrink-0 w-full cursor-pointer hover:bg-[#3d2828]"
-        >
-          <div className="flex flex-row items-center size-full m-[0px]">
-            <div className="content-stretch flex items-center relative size-full pl-[12px] pr-[0px] py-[0px] m-[0px]">
-              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[21px] relative shrink-0 text-[#ff6b6b] text-[18px] whitespace-nowrap">Сбросить прогресс</p>
-            </div>
-          </div>
-        </div>
+
       </div>
 
       {/* Написать отзыв — одна кнопка с иконкой подарка */}
-      <div onClick={() => setShowFeedback(true)} className="group flex items-center gap-[8px] h-[40px] px-[12px] rounded-[12px] shrink-0 w-full cursor-pointer select-none hover:bg-[#343e42]">
+      <div onClick={() => setShowFeedback(true)} className="group flex items-center gap-[8px] h-[41px] px-[12px] rounded-[10px] shrink-0 w-full cursor-pointer select-none hover:bg-[#343e42]">
         <div className="relative shrink-0 size-[20px] flex items-center justify-center">
           <FreeIconGift />
         </div>
         <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap">Написать отзыв</p>
       </div>
 
-      {/* Сообщить об ошибке */}
-      <div
-        onClick={() => setShowReport(true)}
-        className="group flex items-center gap-[8px] h-[40px] px-[12px] rounded-[12px] shrink-0 w-full cursor-pointer select-none hover:bg-[#343e42]"
-      >
-        <svg width="18" height="18" viewBox="0 0 32 32" fill="none" className="shrink-0 text-[#798589] group-hover:text-[#a0a3ab]">
-          <path d="m27 5h-9c0-1.6542969-1.3457031-3-3-3h-8c-.5522461 0-1 .4477539-1 1v16 10c0 .5522461.4477539 1 1 1s1-.4477539 1-1v-9h8c0 1.6542969 1.3457031 3 3 3h8c1.6542969 0 3-1.3457031 3-3v-12c0-1.6542969-1.3457031-3-3-3z" fill="currentColor" />
-        </svg>
-        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[16px] text-[#798589] group-hover:text-[#a0a3ab] whitespace-nowrap">
-          Сообщить об ошибке
-        </p>
-      </div>
-
-      {showReport && <ReportErrorModal onClose={() => setShowReport(false)} />}
       {showFeedback && <FeedbackModal onClose={() => setShowFeedback(false)} />}
     </div>
   );

@@ -296,7 +296,7 @@ function PrimaryButton({ label, onClick }: { label: string; onClick: () => void 
       onClick={onClick}
       className="group relative h-[52px] rounded-[14px] w-full md:max-w-[280px] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
     >
-      <div className="bg-[#ff5d39] flex items-center justify-center px-6 relative rounded-[14px] size-full">
+      <div className="bg-[#ff6b21] flex items-center justify-center px-6 relative rounded-[14px] size-full">
         <div
           aria-hidden="true"
           className="absolute border-[#ff390d] border border-solid inset-0 pointer-events-none rounded-[14px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none"
@@ -356,11 +356,11 @@ function AboutContent() {
           style={{ background: "#343e42" }}
         >
           {[
-            { icon: <IconZap />,      bg: "#282F33", title: "Интерактивные задания", text: "Решаешь реальные задачи интерфейсов — не читаешь, а делаешь" },
+            { icon: <IconZap />,      bg: "#282F33", title: "Интерактивные задания", text: "Вы решаете реальные задачи интерфейсов и закрепляете знания практикой" },
             { icon: <IconTarget />,   bg: "#282F33", title: "Практика в Figma", text: "Задания прямо в инструменте дизайнера — не в абстрактной среде" },
             { icon: <IconChat />,     bg: "#282F33", title: "Обратная связь от менторов", text: "Живые люди проверяют домашки и дают конкретный фидбек" },
             { icon: <IconTrophy />,   bg: "#282F33", title: "Челленджи и соревнования", text: "Еженедельные вызовы, которые держат в тонусе" },
-            { icon: <IconTrendUp />,  bg: "#282F33", title: "Прогресс, XP и уровни", text: "Видишь весь путь, знаешь куда идёшь и как далеко продвинулся" },
+            { icon: <IconTrendUp />,  bg: "#282F33", title: "Прогресс, XP и уровни", text: "Вы видите весь путь и свой прогресс" },
           ].map((item, i, arr) => (
             <div
               key={i}
@@ -387,10 +387,10 @@ function AboutContent() {
         <SectionTitle>Как это работает</SectionTitle>
         <div className="grid grid-cols-2 gap-[10px] md:grid-cols-4">
           {[
-            { num: "1", text: "Проходишь урок" },
-            { num: "2", text: "Решаешь задания" },
-            { num: "3", text: "Получаешь фидбек" },
-            { num: "4", text: "Растёшь как дизайнер" },
+            { num: "1", text: "Проходите урок" },
+            { num: "2", text: "Решаете задания" },
+            { num: "3", text: "Получаете фидбек" },
+            { num: "4", text: "Растёте как дизайнер" },
           ].map(({ num, text }) => (
             <div
               key={num}

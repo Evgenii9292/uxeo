@@ -1,3 +1,4 @@
+import { DifficultyIcon, LessonCountIcon } from "./DifficultyIcon";
 import { useId } from "react";
 import { useNavigate } from "react-router";
 import { Lock } from "lucide-react";
@@ -17,40 +18,12 @@ import { useWindowWidth } from "../hooks/useWindowWidth";
  * Staircase level icon — Fix 3:
  * Only the first step is fully visible; steps 2–3 at 60% opacity via SVG mask.
  */
-function LevelIcon({ active }: { active: boolean }) {
-  const uid    = useId().replace(/:/g, "");
-  const maskId = `lv-${uid}`;
-  const bright = active ? "#F1F2FB" : "#798489";
-  const dark   = active ? "#61737A" : "#798489";
-  return (
-    <div className="h-[15px] overflow-clip relative shrink-0 w-[17px]">
-      <div className="absolute inset-[22.57%_5.88%_15.9%_5.88%]">
-        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14.9997 9.23063">
-          <defs>
-            <mask id={maskId}>
-              <rect x="0" y="0" width="5.1" height="9.3" fill="white" />
-              <rect x="5" y="0" width="10"  height="9.3" fill="white" fillOpacity="0.6" />
-            </mask>
-          </defs>
-          <g mask={`url(#${maskId})`}>
-            <path d={svgMfoan.p1f3ddd00} fill={dark}   />
-            <path d={svgMfoan.p1dcc7b80} fill={bright} />
-            <path d={svgMfoan.p36483400} fill={dark}   />
-          </g>
-        </svg>
-      </div>
-    </div>
-  );
+function LevelIcon({ active, level = "Начальный" }: { active: boolean; level?: string }) {
+  return <DifficultyIcon level={level} color={active ? "#F1F2FB" : "#798489"} />;
 }
 
 function BookIcon({ color = "#F1F2FB" }: { color?: string }) {
-  return (
-    <div className="h-[13.337px] relative shrink-0 w-[12.005px]">
-      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 12.0045 13.3368">
-        <path d={svgPaths.p429c1f0} fill={color} />
-      </svg>
-    </div>
-  );
+  return <LessonCountIcon color={color} />;
 }
 
 /** Clock icon — same as Theory page (fix 5 from prev session, now used in all module cards) */
@@ -128,7 +101,7 @@ function ActiveModuleCard() {
             <div className="flex flex-wrap gap-[8px_16px] items-center">
               <div className="flex gap-[4px] items-center">
                 <LevelIcon active={true} />
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f1f2fb] text-[14px]">Новичёк</p>
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f1f2fb] text-[14px]">Начальный</p>
               </div>
               <div className="flex gap-[4px] items-center">
                 <BookIcon />
@@ -198,7 +171,7 @@ function ActiveModuleCard() {
               {/* Level */}
               <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
                 <LevelIcon active={true} />
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[16px] whitespace-nowrap">Новичёк</p>
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[16px] whitespace-nowrap">Начальный</p>
               </div>
               {/* Lesson count */}
               <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
@@ -268,7 +241,7 @@ function LockedModuleCard({ title, level, lessonCount, durationMin = 0, image }:
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[20px] leading-[24px] truncate">{title}</p>
             <div className="flex flex-wrap gap-[8px_14px] items-center">
               <div className="flex gap-[4px] items-center">
-                <LevelIcon active={false} />
+                <LevelIcon active={false} level={level} />
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f1f2fb] text-[13px]">{level}</p>
               </div>
               {lessonCount > 0 && (
@@ -318,7 +291,7 @@ function LockedModuleCard({ title, level, lessonCount, durationMin = 0, image }:
             {/* Meta row — Level  lessons  ⏱ time */}
             <div className="content-stretch flex gap-[16px] items-center relative shrink-0 flex-wrap">
               <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
-                <LevelIcon active={false} />
+                <LevelIcon active={false} level={level} />
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[16px] whitespace-nowrap">{level}</p>
               </div>
               <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
@@ -359,8 +332,8 @@ export default function ModulesContent() {
     // Fix 5: gap matches RightWidgets gap-[20px]
     <div className="content-stretch flex flex-col gap-[20px] items-center relative shrink-0 w-full">
       <ActiveModuleCard />
-      <LockedModuleCard title="UX интерфейсов" level="Мидл" lessonCount={0} image={imgModule2} />
-      <LockedModuleCard title="UI Kit"           level="Мидл" lessonCount={0} image={imgModule3} />
+      <LockedModuleCard title="UX интерфейсов" level="Средний" lessonCount={0} image={imgModule2} />
+      <LockedModuleCard title="UI Kit"           level="Средний" lessonCount={0} image={imgModule3} />
     </div>
   );
 }

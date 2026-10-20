@@ -6,8 +6,6 @@
 import React, { lazy, Suspense, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useLocation, useNavigate } from "react-router";
-import { getLeague } from "../utils/league";
-import { useUserSafe } from "../context/UserContext";
 import { NOTIF_COUNT_KEY, NOTIF_INITIAL_UNREAD } from "../utils/notifications";
 import { hapticTap } from "../utils/haptics";
 
@@ -16,20 +14,20 @@ const MoreSheet = lazy(() => import("./MoreSheet").then((mod) => ({ default: mod
 // ── Lightweight tab icons ─────────────────────────────────────────────────────
 
 function IconObuchenie({ active }: { active: boolean }) {
-  const book = active ? "#AF66DA" : "#4E6068";
-  const mark = active ? "#FED402" : "#6B7B82";
+  const book = "#AF66DA";
+  const mark = "#FED402";
   return (
     <svg width="29" height="29" viewBox="0 0 29 29" fill="none" aria-hidden="true">
       <rect x="5" y="4" width="8" height="21" rx="3" fill={book} />
-      <rect x="14" y="4" width="10" height="21" rx="3" fill={active ? "#9857BD" : "#3A4A52"} />
+      <rect x="14" y="4" width="10" height="21" rx="3" fill="#9857BD" />
       <rect x="8" y="8" width="3" height="10" rx="1.5" fill={mark} />
     </svg>
   );
 }
 
 function IconVyzovy({ active }: { active: boolean }) {
-  const cup = active ? "#FFC12E" : "#4E6068";
-  const accent = active ? "#FF7403" : "#3A4A52";
+  const cup = "#FFC12E";
+  const accent = "#FF7403";
   return (
     <svg width="29" height="29" viewBox="0 0 29 29" fill="none" aria-hidden="true">
       <path d="M9 6h11v5.5c0 3.2-2.1 5.9-5.5 6.4C11.1 17.4 9 14.7 9 11.5V6Z" fill={cup} />
@@ -71,7 +69,7 @@ function IconKursy({ active }: { active: boolean }) {
 // ── More (···) icon ───────────────────────────────────────────────────────────
 
 function IconMore({ active }: { active: boolean }) {
-  const color = active ? "#FF6B21" : "#4E6068";
+  const color = "#FF6B21";
   return (
     <div style={{ width: 29, height: 29 }}>
       <svg width="29" height="29" viewBox="0 0 29 29" fill="none" aria-hidden="true">
@@ -101,12 +99,12 @@ function useNotifCount() {
 function IconNotifications({ active }: { active: boolean }) {
   const notifCount = useNotifCount();
   const hasUnread = notifCount > 0;
-  const color = active ? "#FFB121" : "#4E6068";
+  const color = "#FFB121";
   return (
     <div className="relative shrink-0" style={{ width: 29, height: 29 }}>
       <svg width="29" height="29" viewBox="0 0 29 29" fill="none" aria-hidden="true">
         <path d="M8 20h13l-1.4-2.4V12c0-3-2-5.2-5.1-5.2S9.4 9 9.4 12v5.6L8 20Z" fill={color} />
-        <path d="M12 21.5c.4 1.2 1.3 2 2.5 2s2.1-.8 2.5-2" stroke={active ? "#FF9D21" : "#6B7B82"} strokeWidth="2" strokeLinecap="round" />
+        <path d="M12 21.5c.4 1.2 1.3 2 2.5 2s2.1-.8 2.5-2" stroke="#FF9D21" strokeWidth="2" strokeLinecap="round" />
       </svg>
       {hasUnread && <span className="absolute right-[3px] top-[3px] size-[8px] rounded-full border-2 border-[#282F33] bg-[#FF6B21]" />}
     </div>
@@ -116,12 +114,12 @@ function IconNotifications({ active }: { active: boolean }) {
 // ── League tab icon — shows current trophy ────────────────────────────────────
 
 function IconLeague({ active }: { active: boolean }) {
-  const userData = useUserSafe();
-  const league = getLeague(userData?.xp ?? 0);
   return (
-    <div style={{ width: 29, height: 29, display: "flex", alignItems: "center", justifyContent: "center", opacity: active ? 1 : 0.85 }}>
-      <img alt="" src={league.trophy} width={21} height={21} draggable={false} style={{ objectFit: "contain", filter: "brightness(1.6) saturate(1.4)", touchAction: "manipulation", userSelect: "none", WebkitUserSelect: "none" }} />
-    </div>
+    <svg width="29" height="29" viewBox="0 0 29 29" fill="none" aria-hidden="true">
+      <path d="M14.5 3.5L22 6.3V12.4C22 17.4 19 21.7 14.5 24.5C10 21.7 7 17.4 7 12.4V6.3L14.5 3.5Z" fill="#FFC12E" />
+      <path d="M14.5 6.2L19.6 8.1V12.5C19.6 15.9 17.6 18.9 14.5 21C11.4 18.9 9.4 15.9 9.4 12.5V8.1L14.5 6.2Z" fill="#FF7403" opacity="0.9" />
+      <path d="M14.5 9.1L15.8 11.8L18.8 12.2L16.6 14.3L17.1 17.3L14.5 15.9L11.9 17.3L12.4 14.3L10.2 12.2L13.2 11.8L14.5 9.1Z" fill="#FFF7D6" />
+    </svg>
   );
 }
 
@@ -160,11 +158,13 @@ export default function BottomTabBar() {
   const location = useLocation();
   const navigate = useNavigate();
   const [showMore, setShowMore] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
 
   const isActive = (matchPaths: readonly string[]) =>
     matchPaths.some((p) =>
       p === "/" ? location.pathname === "/" : location.pathname.startsWith(p)
     );
+  const activeIndex = NAV_TABS.findIndex((tab) => isActive(tab.matchPaths));
 
   return (
     <>
@@ -176,6 +176,7 @@ export default function BottomTabBar() {
           backdropFilter: "blur(14px)",
           WebkitBackdropFilter: "blur(14px)",
           borderTop: "1px solid rgba(86,101,107,0.35)",
+          zIndex: showMore ? 90 : 50,
         }}
       >
         <div
@@ -187,41 +188,53 @@ export default function BottomTabBar() {
             paddingRight: 8,
           }}
         >
+          {activeIndex >= 0 && !showMore && (
+            <div
+              className="absolute rounded-[13px] pointer-events-none"
+              style={{
+                left: `calc(8px + ((100% - 16px) / 5) * ${activeIndex} + 6px)`,
+                top: 7,
+                width: "calc((100% - 16px) / 5 - 12px)",
+                height: 38,
+                background: "rgba(255,255,255,0.07)",
+                transition: "left 260ms cubic-bezier(0.22,1,0.36,1), width 260ms cubic-bezier(0.22,1,0.36,1)",
+                willChange: "left",
+              }}
+            />
+          )}
           {/* Nav tabs */}
           {NAV_TABS.map((tab) => {
-            const active = isActive(tab.matchPaths);
             const { Icon } = tab;
             return (
               <button
                 key={tab.key}
                 onClick={() => { hapticTap(); navigate(tab.path); }}
                 className="flex flex-col items-center justify-center flex-1 h-full cursor-pointer border-0 outline-none active:scale-90 transition-transform duration-75 relative"
-                style={{ background: "transparent" }}
+                style={{
+                  background: "transparent",
+                  opacity: showMore ? 0 : 1,
+                  pointerEvents: showMore ? "none" : "auto",
+                }}
               >
-                {active && (
-                  <div
-                    className="absolute inset-x-[6px] inset-y-[7px] rounded-[13px] pointer-events-none"
-                    style={{ background: "rgba(255,255,255,0.07)" }}
-                  />
-                )}
-                <Icon active={active} />
+                <Icon active />
               </button>
             );
           })}
 
           {/* More (···) button */}
           <button
-            onClick={() => { hapticTap(); setShowMore(true); }}
+            onClick={() => {
+              hapticTap();
+              if (showMore) setMoreOpen(false);
+              else {
+                setMoreOpen(true);
+                setShowMore(true);
+              }
+            }}
             className="flex flex-col items-center justify-center flex-1 h-full cursor-pointer border-0 outline-none active:scale-90 transition-transform duration-75 relative"
             style={{ background: "transparent" }}
           >
-            {showMore && (
-              <div
-                className="absolute inset-x-[6px] inset-y-[7px] rounded-[13px] pointer-events-none"
-                style={{ background: "rgba(255,255,255,0.07)" }}
-              />
-            )}
-            <IconMore active={showMore} />
+            <IconMore active />
           </button>
         </div>
       </nav>
@@ -229,7 +242,7 @@ export default function BottomTabBar() {
       {/* MoreSheet — rendered via portal to escape transform stacking context */}
       {showMore && ReactDOM.createPortal(
         <Suspense fallback={null}>
-          <MoreSheet onClose={() => setShowMore(false)} />
+          <MoreSheet open={moreOpen} onClose={() => setShowMore(false)} />
         </Suspense>,
         document.body
       )}

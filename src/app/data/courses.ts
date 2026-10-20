@@ -22,7 +22,7 @@ export const COURSES: Course[] = [
   {
     id: "ux-ui-basics",
     title: "UX/UI Основы",
-    level: "Новичек",
+    level: "Начальный",
     unlockThreshold: 0.5,
     lessons: [
       {
@@ -51,7 +51,7 @@ export const COURSES: Course[] = [
   {
     id: "figma-pro",
     title: "Figma Pro",
-    level: "Мидл",
+    level: "Средний",
     unlockThreshold: 0.5,
     lessons: [
       { id: "figma-lesson-1", title: "Продвинутые компоненты", totalTasks: 6, xp: 150, durationMinutes: 0 },
@@ -61,7 +61,7 @@ export const COURSES: Course[] = [
   {
     id: "rombot",
     title: "Ромбот",
-    level: "Мидл",
+    level: "Средний",
     unlockThreshold: 0.5,
     lessons: [
       { id: "rombot-lesson-1", title: "Основы UI Kit", totalTasks: 4, xp: 175, durationMinutes: 0 },
@@ -70,7 +70,7 @@ export const COURSES: Course[] = [
   {
     id: "product-design",
     title: "Продуктовый дизайн",
-    level: "Мидл+",
+    level: "Продвинутый",
     unlockThreshold: 0.6,
     lessons: [
       { id: "pd-lesson-1",  title: "Что такое продуктовый дизайн",     totalTasks: 7, xp: 200, durationMinutes: 0 },

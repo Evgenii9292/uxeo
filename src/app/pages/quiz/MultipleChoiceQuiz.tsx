@@ -111,7 +111,7 @@ function MultiSelectCard({
         {/* Checkbox square */}
         <div
           className="relative rounded-[5px] shrink-0 flex-none size-[20px]"
-          style={{ backgroundColor: (state === "selected" || state === "correct" || state === "incorrect") ? "#ff5d39" : "transparent" }}
+          style={{ backgroundColor: (state === "selected" || state === "correct" || state === "incorrect") ? "#ff6b21" : "transparent" }}
         >
           <div aria-hidden="true" className="absolute border-[3px] border-solid inset-[-3px] pointer-events-none rounded-[8px]" style={{ borderColor: "rgba(216,219,232,0.6)" }} />
         </div>
@@ -127,17 +127,17 @@ function CheckButton({ onClick, disabled, fullWidth }: { onClick: () => void; di
   if (disabled) {
     return (
       <div className={`bg-[#333d41] content-stretch flex h-[56px] items-center justify-center px-[25px] relative rounded-[15px] shadow-[0px_5px_0px_0px_#212226] shrink-0 ${fullWidth ? "w-full" : ""}`}>
-        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] relative shrink-0 text-[#465256] text-[22px] whitespace-nowrap">Проверить</p>
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] relative shrink-0 text-[#465256] text-[22px] whitespace-nowrap">Проверить ответ</p>
       </div>
     );
   }
   return (
     <button
       onClick={onClick}
-      className={`group relative flex h-[56px] items-center justify-center px-[25.835px] py-[0.835px] rounded-[15px] shrink-0 bg-[#ff5d39] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px] ${fullWidth ? "w-full" : ""}`}
+      className={`group relative flex h-[56px] items-center justify-center px-[25.835px] py-[0.835px] rounded-[15px] shrink-0 bg-[#ff6b21] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px] ${fullWidth ? "w-full" : ""}`}
     >
       <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
-      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] text-[#f4f5fc] text-[22px] whitespace-nowrap">Проверить</p>
+      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] text-[#f4f5fc] text-[22px] whitespace-nowrap">Проверить ответ</p>
     </button>
   );
 }
@@ -145,6 +145,7 @@ function CheckButton({ onClick, disabled, fullWidth }: { onClick: () => void; di
 // ── Main component ─────────────────────────────────────────────────────────────
 
 export function MultipleChoiceQuiz({
+  continueLabel = "Следующий вопрос",
   question,
   subtitle = "Выберите несколько вариантов",
   options,
@@ -158,6 +159,7 @@ export function MultipleChoiceQuiz({
   leftMaxScale,
   leftCardMinHeight,
 }: {
+  continueLabel?: string;
   question: string;
   subtitle?: string;
   options: { label: string; text: string }[];
@@ -250,7 +252,7 @@ export function MultipleChoiceQuiz({
           <div className="mb-[10px]">
             {phase === "checked" ? (
               isCorrect
-                ? <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
+                ? <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} xp={earnedXP} />
                 : <IncorrectFeedback correctAnswer={correctAnswers.join(", ")} explanation={explanation} isReplay={isReplay} hideAnswer />
             ) : (
               <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#798589] text-[15px] text-center leading-[1.3]">
@@ -266,8 +268,8 @@ export function MultipleChoiceQuiz({
               {phase === "selecting"
                 ? <CheckButton onClick={handleCheck} disabled={selected.size === 0} fullWidth />
                 : isCorrect
-                  ? <ContinueCorrect onClick={onContinue} fullWidth />
-                  : <ContinueActive onClick={onContinue} fullWidth />
+                  ? <ContinueCorrect label={continueLabel} onClick={onContinue} fullWidth />
+                  : <ContinueActive label={continueLabel} onClick={onContinue} fullWidth />
               }
             </div>
           </div>
@@ -310,7 +312,7 @@ export function MultipleChoiceQuiz({
           <div className="flex-1 flex items-center">
             {phase === "checked" && (
               isCorrect
-                ? <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
+                ? <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} xp={earnedXP} />
                 : <IncorrectFeedback
                     correctAnswer={correctAnswers.join(", ")}
                     explanation={explanation}
@@ -324,9 +326,9 @@ export function MultipleChoiceQuiz({
             {phase === "selecting" ? (
               <CheckButton onClick={handleCheck} disabled={selected.size === 0} />
             ) : isCorrect ? (
-              <ContinueCorrect onClick={onContinue} />
+              <ContinueCorrect label={continueLabel} onClick={onContinue} />
             ) : (
-              <ContinueActive onClick={onContinue} />
+              <ContinueActive label={continueLabel} onClick={onContinue} />
             )}
           </div>
         </div>

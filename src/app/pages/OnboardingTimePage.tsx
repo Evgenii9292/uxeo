@@ -22,7 +22,7 @@ function playCorrectSound() {
   } catch (_) {}
 }
 
-function OptionCard({ text, sub, emoji, state, onClick }: { text: string; sub: string; emoji?: string; state: "idle" | "correct"; onClick: () => void }) {
+function OptionCard({ text, emoji, state, onClick }: { text: string; emoji?: string; state: "idle" | "correct"; onClick: () => void }) {
   const bg = state === "correct"
     ? "linear-gradient(172.482deg, rgba(58,81,67,0.5) 2.4187%, rgba(56,72,62,0.5) 98.527%, rgba(45,56,44,0.5) 116.25%)"
     : "linear-gradient(172.454deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)";
@@ -42,9 +42,6 @@ function OptionCard({ text, sub, emoji, state, onClick }: { text: string; sub: s
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f4f5fc] text-[22px] shrink-0">
             {text}
           </p>
-          <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[18px] text-[#798589] text-[16px]">
-            {sub}
-          </p>
         </div>
       </div>
       <div className="absolute inset-0 pointer-events-none rounded-[inherit] shadow-[inset_-4px_0px_4px_0px_#384348]" />
@@ -52,10 +49,10 @@ function OptionCard({ text, sub, emoji, state, onClick }: { text: string; sub: s
   );
 }
 
-const TIMES: { id: DailyTime; text: string; sub: string; emoji: string }[] = [
-  { id: "5min",  text: "5 минут",  sub: "по-тихоньку",    emoji: "🌱" },
-  { id: "15min", text: "15 минут", sub: "уверенный темп", emoji: "⚡️" },
-  { id: "30min", text: "30 минут", sub: "хочу быстрее",   emoji: "🔥" },
+const TIMES: { id: DailyTime; text: string; emoji: string }[] = [
+  { id: "5min",  text: "5 минут",  emoji: "🌱" },
+  { id: "15min", text: "15 минут", emoji: "⚡️" },
+  { id: "30min", text: "30 минут", emoji: "🔥" },
 ];
 
 export default function OnboardingTimePage() {
@@ -88,14 +85,13 @@ export default function OnboardingTimePage() {
       <div className="flex-1 flex flex-col items-center justify-center px-[24px]">
         <div className="flex flex-col items-center gap-[36px] w-full max-w-[526px]">
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[32px] text-center">
-            Сколько времени в день?
+            Сколько времени в день готовы уделять?
           </p>
           <div className="flex flex-col gap-[19px] w-full">
             {TIMES.map((t) => (
               <OptionCard
                 key={t.id}
                 text={t.text}
-                sub={t.sub}
                 emoji={t.emoji}
                 state={selected === t.id ? "correct" : "idle"}
                 onClick={() => handleSelect(t.id)}

@@ -1,3 +1,4 @@
+import { normalizeFigmaLink } from "../../../supabase/functions/server/figmaLink";
 import { useState, useEffect, useId, useRef } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Layout from "../components/Layout";
@@ -48,7 +49,7 @@ const HOMEWORK_CONTENT: Record<string, HomeworkData> = {
     title: "Дизайн экрана онбординга",
     subtitle: "Создайте экран приветствия для приложения обучения UX-дизайну.",
     time: "30 мин",
-    level: "Джун",
+    level: "Начальный",
     xp: "+800 XP",
     description: "Примените знания об основах UX для создания первого экрана приложения.",
     skills: [
@@ -82,7 +83,7 @@ const HOMEWORK_CONTENT: Record<string, HomeworkData> = {
     title: "Интерфейс дашборда",
     subtitle: "Создайте главный экран панели управления для приложения аналитики.",
     time: "40 мин",
-    level: "Мидл",
+    level: "Средний",
     xp: "+800 XP",
     description: "Примените навыки проектирования UX интерфейсов для создания информативного дашборда.",
     skills: [
@@ -114,10 +115,10 @@ const HOMEWORK_CONTENT: Record<string, HomeworkData> = {
     tip: "Сначала покажите 3-4 самые важные метрики, а уже потом второстепенные блоки и навигацию.",
   },
   "homework-3": {
-    title: "UI Kit компонента",
+    title: "Набор компонентов",
     subtitle: "Создайте набор UI-компонентов для дизайн-системы.",
     time: "45 мин",
-    level: "Мидл",
+    level: "Средний",
     xp: "+800 XP",
     description: "Финальное практическое задание — соберите UI Kit из основных компонентов.",
     skills: [
@@ -389,8 +390,8 @@ function ExampleContent({ hw }: { hw: HomeworkData }) {
           ))}
         </div>
       ) : null}
-      <p>Посмотри на референс выше и собери экран в похожей логике по структуре, акцентам и композиции.</p>
-      <p>Если хочешь, можешь дополнительно подсмотреть похожие решения на Dribbble или Behance.</p>
+      <p>Посмотрите на референс выше и соберите экран в похожей логике по структуре, акцентам и композиции.</p>
+      <p>При желании посмотрите похожие решения на Dribbble или Behance.</p>
       <p>Обратите внимание на визуальную иерархию и контраст элементов.</p>
       {hw.tip && <p>{hw.tip}</p>}
     </div>
@@ -560,8 +561,11 @@ function InfoPopup({ onClose }: { onClose: () => void }) {
 
 function PCGuidanceBanner() {
   const [copied, setCopied] = useState(false);
-  const handleCopy = () => {
-    try { navigator.clipboard.writeText(window.location.href); } catch (_) {}
+  const [copyError, setCopyError] = useState(false);
+  const handleCopy = async () => {
+    setCopyError(false);
+    try { await navigator.clipboard.writeText(window.location.href); }
+    catch { setCopyError(true); return; }
     setCopied(true);
     setTimeout(() => setCopied(false), 2200);
   };
@@ -570,6 +574,7 @@ function PCGuidanceBanner() {
       className="rounded-[12px] flex flex-col gap-[10px] px-[14px] py-[12px]"
       style={{ background: "rgba(255,107,33,0.07)", border: "1px solid rgba(255,107,33,0.18)" }}
     >
+      {copyError && <p role="alert" className="text-[#ffbaaa] text-[13px]">Не удалось скопировать ссылку. Скопируйте адрес из строки браузера.</p>}
       <div className="flex items-start gap-[8px]">
         {/* Figma logo */}
         <svg width="12" height="18" viewBox="0 0 10 15" fill="none" style={{ flexShrink: 0, marginTop: 1 }}>
@@ -719,7 +724,6 @@ function SubmitBlock({ homeworkLessonId, lessonName, mobileCompact }: { homework
       if (hwCtx.isUnseen(homeworkLessonId)) {
         if (serverStatus === "reviewed") {
           // Grant XP + show achievement modal (no custom popup)
-          userData?.updateQuestionState(homeworkLessonId, "hw_xp_reward", true, 800);
           achievementsCtx?.triggerAchievement("homework_done");
           hwCtx.markSeen(homeworkLessonId);
         } else {
@@ -761,8 +765,9 @@ function SubmitBlock({ homeworkLessonId, lessonName, mobileCompact }: { homework
       alert("Войдите в аккаунт, чтобы отправить работу на проверку.");
       return;
     }
-    if (!url.trim()) {
-      alert("Пожалуйста, вставьте ссылку на Figma");
+    const figmaLink = normalizeFigmaLink(url);
+    if (!figmaLink) {
+      alert("Вставьте ссылку на файл Figma: https://www.figma.com/design/…");
       return;
     }
 
@@ -778,7 +783,7 @@ function SubmitBlock({ homeworkLessonId, lessonName, mobileCompact }: { homework
         body: JSON.stringify({
           lessonName,
           lessonId: homeworkLessonId ?? "",
-          figmaLink: url,
+          figmaLink,
         }),
       });
 
@@ -1322,7 +1327,14 @@ function SubmitBlock({ homeworkLessonId, lessonName, mobileCompact }: { homework
 export default function HomeworkPage() {
   const location = useLocation();
   const isMobile = useIsMobile();
-  const homeworkLessonId = (location.state as any)?.homeworkId || "homework-1";
+  const navigate = useNavigate();
+  const params = new URLSearchParams(location.search);
+  const homeworkLessonId = params.get("lessonId") || (location.state as any)?.homeworkId || "homework-1";
+  useEffect(() => {
+    if (!params.get("lessonId")) {
+      navigate(`/homework?lessonId=${encodeURIComponent(homeworkLessonId)}`, { replace: true, state: location.state });
+    }
+  }, [homeworkLessonId, location.search, navigate]);
   const hw = HOMEWORK_CONTENT[homeworkLessonId] || DEFAULT_HOMEWORK;
   const hwCtx = useHomeworkSafe();
   const serverRecord = hwCtx?.getByLessonId(homeworkLessonId) ?? hwCtx?.getByLessonName(hw.title);
@@ -1343,6 +1355,8 @@ export default function HomeworkPage() {
       return next;
     });
   };
+
+  if (!HOMEWORK_CONTENT[homeworkLessonId]) return <Layout title="Задание недоступно"><p className="text-[#f4f5fc]">Не удалось найти это домашнее задание.</p><button onClick={() => navigate("/lessons")} className="text-[#ff6b21]">Вернуться к урокам</button></Layout>;
 
   return (
     <>

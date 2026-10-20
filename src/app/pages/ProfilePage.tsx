@@ -656,7 +656,7 @@ function SignOutConfirmModal({ onConfirm, onCancel }: { onConfirm: () => void; o
         <div className="flex flex-col gap-[12px] w-full">
           <button
             onClick={onCancel}
-            className="group relative flex h-[56px] items-center justify-center px-[25px] rounded-[15px] bg-[#ff5d39] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px]"
+            className="group relative flex h-[56px] items-center justify-center px-[25px] rounded-[15px] bg-[#ff6b21] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px]"
           >
             <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_4px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[24px] whitespace-nowrap">
@@ -682,14 +682,19 @@ function AccountActionsCard() {
   const navigate = useNavigate();
   const { signOut } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSignOut = async () => {
     if (isSigningOut) return;
     setIsSigningOut(true);
+    setSignOutError("");
     try {
       await signOut();
       navigate("/welcome", { replace: true });
+    } catch (error) {
+      setShowConfirm(false);
+      setSignOutError(error instanceof Error ? error.message : "Не удалось выйти. Попробуйте ещё раз.");
     } finally {
       setIsSigningOut(false);
     }
@@ -705,6 +710,7 @@ function AccountActionsCard() {
       )}
       <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full mt-[32px] pb-[40px]">
         <SectionTitle text="Аккаунт" />
+        {signOutError && <p role="alert" className="text-[#E8503A] text-[16px]">{signOutError}</p>}
         <div className="bg-[#343e42] relative rounded-[15px] shrink-0 w-full">
           <div className="content-stretch flex flex-col gap-[14px] items-start p-[16px] relative w-full">
             <button

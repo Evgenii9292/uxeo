@@ -1,3 +1,4 @@
+import { courseProgress } from "../../app/utils/learningProgress";
 // ─── Roadmap Data ─────────────────────────────────────────────────────────────
 // Single source of truth for lesson content.
 // No UI logic here.
@@ -206,24 +207,6 @@ export const ROADMAP_LESSONS: Lesson[] = [
  * Excludes homework lessons (those without quizId).
  * Returns progress as a fraction (0.0 to 1.0).
  */
-export function getCourseProgressFromRoadmap(
-  lessonProgress: Record<string, { isCompleted?: boolean }>
-): number {
-  // Count only lessons with quizId (exclude homework)
-  const quizLessons = ROADMAP_LESSONS.filter(lesson => lesson.quizId);
-  const totalLessons = quizLessons.length;
-  
-  if (totalLessons === 0) return 0;
-  
-  // Count completed quiz lessons
-  const completedLessons = quizLessons.filter(lesson => {
-    // Support both storage formats:
-    // - canonical lessonId keys ("contrast-lesson")
-    // - legacy quizId keys ("quiz_contrast")
-    const progress = lessonProgress[lesson.lessonId]
-      ?? (lesson.quizId ? lessonProgress[lesson.quizId] : undefined);
-    return progress && progress.isCompleted;
-  }).length;
-  
-  return completedLessons / totalLessons;
+export function getCourseProgressFromRoadmap(lessonProgress: Parameters<typeof courseProgress>[0]): number {
+  return courseProgress(lessonProgress);
 }

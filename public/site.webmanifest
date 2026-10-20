@@ -3,6 +3,7 @@
   "short_name": "Skillum",
   "description": "Мобильное приложение для обучения UX/UI-дизайну.",
   "lang": "ru",
+  "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

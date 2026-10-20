@@ -46,5 +46,10 @@
     }
   ],
   "buildCommand": "npm run build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "git": {
+    "deploymentEnabled": {
+      "codex/onboarding-copy-review": false
+    }
+  }
 }

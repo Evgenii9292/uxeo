@@ -76,7 +76,7 @@ function PrimaryButton({ onClick, label, loading }: { onClick: () => void; label
         disabled:opacity-60 disabled:cursor-default disabled:hover:translate-y-0
       "
     >
-      <div className="bg-[#ff5d39] content-stretch flex items-center justify-center px-[25.835px] py-[0.835px] relative rounded-[15px] size-full">
+      <div className="bg-[#ff6b21] content-stretch flex items-center justify-center px-[25.835px] py-[0.835px] relative rounded-[15px] size-full">
         <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-[0px_0px_0px_0px_#c24226]" />
         <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] relative shrink-0 text-[26px] text-[rgba(247,248,252,0.9)] whitespace-nowrap">
           {loading ? "Сохраняем..." : label}
@@ -203,7 +203,7 @@ export default function EmailCapturePage() {
                   />
                 </div>
                 {error && (
-                  <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#ff5d39] text-[16px] pl-[4px]">
+                  <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#ff6b21] text-[16px] pl-[4px]">
                     {error}
                   </p>
                 )}

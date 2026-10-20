@@ -75,7 +75,7 @@ function OptionCard({ text, state, onClick }: OptionCardProps) {
 
 // ─── Level data ───────────────────────────────────────────────────────────────
 const LEVELS: { id: LevelId; text: string }[] = [
-  { id: "beginner",        text: "Новичёк" },
+  { id: "beginner",        text: "Начинаю с нуля" },
   { id: "some_experience", text: "Есть опыт" },
   { id: "designer",        text: "Работаю дизайнером" },
 ];

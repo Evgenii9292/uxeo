@@ -1,3 +1,4 @@
+import { QuizFeedbackIcon } from "./QuizFeedbackIcon";
 /**
  * Onboarding quiz UI components: continue buttons and feedback bars.
  * These are used by QuizPage (onboarding) and differ slightly from LessonQuizPage versions.
@@ -73,7 +74,7 @@ export function ContinueActive({ onClick, fullWidth }: { onClick: () => void; fu
   return (
     <button
       onClick={() => { onClick(); playClick(); }}
-      className={`group relative flex h-[59px] items-center justify-center px-[25.835px] py-[0.835px] rounded-[15px] shrink-0 bg-[#ff5d39] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px] ${fullWidth ? "w-full" : ""}`}
+      className={`group relative flex h-[59px] items-center justify-center px-[25.835px] py-[0.835px] rounded-[15px] shrink-0 bg-[#ff6b21] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px] ${fullWidth ? "w-full" : ""}`}
     >
       <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
       <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] text-[#f4f5fc] text-[26px] whitespace-nowrap">Продолжить</p>
@@ -100,7 +101,7 @@ export function CorrectFeedback({ showXp = true }: { showXp?: boolean }) {
     <div className="flex gap-[28px] items-center shrink-0 w-full">
       <div className="flex flex-col gap-[5px] items-end justify-end shrink-0">
         <div className="flex gap-[9px] items-end shrink-0">
-          <PartyPopperIcon />
+          <QuizFeedbackIcon correct />
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] text-[#cdf6db] text-[18px] whitespace-nowrap">Верно!</p>
         </div>
         {showXp && (
@@ -121,7 +122,7 @@ export function IncorrectFeedback() {
   return (
     <div className="flex gap-[28px] items-start shrink-0 w-full">
       <div className="flex gap-[10px] items-center shrink-0">
-        <span className="text-[30px] leading-none">✊</span>
+        <QuizFeedbackIcon correct={false} />
         <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.2] text-[#ffbaaa] text-[18px] whitespace-nowrap">
           Почти<br />получилось.
         </p>

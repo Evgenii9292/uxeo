@@ -20,7 +20,7 @@ export function ExitConfirmationModal({
         </h2>
 
         <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#5a6569] text-[18px] leading-[1.4] text-center">
-          Вы уверены, что хотите выйти? Текущий прогресс может быть потерян.
+          Проверенные ответы сохранятся в этом браузере. Вы сможете продолжить с первого непроверенного вопроса.
         </p>
 
         <div className="flex flex-col gap-[12px] w-full">
@@ -41,7 +41,7 @@ export function ExitConfirmationModal({
                 o.start(); o.stop(ctx.currentTime + 0.08);
               } catch (_) {}
             }}
-            className="group relative flex h-[56px] items-center justify-center px-[25px] rounded-[15px] bg-[#ff5d39] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px]"
+            className="group relative flex h-[56px] items-center justify-center px-[25px] rounded-[15px] bg-[#ff6b21] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px]"
           >
             <div
               aria-hidden="true"

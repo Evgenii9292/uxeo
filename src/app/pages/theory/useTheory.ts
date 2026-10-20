@@ -10,9 +10,11 @@ export interface AccordionState {
   showFeedback: boolean;
   completed: boolean;
   hasIncorrectAnswer: boolean;
+  earnedXp?: number;
 }
 
-export function useTheory(isMobile: boolean, lessonId?: string, totalSections: number = 5) {
+export function useTheory(isMobile: boolean, lessonId?: string, totalSections: number = 5, correctSides?: string[]) {
+  const correctSideKey = correctSides?.join(",") ?? "";
   const location = useLocation();
   const navigate = useNavigate();
   const userCtx = useUserSafe();
@@ -51,6 +53,8 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
   // Use per-lesson localStorage key so different lessons don't share state
   const storageKey = `${auth?.isDemo ? "skillum-demo" : "skillum"}-theory-max-reached-${resolvedLessonId}`;
 
+  const sectionStorageKey = `${storageKey}-open-section`;
+
   // Load lesson progress using the resolved lessonId
   const progress = getLessonProgress(resolvedLessonId);
 
@@ -65,7 +69,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     // Fallback: derive from UserContext
     for (let i = lastSectionIndex; i >= 0; i--) {
       const qs = progress.questions[`mini-quiz-${i}`];
-      if (qs?.correct) return i;
+      if (qs) return Math.min(i + 1, lastSectionIndex);
     }
     return 0;
   });
@@ -74,15 +78,16 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     return Array.from({ length: totalSections }, (_, index) => {
       const quizId = `mini-quiz-${index}`;
       const questionState = progress.questions[quizId];
-      if (questionState && questionState.correct) {
-        return { selectedAnswer: "right", showFeedback: true, completed: true, hasIncorrectAnswer: false };
+      if (questionState?.correct) {
+        return { selectedAnswer: correctSides?.[index] ?? "right", showFeedback: true, completed: true, hasIncorrectAnswer: false };
       }
       return { selectedAnswer: null, showFeedback: false, completed: false, hasIncorrectAnswer: false };
     });
   });
 
   useEffect(() => {
-    const syncKey = `${resolvedLessonId}:${userCtx?.user?.id ?? "guest"}`;
+    if (userCtx?.userLoading || !correctSideKey) return;
+    const syncKey = `${storageKey}:${correctSideKey}:${totalSections}:${userCtx?.user?.id ?? "guest"}`;
     if (syncedLessonKeyRef.current === syncKey) return;
     syncedLessonKeyRef.current = syncKey;
 
@@ -96,8 +101,8 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
       } else {
         for (let i = lastSectionIndex; i >= 0; i--) {
           const qs = nextProgress.questions[`mini-quiz-${i}`];
-          if (qs?.correct) {
-            nextMaxReached = i;
+          if (qs) {
+            nextMaxReached = Math.min(i + 1, lastSectionIndex);
             break;
           }
         }
@@ -105,22 +110,30 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     } catch {
       for (let i = lastSectionIndex; i >= 0; i--) {
         const qs = nextProgress.questions[`mini-quiz-${i}`];
-        if (qs?.correct) {
-          nextMaxReached = i;
+        if (qs) {
+          nextMaxReached = Math.min(i + 1, lastSectionIndex);
           break;
         }
       }
     }
 
     setMaxReached(nextMaxReached);
-    setOpenSections(new Set([0]));
+    let lastOpen = 0;
+    try { lastOpen = Number(localStorage.getItem(sectionStorageKey)) || 0; } catch {}
+    const restoredSection = Math.max(0, Math.min(lastOpen, nextMaxReached, lastSectionIndex));
+    setOpenSections(new Set([restoredSection]));
+    if (restoredSection > 0) setTimeout(() => {
+      const element = document.querySelector(`[data-section="${restoredSection}"]`) as HTMLElement | null;
+      const container = element && findScrollContainer(element);
+      if (element && container) container.scrollTo({ top: Math.max(0, container.scrollTop + element.getBoundingClientRect().top - container.getBoundingClientRect().top - 80) });
+    }, 350);
     setAccordionStates(
       Array.from({ length: totalSections }, (_, index) => {
         const quizId = `mini-quiz-${index}`;
         const questionState = nextProgress.questions[quizId];
         if (questionState?.correct) {
           return {
-            selectedAnswer: "right",
+            selectedAnswer: correctSides?.[index] ?? "right",
             showFeedback: true,
             completed: true,
             hasIncorrectAnswer: false,
@@ -134,7 +147,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
         };
       }),
     );
-  }, [resolvedLessonId, storageKey, totalSections, lastSectionIndex, auth?.isDemo]);
+  }, [resolvedLessonId, storageKey, totalSections, lastSectionIndex, correctSideKey, auth?.isDemo, userCtx?.userLoading, userCtx?.user?.id]);
 
   const completedUpTo = accordionStates.reduce((max, s, idx) => s.completed ? Math.max(max, idx + 1) : max, 0);
   const effectiveMaxReached = Math.max(maxReached, completedUpTo);
@@ -155,6 +168,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
   const handleToggle = (index: number) => {
     if (!isUnlocked(index)) return;
     const isCurrentlyOpen = openSections.has(index);
+    if (!isCurrentlyOpen) { try { localStorage.setItem(sectionStorageKey, String(index)); } catch {} }
 
     if (!isCurrentlyOpen) {
       setOpenSections(prev => { const next = new Set(prev); next.add(index); return next; });
@@ -186,20 +200,11 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     newStates[sectionIndex] = { 
       selectedAnswer: answer, 
       showFeedback: true, 
-      completed: isCorrect,
+      completed: true,
+      earnedXp: isCorrect && !getLessonProgress(resolvedLessonId).questions[`mini-quiz-${sectionIndex}`]?.xpAwarded ? 15 : 0,
       hasIncorrectAnswer: !isCorrect || (newStates[sectionIndex]?.hasIncorrectAnswer ?? false)
     };
     setAccordionStates(newStates);
-
-    // A new section is proof-of-learning gated: an incorrect answer keeps the
-    // learner on the current explanation and feedback until they retry.
-    if (isCorrect) {
-      const nextToUnlock = Math.min(sectionIndex + 1, lastSectionIndex);
-      if (nextToUnlock > maxReached) {
-        setMaxReached(nextToUnlock);
-        try { localStorage.setItem(storageKey, String(nextToUnlock)); } catch {}
-      }
-    }
 
     // Scroll further so feedback and the Continue button are immediately visible.
     requestAnimationFrame(() => {
@@ -212,9 +217,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
       });
     });
 
-    if (isCorrect) {
-      updateQuestionState(resolvedLessonId, `mini-quiz-${sectionIndex}`, true, 15);
-    }
+    updateQuestionState(resolvedLessonId, `mini-quiz-${sectionIndex}`, isCorrect, 15);
 
     // Sound feedback
     try {
@@ -241,9 +244,8 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
   };
 
   const handleContinue = (sectionIndex: number) => {
-    // The button may remain visible after wrong-answer feedback; it must not
-    // bypass the validation rule.
-    if (!accordionStates[sectionIndex]?.completed) return;
+    // Read the explanation before continuing, regardless of whether the answer was correct.
+    if (!accordionStates[sectionIndex]?.showFeedback) return;
     if (sectionIndex === lastSectionIndex) {
       // Last section — navigate to quiz with correct lessonId and quizId
       const container = isMobile ? mobileScrollRef.current : null;
@@ -254,6 +256,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     }
 
     const nextSection = sectionIndex + 1;
+    try { localStorage.setItem(sectionStorageKey, String(nextSection)); } catch {}
     if (nextSection > maxReached) {
       setMaxReached(nextSection);
       try { localStorage.setItem(storageKey, String(nextSection)); } catch {}

@@ -328,7 +328,7 @@ function FreeIconVolumeLevelIndicator() {
     return (<div className="h-[15px] overflow-clip relative shrink-0 w-[17px]" data-name="free-icon-volume-level-indicator-65061 1"><Group8 /></div>);
 }
 function Frame3() {
-    return (<div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0"><FreeIconVolumeLevelIndicator /><p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[16px] whitespace-nowrap">новичек</p></div>);
+    return (<div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0"><FreeIconVolumeLevelIndicator /><p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[16px] whitespace-nowrap">Новичок</p></div>);
 }
 function FreeIconLayer() {
     return (<div className="relative shrink-0 size-[14px]" data-name="free-icon-layer-1694011 1"><svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14 14"><g clipPath="url(#clip0_167_465)" id="free-icon-layer-1694011 1"><path d={svgPaths.p24bf3b00} fill="var(--fill-0, #F1F2FB)" id="Vector"/><path d={svgPaths.pedf4a00} fill="var(--fill-0, #F1F2FB)" id="Vector_2"/><path d={svgPaths.p36804e00} fill="var(--fill-0, #F1F2FB)" id="Vector_3"/></g><defs><clipPath id="clip0_167_465"><rect fill="white" height="14" width="14"/></clipPath></defs></svg></div>);

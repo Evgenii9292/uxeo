@@ -1,3 +1,5 @@
+import { useAuthSafe } from "../../app/context/AuthContext";
+import { quizRunKey, readQuizRun } from "../../app/utils/quizSession";
 // ─── LessonPopup ──────────────────────────────────────────────────────────────
 // Popup anchored to a lesson node, rendered via React Portal.
 
@@ -133,6 +135,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
   const navigate = useNavigate();
   const { getLessonProgress } = useUser();
   const hwCtx   = useHomeworkSafe();
+  const auth = useAuthSafe();
   const popupRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ top: number; left: number; scale: number } | null>(null);
   // Fade-in state: starts false, goes true after first paint
@@ -155,6 +158,9 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
   const lessonProgress = getLessonProgress(progressKey);
   const correctCount = isLocked ? 0 : (lessonProgress.correctAnswers ?? 0);
   const pct = isLocked ? 0 : Math.min((correctCount / totalQ) * 100, 100);
+
+  const activeRun = readQuizRun(quizRunKey(auth?.isDemo ? "demo" : auth?.userId ?? "guest", progressKey), progressKey, totalQ);
+  const quizButtonLabel = activeRun?.answers.length ? "Продолжить" : isCompleted ? "Повторить" : "Квиз";
 
   const theoryPath = lesson.lessonId === "contrast-lesson" ? "/contrast" : "/theory";
   const isHomework = lesson.totalQuestions === 0;
@@ -408,7 +414,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
                     <path d="M6.5 0L0 7.78H5.07L4.5 14L12 5.22H6.43L6.5 0Z" fill="#232A2D" />
                   </svg>
                   <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#232a2d] text-[16px] whitespace-nowrap">
-                    +{isHomework ? 800 : (lesson.xpReward || 1250)} XP
+                    {isHomework ? "+800 XP" : "XP за верные ответы"}
                   </span>
                 </div>
               </div>
@@ -422,7 +428,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
                     <path d="M7 11V7a5 5 0 0110 0v4" stroke="rgba(35,42,45,0.45)" strokeWidth="2" strokeLinecap="round"/>
                   </svg>
                   <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[20px] leading-[27.5px] whitespace-nowrap" style={{ color: "rgba(35,42,45,0.45)" }}>
-                    Сначала пройди предыдущий урок
+                    Сначала пройдите предыдущий урок
                   </p>
                 </div>
               ) : (
@@ -488,7 +494,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
                       className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none"
                     />
                     <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[26px] whitespace-nowrap relative">
-                      {pct >= 100 ? "Повторить" : pct > 0 ? "Продолжить" : "Квиз"}
+                      {quizButtonLabel}
                     </p>
                   </button>
                   <button
@@ -617,7 +623,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
                 <path d="M6.5 0L0 7.78H5.07L4.5 14L12 5.22H6.43L6.5 0Z" fill="#232A2D" />
               </svg>
               <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#232a2d] text-[16px] whitespace-nowrap">
-                +{isHomework ? 800 : (lesson.xpReward || 1250)} XP
+                {isHomework ? "+800 XP" : "XP за верные ответы"}
               </span>
             </div>
           </div>
@@ -631,7 +637,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
                 <path d="M7 11V7a5 5 0 0110 0v4" stroke="rgba(35,42,45,0.45)" strokeWidth="2" strokeLinecap="round"/>
               </svg>
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[27.5px] whitespace-nowrap" style={{ color: "rgba(35,42,45,0.45)" }}>
-                Сначала пройди предыдущий урок
+                Сначала пройдите предыдущий урок
               </p>
             </div>
           ) : (
@@ -698,7 +704,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
                   className="absolute border border-solid inset-0 pointer-events-none rounded-[15px] transition-shadow duration-75 border-[#57646a] shadow-[0px_5px_0px_0px_black] group-hover:shadow-[0px_2px_0px_0px_black] group-active:shadow-none"
                 />
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[26px] whitespace-nowrap relative">
-                  {pct >= 100 ? "Повторить" : pct > 0 ? "Продолжить" : "Квиз"}
+                  {quizButtonLabel}
                 </p>
               </button>
               {/* Theory button */}
