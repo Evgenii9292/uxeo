@@ -106,7 +106,7 @@ function TheoryPreview() {
                   const correct = side === "left" ? section.quizLeftCorrect : section.quizRightCorrect;
                   const state = current.checked && selected ? (correct ? "correct" : "incorrect") : selected ? "selected" : "idle";
                   const letter = optionIndex ? "Б" : "А";
-                  return <button key={side} className="real-choice" aria-label={`Выбрать вариант ${letter}`} aria-pressed={selected} disabled={current.checked} onClick={event => choose(index, side, event.currentTarget)} style={{ background: state === "idle" || state === "selected" ? "#22282b" : QUIZ_CARD_BACKGROUNDS[state], borderColor: state === "selected" ? "#bbc6cb" : QUIZ_CARD_BORDERS[state] ?? "#475257" }}>
+                  return <button key={side} className="real-choice" aria-label={`Выбрать вариант ${letter}`} aria-pressed={selected} disabled={current.checked} onClick={event => choose(index, side, event.currentTarget)} style={{ background: state === "idle" || state === "selected" ? "#282f33" : QUIZ_CARD_BACKGROUNDS[state], borderColor: QUIZ_CARD_BORDERS[state] ?? "transparent" }}>
                     <span className="real-choice-label"><span className="real-radio" />Вариант {letter}</span>
                     <RealExample compact={index < 4} node={side === "left" ? section.quizLeftNode : section.quizRightNode} />
                   </button>;

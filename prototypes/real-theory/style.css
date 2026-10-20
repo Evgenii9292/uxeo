@@ -9,8 +9,8 @@ html,body,#root{height:100%;margin:0;background:#282f33;overflow:hidden}.real-th
 .real-figure.compact [class*="top-[200.5px]"]{top:131.5px!important}
 .real-figure.compact [class*="top-[200px]"]{top:131px!important}
 .real-choice{box-shadow:0 4px 0 #192023, inset 0 1px 0 #ffffff08}
-.real-choice[aria-pressed=true]{box-shadow:0 4px 0 #192023,0 0 0 1px #bbc6cb}
+
 .real-action{bottom:76px;padding:14px 16px 24px;background:#282f33}
 .real-scroll{padding-bottom:115px}
 
-.real-question{padding:14px;border-radius:12px;background:#282f33;border-left:3px solid #798589;font-size:22px;line-height:27px}
+.real-question{color:#ff6b21}
