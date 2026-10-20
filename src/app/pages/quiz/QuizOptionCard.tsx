@@ -1,3 +1,4 @@
+import { QUIZ_CARD_BACKGROUNDS, QUIZ_CARD_BORDERS } from "./quizCardStyles";
 import svgPaths from "../../../imports/svg-869ttds5wi";
 import { useWindowWidth } from "../../hooks/useWindowWidth";
 
@@ -21,21 +22,9 @@ export function QuizOptionCard({
   const isMobile = vw < 768;
   const isLargePhone = vw >= 440;
 
-  const bgMap: Record<CardState, string> = {
-    idle:      "linear-gradient(172.482deg, rgb(44, 53, 56) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)",
-    selected:  "linear-gradient(172.482deg, rgb(55, 66, 70) 2.4187%, rgb(56, 67, 72) 98.527%, rgb(44, 53, 56) 116.25%)",
-    correct:   "linear-gradient(172.482deg, rgba(58,81,67,0.5) 2.4187%, rgba(56,72,62,0.5) 98.527%, rgba(45,56,44,0.5) 116.25%)",
-    incorrect: "linear-gradient(172.482deg, rgba(92,53,53,0.5) 2.4187%, rgba(72,58,56,0.5) 98.527%, rgba(56,49,44,0.5) 116.25%)",
-    dimmed:    "linear-gradient(172.482deg, rgba(44,53,56,0.5) 2.4187%, rgba(56,67,72,0.5) 98.527%, rgba(44,53,56,0.5) 116.25%)",
-  };
+  const bgMap = QUIZ_CARD_BACKGROUNDS;
 
-  const borderMap: Record<CardState, string | null> = {
-    idle:      null,
-    selected:  "rgba(99, 102, 112, 0.5)",
-    correct:   "rgba(0, 147, 47, 0.6)",
-    incorrect: "#9f3500",
-    dimmed:    null,
-  };
+  const borderMap = QUIZ_CARD_BORDERS;
 
   const border = borderMap[state];
   const isClickable = state === "idle" || state === "selected";
@@ -59,7 +48,7 @@ export function QuizOptionCard({
       {border && (
         <div
           aria-hidden="true"
-          className="absolute border-[3px] border-solid inset-[-3px] pointer-events-none rounded-[21px]"
+          className="absolute border-[3px] border-solid inset-0 pointer-events-none rounded-[18px] z-10"
           style={{ borderColor: border }}
         />
       )}

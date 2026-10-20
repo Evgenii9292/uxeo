@@ -214,7 +214,7 @@ export function AccordionSectionDesktop({
       <div style={{ display: "grid", gridTemplateRows: isOpen ? "1fr" : "0fr", transition: "grid-template-rows 300ms ease" }}>
         <div style={{ overflow: "hidden", minHeight: 0 }}>
           <div className="flex flex-col items-center w-full">
-            <div className="content-stretch flex flex-col gap-[16px] items-center pb-[30px] px-[30px] relative w-full">
+            <div className="content-stretch flex flex-col gap-[16px] items-center pb-[30px] px-[20px] relative w-full">
               <div className="content-stretch flex flex-col gap-[25px] items-center relative shrink-0 w-full">
                 {/* Theory Content */}
                 <div className="content-stretch flex flex-col gap-[25px] items-center relative shrink-0 w-full">
@@ -240,7 +240,7 @@ export function AccordionSectionDesktop({
                     </div>
 
                     {/* Answer cards — side by side on desktop */}
-                    <div className="content-stretch flex flex-row gap-[20px] items-stretch relative shrink-0 w-full">
+                    <div className="content-stretch flex flex-row gap-[16px] items-stretch relative shrink-0 w-full">
                       <QuizCardLeft
                         isSelected={state.selectedAnswer === "left"}
                         isCorrect={section.quizLeftCorrect}

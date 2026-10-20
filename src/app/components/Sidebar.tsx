@@ -382,11 +382,11 @@ function SidebarFooter() {
   const [showFeedback, setShowFeedback] = useState(false);
 
   return (
-    <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 w-full mx-[0px] my-[20px]">
+    <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-full mx-[0px] my-[20px]">
       {/* О нас */}
       <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
         {/* О нас */}
-        <div onClick={() => navigate("/about")} className="h-[44px] relative rounded-[14px] shrink-0 w-full cursor-pointer hover:bg-[#343e42] mt-[-10px]">
+        <div onClick={() => navigate("/about")} className="h-[41px] relative rounded-[10px] shrink-0 w-full cursor-pointer hover:bg-[#343e42]">
           <div className="flex flex-row items-center size-full m-[0px]">
             <div className="content-stretch flex items-center relative size-full pl-[12px] pr-[0px] py-[0px] m-[0px]">
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[21px] relative shrink-0 text-[#f2f4fb] text-[18px] whitespace-nowrap">О нас</p>
@@ -397,7 +397,7 @@ function SidebarFooter() {
       </div>
 
       {/* Написать отзыв — одна кнопка с иконкой подарка */}
-      <div onClick={() => setShowFeedback(true)} className="group flex items-center gap-[8px] h-[40px] px-[12px] rounded-[12px] shrink-0 w-full cursor-pointer select-none hover:bg-[#343e42]">
+      <div onClick={() => setShowFeedback(true)} className="group flex items-center gap-[8px] h-[41px] px-[12px] rounded-[10px] shrink-0 w-full cursor-pointer select-none hover:bg-[#343e42]">
         <div className="relative shrink-0 size-[20px] flex items-center justify-center">
           <FreeIconGift />
         </div>

@@ -1,3 +1,4 @@
+import { QUIZ_CARD_BACKGROUNDS, QUIZ_CARD_BORDERS } from "./quizCardStyles";
 /** CompareUIQuiz — pick the better UI out of two options */
 
 import { useState } from "react";
@@ -166,12 +167,7 @@ export function CompareUIQuiz({
     const figmaH     = mobileNaturalH ?? FIGMA_H;
 
     // Border color per card state
-    const getBorderColor = (state: CompareCardState): string | undefined => {
-      if (state === "selected") return "#636670";
-      if (state === "correct")  return "rgba(0, 147, 47, 0.6)";
-      if (state === "incorrect") return "#9f3500";
-      return undefined;
-    };
+    const getBorderColor = (state: CompareCardState) => QUIZ_CARD_BORDERS[state];
 
     return (
       <>
@@ -194,13 +190,13 @@ export function CompareUIQuiz({
                 <div
                   key={option.label}
                   onClick={isClickable ? () => handleSelect(option.label) : undefined}
-                  className={`relative rounded-[15px] overflow-hidden transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.99]" : ""}`}
+                  className={`relative rounded-[15px] overflow-hidden transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.98]" : ""}`}
                   style={{
                     height: mobileCardMinHeight
                       ? `calc((100% - 290px) / 2)`
                       : `calc((100% - 296px) / 2)`,
                     minHeight: containerH,
-                    background: "linear-gradient(172deg, rgb(30,37,41) 2%, rgb(38,46,50) 99%)",
+                    background: QUIZ_CARD_BACKGROUNDS[state],
                     boxShadow: borderColor ? `0 0 0 3px ${borderColor}` : undefined,
                   }}
                 >

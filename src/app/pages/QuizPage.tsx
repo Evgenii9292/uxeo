@@ -1,3 +1,4 @@
+import { QUIZ_CARD_BACKGROUNDS, QUIZ_CARD_BORDERS } from "./quiz/quizCardStyles";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useUser } from "../context/UserContext";
@@ -21,19 +22,10 @@ type CardState = "idle" | "selected" | "correct" | "incorrect" | "dimmed";
 const MOCK_W = 404;
 const MOCK_H = 367;
 
-const BG_GRADIENT: Record<CardState, string> = {
-  idle:      "linear-gradient(172deg, rgb(44,53,56) 2%, rgb(56,67,72) 99%)",
-  selected:  "linear-gradient(172deg, rgb(55,66,70) 2%, rgb(56,67,72) 99%)",
-  correct:   "linear-gradient(172deg, rgba(58,81,67,0.5) 2%, rgba(56,72,62,0.5) 99%)",
-  incorrect: "linear-gradient(172deg, rgba(92,53,53,0.5) 2%, rgba(72,58,56,0.5) 99%)",
-  dimmed:    "linear-gradient(172deg, rgba(44,53,56,0.5) 2%, rgba(56,67,72,0.5) 99%)",
-};
+const BG_GRADIENT = QUIZ_CARD_BACKGROUNDS;
 
 function getBorderColor(state: CardState): string | undefined {
-  if (state === "selected")  return "#64b6ff";
-  if (state === "correct")   return "rgba(0, 147, 47, 0.6)";
-  if (state === "incorrect") return "#9f3500";
-  return undefined;
+  return QUIZ_CARD_BORDERS[state];
 }
 
 export default function QuizPage() {
@@ -164,7 +156,7 @@ export default function QuizPage() {
                   <div
                     key={id}
                     onClick={isClickable ? () => { handleSelect(id); playSelectSound(); } : undefined}
-                    className={`relative rounded-[15px] overflow-hidden flex-shrink-0 transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.99]" : ""}`}
+                    className={`relative rounded-[15px] overflow-hidden flex-shrink-0 transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.98]" : ""}`}
                     style={{
                       height: `calc((100% - ${heightSubtract}px) / 2)`,
                       minHeight: containerH,
@@ -257,7 +249,7 @@ export default function QuizPage() {
                   <div
                     key={id}
                     onClick={isClickable ? () => { handleSelect(id); playSelectSound(); } : undefined}
-                    className={`relative rounded-[20px] overflow-hidden transition-all duration-200 ${isClickable ? "cursor-pointer" : ""}`}
+                    className={`relative rounded-[20px] overflow-hidden transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.98]" : ""}`}
                     style={{
                       width: cardW,
                       height: cardH,

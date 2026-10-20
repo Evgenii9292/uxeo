@@ -1,3 +1,4 @@
+import { QUIZ_CARD_BACKGROUNDS, QUIZ_CARD_BORDERS } from "../../quiz/quizCardStyles";
 /**
  * TheoryQuiz - Quiz card components for interactive theory questions
  *
@@ -22,14 +23,14 @@ interface QuizCardProps {
 }
 
 // Quiz variant renderer — proportional scale-UP to fill card width
-function QuizVariantSlot({ node, vPad = 50, hPad = 20 }: { node: React.ReactNode; vPad?: number; hPad?: number }) {
+function QuizVariantSlot({ node, vPad = 24, hPad = 12 }: { node: React.ReactNode; vPad?: number; hPad?: number }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState<number>(1);
 
   useEffect(() => {
     const el = wrapperRef.current;
     if (!el) return;
-    const compute = (w: number) => setScale((w - hPad * 2) / 186);
+    const compute = (w: number) => setScale(Math.max(0.1, Math.min(1.8, (w - hPad * 2) / 186)));
     compute(el.offsetWidth);
     const ro = new ResizeObserver(entries => {
       for (const e of entries) compute(e.contentRect.width);
@@ -61,15 +62,13 @@ export function QuizCardLeft({ isSelected, isCorrect, showFeedback, onClick, dis
   return (
     <div
       onClick={disabled ? undefined : onClick}
-      className={`flex-[1_0_0] min-h-px min-w-px relative transition-all border-2 overflow-hidden ${
-        showFeedback ? "cursor-default" : "cursor-pointer hover:scale-[1.01]"
+      className={`flex-[1_0_0] min-h-px min-w-px relative transition-all duration-200 border-[3px] overflow-hidden ${
+        showFeedback ? "cursor-default" : "cursor-pointer active:scale-[0.98]"
       } ${disabled ? "pointer-events-none" : ""}`}
       style={{
         borderRadius: radius,
-        ...(isSelected ? isCorrect
-          ? { background: `linear-gradient(#2D3B36, #2D3B36) padding-box, linear-gradient(to bottom, #00932F, #002D0E) border-box`, borderColor: "transparent" }
-          : { background: `linear-gradient(#3B3736, #3B3736) padding-box, linear-gradient(to bottom, #932E00, #2D0000) border-box`, borderColor: "transparent" }
-          : { background: "#2F383B", borderColor: "#2F383B" }),
+        backgroundImage: QUIZ_CARD_BACKGROUNDS[showFeedback && isSelected ? (isCorrect ? "correct" : "incorrect") : isSelected ? "selected" : "idle"],
+        borderColor: QUIZ_CARD_BORDERS[showFeedback && isSelected ? (isCorrect ? "correct" : "incorrect") : isSelected ? "selected" : "idle"] ?? "transparent",
       }}
     >
       {contentNode ? (
@@ -91,15 +90,13 @@ export function QuizCardRight({ isSelected, isCorrect, showFeedback, onClick, di
   return (
     <div
       onClick={disabled ? undefined : onClick}
-      className={`flex-[1_0_0] min-h-px min-w-px relative transition-all border-2 overflow-hidden ${
-        showFeedback ? "cursor-default" : "cursor-pointer hover:scale-[1.01]"
+      className={`flex-[1_0_0] min-h-px min-w-px relative transition-all duration-200 border-[3px] overflow-hidden ${
+        showFeedback ? "cursor-default" : "cursor-pointer active:scale-[0.98]"
       } ${disabled ? "pointer-events-none" : ""}`}
       style={{
         borderRadius: radius,
-        ...(isSelected ? isCorrect
-          ? { background: `linear-gradient(#2D3B36, #2D3B36) padding-box, linear-gradient(to bottom, #00932F, #002D0E) border-box`, borderColor: "transparent" }
-          : { background: `linear-gradient(#3B3736, #3B3736) padding-box, linear-gradient(to bottom, #932E00, #2D0000) border-box`, borderColor: "transparent" }
-          : { background: "#2F383B", borderColor: "#2F383B" }),
+        backgroundImage: QUIZ_CARD_BACKGROUNDS[showFeedback && isSelected ? (isCorrect ? "correct" : "incorrect") : isSelected ? "selected" : "idle"],
+        borderColor: QUIZ_CARD_BORDERS[showFeedback && isSelected ? (isCorrect ? "correct" : "incorrect") : isSelected ? "selected" : "idle"] ?? "transparent",
       }}
     >
       {contentNode ? (
