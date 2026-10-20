@@ -1,3 +1,4 @@
+import { QuizFeedbackIcon } from "../../quiz/QuizFeedbackIcon";
 /**
  * AccordionSection - Reusable accordion section component
  *
@@ -127,14 +128,14 @@ export function AccordionSectionMobile({
                       {isCorrect ? (
                         <div className="flex flex-col gap-[8px]">
                           <div className="flex gap-[8px] items-center">
-                            <PartyPopperIcon />
+                            <QuizFeedbackIcon correct />
                             <p className="font-['Roboto_Condensed:Medium',sans-serif] text-[#cdf6db] text-[16px]">Верно!{state.earnedXp ? ` +${state.earnedXp} XP` : ""}</p>
                           </div>
                           <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#cdf6db] text-[14px] leading-[1.3]">{section.correctFeedback}</p>
                         </div>
                       ) : (
                         <div className="flex flex-col gap-[8px]">
-                          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#ffbaaa] text-[14px]">Не совсем верно</p>
+                          <div className="flex items-center gap-[8px]"><QuizFeedbackIcon correct={false} /><p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#ffbaaa] text-[14px]">Не совсем верно</p></div>
                           <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#ffd8d2] text-[14px] leading-[1.3]">{section.incorrectFeedback}</p>
                         </div>
                       )}
@@ -266,7 +267,7 @@ export function AccordionSectionDesktop({
                           <div className="content-stretch flex flex-col gap-[10px] items-start justify-center relative shrink-0 pr-[20px]" style={{ flex: "1 1 160px" }}>
                             <div className="content-stretch flex gap-[12px] items-center relative shrink-0">
                               <div className="content-stretch flex gap-[9px] items-end relative shrink-0">
-                                <PartyPopperIcon />
+                                <QuizFeedbackIcon correct />
                                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] relative shrink-0 text-[#cdf6db] text-[18px] whitespace-nowrap">
                                   Верно!
                                 </p>
@@ -287,7 +288,7 @@ export function AccordionSectionDesktop({
                         ) : (
                           <div className="content-stretch flex flex-col gap-[10px] items-start justify-center relative shrink-0 pr-[20px]" style={{ flex: "1 1 160px" }}>
                             <div className="flex gap-[10px] items-center">
-                              <FistIcon />
+                              <QuizFeedbackIcon correct={false} />
                               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.2] relative text-[#ffbaaa] text-[18px]">Не совсем верно</p>
                             </div>
                             <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[1.2] relative shrink-0 text-[16px] text-[#ffd8d2]">

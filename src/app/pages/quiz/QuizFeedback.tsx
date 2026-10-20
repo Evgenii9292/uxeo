@@ -1,3 +1,4 @@
+import { QuizFeedbackIcon } from "./QuizFeedbackIcon";
 /** Feedback bars for LessonQuizPage correct/incorrect answers */
 
 import { useState } from "react";
@@ -8,7 +9,7 @@ export function CorrectFeedback({ explanation, showXp = true }: { explanation: s
     <div className="flex gap-[16px] items-start shrink-0 w-full">
       <div className="flex flex-col gap-[5px] items-end justify-start shrink-0">
         <div className="flex gap-[9px] items-end shrink-0">
-          <PartyPopperIcon />
+          <QuizFeedbackIcon correct />
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] text-[#cdf6db] text-[18px] whitespace-nowrap" style={{ marginBottom: 4 }}>Верно!</p>
         </div>
         {showXp && (
@@ -42,9 +43,12 @@ export function IncorrectFeedback({
     <div className="flex gap-[16px] items-start shrink-0 w-full">
       {/* Left col: label + correct answer */}
       <div className="flex flex-col gap-[4px] items-start justify-start shrink-0">
+        <div className="flex items-center gap-[8px]">
+          <QuizFeedbackIcon correct={false} />
         <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.2] text-[#ffbaaa] text-[16px] whitespace-nowrap">
           {phrase}
         </p>
+        </div>
         {!hideAnswer && (
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.2] text-[#ffbaaa] text-[15px] whitespace-nowrap">
             {correctAnswer}

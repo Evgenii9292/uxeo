@@ -16,7 +16,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import type { MatchingPair } from "../../data/quiz-bank";
 import { ContinueDisabled, ContinueActive, ContinueCorrect } from "./ContinueButtons";
-import { CorrectFeedback } from "./QuizFeedback";
+import { CorrectFeedback, IncorrectFeedback } from "./QuizFeedback";
 import { useWindowWidth } from "../../hooks/useWindowWidth";
 import { FlagReportButton } from "./FlagReportButton";
 
@@ -761,14 +761,7 @@ export function MatchingQuiz({
               {allCorrect ? (
                 <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
               ) : (
-                <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 4, flexShrink: 0 }}>
-                    <p style={{ fontFamily: "'Roboto Condensed', sans-serif", fontWeight: 700, color: "#ffbaaa", fontSize: 16, lineHeight: 1.2, whiteSpace: "nowrap" }}>Попробуйте ещё раз</p>
-                  </div>
-                  <p style={{ fontFamily: "'Roboto Condensed', sans-serif", fontWeight: 400, color: "#f4f5fc", fontSize: 14, lineHeight: 1.2, flex: 1, minWidth: 0 }}>
-                    {explanation}
-                  </p>
-                </div>
+                <IncorrectFeedback correctAnswer="" explanation={explanation} hideAnswer />
               )}
             </div>
           )}
@@ -1010,13 +1003,7 @@ export function MatchingQuiz({
               <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
             )}
             {checked && !allCorrect && (
-              <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                <span style={{ fontSize: 28, lineHeight: 1 }}>✊</span>
-                <p style={{ fontFamily: "'Roboto Condensed', sans-serif", fontWeight: 400, color: "#f4f5fc", fontSize: 18, lineHeight: 1.3 }}>
-                  <span style={{ color: "#ffbaaa", fontWeight: 700 }}>Попробуйте ещё раз. </span>
-                  {explanation}
-                </p>
-              </div>
+              <IncorrectFeedback correctAnswer="" explanation={explanation} hideAnswer />
             )}
           </div>
 

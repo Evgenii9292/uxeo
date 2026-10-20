@@ -1,3 +1,4 @@
+import { QuizFeedbackIcon } from "./QuizFeedbackIcon";
 /**
  * Onboarding quiz UI components: continue buttons and feedback bars.
  * These are used by QuizPage (onboarding) and differ slightly from LessonQuizPage versions.
@@ -100,7 +101,7 @@ export function CorrectFeedback({ showXp = true }: { showXp?: boolean }) {
     <div className="flex gap-[28px] items-center shrink-0 w-full">
       <div className="flex flex-col gap-[5px] items-end justify-end shrink-0">
         <div className="flex gap-[9px] items-end shrink-0">
-          <PartyPopperIcon />
+          <QuizFeedbackIcon correct />
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] text-[#cdf6db] text-[18px] whitespace-nowrap">Верно!</p>
         </div>
         {showXp && (
@@ -121,7 +122,7 @@ export function IncorrectFeedback() {
   return (
     <div className="flex gap-[28px] items-start shrink-0 w-full">
       <div className="flex gap-[10px] items-center shrink-0">
-        <span className="text-[30px] leading-none">✊</span>
+        <QuizFeedbackIcon correct={false} />
         <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.2] text-[#ffbaaa] text-[18px] whitespace-nowrap">
           Почти<br />получилось.
         </p>
