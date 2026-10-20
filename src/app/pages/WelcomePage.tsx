@@ -218,12 +218,12 @@ export default function WelcomePage() {
         {/* Headline + subtitle */}
         <div className="flex flex-col gap-[25px] items-start w-full">
           <h1 className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[37px] w-full text-[32px] text-[rgba(244,245,252,0.9)]">
-            Освойте UX/UI-дизайн на практике
+            Освойте UX/UI-дизайн на практике
           </h1>
           <div className="flex gap-[17px] items-start w-full">
             <FreeIconPartyPopper />
             <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] text-[#798589] text-[18px] flex-1">
-              Решайте реальные задачи интерфейсов и закрепляйте знания практикой.
+              Решайте реальные задачи интерфейсов и закрепляйте знания практикой.
             </p>
           </div>
         </div>
@@ -321,9 +321,6 @@ export default function WelcomePage() {
             >
               Посмотреть демо без регистрации
             </button>
-            <p className="text-center font-['Roboto_Condensed:Regular',sans-serif] text-[12px] leading-[1.45] text-[#66757b] -mt-[10px]">
-              Демо хранится только на этом устройстве. Отправка работ недоступна.
-            </p>
           </div>
 
           {emailError && !showEmailInput && <p role="alert" className="text-[#ff6b6b] text-[16px] text-center">{emailError}</p>}
