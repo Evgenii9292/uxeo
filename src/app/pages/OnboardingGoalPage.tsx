@@ -50,9 +50,9 @@ function OptionCard({ text, emoji, state, onClick }: { text: string; emoji?: str
 }
 
 const GOALS: { id: OnboardingGoal; text: string; emoji: string }[] = [
-  { id: "change_career",   text: "Хочу сменить профессию",    emoji: "🚀" },
-  { id: "improve_skills",  text: "Прокачать навыки дизайнера", emoji: "🎨" },
-  { id: "work_use",        text: "Использую дизайн в работе", emoji: "💼" },
+  { id: "change_career",   text: "Сменить профессию",    emoji: "🚀" },
+  { id: "improve_skills",  text: "Улучшить навыки дизайна", emoji: "🎨" },
+  { id: "work_use",        text: "Применять дизайн в работе", emoji: "💼" },
 ];
 
 export default function OnboardingGoalPage() {

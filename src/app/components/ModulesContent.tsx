@@ -128,7 +128,7 @@ function ActiveModuleCard() {
             <div className="flex flex-wrap gap-[8px_16px] items-center">
               <div className="flex gap-[4px] items-center">
                 <LevelIcon active={true} />
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f1f2fb] text-[14px]">Новичёк</p>
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f1f2fb] text-[14px]">Начальный</p>
               </div>
               <div className="flex gap-[4px] items-center">
                 <BookIcon />
@@ -198,7 +198,7 @@ function ActiveModuleCard() {
               {/* Level */}
               <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
                 <LevelIcon active={true} />
-                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[16px] whitespace-nowrap">Новичёк</p>
+                <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[16px] whitespace-nowrap">Начальный</p>
               </div>
               {/* Lesson count */}
               <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
@@ -359,8 +359,8 @@ export default function ModulesContent() {
     // Fix 5: gap matches RightWidgets gap-[20px]
     <div className="content-stretch flex flex-col gap-[20px] items-center relative shrink-0 w-full">
       <ActiveModuleCard />
-      <LockedModuleCard title="UX интерфейсов" level="Мидл" lessonCount={0} image={imgModule2} />
-      <LockedModuleCard title="UI Kit"           level="Мидл" lessonCount={0} image={imgModule3} />
+      <LockedModuleCard title="UX интерфейсов" level="Средний" lessonCount={0} image={imgModule2} />
+      <LockedModuleCard title="UI Kit"           level="Средний" lessonCount={0} image={imgModule3} />
     </div>
   );
 }

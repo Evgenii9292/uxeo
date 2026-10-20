@@ -278,7 +278,7 @@ export default function LessonCompletionScreen({
                 Попробуйте ещё раз
               </h1>
               <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] leading-[1.2] text-center ${isMobile ? "text-[14px]" : "text-[18px]"}`}>
-                Нужно {Math.ceil(totalQuestions * 0.5)} из {totalQuestions}, чтобы пройти урок
+                Чтобы пройти урок, ответьте правильно хотя бы на {Math.ceil(totalQuestions * 0.5)} из {totalQuestions} вопросов
               </p>
             </div>
 
@@ -310,7 +310,7 @@ export default function LessonCompletionScreen({
                 className="cursor-pointer select-none outline-none transition-opacity duration-150 hover:opacity-80"
               >
                 <p className={`font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] leading-[1.2] ${isMobile ? "text-[15px]" : "text-[20px]"}`}>
-                  Вернуться на Roadmap
+                  Вернуться к урокам
                 </p>
               </button>
             </div>

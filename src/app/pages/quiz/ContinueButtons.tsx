@@ -15,7 +15,7 @@ function playClickSound() {
   } catch (_) {}
 }
 
-export function ContinueDisabled({ fullWidth }: { fullWidth?: boolean }) {
+export function ContinueDisabled({ fullWidth, label = "Продолжить" }: { fullWidth?: boolean; label?: string }) {
   return (
     <div className={`bg-[#333d41] content-stretch flex h-[56px] items-center justify-center px-[25px] relative rounded-[15px] shadow-[0px_5px_0px_0px_#212226] shrink-0 ${fullWidth ? "w-full" : ""}`}>
       <p
@@ -23,13 +23,13 @@ export function ContinueDisabled({ fullWidth }: { fullWidth?: boolean }) {
         className="font-medium leading-[22.955px] relative shrink-0 text-[#465256] text-[22px] whitespace-nowrap"
         style={{ fontFamily: '"Roboto Condensed", sans-serif', WebkitFontSmoothing: "antialiased" }}
       >
-        Продолжить
+        {label}
       </p>
     </div>
   );
 }
 
-export function ContinueActive({ onClick, fullWidth }: { onClick: () => void; fullWidth?: boolean }) {
+export function ContinueActive({ onClick, fullWidth, label = "Продолжить" }: { onClick: () => void; fullWidth?: boolean; label?: string }) {
   return (
     <button
       onClick={() => { onClick(); playClickSound(); }}
@@ -42,13 +42,13 @@ export function ContinueActive({ onClick, fullWidth }: { onClick: () => void; fu
         className="font-medium leading-[22.955px] text-[#f4f5fc] text-[22px] whitespace-nowrap"
         style={{ fontFamily: '"Roboto Condensed", sans-serif', WebkitFontSmoothing: "antialiased" }}
       >
-        Продолжить
+        {label}
       </p>
     </button>
   );
 }
 
-export function ContinueCorrect({ onClick, fullWidth }: { onClick: () => void; fullWidth?: boolean }) {
+export function ContinueCorrect({ onClick, fullWidth, label = "Продолжить" }: { onClick: () => void; fullWidth?: boolean; label?: string }) {
   return (
     <button
       onClick={() => { onClick(); playClickSound(); }}
@@ -61,7 +61,7 @@ export function ContinueCorrect({ onClick, fullWidth }: { onClick: () => void; f
         className="font-medium leading-[22.955px] text-[#f4f5fc] text-[22px] whitespace-nowrap"
         style={{ fontFamily: '"Roboto Condensed", sans-serif', WebkitFontSmoothing: "antialiased" }}
       >
-        Продолжить
+        {label}
       </p>
     </button>
   );

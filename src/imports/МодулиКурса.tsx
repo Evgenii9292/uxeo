@@ -513,7 +513,7 @@ function Frame16() {
             </svg>
           </div>
         </div>
-        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[16px] whitespace-nowrap">Новичек</p>
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#f1f2fb] text-[16px] whitespace-nowrap">Новичок</p>
       </div>
       <Frame9 />
     </div>

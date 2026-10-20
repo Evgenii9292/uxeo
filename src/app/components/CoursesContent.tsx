@@ -33,12 +33,12 @@ function getUxUiCourseStats() {
 const UX_UI_STATS = getUxUiCourseStats();
 
 const COURSE_DISPLAY: CourseDisplay[] = [
-  { id: "ux-ui-basics",      title: "UX/UI",                    level: "новичек", modules: UX_UI_STATS.modules, lessons: UX_UI_STATS.lessons, image: "/course-icons-png/ux-ui.png", imageSize: { desktop: { w: 95, h: 86 }, mobile: { w: 36, h: 36 } }, isActive: true },
-  { id: "figma-pro",         title: "Figma PRO",                level: "мидл",    modules: 4, lessons: 24, image: "/course-icons-png/figma-pro.png" },
-  { id: "ai-designers",      title: "ИИ для дизайнеров",        level: "новичек", modules: 4, lessons: 24, image: "/course-icons-png/ai.png" },
-  { id: "ux-pro",            title: "UX Pro",                   level: "мидл",    modules: 4, lessons: 20, image: "/course-icons-png/ux-pro.png" },
-  { id: "typographica",      title: "Типографика Pro",          level: "мидл",    modules: 3, lessons: 18, image: "/course-icons-png/typography.png" },
-  { id: "product-design",    title: "Продуктовый дизайн",       level: "мидл+",   modules: 5, lessons: 28, image: "/course-icons-png/product-design.png" },
+  { id: "ux-ui-basics",      title: "UX/UI",                    level: "Начальный", modules: UX_UI_STATS.modules, lessons: UX_UI_STATS.lessons, image: "/course-icons-png/ux-ui.png", imageSize: { desktop: { w: 95, h: 86 }, mobile: { w: 36, h: 36 } }, isActive: true },
+  { id: "figma-pro",         title: "Figma PRO",                level: "Средний",    modules: 4, lessons: 24, image: "/course-icons-png/figma-pro.png" },
+  { id: "ai-designers",      title: "ИИ для дизайнеров",        level: "Начальный", modules: 4, lessons: 24, image: "/course-icons-png/ai.png" },
+  { id: "ux-pro",            title: "UX Pro",                   level: "Средний",    modules: 4, lessons: 20, image: "/course-icons-png/ux-pro.png" },
+  { id: "typographica",      title: "Типографика Pro",          level: "Средний",    modules: 3, lessons: 18, image: "/course-icons-png/typography.png" },
+  { id: "product-design",    title: "Продуктовый дизайн",       level: "Продвинутый",   modules: 5, lessons: 28, image: "/course-icons-png/product-design.png" },
 ];
 
 // ─── Badge icons ──────────────────────────────────────────────────────────────

@@ -18,7 +18,7 @@ import type { Lesson } from "./roadmap-types";
 const HW_DB_NAME: Record<string, string> = {
   "homework-1": "Дизайн экрана онбординга",
   "homework-2": "Интерфейс дашборда",
-  "homework-3": "UI Kit компонента",
+  "homework-3": "Набор компонентов",
 };
 
 // ─── Shadow palette ───────────────────────────────────────────────────────────

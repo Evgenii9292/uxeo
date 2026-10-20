@@ -114,7 +114,7 @@ Meta information line:
 
 Example:
 
-Новичек • 5 модулей • 24 урока
+Новичок • 5 модулей • 24 урока
 
 Primary button:
 

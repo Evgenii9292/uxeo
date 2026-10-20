@@ -43,10 +43,10 @@ export default function OnboardingNamePage() {
 
           <div className="flex flex-col items-center gap-[12px] text-center">
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[34px] text-[#f4f5fc] text-[32px]">
-              Как тебя зовут?
+              Как к вам обращаться?
             </p>
             <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] text-[#798589] text-[18px]">
-              Будем обращаться к тебе по имени
+              Будем обращаться к вам по имени
             </p>
           </div>
 
@@ -55,7 +55,7 @@ export default function OnboardingNamePage() {
             value={name}
             onChange={e => setName(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleContinue()}
-            placeholder="Твоё имя"
+            placeholder="Ваше имя"
             autoFocus
             className="w-full outline-none text-center"
             style={{
@@ -91,7 +91,7 @@ export default function OnboardingNamePage() {
               border: "none",
             }}
           >
-            Продолжить
+            Перейти к заданию
           </button>
         </div>
       </div>
