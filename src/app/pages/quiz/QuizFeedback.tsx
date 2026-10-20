@@ -3,11 +3,6 @@
 import { useState } from "react";
 import { PartyPopperIcon, LightningIcon } from "./QuizIcons";
 
-const ALMOST_PHRASES = ["Почти...", "Не совсем", "Мимо!", "Эх...", "Бывает"];
-function randomPhrase() {
-  return ALMOST_PHRASES[Math.floor(Math.random() * ALMOST_PHRASES.length)];
-}
-
 export function CorrectFeedback({ explanation, showXp = true }: { explanation: string; showXp?: boolean }) {
   return (
     <div className="flex gap-[16px] items-start shrink-0 w-full">
@@ -41,7 +36,7 @@ export function IncorrectFeedback({
   isReplay?: boolean;
   hideAnswer?: boolean;
 }) {
-  const [phrase] = useState(() => isReplay ? "Попробуй ещё" : randomPhrase());
+  const phrase = isReplay ? "Попробуйте ещё раз" : "Не совсем верно";
 
   return (
     <div className="flex gap-[16px] items-start shrink-0 w-full">
