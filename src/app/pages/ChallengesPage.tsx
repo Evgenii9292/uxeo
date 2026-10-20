@@ -1,3 +1,4 @@
+import { DifficultyIcon } from "../components/DifficultyIcon";
 import { useState, useId, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router";
 import Layout from "../components/Layout";
@@ -280,7 +281,7 @@ function ChallengeCard({ challenge, status, onClick }: {
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f1f2fb] text-[14px]">{challenge.time}</p>
               </div>
               <div className="flex gap-[5px] items-center">
-                <IconFace />
+                <DifficultyIcon level={challenge.level} />
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f1f2fb] text-[14px]">{challenge.level}</p>
               </div>
             </div>
@@ -344,7 +345,7 @@ function ChallengeCard({ challenge, status, onClick }: {
                   <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap">{challenge.time}</p>
                 </div>
                 <div className="flex gap-[5px] items-center">
-                  <IconFace />
+                  <DifficultyIcon level={challenge.level} />
                   <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap">{challenge.level}</p>
                 </div>
               </div>

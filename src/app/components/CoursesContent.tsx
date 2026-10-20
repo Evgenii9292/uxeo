@@ -1,3 +1,4 @@
+import { DifficultyIcon, LessonCountIcon } from "./DifficultyIcon";
 import { useId } from "react";
 import { useNavigate } from "react-router";
 import { Zap, Check } from "lucide-react";
@@ -48,32 +49,8 @@ const COURSE_DISPLAY: CourseDisplay[] = [
  * Only the first step is fully visible; steps 2–3 at 60% opacity via SVG mask.
  * useId provides a unique mask ID when multiple instances are on the same page.
  */
-function LevelIcon({ active }: { active: boolean }) {
-  const uid  = useId().replace(/:/g, "");
-  const maskId = `lv-${uid}`;
-  const bright = active ? "#F1F2FB" : "#798489";
-  const dark   = active ? "#61737A" : "#798489";
-  return (
-    <div className="h-[15px] overflow-clip relative shrink-0 w-[17px]">
-      <div className="absolute inset-[22.57%_5.88%_15.9%_5.88%]">
-        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14.9997 9.23063">
-          <defs>
-            <mask id={maskId}>
-              {/* Step 1 (left ≈33 %): fully visible */}
-              <rect x="0"   y="0" width="5.1" height="9.3" fill="white" />
-              {/* Steps 2–3 (right ≈67 %): 60 % visible */}
-              <rect x="5"   y="0" width="10"  height="9.3" fill="white" fillOpacity="0.6" />
-            </mask>
-          </defs>
-          <g mask={`url(#${maskId})`}>
-            <path d={svgMfoan.p1f3ddd00} fill={dark}   />
-            <path d={svgMfoan.p1dcc7b80} fill={bright} />
-            <path d={svgMfoan.p36483400} fill={dark}   />
-          </g>
-        </svg>
-      </div>
-    </div>
-  );
+function LevelIcon({ active, level }: { active: boolean; level: string }) {
+  return <DifficultyIcon level={level} color={active ? "#F1F2FB" : "#798489"} />;
 }
 
 /** Stacked-layers module/lesson icon */
@@ -88,6 +65,10 @@ function LayerIcon({ active }: { active: boolean }) {
       </svg>
     </div>
   );
+}
+
+function BookIcon({ active }: { active: boolean }) {
+  return <LessonCountIcon color={active ? "#F1F2FB" : "#798489"} />;
 }
 
 // ─── Progress bar (inside active card image panel) ────────────────────────────
@@ -123,7 +104,7 @@ function BadgesRow({ level, modules, lessons, active }: { level: string; modules
     <div className="content-stretch flex flex-wrap gap-[5px_21px] items-center relative shrink-0 w-full">
       {/* Level */}
       <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
-        <LevelIcon active={active} />
+        <LevelIcon active={active} level={level} />
         <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 ${textColor} text-[16px] whitespace-nowrap`}>{level}</p>
       </div>
       {/* Modules */}
@@ -133,7 +114,7 @@ function BadgesRow({ level, modules, lessons, active }: { level: string; modules
       </div>
       {/* Lessons */}
       <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0">
-        <LayerIcon active={active} />
+        <BookIcon active={active} />
         <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 ${textColor} text-[16px] whitespace-nowrap`}>{lessons} {lessons === 1 ? "урок" : lessons < 5 ? "урока" : "уроков"}</p>
       </div>
     </div>
@@ -324,7 +305,7 @@ function LockedCourseCard({ course }: { course: CourseDisplay }) {
 
   if (isMobile) {
     return (
-      <div className="bg-[#343e42] flex flex-col gap-[16px] p-[16px] rounded-[15px] w-full">
+      <div className="opacity-80 bg-[#343e42] flex flex-col gap-[16px] p-[16px] rounded-[15px] w-full">
         {/* Icon + title row */}
         <div className="flex items-center gap-[14px]">
           <div className="rounded-[12px] shrink-0 flex items-center justify-center opacity-60" style={{ width: 64, height: 64, background: "#2D373A" }}>
@@ -355,7 +336,7 @@ function LockedCourseCard({ course }: { course: CourseDisplay }) {
 
   return (
     // FIX 3: uniform 20px padding (top and bottom)
-    <div className="bg-[#343e42] content-stretch flex flex-col items-center p-[20px] relative rounded-[15px] shrink-0 w-full">
+    <div className="opacity-80 bg-[#343e42] content-stretch flex flex-col items-center p-[20px] relative rounded-[15px] shrink-0 w-full">
 
       {/* Content row */}
       <div className="content-stretch flex gap-[20px] h-[159px] items-start relative shrink-0 w-full">

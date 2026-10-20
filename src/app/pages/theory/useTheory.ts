@@ -75,8 +75,8 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     return Array.from({ length: totalSections }, (_, index) => {
       const quizId = `mini-quiz-${index}`;
       const questionState = progress.questions[quizId];
-      if (questionState) {
-        return { selectedAnswer: questionState.correct ? "right" : "left", showFeedback: true, completed: true, hasIncorrectAnswer: !questionState.correct };
+      if (questionState?.correct) {
+        return { selectedAnswer: "right", showFeedback: true, completed: true, hasIncorrectAnswer: false };
       }
       return { selectedAnswer: null, showFeedback: false, completed: false, hasIncorrectAnswer: false };
     });
@@ -120,12 +120,12 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
       Array.from({ length: totalSections }, (_, index) => {
         const quizId = `mini-quiz-${index}`;
         const questionState = nextProgress.questions[quizId];
-        if (questionState) {
+        if (questionState?.correct) {
           return {
-            selectedAnswer: questionState.correct ? "right" : "left",
+            selectedAnswer: "right",
             showFeedback: true,
             completed: true,
-            hasIncorrectAnswer: !questionState.correct,
+            hasIncorrectAnswer: false,
           };
         }
         return {

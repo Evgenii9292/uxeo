@@ -1,3 +1,4 @@
+import { DifficultyIcon } from "../components/DifficultyIcon";
 import { useState, useRef, useId } from "react";
 import { useIsMobile } from "../components/ui/use-mobile";
 import { useLocation } from "react-router";
@@ -135,28 +136,8 @@ const DEFAULT_CHALLENGE = CHALLENGE_CONTENT["challenge-health"];
 
 // ── Level icon (staircase) ────────────────────────────────────────────────────
 
-function LevelIcon() {
-  const uid = useId().replace(/:/g, "");
-  const maskId = `lv-${uid}`;
-  return (
-    <div className="h-[15px] overflow-clip relative shrink-0 w-[17px]">
-      <div className="absolute inset-[22.57%_5.88%_15.9%_5.88%]">
-        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14.9997 9.23063">
-          <defs>
-            <mask id={maskId}>
-              <rect x="0" y="0" width="5.1" height="9.3" fill="white" />
-              <rect x="5" y="0" width="10"  height="9.3" fill="white" fillOpacity="0.6" />
-            </mask>
-          </defs>
-          <g mask={`url(#${maskId})`}>
-            <path d={svgMfoan.p1f3ddd00} fill="#F1F2FB" />
-            <path d={svgMfoan.p1dcc7b80} fill="#F1F2FB" />
-            <path d={svgMfoan.p36483400} fill="#F1F2FB" />
-          </g>
-        </svg>
-      </div>
-    </div>
-  );
+function LevelIcon({ level }: { level: string }) {
+  return <DifficultyIcon level={level} />;
 }
 
 // ── Shared styles ─────────────────────────────────────────────────────────────
@@ -406,7 +387,7 @@ function HeroCard({ content }: { content: ChallengeContent }) {
             <p className={`${TEXT_MEDIUM} leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap`}>{content.time}</p>
           </div>
           <div className="flex gap-[5px] items-center">
-            <LevelIcon />
+            <LevelIcon level={content.level} />
             <p className={`${TEXT_MEDIUM} leading-[20px] text-[#f1f2fb] text-[16px] whitespace-nowrap`}>{content.level}</p>
           </div>
           <div className="flex gap-[5px] items-center">
