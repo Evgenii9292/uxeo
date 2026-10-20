@@ -1,3 +1,4 @@
+import { ChallengePreview } from "../components/ChallengePreview";
 import { normalizeFigmaLink } from "../../../supabase/functions/server/figmaLink";
 import { DifficultyIcon } from "../components/DifficultyIcon";
 import { useState, useRef, useId } from "react";
@@ -45,7 +46,7 @@ const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
     title: "Интерфейс приложения здоровья",
     subtitle: "Создайте стартовый экран приложения для отслеживания здоровья.",
     time: "25 мин",
-    level: "Джун",
+    level: "Начальный",
     xp: 800,
     skills: [
       "визуальная иерархия интерфейса",
@@ -74,7 +75,7 @@ const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
     title: "Онбординг для финтех-приложения",
     subtitle: "Спроектируйте экран приветствия платёжного сервиса.",
     time: "30 мин",
-    level: "Джун",
+    level: "Начальный",
     xp: 800,
     skills: [
       "проектирование CTA",
@@ -104,7 +105,7 @@ const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
     title: "Карточки товаров маркетплейса",
     subtitle: "Разработайте карточки продуктов для e-commerce приложения.",
     time: "35 мин",
-    level: "Мидл",
+    level: "Средний",
     xp: 1500,
     skills: [
       "дизайн карточек",
@@ -361,8 +362,7 @@ function HeroCard({ content }: { content: ChallengeContent }) {
       {/* Phone hero */}
       {content.heroImage ? (
         <div className="rounded-[15px] w-full flex items-center justify-center relative overflow-hidden" style={{ height: 326 }}>
-          <img src={content.heroImage} alt={content.title} style={{ maxHeight: 326, maxWidth: "100%", objectFit: "contain", display: "block" }} />
-          <div className="absolute inset-x-0 bottom-0" style={{ height: 120, background: "linear-gradient(to bottom, transparent, #282F33)" }} />
+          <ChallengePreview src={content.heroImage} alt={content.title} />
         </div>
       ) : (
         <div className="bg-[#38444a] rounded-[20px] w-full h-[220px] flex items-center justify-center overflow-hidden">

@@ -49,7 +49,7 @@ const HOMEWORK_CONTENT: Record<string, HomeworkData> = {
     title: "Дизайн экрана онбординга",
     subtitle: "Создайте экран приветствия для приложения обучения UX-дизайну.",
     time: "30 мин",
-    level: "Джун",
+    level: "Начальный",
     xp: "+800 XP",
     description: "Примените знания об основах UX для создания первого экрана приложения.",
     skills: [
@@ -83,7 +83,7 @@ const HOMEWORK_CONTENT: Record<string, HomeworkData> = {
     title: "Интерфейс дашборда",
     subtitle: "Создайте главный экран панели управления для приложения аналитики.",
     time: "40 мин",
-    level: "Мидл",
+    level: "Средний",
     xp: "+800 XP",
     description: "Примените навыки проектирования UX интерфейсов для создания информативного дашборда.",
     skills: [
@@ -118,7 +118,7 @@ const HOMEWORK_CONTENT: Record<string, HomeworkData> = {
     title: "Набор компонентов",
     subtitle: "Создайте набор UI-компонентов для дизайн-системы.",
     time: "45 мин",
-    level: "Мидл",
+    level: "Средний",
     xp: "+800 XP",
     description: "Финальное практическое задание — соберите UI Kit из основных компонентов.",
     skills: [

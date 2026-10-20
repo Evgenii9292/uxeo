@@ -77,11 +77,6 @@ function ContinueButton({ onClick, xpReward }: { onClick: () => void; xpReward: 
         <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[26px] whitespace-nowrap">
           Продолжить
         </p>
-        <div className="bg-[#d65e43] h-[28.585px] rounded-[12296925px] shrink-0 flex items-center justify-center px-[11.727px]">
-          <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[15.392px] text-[#eef5ff] text-[10.261px] whitespace-nowrap">
-            XP за ответы
-          </p>
-        </div>
       </div>
     </button>
   );
@@ -108,11 +103,6 @@ function MobileContinueButton({ onClick, xpReward }: { onClick: () => void; xpRe
       <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[20px]">
         Продолжить
       </p>
-      <div className="bg-black/20 flex h-[24px] items-center justify-center px-[10px] rounded-full">
-        <p className="font-['Inter:Semi_Bold',sans-serif] font-medium text-[#eef5ff] text-[10px]">
-          XP за ответы
-        </p>
-      </div>
     </button>
   );
 }

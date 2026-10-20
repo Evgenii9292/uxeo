@@ -1,3 +1,4 @@
+import { ChallengePreview } from "../components/ChallengePreview";
 import { DifficultyIcon } from "../components/DifficultyIcon";
 import { useState, useId, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router";
@@ -68,7 +69,7 @@ const CHALLENGES: ChallengeData[] = [
     title: "Интерфейс приложения здоровья",
     subtitle: "Создайте главный экран трекера здоровья",
     time: "25 мин",
-    level: "Джун",
+    level: "Начальный",
     xp: 800,
     Phone: ChallengePhone1,
     image: "/challenge-health-preview.png",
@@ -78,7 +79,7 @@ const CHALLENGES: ChallengeData[] = [
     title: "Онбординг для финтех-приложения",
     subtitle: "Спроектируйте экран приветствия платёжного сервиса",
     time: "30 мин",
-    level: "Джун",
+    level: "Начальный",
     xp: 800,
     Phone: ChallengePhone2,
     image: "/challenge-fintech-preview.png",
@@ -88,7 +89,7 @@ const CHALLENGES: ChallengeData[] = [
     title: "Карточки товаров маркетплейса",
     subtitle: "Разработайте карточки продуктов для e-commerce",
     time: "35 мин",
-    level: "Мидл",
+    level: "Средний",
     xp: 1500,
     Phone: ChallengePhone3,
     image: "/challenge-marketplace-preview.png",
@@ -260,7 +261,7 @@ function ChallengeCard({ challenge, status, onClick }: {
       <div className={`flex flex-col p-[16px] relative rounded-[15px] w-full gap-[14px]`} style={{ background: cardBg }}>
         <div className="bg-[#30383D] rounded-[12px] w-full h-[200px] relative flex items-center justify-center overflow-hidden">
           {challenge.image ? (
-            <img src={challenge.image} alt={challenge.title} className="w-full h-full object-contain" style={{ padding: "20px 0" }} />
+            <ChallengePreview src={challenge.image} alt={challenge.title} padded />
           ) : (
             <Phone />
           )}
@@ -319,7 +320,7 @@ function ChallengeCard({ challenge, status, onClick }: {
           <div className="bg-[#30383D] flex-[1_0_0] min-h-px min-w-px relative rounded-[15px] w-[185px] overflow-hidden">
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               {challenge.image ? (
-                <img src={challenge.image} alt={challenge.title} className="w-full h-full object-contain" style={{ padding: "20px 0" }} />
+                <ChallengePreview src={challenge.image} alt={challenge.title} padded />
               ) : (
                 <Phone />
               )}
