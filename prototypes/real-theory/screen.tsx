@@ -15,7 +15,7 @@ const original = LESSON_CONTENT["contrast-lesson"];
 const lesson = { ...original, sections: presentTheorySections(original.sections, original.lessonId) };
 type Answer = { selected: "left" | "right" | null; checked: boolean };
 
-function RealExample({ node }: { node: React.ReactNode }) {
+function RealExample({ node, compact }: { node: React.ReactNode; compact: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   useLayoutEffect(() => {
@@ -27,8 +27,8 @@ function RealExample({ node }: { node: React.ReactNode }) {
     return () => observer.disconnect();
   }, []);
   return <div className="real-example" ref={ref}>
-    <div style={{ width: 186 * scale, height: 231 * scale, position: "relative", flexShrink: 0 }}>
-      <div className="real-figure" style={{ width: 186, height: 231, transform: `scale(${scale})`, transformOrigin: "top left", "--preview-radius": `${15 / scale}px` } as React.CSSProperties}>{node}</div>
+    <div style={{ width: 186 * scale, height: (compact ? 162 : 231) * scale, position: "relative", flexShrink: 0 }}>
+      <div className={`real-figure ${compact ? "compact" : ""}`} style={{ width: 186, height: 231, transform: `scale(${scale})`, transformOrigin: "top left", "--preview-radius": `${15 / scale}px` } as React.CSSProperties}>{node}</div>
     </div>
   </div>;
 }
@@ -66,6 +66,8 @@ function TheoryPreview() {
   function proceed() {
     if (!answer.selected) return;
     if (!answer.checked) {
+      setReached(prev => Math.max(prev, Math.min(active + 1, lesson.sections.length - 1)));
+      setOpen(prev => new Set([...prev, Math.min(active + 1, lesson.sections.length - 1)]));
       setAnswers(prev => prev.map((value, i) => i === active ? { ...value, checked: true } : value));
       requestAnimationFrame(() => reveal(scroll.current?.querySelector(`[data-feedback="${active}"]`) ?? null));
     } else if (active < lesson.sections.length - 1) {
@@ -86,7 +88,7 @@ function TheoryPreview() {
       <div className="real-hero"><img src={getLessonIcon(lesson.lessonId)} alt="" /></div>
       <div className="real-title"><h1>{lesson.title}</h1><div><span>⌛ {lesson.duration}</span><span className="real-counter">Микроквизы {completed}/{lesson.sections.length}</span></div></div>
       <div className="real-sections">
-        {lesson.sections.map((section, index) => {
+        {lesson.sections.slice(0, reached + 1).map((section, index) => {
           const current = answers[index], unlocked = index <= reached;
           return <section key={index} data-section={index} className="real-section">
             <button className="real-section-header" aria-expanded={open.has(index)} disabled={!unlocked} onClick={() => toggle(index)}>
@@ -104,9 +106,9 @@ function TheoryPreview() {
                   const correct = side === "left" ? section.quizLeftCorrect : section.quizRightCorrect;
                   const state = current.checked && selected ? (correct ? "correct" : "incorrect") : selected ? "selected" : "idle";
                   const letter = optionIndex ? "Б" : "А";
-                  return <button key={side} className="real-choice" aria-label={`Выбрать вариант ${letter}`} aria-pressed={selected} disabled={current.checked} onClick={event => choose(index, side, event.currentTarget)} style={{ background: QUIZ_CARD_BACKGROUNDS[state], borderColor: QUIZ_CARD_BORDERS[state] ?? "transparent" }}>
-                    <span className="real-choice-label"><span className="real-radio" />Вариант {letter}{selected && <span className="real-chosen">Выбрано</span>}</span>
-                    <RealExample node={side === "left" ? section.quizLeftNode : section.quizRightNode} />
+                  return <button key={side} className="real-choice" aria-label={`Выбрать вариант ${letter}`} aria-pressed={selected} disabled={current.checked} onClick={event => choose(index, side, event.currentTarget)} style={{ background: state === "idle" || state === "selected" ? "#22282b" : QUIZ_CARD_BACKGROUNDS[state], borderColor: state === "selected" ? "#bbc6cb" : QUIZ_CARD_BORDERS[state] ?? "#475257" }}>
+                    <span className="real-choice-label"><span className="real-radio" />Вариант {letter}</span>
+                    <RealExample compact={index < 4} node={side === "left" ? section.quizLeftNode : section.quizRightNode} />
                   </button>;
                 })}
               </div>
