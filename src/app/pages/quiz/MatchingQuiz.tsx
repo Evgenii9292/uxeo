@@ -747,7 +747,7 @@ export function MatchingQuiz({
         {/* Hint */}
         {!checked && (
           <p className="text-center text-[#798589] text-[13px] font-['Roboto_Condensed:Regular',sans-serif] px-4">
-            Нажми или перетащи карточки, чтобы соединить
+            Нажмите или перетащите карточки, чтобы соединить
           </p>
         )}
 

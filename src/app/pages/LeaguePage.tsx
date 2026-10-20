@@ -478,7 +478,7 @@ function LeagueRightWidget({ userPosition, aboveUser, userXp, league }: {
         {isFirst && (
           <div className="bg-[#282F33] rounded-[10px] p-[12px]">
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[16px]" style={{ color: "#10B981" }}>
-              🔥 Ты лидер! Удерживай позицию
+              🔥 Вы лидер! Удерживайте позицию
             </p>
           </div>
         )}
@@ -588,11 +588,11 @@ export default function LeaguePage() {
   // Motivational text
   const motivationalText = (() => {
     if (userPosition === 1) {
-      return "Ты на первом месте! Удерживай позицию! 🔥";
+      return "Вы на первом месте! Удерживайте позицию! 🔥";
     }
     const aboveUser = sorted[userPosition - 2]; // person at position userPosition-1
     const diff = aboveUser.xp - userWeeklyXp;
-    return `${aboveUser.name} впереди! Заработай ${diff} XP и обойди его!`;
+    return `${aboveUser.name} впереди! Заработайте ${diff} XP, чтобы подняться выше!`;
   })();
 
   // Ref for user row scrolling

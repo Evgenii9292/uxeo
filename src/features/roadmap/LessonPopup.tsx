@@ -422,7 +422,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
                     <path d="M7 11V7a5 5 0 0110 0v4" stroke="rgba(35,42,45,0.45)" strokeWidth="2" strokeLinecap="round"/>
                   </svg>
                   <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[20px] leading-[27.5px] whitespace-nowrap" style={{ color: "rgba(35,42,45,0.45)" }}>
-                    Сначала пройди предыдущий урок
+                    Сначала пройдите предыдущий урок
                   </p>
                 </div>
               ) : (
@@ -631,7 +631,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
                 <path d="M7 11V7a5 5 0 0110 0v4" stroke="rgba(35,42,45,0.45)" strokeWidth="2" strokeLinecap="round"/>
               </svg>
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] leading-[27.5px] whitespace-nowrap" style={{ color: "rgba(35,42,45,0.45)" }}>
-                Сначала пройди предыдущий урок
+                Сначала пройдите предыдущий урок
               </p>
             </div>
           ) : (

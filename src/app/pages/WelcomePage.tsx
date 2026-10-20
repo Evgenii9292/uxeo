@@ -216,7 +216,7 @@ export default function WelcomePage() {
         {/* Headline + subtitle */}
         <div className="flex flex-col gap-[25px] items-start w-full">
           <h1 className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[37px] w-full text-[32px] text-[rgba(244,245,252,0.9)]">
-            Освой UX/UI-дизайн на практике
+            Освойте UX/UI-дизайн на практике
           </h1>
           <div className="flex gap-[17px] items-start w-full">
             <FreeIconPartyPopper />
@@ -308,7 +308,7 @@ export default function WelcomePage() {
                   Письмо отправлено! ✉️
                 </p>
                 <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] text-[13px] mt-[6px] leading-[1.5]">
-                  Открой ссылку в письме <span style={{ color: "#ff8a6b" }}>на этом устройстве и в этом же браузере</span> — только так она сработает.
+                  Откройте ссылку в письме <span style={{ color: "#ff8a6b" }}>на этом устройстве и в этом же браузере</span> — только так она сработает.
                 </p>
               </div>
             )}

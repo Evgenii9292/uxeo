@@ -103,9 +103,9 @@ export function PWAInstallBanner({ tabBarBottom: _tabBarBottom }: { tabBarBottom
             </div>
             <div className="flex flex-col gap-[8px]">
               {[
-                { n: 1, text: "Нажми иконку «Поделиться» " },
-                { n: 2, text: "Выбери «На экран Домой»" },
-                { n: 3, text: "Нажми «Добавить» — готово!" },
+                { n: 1, text: "Нажмите иконку «Поделиться» " },
+                { n: 2, text: "Выберите «На экран Домой»" },
+                { n: 3, text: "Нажмите «Добавить» — готово!" },
               ].map(({ n, text }) => (
                 <div key={n} className="flex items-center gap-[10px]">
                   <div className="shrink-0 w-[22px] h-[22px] rounded-full bg-[#ff6b21] flex items-center justify-center">
@@ -133,7 +133,7 @@ export function PWAInstallBanner({ tabBarBottom: _tabBarBottom }: { tabBarBottom
             {/* Text */}
             <div className="flex flex-col gap-[2px] flex-1 min-w-0">
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[15px] leading-[1.2] whitespace-nowrap overflow-hidden" style={{ textOverflow: "ellipsis" }}>
-                Добавь на главный экран
+                Добавьте на главный экран
               </p>
               <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#798589] text-[12px] leading-[1.3]">
                 Без браузера — быстрее и удобнее

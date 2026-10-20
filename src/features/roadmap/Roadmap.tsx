@@ -4,7 +4,6 @@
 
 import React, { useRef, useEffect, useCallback, useState } from "react";
 import plus800     from "../../assets/plus800.png";
-import mySToboi    from "../../assets/my-s-toboi.png";
 import strelka1    from "../../assets/strelka1.png";
 import flou        from "../../assets/flou.png";
 import struktura   from "../../assets/struktura.png";
@@ -65,11 +64,12 @@ function TyZdesAnnotation({ hasStarted, mobile }: { hasStarted: boolean; mobile?
   );
 }
 
-function MySToboiAnnotation() {
+function SupportAnnotation() {
   return (
-    <div style={{ width: 106, height: 66, position: "relative" }}>
-      <img src={mySToboi} width={106} height={66} alt="" loading="lazy" />
-    </div>
+    <svg width="106" height="66" viewBox="0 0 298 190" aria-label="Мы с вами">
+      <path d="M7 33C-10-16 101-5 204 33C299 67 314 146 270 180C235 208 116 153 57 103C24 76 3 53 7 33Z" fill="none" stroke="#485b61" strokeWidth="4" />
+      <text x="39" y="89" transform="rotate(25 145 90)" fill="#485b61" fontFamily="Roboto Condensed, sans-serif" fontStyle="italic" fontSize="39">Мы с вами</text>
+    </svg>
   );
 }
 
@@ -161,7 +161,7 @@ export function Roadmap({
     accumulatedLessons += module.lessons.length;
   });
 
-  // Current lesson index for "Ты здесь" annotation
+  // Current lesson index for "Вы здесь" annotation
   const currentIndex = lessons.findIndex(l => l.status === "current");
 
   // Scroll to lesson
@@ -337,7 +337,7 @@ export function Roadmap({
             </div>
           ))}
 
-          {/* "Мы с тобой" annotation — below first module divider only */}
+          {/* "Мы с вами" annotation — below first module divider only */}
           {dividers.length > 0 && (
             <div
               className="absolute pointer-events-none"
@@ -346,11 +346,11 @@ export function Roadmap({
                 top: dividers[0].y + 20,
               }}
             >
-              <img src={mySToboi} width={108} height={63} alt="" loading="lazy" />
+              <SupportAnnotation />
             </div>
           )}
 
-          {/* "Ты здесь" / "Продолжить" SVG annotation */}
+          {/* "Вы здесь" / "Продолжить" SVG annotation */}
           {currentIndex >= 0 && currentIndex < layout.length && (() => {
             const hasStarted = (lessons[currentIndex].progress ?? 0) > 0;
             const pos = layout[currentIndex];
@@ -389,7 +389,7 @@ export function Roadmap({
             );
           })()}
 
-          {/* "Мы с тобой" annotation — desktop only */}
+          {/* "Мы с вами" annotation — desktop only */}
           {!mobile && layout.length > 2 && (
             <div
               className="absolute pointer-events-none"
@@ -398,7 +398,7 @@ export function Roadmap({
                 top:  layout[1].y - 540,
               }}
             >
-              <MySToboiAnnotation />
+              <SupportAnnotation />
             </div>
           )}
 
