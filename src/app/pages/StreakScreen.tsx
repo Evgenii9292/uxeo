@@ -92,7 +92,7 @@ function ContinueButton({ onClick }: { onClick: () => void }) {
       }}
       className="
         group relative flex h-[59px] items-center justify-center px-[25.835px] py-[0.835px]
-        rounded-[15px] shrink-0 bg-[#ff5d39] cursor-pointer select-none outline-none
+        rounded-[15px] shrink-0 bg-[#ff6b21] cursor-pointer select-none outline-none
         transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]
       "
     >

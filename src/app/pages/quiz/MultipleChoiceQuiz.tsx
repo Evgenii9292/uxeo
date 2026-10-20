@@ -111,7 +111,7 @@ function MultiSelectCard({
         {/* Checkbox square */}
         <div
           className="relative rounded-[5px] shrink-0 flex-none size-[20px]"
-          style={{ backgroundColor: (state === "selected" || state === "correct" || state === "incorrect") ? "#ff5d39" : "transparent" }}
+          style={{ backgroundColor: (state === "selected" || state === "correct" || state === "incorrect") ? "#ff6b21" : "transparent" }}
         >
           <div aria-hidden="true" className="absolute border-[3px] border-solid inset-[-3px] pointer-events-none rounded-[8px]" style={{ borderColor: "rgba(216,219,232,0.6)" }} />
         </div>
@@ -134,7 +134,7 @@ function CheckButton({ onClick, disabled, fullWidth }: { onClick: () => void; di
   return (
     <button
       onClick={onClick}
-      className={`group relative flex h-[56px] items-center justify-center px-[25.835px] py-[0.835px] rounded-[15px] shrink-0 bg-[#ff5d39] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px] ${fullWidth ? "w-full" : ""}`}
+      className={`group relative flex h-[56px] items-center justify-center px-[25.835px] py-[0.835px] rounded-[15px] shrink-0 bg-[#ff6b21] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px] ${fullWidth ? "w-full" : ""}`}
     >
       <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
       <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] text-[#f4f5fc] text-[22px] whitespace-nowrap">Проверить ответ</p>

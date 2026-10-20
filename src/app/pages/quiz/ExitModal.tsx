@@ -41,7 +41,7 @@ export function ExitConfirmationModal({
                 o.start(); o.stop(ctx.currentTime + 0.08);
               } catch (_) {}
             }}
-            className="group relative flex h-[56px] items-center justify-center px-[25px] rounded-[15px] bg-[#ff5d39] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px]"
+            className="group relative flex h-[56px] items-center justify-center px-[25px] rounded-[15px] bg-[#ff6b21] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px]"
           >
             <div
               aria-hidden="true"

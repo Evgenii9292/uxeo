@@ -77,7 +77,7 @@ function PrimaryButton({ onClick }: { onClick: () => void }) {
         active:translate-y-[5px]
       "
     >
-      <div className="bg-[#ff5d39] content-stretch flex items-center justify-center px-[25.835px] py-[0.835px] relative rounded-[15px] size-full">
+      <div className="bg-[#ff6b21] content-stretch flex items-center justify-center px-[25.835px] py-[0.835px] relative rounded-[15px] size-full">
         <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-[0px_0px_0px_0px_#c24226]" />
         <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] relative shrink-0 text-[24px] md:text-[26px] text-[rgba(247,248,252,0.9)] whitespace-nowrap">
           Начать обучение
@@ -291,7 +291,7 @@ export default function WelcomePage() {
                   onClick={handleEmailSubmit}
                   disabled={emailLoading}
                   className="group relative w-full h-[59px] rounded-[15px] flex items-center justify-center select-none cursor-pointer outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
-                  style={{ background: "#FF5D39", opacity: emailLoading ? 0.7 : 1 }}
+                  style={{ background: "#FF6B21", opacity: emailLoading ? 0.7 : 1 }}
                 >
                   <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" style={{ border: "1px solid #ff390d" }} />
                   <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[rgba(247,248,252,0.9)] text-[22px]">

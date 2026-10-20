@@ -656,7 +656,7 @@ function SignOutConfirmModal({ onConfirm, onCancel }: { onConfirm: () => void; o
         <div className="flex flex-col gap-[12px] w-full">
           <button
             onClick={onCancel}
-            className="group relative flex h-[56px] items-center justify-center px-[25px] rounded-[15px] bg-[#ff5d39] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px]"
+            className="group relative flex h-[56px] items-center justify-center px-[25px] rounded-[15px] bg-[#ff6b21] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[2px] active:translate-y-[4px]"
           >
             <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_4px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[24px] whitespace-nowrap">

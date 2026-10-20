@@ -296,7 +296,7 @@ function PrimaryButton({ label, onClick }: { label: string; onClick: () => void 
       onClick={onClick}
       className="group relative h-[52px] rounded-[14px] w-full md:max-w-[280px] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
     >
-      <div className="bg-[#ff5d39] flex items-center justify-center px-6 relative rounded-[14px] size-full">
+      <div className="bg-[#ff6b21] flex items-center justify-center px-6 relative rounded-[14px] size-full">
         <div
           aria-hidden="true"
           className="absolute border-[#ff390d] border border-solid inset-0 pointer-events-none rounded-[14px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none"

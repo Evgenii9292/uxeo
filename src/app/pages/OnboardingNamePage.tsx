@@ -41,12 +41,9 @@ export default function OnboardingNamePage() {
           {/* Emoji */}
           <div style={{ fontSize: 56 }}>👋</div>
 
-          <div className="flex flex-col items-center gap-[12px] text-center">
+          <div className="flex flex-col items-center text-center">
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[34px] text-[#f4f5fc] text-[32px]">
               Как к вам обращаться?
-            </p>
-            <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] text-[#798589] text-[18px]">
-              Будем обращаться к вам по имени
             </p>
           </div>
 

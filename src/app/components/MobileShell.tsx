@@ -6,7 +6,6 @@
 import React, { lazy, Suspense, useRef, useState, useCallback, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { formatXp } from "../utils/league";
-import { APP_VERSION } from "../../version";
 import svgPaths from "../../imports/svg-ns2c3tgkyt";
 import { useUserSafe } from "../context/UserContext";
 import { useAuthSafe } from "../context/AuthContext";
@@ -98,9 +97,6 @@ export function MobileHeader({
           >
             {title}
           </p>
-          <span style={{ fontSize: 10, color: "#3a4a52", fontFamily: "monospace", lineHeight: 1, marginLeft: 4, alignSelf: "flex-end", paddingBottom: 2 }}>
-            v{APP_VERSION}
-          </span>
         </div>
 
         {/* Right: stats or custom */}
@@ -162,9 +158,9 @@ export default function MobileShell({
   const location = useLocation();
   const userData = useUserSafe();
   const auth = useAuthSafe();
-  const syncLabel = auth?.isDemo
-    ? "Демо: прогресс хранится только на этом устройстве"
-    : userData?.syncStatus === "error" ? "Прогресс не синхронизирован. Проверьте соединение." : null;
+  const syncLabel = !auth?.isDemo && userData?.syncStatus === "error"
+    ? "Прогресс не синхронизирован. Проверьте соединение."
+    : null;
   const xp = userData?.xp ?? 0;
   const streak = userData?.streak ?? 0;
 

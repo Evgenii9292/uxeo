@@ -8,7 +8,7 @@ import { useUserSafe } from "../context/UserContext";
 import { useAuthSafe } from "../context/AuthContext";
 import { useNavigate } from "react-router";
 import { useWindowWidth } from "../hooks/useWindowWidth";
-import svgPathsLightning from "../../imports/svg-mya2oswe4l";
+import { Zap } from "lucide-react";
 
 // ── Threshold: unlock next lesson when >= 50% questions are answered correctly ──
 // A lesson is completed when correctAnswers >= Math.ceil(totalQuestions * 0.5)
@@ -16,16 +16,10 @@ function unlockThreshold(totalQuestions: number): number {
   return Math.ceil(totalQuestions * 0.5);
 }
 
-// ── "Продолжить" button (matches Figma: #ff5d39 bg, #ff390d border, #c24226 shadow) ──
+// ── "Продолжить" button ──
 
 function LightningButtonIcon() {
-  return (
-    <div className="h-[41px] relative shrink-0 w-[28px]">
-      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 28 41">
-        <path d={svgPathsLightning.p1c93cf00} fill="#F7F8FC" />
-      </svg>
-    </div>
-  );
+  return <Zap className="h-[32px] w-[22px] shrink-0 text-[#F7F8FC]" fill="currentColor" />;
 }
 
 function ContinueButton({ onClick, xpReward }: { onClick: () => void; xpReward: number }) {
@@ -46,31 +40,12 @@ function ContinueButton({ onClick, xpReward }: { onClick: () => void; xpReward: 
         } catch (_) {}
         onClick();
       }}
-      className="group relative cursor-pointer select-none outline-none rounded-[15px] bg-[#FF5D39] transition-all duration-75 w-full"
-      style={{ 
-        height: 70,
-        boxShadow: '0 6px 0 #b83a1f',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(2px)';
-        e.currentTarget.style.boxShadow = '0 4px 0 #b83a1f';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = '0 6px 0 #b83a1f';
-      }}
-      onMouseDown={(e) => {
-        e.currentTarget.style.transform = 'translateY(6px)';
-        e.currentTarget.style.boxShadow = '0 0 0 #b83a1f';
-      }}
-      onMouseUp={(e) => {
-        e.currentTarget.style.transform = 'translateY(2px)';
-        e.currentTarget.style.boxShadow = '0 4px 0 #b83a1f';
-      }}
+      className="group relative cursor-pointer select-none outline-none rounded-[15px] bg-[#FF6B21] transition-transform duration-75 w-full hover:translate-y-[2px] active:translate-y-[6px]"
+      style={{ height: 70 }}
     >
       <div
         aria-hidden="true"
-        className="absolute border-[0.835px] border-[#ff390d] border-solid inset-0 pointer-events-none rounded-[15px]"
+        className="absolute border-[0.835px] border-[#FF7403] border-solid inset-0 pointer-events-none rounded-[15px] shadow-[0_6px_0_#C54A0A] group-hover:shadow-[0_4px_0_#C54A0A] group-active:shadow-none transition-shadow duration-75"
       />
       <div className="flex gap-[6.678px] items-center justify-center px-[25.835px] size-full">
         <LightningButtonIcon />
@@ -88,18 +63,14 @@ function MobileContinueButton({ onClick, xpReward }: { onClick: () => void; xpRe
   return (
     <button
       onClick={onClick}
-      className="w-full rounded-[13px] flex items-center justify-center gap-[8px] cursor-pointer select-none active:translate-y-[3px] transition-transform duration-75"
+      className="group relative w-full rounded-[13px] flex items-center justify-center gap-[8px] cursor-pointer select-none hover:translate-y-[2px] active:translate-y-[4px] transition-transform duration-75"
       style={{
         height: 52,
-        background: "#FF5D39",
-        boxShadow: "0 4px 0 #b83a1f",
+        background: "#FF6B21",
       }}
     >
-      <div className="h-[22px] relative shrink-0 w-[15px]">
-        <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 28 41">
-          <path d={svgPathsLightning.p1c93cf00} fill="#F7F8FC" />
-        </svg>
-      </div>
+      <div aria-hidden="true" className="absolute inset-0 rounded-[13px] pointer-events-none shadow-[0_4px_0_#C54A0A] group-hover:shadow-[0_2px_0_#C54A0A] group-active:shadow-none transition-shadow duration-75" />
+      <Zap className="h-[24px] w-[17px] shrink-0 text-[#F7F8FC]" fill="currentColor" />
       <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[20px]">
         Продолжить
       </p>

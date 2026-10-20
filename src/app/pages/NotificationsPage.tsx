@@ -244,7 +244,7 @@ function FilterBar({
   ) : undefined;
 
   return (
-    <div className="flex gap-[10px] h-[40px] items-center w-full">
+    <div className="flex gap-[10px] h-[40px] items-center w-[calc(100%+32px)] -mx-[16px] px-[16px]">
       {/* Scrollable tabs */}
       <div
         className="flex gap-[10px] h-full items-start flex-1 min-w-0"

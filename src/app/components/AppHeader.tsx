@@ -2,7 +2,6 @@ import { useNavigate } from "react-router";
 import svgPaths from "../../imports/svg-pt1cecsedx";
 import { useUserSafe } from "../context/UserContext";
 import { useAuthSafe } from "../context/AuthContext";
-import { APP_VERSION } from "../../version";
 import { formatXp } from "../utils/league";
 import { useEffect, useRef, useState } from "react";
 
@@ -178,9 +177,8 @@ export default function AppHeader({ title, subtitle, showBack = false, onBack, i
   const navigate = useNavigate();
   const userData = useUserSafe();
   const auth = useAuthSafe();
-  const syncLabel = auth?.isDemo
-    ? "Демо: локально"
-    : userData?.syncStatus === "error" ? "Прогресс не синхронизирован"
+  const syncLabel = !auth?.isDemo && userData?.syncStatus === "error"
+    ? "Прогресс не синхронизирован"
     : null;
   
   // Read XP and streak directly from UserContext
@@ -264,9 +262,6 @@ export default function AppHeader({ title, subtitle, showBack = false, onBack, i
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#f4f5fc] text-[26px] whitespace-nowrap">
                 {title}
               </p>
-              <span style={{ fontSize: 10, color: "#3a4a52", fontFamily: "monospace", lineHeight: 1, alignSelf: "flex-end", paddingBottom: 3 }}>
-                v{APP_VERSION}
-              </span>
               {subtitle && (
                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[#798589] text-[26px] whitespace-nowrap">
                   {subtitle}

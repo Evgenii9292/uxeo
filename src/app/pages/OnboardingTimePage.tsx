@@ -85,7 +85,7 @@ export default function OnboardingTimePage() {
       <div className="flex-1 flex flex-col items-center justify-center px-[24px]">
         <div className="flex flex-col items-center gap-[36px] w-full max-w-[526px]">
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f4f5fc] text-[32px] text-center">
-            Сколько времени в день?
+            Сколько времени в день готовы уделять?
           </p>
           <div className="flex flex-col gap-[19px] w-full">
             {TIMES.map((t) => (

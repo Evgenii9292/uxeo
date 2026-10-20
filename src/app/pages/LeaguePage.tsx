@@ -534,6 +534,7 @@ function LeagueRightWidget({ userPosition, aboveUser, userXp, league }: {
 export default function LeaguePage() {
   const userData = useUserSafe();
   const { userId } = useAuth();
+  const leagueUserId = userId ?? "demo-user";
 
   const userXp = userData?.xp ?? 0;
   const league = getLeague(userXp);
@@ -542,7 +543,7 @@ export default function LeaguePage() {
   const userWeeklyXp = getWeeklyXp(userXp);
 
   // Week seed: deterministic per user per week → bots reset each Monday
-  const weekSeed = userId + String(getCurrentWeekStart());
+  const weekSeed = leagueUserId + String(getCurrentWeekStart());
 
   // Determine user display name — profile name → email → default
   const userName = (() => {
@@ -563,7 +564,7 @@ export default function LeaguePage() {
   })();
 
   // Build participants list (all xp values = weekly XP)
-  const rivals = generateRivals(userId, userWeeklyXp, weekSeed);
+  const rivals = generateRivals(leagueUserId, userWeeklyXp, weekSeed);
 
   const userAvatarUrl = (() => { try { return localStorage.getItem("uxeo-profile-avatar") ?? undefined; } catch { return undefined; } })();
 
@@ -663,9 +664,6 @@ export default function LeaguePage() {
             {league.name}
           </div>
           <WeekTimer />
-          <p style={{ color: "#798589", fontSize: "12px", fontFamily: "Roboto Condensed, sans-serif", margin: 0, textAlign: "center" }}>
-            Тренировочная лига: позиции симулируются для практики
-          </p>
         </div>
 
         {/* Motivational text */}

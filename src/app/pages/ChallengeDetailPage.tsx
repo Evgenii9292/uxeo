@@ -776,7 +776,7 @@ export default function ChallengeDetailPage() {
           style={{
             width: 54,
             height: 54,
-            bottom: "calc(82px + env(safe-area-inset-bottom, 0px))",
+            bottom: "calc(72px + max(env(safe-area-inset-bottom, 0px), 34px))",
             background: "#FF6B21",
             boxShadow: circlePressed ? "0 0px 0 #C54A0A" : "0 4px 0 #C54A0A",
             transform: circlePressed ? "translateY(4px)" : "translateY(0)",
