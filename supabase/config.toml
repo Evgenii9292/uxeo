@@ -7,3 +7,8 @@ port = 54321
 [functions.server]
 verify_jwt = false
 entrypoint = "./functions/server/index.tsx"
+
+# Public API used by the application; authorization is enforced in each route.
+[functions.make-server-d627d1b0]
+verify_jwt = false
+entrypoint = "./functions/server/index.tsx"
