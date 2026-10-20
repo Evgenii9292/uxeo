@@ -6,11 +6,12 @@ export function mergeProgressSql(existing: string, incoming: string): string {
       'isCompleted', COALESCE((old_lesson->>'isCompleted')::boolean, false) OR COALESCE((new_lesson->>'isCompleted')::boolean, false),
       'totalTasks', GREATEST(COALESCE((old_lesson->>'totalTasks')::int, 0), COALESCE((new_lesson->>'totalTasks')::int, 0)),
       'questions', (SELECT COALESCE(jsonb_object_agg(question_id,
-        COALESCE(old_question, '{}'::jsonb) || COALESCE(new_question, '{}'::jsonb) || jsonb_build_object(
+        COALESCE(old_question, '{}'::jsonb) || COALESCE(new_question, '{}'::jsonb) || jsonb_strip_nulls(jsonb_build_object(
           'correct', COALESCE((old_question->>'correct')::boolean, false) OR COALESCE((new_question->>'correct')::boolean, false),
           'xpAwarded', COALESCE((old_question->>'xpAwarded')::boolean, false) OR COALESCE((new_question->>'xpAwarded')::boolean, false),
+          'awardedAt', LEAST(NULLIF(old_question->>'awardedAt', ''), NULLIF(new_question->>'awardedAt', '')),
           'xpValue', GREATEST(COALESCE((old_question->>'xpValue')::int, 0), COALESCE((new_question->>'xpValue')::int, 0))
-        )), '{}'::jsonb)
+        ))), '{}'::jsonb)
         FROM (SELECT COALESCE(o.key, n.key) AS question_id, o.value AS old_question, n.value AS new_question
           FROM jsonb_each(COALESCE(old_lesson->'questions', '{}'::jsonb)) o
           FULL JOIN jsonb_each(COALESCE(new_lesson->'questions', '{}'::jsonb)) n ON o.key = n.key) questions)

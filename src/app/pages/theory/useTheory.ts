@@ -13,7 +13,8 @@ export interface AccordionState {
   earnedXp?: number;
 }
 
-export function useTheory(isMobile: boolean, lessonId?: string, totalSections: number = 5) {
+export function useTheory(isMobile: boolean, lessonId?: string, totalSections: number = 5, correctSides?: string[]) {
+  const correctSideKey = correctSides?.join(",") ?? "";
   const location = useLocation();
   const navigate = useNavigate();
   const userCtx = useUserSafe();
@@ -78,15 +79,15 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
       const quizId = `mini-quiz-${index}`;
       const questionState = progress.questions[quizId];
       if (questionState?.correct) {
-        return { selectedAnswer: "right", showFeedback: true, completed: true, hasIncorrectAnswer: false };
+        return { selectedAnswer: correctSides?.[index] ?? "right", showFeedback: true, completed: true, hasIncorrectAnswer: false };
       }
       return { selectedAnswer: null, showFeedback: false, completed: false, hasIncorrectAnswer: false };
     });
   });
 
   useEffect(() => {
-    if (userCtx?.userLoading) return;
-    const syncKey = `${storageKey}:${totalSections}:${userCtx?.user?.id ?? "guest"}`;
+    if (userCtx?.userLoading || !correctSideKey) return;
+    const syncKey = `${storageKey}:${correctSideKey}:${totalSections}:${userCtx?.user?.id ?? "guest"}`;
     if (syncedLessonKeyRef.current === syncKey) return;
     syncedLessonKeyRef.current = syncKey;
 
@@ -132,7 +133,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
         const questionState = nextProgress.questions[quizId];
         if (questionState?.correct) {
           return {
-            selectedAnswer: "right",
+            selectedAnswer: correctSides?.[index] ?? "right",
             showFeedback: true,
             completed: true,
             hasIncorrectAnswer: false,
@@ -146,7 +147,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
         };
       }),
     );
-  }, [resolvedLessonId, storageKey, totalSections, lastSectionIndex, auth?.isDemo, userCtx?.userLoading, userCtx?.user?.id]);
+  }, [resolvedLessonId, storageKey, totalSections, lastSectionIndex, correctSideKey, auth?.isDemo, userCtx?.userLoading, userCtx?.user?.id]);
 
   const completedUpTo = accordionStates.reduce((max, s, idx) => s.completed ? Math.max(max, idx + 1) : max, 0);
   const effectiveMaxReached = Math.max(maxReached, completedUpTo);

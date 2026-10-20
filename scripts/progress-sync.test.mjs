@@ -46,6 +46,11 @@ test('two devices and stale retries preserve all earned XP and best quiz scores 
     await upsert('legacy', { quiz: { lessonId: 'quiz', totalTasks: 6 } });
     await upsert('legacy', laptop);
     assert.equal((await db.query("SELECT xp FROM user_progress WHERE user_id = 'legacy'")).rows[0].xp, 40);
+    const originalDate = '2026-10-19T12:00:00.000Z';
+    await upsert('dated', { quiz: lesson({ q1: { ...question(15), awardedAt: originalDate } }) });
+    await upsert('dated', { quiz: lesson({ q1: { ...question(15), awardedAt: '2026-10-20T12:00:00.000Z' } }) });
+    const dated = (await db.query("SELECT lesson_progress FROM user_progress WHERE user_id = 'dated'")).rows[0];
+    assert.equal(dated.lesson_progress.quiz.questions.q1.awardedAt, originalDate);
   } finally { await db.close(); }
 });
 
@@ -79,4 +84,33 @@ test('push navigation stays in the installed app origin and awaits navigation', 
   listeners.notificationclick({ notification: { close() {}, data: { url: 'https://other.test/path' } }, waitUntil: promise => { pending = promise; } });
   await pending;
   assert.deepEqual(calls[0], ['navigate', 'https://skillum.test/']);
+});
+
+const { earnedXpOnDay, localDayKey } = load('src/app/utils/dailyProgress.ts');
+test('daily XP counts only first awards on the selected local day', () => {
+  const today = new Date(2026, 9, 20, 12);
+  const yesterday = new Date(2026, 9, 19, 12);
+  const progress = { quiz: lesson({ today: { ...question(15), awardedAt: today.toISOString() }, yesterday: { ...question(25), awardedAt: yesterday.toISOString() }, legacy: question(800), wrong: { correct: false, xpAwarded: false, xpValue: 25, awardedAt: today.toISOString() } }) };
+  assert.equal(earnedXpOnDay(progress, localDayKey(today)), 15);
+  assert.equal(earnedXpOnDay(progress, localDayKey(yesterday)), 25);
+  const merged = mergeLessonProgress(progress, { quiz: lesson({ today: { ...question(15), awardedAt: new Date(2026, 9, 21, 12).toISOString() } }) });
+  assert.equal(earnedXpOnDay(merged, localDayKey(today)), 15);
+  assert.equal(earnedXpOnDay(merged, localDayKey(new Date(2026, 9, 21))), 0);
+});
+
+const { normalizeFigmaLink } = load('supabase/functions/server/figmaLink.ts');
+test('Figma links accept file formats and reject garbage, lookalikes and unsafe schemes', () => {
+  for (const kind of ['design', 'file', 'proto', 'board', 'slides', 'make']) assert.ok(normalizeFigmaLink(`https://www.figma.com/${kind}/abc123/My-file?node-id=1-2`));
+  assert.equal(normalizeFigmaLink(' figma.com/design/abc123/Test '), 'https://figma.com/design/abc123/Test');
+  for (const value of ['', 'hello', 'https://example.com/design/a', 'https://figma.com.evil.test/design/a', 'https://figma.com/', 'http://figma.com/file/a', 'javascript:alert(1)', 'https://user@figma.com/design/a', null, {}]) assert.equal(normalizeFigmaLink(value), null);
+});
+
+const { presentTheorySections } = load('src/app/utils/theoryPresentation.ts');
+test('microquiz positions are mixed, stable, and keep correctness attached to content', () => {
+  const sections = Array.from({length: 6}, (_, index) => ({ quizLeftNode: `wrong-${index}`, quizRightNode: `correct-${index}`, quizLeftCorrect: false, quizRightCorrect: true }));
+  const shown = presentTheorySections(sections, 'contrast-lesson');
+  assert.deepEqual(shown, presentTheorySections(sections, 'contrast-lesson'));
+  assert.equal(shown.filter(section => section.quizLeftCorrect).length, 3);
+  shown.forEach((section, index) => assert.equal(section.quizLeftCorrect ? section.quizLeftNode : section.quizRightNode, `correct-${index}`));
+  assert.equal(sections[0].quizLeftNode, 'wrong-0');
 });

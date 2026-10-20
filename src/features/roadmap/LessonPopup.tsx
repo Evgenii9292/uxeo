@@ -414,7 +414,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
                     <path d="M6.5 0L0 7.78H5.07L4.5 14L12 5.22H6.43L6.5 0Z" fill="#232A2D" />
                   </svg>
                   <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#232a2d] text-[16px] whitespace-nowrap">
-                    +{isHomework ? 800 : (lesson.xpReward || 1250)} XP
+                    {isHomework ? "+800 XP" : "XP за верные ответы"}
                   </span>
                 </div>
               </div>
@@ -623,7 +623,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
                 <path d="M6.5 0L0 7.78H5.07L4.5 14L12 5.22H6.43L6.5 0Z" fill="#232A2D" />
               </svg>
               <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] text-[#232a2d] text-[16px] whitespace-nowrap">
-                +{isHomework ? 800 : (lesson.xpReward || 1250)} XP
+                {isHomework ? "+800 XP" : "XP за верные ответы"}
               </span>
             </div>
           </div>

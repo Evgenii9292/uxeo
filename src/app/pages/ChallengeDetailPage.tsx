@@ -1,3 +1,4 @@
+import { normalizeFigmaLink } from "../../../supabase/functions/server/figmaLink";
 import { DifficultyIcon } from "../components/DifficultyIcon";
 import { useState, useRef, useId } from "react";
 import { useIsMobile } from "../components/ui/use-mobile";
@@ -465,8 +466,9 @@ function SubmitBlock({ challengeId, challengeName }: { challengeId: string; chal
       alert("Войдите в аккаунт, чтобы отправить работу на проверку.");
       return;
     }
-    if (!url.trim()) {
-      alert("Пожалуйста, вставьте ссылку на Figma");
+    const figmaLink = normalizeFigmaLink(url);
+    if (!figmaLink) {
+      alert("Вставьте ссылку на файл Figma: https://www.figma.com/design/…");
       return;
     }
     if (!userData) {
@@ -484,7 +486,7 @@ function SubmitBlock({ challengeId, challengeName }: { challengeId: string; chal
         body: JSON.stringify({
           challengeId,
           challengeName,
-          figmaLink: url,
+          figmaLink,
         }),
       });
       const data = await response.json();

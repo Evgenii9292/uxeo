@@ -363,7 +363,7 @@ function DailyChallenge() {
   
   if (!userData) return null;
   
-  const { xp } = userData; // XP computed from xpAwarded flags in UserContext
+  const xp = userData.todayXp; // Only XP earned on the current local day.
   const DAILY_MAX = 30;
   
   const dailyPct = Math.min(100, (xp / DAILY_MAX) * 100);
@@ -430,7 +430,7 @@ export function CompactWidgets() {
 
   // Progress values 0–1 for each arc
   const weeklyProgress = Math.min(1, weeklyCompleted / 3);
-  const dailyProgress  = Math.min(1, xp / 30);
+  const dailyProgress  = Math.min(1, (userData?.todayXp ?? 0) / 30);
   // League arc: progress within current league tier
   const leagueMin = currentLeague.minXp;
   const leagueMax = currentLeague.maxXp ?? (leagueMin + 3000);
@@ -477,11 +477,11 @@ export default function RightWidgets({ compact = false }: { compact?: boolean })
 
   const handleStartQuiz = () => {
     // Determine lessonId: prefer location.state, fall back to pathname-based detection
-    const lessonId = (location.state as any)?.lessonId
+    const lessonId = new URLSearchParams(location.search).get("lessonId")
+      || (location.state as any)?.lessonId
       || (location.pathname === "/contrast" ? "contrast-lesson" : "color-lesson");
-    const quizId = (location.state as any)?.quizId
-      || LESSONS.find(l => l.lessonId === lessonId)?.quizId
-      || lessonId;
+    const quizId = LESSONS.find(l => l.lessonId === lessonId)?.quizId;
+    if (!quizId) return;
     navigate(`/lesson-quiz?quizId=${encodeURIComponent(quizId)}&lessonId=${encodeURIComponent(lessonId)}`, { state: { lessonId, quizId } });
 
     try {
@@ -527,7 +527,7 @@ export default function RightWidgets({ compact = false }: { compact?: boolean })
               </p>
               <div className="bg-[#ff6b21] h-[24px] relative rounded-[12px] shrink-0 px-[10px] flex items-center justify-center">
                 <p className="font-['Inter:Semi_Bold',sans-serif] font-medium leading-[14px] relative shrink-0 text-[#ffffff] text-[9px] whitespace-nowrap">
-                  +125 XP
+                  XP за ответы
                 </p>
               </div>
             </div>

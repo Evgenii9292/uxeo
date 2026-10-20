@@ -1,3 +1,4 @@
+import { normalizeFigmaLink } from "../../../supabase/functions/server/figmaLink";
 import { useState, useEffect, useId, useRef } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Layout from "../components/Layout";
@@ -764,8 +765,9 @@ function SubmitBlock({ homeworkLessonId, lessonName, mobileCompact }: { homework
       alert("Войдите в аккаунт, чтобы отправить работу на проверку.");
       return;
     }
-    if (!url.trim()) {
-      alert("Пожалуйста, вставьте ссылку на Figma");
+    const figmaLink = normalizeFigmaLink(url);
+    if (!figmaLink) {
+      alert("Вставьте ссылку на файл Figma: https://www.figma.com/design/…");
       return;
     }
 
@@ -781,7 +783,7 @@ function SubmitBlock({ homeworkLessonId, lessonName, mobileCompact }: { homework
         body: JSON.stringify({
           lessonName,
           lessonId: homeworkLessonId ?? "",
-          figmaLink: url,
+          figmaLink,
         }),
       });
 

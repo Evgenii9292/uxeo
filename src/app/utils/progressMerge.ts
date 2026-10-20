@@ -1,3 +1,4 @@
+import { earliestAwardDate } from "./dailyProgress";
 import type { LessonProgress } from "../context/UserContext";
 
 // Merge two lesson progress maps: take union, max correctAnswers, OR isCompleted
@@ -19,6 +20,7 @@ export function mergeLessonProgress(
           correct: lq.correct || rq.correct,
           xpAwarded: lq.xpAwarded || rq.xpAwarded,
           xpValue: Math.max(lq.xpValue || 0, rq.xpValue || 0),
+          awardedAt: earliestAwardDate(lq.awardedAt, rq.awardedAt),
         } : lq;
       }
       result[id] = {

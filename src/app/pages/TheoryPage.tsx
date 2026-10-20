@@ -1,3 +1,4 @@
+import { presentTheorySections } from "../utils/theoryPresentation";
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import Layout from "../components/Layout";
@@ -29,7 +30,8 @@ export default function TheoryPage() {
     setMissingLesson(false);
     import("../data/lesson-content").then(mod => {
       if (cancelled) return;
-      setLessonData(mod.LESSON_CONTENT[lessonId] ?? null);
+      const content = mod.LESSON_CONTENT[lessonId];
+      setLessonData(content ? { ...content, sections: presentTheorySections(content.sections, lessonId) } : null);
       setMissingLesson(!mod.LESSON_CONTENT[lessonId]);
     }).catch(() => { if (!cancelled) setMissingLesson(true); });
     return () => { cancelled = true; };
@@ -66,7 +68,7 @@ export default function TheoryPage() {
     handleToggle,
     handleAnswerSelect,
     handleContinue,
-  } = useTheory(isMobile, lessonId, lessonData?.sections.length ?? 5);
+  } = useTheory(isMobile, lessonId, lessonData?.sections.length ?? 5, lessonData?.sections.map(section => section.quizLeftCorrect ? "left" : "right"));
 
   if (missingLesson) return <main className="min-h-screen flex flex-col gap-4 items-center justify-center text-[#f4f5fc] bg-[#282F33] p-6 text-center"><h1>Урок недоступен</h1><p>Не удалось открыть этот урок. Вернитесь к списку и выберите его снова.</p><Link className="text-[#ff6b21]" to="/lessons">Вернуться к урокам</Link></main>;
 

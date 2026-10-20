@@ -1,3 +1,4 @@
+import { normalizeFigmaLink } from "./figmaLink.ts";
 import { mergeProgressSql, progressXpSql } from "./progressSql.ts";
 import { Hono } from "npm:hono";
 import { cors } from "npm:hono/cors";
@@ -233,7 +234,9 @@ app.post("/make-server-d627d1b0/homework/submit", async (c) => {
   const identity = await requireUser(c);
   if (identity instanceof Response) return identity;
   try {
-    const { lessonName, figmaLink, lessonId } = await c.req.json();
+    const { lessonName, figmaLink: rawFigmaLink, lessonId } = await c.req.json();
+    const figmaLink = normalizeFigmaLink(rawFigmaLink);
+    if (!figmaLink) return c.json({ error: "Укажите корректную ссылку на файл Figma." }, 400);
     const userId = identity.userId;
     if (!lessonName || !figmaLink) {
       return c.json({ error: "Missing required fields" }, 400);
@@ -391,7 +394,9 @@ app.post("/make-server-d627d1b0/challenge/submit", async (c) => {
   const identity = await requireUser(c);
   if (identity instanceof Response) return identity;
   try {
-    const { challengeName, figmaLink, challengeId } = await c.req.json();
+    const { challengeName, figmaLink: rawFigmaLink, challengeId } = await c.req.json();
+    const figmaLink = normalizeFigmaLink(rawFigmaLink);
+    if (!figmaLink) return c.json({ error: "Укажите корректную ссылку на файл Figma." }, 400);
     const userId = identity.userId;
     if (!challengeName || !figmaLink) {
       return c.json({ error: "Missing required fields" }, 400);

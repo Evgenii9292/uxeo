@@ -126,7 +126,7 @@ function CourseBadgesRow({ xpReward }: { xpReward: number }) {
         <div className="flex gap-[5px] items-center relative shrink-0">
           <LightningXPIcon />
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20px] relative shrink-0 text-[#232a2d] text-[16px] whitespace-nowrap">
-            +{xpReward} XP
+            XP за ответы
           </p>
         </div>
       )}

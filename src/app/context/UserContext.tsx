@@ -1,3 +1,4 @@
+import { earnedXpOnDay, localDayKey } from "../utils/dailyProgress";
 import { mergeLessonProgress } from "../utils/progressMerge";
 import { createContext, useContext, useState, ReactNode, useEffect, useRef, useCallback } from "react";
 import { projectId } from "../../../utils/supabase/info";
@@ -11,6 +12,7 @@ interface QuestionState {
   correct: boolean;
   xpAwarded: boolean; // Whether XP was already awarded for this question
   xpValue: number; // How much XP this question awards
+  awardedAt?: string; // First earned time; legacy rewards have no known date.
 }
 
 export interface LessonProgress {
@@ -43,6 +45,7 @@ export type SyncStatus = "local" | "syncing" | "synced" | "error";
 interface UserContextValue {
   user: User;
   xp: number;
+  todayXp: number;
   streak: number;
   level: ExperienceLevel | null;
   goal: OnboardingGoal | null;
@@ -133,6 +136,21 @@ function UserSessionProvider({ children }: { children: ReactNode }) {
 
   const [userLoading, setUserLoading] = useState(true);
   const [refreshVersion, setRefreshVersion] = useState(0);
+  const [currentDay, setCurrentDay] = useState(() => localDayKey());
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    const tick = () => {
+      setCurrentDay(localDayKey());
+      clearTimeout(timer);
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 100);
+      timer = setTimeout(tick, midnight.getTime() - Date.now());
+    };
+    tick();
+    window.addEventListener("focus", tick);
+    document.addEventListener("visibilitychange", tick);
+    return () => { clearTimeout(timer); window.removeEventListener("focus", tick); document.removeEventListener("visibilitychange", tick); };
+  }, []);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>(isDemo ? "local" : "synced");
 
   // Debounce ref for Supabase sync
@@ -424,7 +442,8 @@ function UserSessionProvider({ children }: { children: ReactNode }) {
         [questionId]: {
           correct: questionState.correct || isCorrect,
           xpAwarded: questionState.xpAwarded || isCorrect,
-          xpValue: finalXpValue,
+          xpValue: questionState.xpAwarded ? questionState.xpValue : finalXpValue,
+          awardedAt: questionState.awardedAt ?? (!questionState.xpAwarded && isCorrect ? new Date().toISOString() : undefined),
         },
       };
 
@@ -579,6 +598,7 @@ function UserSessionProvider({ children }: { children: ReactNode }) {
     <UserContext.Provider value={{
       user,
       xp,
+      todayXp: earnedXpOnDay(user.lessonProgress, currentDay),
       streak: user.streak,
       level: user.level,
       goal: user.goal,
