@@ -30,7 +30,7 @@ const BG_GRADIENT: Record<CardState, string> = {
 };
 
 function getBorderColor(state: CardState): string | undefined {
-  if (state === "selected")  return "#636670";
+  if (state === "selected")  return "#64b6ff";
   if (state === "correct")   return "rgba(0, 147, 47, 0.6)";
   if (state === "incorrect") return "#9f3500";
   return undefined;

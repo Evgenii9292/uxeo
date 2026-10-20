@@ -56,7 +56,7 @@ export function QuizCard({
   };
 
   const borderMap: Record<CardState, string | null> = {
-    idle: null, selected: "#636670", correct: "rgba(0, 147, 47, 0.6)", incorrect: "#9f3500", dimmed: null,
+    idle: null, selected: "#64b6ff", correct: "rgba(0, 147, 47, 0.6)", incorrect: "#9f3500", dimmed: null,
   };
 
   const border = borderMap[state];
@@ -71,7 +71,7 @@ export function QuizCard({
       {border && (
         <div
           aria-hidden="true"
-          className="absolute border-[3px] border-solid inset-[-3px] pointer-events-none rounded-[27px]"
+          className="absolute z-10 border-[3px] border-solid inset-0 pointer-events-none rounded-[24px]"
           style={{ borderColor: border }}
         />
       )}

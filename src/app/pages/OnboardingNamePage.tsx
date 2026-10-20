@@ -57,12 +57,16 @@ export default function OnboardingNamePage() {
             onKeyDown={e => e.key === "Enter" && handleContinue()}
             placeholder="Ваше имя"
             autoFocus
-            className="w-full outline-none text-center"
+            aria-label="Ваше имя"
+            autoComplete="given-name"
+            className="w-full outline-none text-center placeholder:text-[#798589] focus-visible:ring-2 focus-visible:ring-[#798589]"
             style={{
-              background: "linear-gradient(172.454deg, rgb(44, 53, 56) 2.4%, rgb(56, 67, 72) 98.5%, rgb(44, 53, 56) 116.25%)",
-              border: name.trim() ? "2px solid #4a7c5e" : "2px solid transparent",
-              borderRadius: 24,
-              height: 80,
+              background: "linear-gradient(171.89deg, rgb(44,53,56) 2.42%, rgb(56,67,72) 98.53%, rgb(44,53,56) 116.25%)",
+              borderWidth: 2,
+              borderStyle: "solid",
+              borderColor: name.trim() ? "#57686F" : "rgba(160,163,173,0.2)",
+              borderRadius: 15,
+              height: 64,
               fontSize: 26,
               fontFamily: "Roboto Condensed, sans-serif",
               fontWeight: 500,
@@ -76,13 +80,12 @@ export default function OnboardingNamePage() {
           <button
             onClick={handleContinue}
             disabled={!name.trim()}
-            className="w-full rounded-[20px] transition-all duration-75"
+            className="w-full rounded-[15px] transition-[transform,box-shadow] duration-75 enabled:shadow-[0_5px_0_#c54a0a] enabled:hover:translate-y-[2px] enabled:hover:shadow-[0_3px_0_#c54a0a] enabled:active:translate-y-[5px] enabled:active:shadow-none disabled:shadow-[0_5px_0_#1d2c30] focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-[#b5c0c5]"
             style={{
               height: 80,
               background: name.trim()
                 ? "linear-gradient(172.454deg, #FF6B21 2.4%, #FF4500 98.5%)"
                 : "linear-gradient(172.454deg, rgb(44, 53, 56) 2.4%, rgb(56, 67, 72) 98.5%)",
-              boxShadow: name.trim() ? "0 6px 0 #b83a1f" : "0 6px 0 #1d2c30",
               cursor: name.trim() ? "pointer" : "not-allowed",
               fontSize: 26,
               fontFamily: "Roboto Condensed, sans-serif",

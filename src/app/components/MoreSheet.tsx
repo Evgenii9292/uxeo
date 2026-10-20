@@ -7,7 +7,6 @@ import { useNavigate } from "react-router";
 import skillumLongLogo from "../../assets/skillum-logo-long.svg";
 import { useUserSafe } from "../context/UserContext";
 import { FeedbackModal } from "./FeedbackModal";
-import { ReportErrorModal } from "../pages/quiz/ReportErrorModal";
 
 interface MoreSheetProps {
   onClose: () => void;
@@ -152,7 +151,6 @@ export function MoreSheet({ onClose }: MoreSheetProps) {
   const [visible, setVisible] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [showReport, setShowReport] = useState(false);
   const touchStartYRef = useRef<number | null>(null);
   const canDragRef = useRef(false);
   const SHEET_ANIMATION_MS = 260;
@@ -201,9 +199,7 @@ export function MoreSheet({ onClose }: MoreSheetProps) {
     return <FeedbackModal onClose={() => setShowFeedback(false)} />;
   }
 
-  if (showReport) {
-    return <ReportErrorModal onClose={() => setShowReport(false)} context={`Страница: ${window.location.pathname}`} />;
-  }
+
 
   return (
     <div className="fixed inset-0 z-[80] flex items-end" onClick={handleClose}>
@@ -278,11 +274,7 @@ export function MoreSheet({ onClose }: MoreSheetProps) {
               window.open("https://t.me/Evgeniy9292", "_blank");
             }}
           />
-          <MenuItem
-            icon={<IconFlag />}
-            label="Сообщить об ошибке"
-            onClick={() => setShowReport(true)}
-          />
+
         </div>
 
         {/* App version */}

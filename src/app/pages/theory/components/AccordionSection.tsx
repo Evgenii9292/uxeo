@@ -17,6 +17,7 @@ interface AccordionState {
   showFeedback: boolean;
   completed: boolean;
   hasIncorrectAnswer: boolean;
+  earnedXp?: number;
 }
 
 interface AccordionSectionProps {
@@ -55,7 +56,7 @@ export function AccordionSectionMobile({
       >
         <div className="flex items-center justify-between px-[20px] w-full py-[12px]">
           <div className="flex gap-[14px] items-center flex-1 pr-[10px]">
-            {state.completed ? <GreenIndicator /> : state.hasIncorrectAnswer ? <OrangeIndicator /> : <GrayIndicator />}
+            {state.hasIncorrectAnswer ? <OrangeIndicator /> : state.completed ? <GreenIndicator /> : <GrayIndicator />}
             <p
               className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[24px] text-[22px]"
               style={{ color: !isUnlocked ? "rgba(121,133,137,0.25)" : isOpen ? "#f1f2fb" : "#798589" }}
@@ -127,13 +128,13 @@ export function AccordionSectionMobile({
                         <div className="flex flex-col gap-[8px]">
                           <div className="flex gap-[8px] items-center">
                             <PartyPopperIcon />
-                            <p className="font-['Roboto_Condensed:Medium',sans-serif] text-[#cdf6db] text-[16px]">Верно! +15 XP</p>
+                            <p className="font-['Roboto_Condensed:Medium',sans-serif] text-[#cdf6db] text-[16px]">Верно!{state.earnedXp ? ` +${state.earnedXp} XP` : ""}</p>
                           </div>
                           <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#cdf6db] text-[14px] leading-[1.3]">{section.correctFeedback}</p>
                         </div>
                       ) : (
                         <div className="flex flex-col gap-[8px]">
-                          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#ffbaaa] text-[14px]">Почти получилось!</p>
+                          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#ffbaaa] text-[14px]">Не совсем верно</p>
                           <p className="font-['Roboto_Condensed:Regular',sans-serif] text-[#ffd8d2] text-[14px] leading-[1.3]">{section.incorrectFeedback}</p>
                         </div>
                       )}
@@ -197,7 +198,7 @@ export function AccordionSectionDesktop({
       >
         <div className="content-stretch flex items-center justify-between px-[30px] relative w-full">
           <div className="content-stretch flex gap-[20px] items-center relative shrink-0">
-            {state.completed ? <GreenIndicator /> : state.hasIncorrectAnswer ? <OrangeIndicator /> : <GrayIndicator />}
+            {state.hasIncorrectAnswer ? <OrangeIndicator /> : state.completed ? <GreenIndicator /> : <GrayIndicator />}
             <p
               className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] relative shrink-0 text-[26px] whitespace-nowrap"
               style={{ color: !isUnlocked ? "rgba(121,133,137,0.25)" : isOpen ? "#f1f2fb" : "#798589" }}
@@ -270,12 +271,14 @@ export function AccordionSectionDesktop({
                                   Верно!
                                 </p>
                               </div>
+                              {Boolean(state.earnedXp) && (
                               <div className="content-stretch flex items-center justify-between relative shrink-0 w-[47px]">
                                 <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] relative shrink-0 text-[#00d043] text-[18px] whitespace-nowrap">
-                                  +15
+                                  +{state.earnedXp}
                                 </p>
                                 <SparkleIcon />
                               </div>
+                              )}
                             </div>
                             <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[1.2] relative shrink-0 text-[#cdf6db] text-[16px]">
                               {section.correctFeedback}
@@ -285,7 +288,7 @@ export function AccordionSectionDesktop({
                           <div className="content-stretch flex flex-col gap-[10px] items-start justify-center relative shrink-0 pr-[20px]" style={{ flex: "1 1 160px" }}>
                             <div className="flex gap-[10px] items-center">
                               <FistIcon />
-                              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.2] relative text-[#ffbaaa] text-[18px]">Почти получилось!</p>
+                              <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.2] relative text-[#ffbaaa] text-[18px]">Не совсем верно</p>
                             </div>
                             <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[1.2] relative shrink-0 text-[16px] text-[#ffd8d2]">
                               {section.incorrectFeedback}

@@ -10,6 +10,7 @@ export interface AccordionState {
   showFeedback: boolean;
   completed: boolean;
   hasIncorrectAnswer: boolean;
+  earnedXp?: number;
 }
 
 export function useTheory(isMobile: boolean, lessonId?: string, totalSections: number = 5) {
@@ -65,7 +66,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     // Fallback: derive from UserContext
     for (let i = lastSectionIndex; i >= 0; i--) {
       const qs = progress.questions[`mini-quiz-${i}`];
-      if (qs?.correct) return i;
+      if (qs) return Math.min(i + 1, lastSectionIndex);
     }
     return 0;
   });
@@ -74,15 +75,16 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     return Array.from({ length: totalSections }, (_, index) => {
       const quizId = `mini-quiz-${index}`;
       const questionState = progress.questions[quizId];
-      if (questionState && questionState.correct) {
-        return { selectedAnswer: "right", showFeedback: true, completed: true, hasIncorrectAnswer: false };
+      if (questionState) {
+        return { selectedAnswer: questionState.correct ? "right" : "left", showFeedback: true, completed: true, hasIncorrectAnswer: !questionState.correct };
       }
       return { selectedAnswer: null, showFeedback: false, completed: false, hasIncorrectAnswer: false };
     });
   });
 
   useEffect(() => {
-    const syncKey = `${resolvedLessonId}:${userCtx?.user?.id ?? "guest"}`;
+    if (userCtx?.userLoading) return;
+    const syncKey = `${storageKey}:${totalSections}:${userCtx?.user?.id ?? "guest"}`;
     if (syncedLessonKeyRef.current === syncKey) return;
     syncedLessonKeyRef.current = syncKey;
 
@@ -96,8 +98,8 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
       } else {
         for (let i = lastSectionIndex; i >= 0; i--) {
           const qs = nextProgress.questions[`mini-quiz-${i}`];
-          if (qs?.correct) {
-            nextMaxReached = i;
+          if (qs) {
+            nextMaxReached = Math.min(i + 1, lastSectionIndex);
             break;
           }
         }
@@ -105,8 +107,8 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     } catch {
       for (let i = lastSectionIndex; i >= 0; i--) {
         const qs = nextProgress.questions[`mini-quiz-${i}`];
-        if (qs?.correct) {
-          nextMaxReached = i;
+        if (qs) {
+          nextMaxReached = Math.min(i + 1, lastSectionIndex);
           break;
         }
       }
@@ -118,12 +120,12 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
       Array.from({ length: totalSections }, (_, index) => {
         const quizId = `mini-quiz-${index}`;
         const questionState = nextProgress.questions[quizId];
-        if (questionState?.correct) {
+        if (questionState) {
           return {
-            selectedAnswer: "right",
+            selectedAnswer: questionState.correct ? "right" : "left",
             showFeedback: true,
             completed: true,
-            hasIncorrectAnswer: false,
+            hasIncorrectAnswer: !questionState.correct,
           };
         }
         return {
@@ -134,7 +136,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
         };
       }),
     );
-  }, [resolvedLessonId, storageKey, totalSections, lastSectionIndex, auth?.isDemo]);
+  }, [resolvedLessonId, storageKey, totalSections, lastSectionIndex, auth?.isDemo, userCtx?.userLoading, userCtx?.user?.id]);
 
   const completedUpTo = accordionStates.reduce((max, s, idx) => s.completed ? Math.max(max, idx + 1) : max, 0);
   const effectiveMaxReached = Math.max(maxReached, completedUpTo);
@@ -186,20 +188,11 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     newStates[sectionIndex] = { 
       selectedAnswer: answer, 
       showFeedback: true, 
-      completed: isCorrect,
+      completed: true,
+      earnedXp: isCorrect && !getLessonProgress(resolvedLessonId).questions[`mini-quiz-${sectionIndex}`]?.xpAwarded ? 15 : 0,
       hasIncorrectAnswer: !isCorrect || (newStates[sectionIndex]?.hasIncorrectAnswer ?? false)
     };
     setAccordionStates(newStates);
-
-    // A new section is proof-of-learning gated: an incorrect answer keeps the
-    // learner on the current explanation and feedback until they retry.
-    if (isCorrect) {
-      const nextToUnlock = Math.min(sectionIndex + 1, lastSectionIndex);
-      if (nextToUnlock > maxReached) {
-        setMaxReached(nextToUnlock);
-        try { localStorage.setItem(storageKey, String(nextToUnlock)); } catch {}
-      }
-    }
 
     // Scroll further so feedback and the Continue button are immediately visible.
     requestAnimationFrame(() => {
@@ -212,9 +205,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
       });
     });
 
-    if (isCorrect) {
-      updateQuestionState(resolvedLessonId, `mini-quiz-${sectionIndex}`, true, 15);
-    }
+    updateQuestionState(resolvedLessonId, `mini-quiz-${sectionIndex}`, isCorrect, 15);
 
     // Sound feedback
     try {
@@ -241,9 +232,8 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
   };
 
   const handleContinue = (sectionIndex: number) => {
-    // The button may remain visible after wrong-answer feedback; it must not
-    // bypass the validation rule.
-    if (!accordionStates[sectionIndex]?.completed) return;
+    // Read the explanation before continuing, regardless of whether the answer was correct.
+    if (!accordionStates[sectionIndex]?.showFeedback) return;
     if (sectionIndex === lastSectionIndex) {
       // Last section — navigate to quiz with correct lessonId and quizId
       const container = isMobile ? mobileScrollRef.current : null;
