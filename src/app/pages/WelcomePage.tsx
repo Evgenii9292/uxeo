@@ -163,11 +163,11 @@ function useIsStandalone() {
 
 export default function WelcomePage() {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const { signInWithGoogle, signInWithEmail, isAuthenticated, loading, startDemo } = useAuth();
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
-  const [emailError, setEmailError] = useState("");
+  const [emailError, setEmailError] = useState(() => new URLSearchParams(search).has("authError") ? "Не удалось войти. Ссылка могла устареть. Попробуйте войти снова." : "");
   const [emailLoading, setEmailLoading] = useState(false);
   const [showEmailInput, setShowEmailInput] = useState(false);
   const isStandalone = useIsStandalone();
@@ -188,7 +188,9 @@ export default function WelcomePage() {
     }
     setEmailLoading(true);
     setEmailError("");
-    const { error } = await signInWithEmail(email.trim());
+    let error: string | undefined;
+    try { ({ error } = await signInWithEmail(email.trim())); }
+    catch { error = "network"; }
     setEmailLoading(false);
     if (error) {
       setEmailError("Ошибка. Попробуйте ещё раз.");
@@ -231,7 +233,7 @@ export default function WelcomePage() {
 
             {/* Google sign-in — primary */}
             <button
-              onClick={() => { playClick(); signInWithGoogle(); }}
+              onClick={async () => { playClick(); setEmailError(""); try { await signInWithGoogle(); } catch { setEmailError("Не удалось войти через Google. Попробуйте ещё раз или войдите по почте."); } }}
               className="group relative w-full h-[59px] rounded-[15px] flex items-center justify-center gap-[10px] select-none cursor-pointer outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px]"
               style={{ background: "#242B2E" }}
             >
@@ -323,6 +325,8 @@ export default function WelcomePage() {
               Демо хранится только на этом устройстве. Отправка работ недоступна.
             </p>
           </div>
+
+          {emailError && !showEmailInput && <p role="alert" className="text-[#ff6b6b] text-[16px] text-center">{emailError}</p>}
 
           {/* PWA standalone: subtle hint below buttons */}
           {isStandalone && (

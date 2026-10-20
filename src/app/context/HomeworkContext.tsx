@@ -1,3 +1,4 @@
+import { pendingHomeworkRewards } from "../utils/learningProgress";
 /**
  * HomeworkContext — fetches homework statuses from backend for the current user,
  * tracks which "reviewed/rejected" notifications have been seen.
@@ -5,6 +6,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
 import { projectId } from "../../../utils/supabase/info";
+import { useUserSafe } from "./UserContext";
 import { useAuthSafe } from "./AuthContext";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -52,6 +54,8 @@ const HomeworkContext = createContext<HomeworkContextValue | undefined>(undefine
 
 export function HomeworkProvider({ children }: { children: ReactNode }) {
   const auth = useAuthSafe();
+  const learner = useUserSafe();
+  const [verifiedOwner, setVerifiedOwner] = useState<string | null>(null);
   const userId = auth?.userId ?? null;
   const accessToken = auth?.accessToken ?? null;
   const isDemo = auth?.isDemo ?? false;
@@ -78,6 +82,7 @@ export function HomeworkProvider({ children }: { children: ReactNode }) {
       const data = await res.json();
       const fresh: HomeworkRecord[] = data.homeworks ?? [];
       setHomeworks(fresh);
+      setVerifiedOwner(userId);
       try { localStorage.setItem(CACHE_KEY, JSON.stringify(fresh)); } catch {}
     } catch {
       // silent — network unavailable, keep stale state
@@ -96,6 +101,13 @@ export function HomeworkProvider({ children }: { children: ReactNode }) {
   }, [seen]);
 
   // Count homeworks with status reviewed/rejected that have changed since last seen
+  useEffect(() => {
+    if (isDemo || !userId || verifiedOwner !== userId || learner?.userLoading || !learner) return;
+    for (const lessonId of pendingHomeworkRewards(homeworks, learner.user.lessonProgress)) {
+      learner.updateQuestionState(lessonId, "hw_xp_reward", true, 800);
+    }
+  }, [homeworks, isDemo, userId, verifiedOwner, learner?.userLoading, learner?.user.lessonProgress]);
+
   const unseenCount = homeworks.filter((hw) => {
     if (hw.status !== "reviewed" && hw.status !== "rejected") return false;
     const key = hw.lesson_id || hw.lesson_name;

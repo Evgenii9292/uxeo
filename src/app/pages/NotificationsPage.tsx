@@ -892,7 +892,7 @@ function RealNotifCard({ event, filter }: { event: NotifEvent; filter: string })
   const timeStr = formatNotifTime(timestamp);
 
   if (filter === "unread" && read) return null;
-  if (filter === "action" && type !== "lesson_completed") return null;
+  if (filter === "action") return null;
 
   const renderContent = () => {
     if (type === "lesson_completed") {
@@ -1049,14 +1049,16 @@ export default function NotificationsPage() {
   // Group localStorage events by date label
   const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
   const yesterdayStart = new Date(todayStart); yesterdayStart.setDate(yesterdayStart.getDate() - 1);
-  const realToday     = events.filter(e => e.timestamp >= todayStart.getTime());
-  const realYesterday = events.filter(e => e.timestamp >= yesterdayStart.getTime() && e.timestamp < todayStart.getTime());
-  const realEarlier   = events.filter(e => e.timestamp < yesterdayStart.getTime());
+  const visibleEvents = events.filter(event => filter === "all" || (filter === "unread" && !event.read));
+  const visibleServerNotifs = serverNotifs.filter(notif => filter === "all" || (filter === "unread" && !notif.read));
+  const realToday     = visibleEvents.filter(e => e.timestamp >= todayStart.getTime());
+  const realYesterday = visibleEvents.filter(e => e.timestamp >= yesterdayStart.getTime() && e.timestamp < todayStart.getTime());
+  const realEarlier   = visibleEvents.filter(e => e.timestamp < yesterdayStart.getTime());
 
   // Group server notifications by date label
-  const srvToday     = serverNotifs.filter(n => new Date(n.created_at).getTime() >= todayStart.getTime());
-  const srvYesterday = serverNotifs.filter(n => { const t = new Date(n.created_at).getTime(); return t >= yesterdayStart.getTime() && t < todayStart.getTime(); });
-  const srvEarlier   = serverNotifs.filter(n => new Date(n.created_at).getTime() < yesterdayStart.getTime());
+  const srvToday     = visibleServerNotifs.filter(n => new Date(n.created_at).getTime() >= todayStart.getTime());
+  const srvYesterday = visibleServerNotifs.filter(n => { const t = new Date(n.created_at).getTime(); return t >= yesterdayStart.getTime() && t < todayStart.getTime(); });
+  const srvEarlier   = visibleServerNotifs.filter(n => new Date(n.created_at).getTime() < yesterdayStart.getTime());
 
   const realUnread   = events.filter(e => !e.read).length;
   const serverUnread = serverNotifs.filter(n => !n.read).length;
@@ -1073,6 +1075,7 @@ export default function NotificationsPage() {
     hwCtx?.markSeen(lessonId);
   };
 
+  const visibleHomeworkNotifs = hwNotifs.filter(hw => filter === "all" || (filter === "action" ? hw.status === "rejected" : !(hwRead[hw.id] ?? !hwCtx?.isUnseen(hw.lesson_id || hw.lesson_name))));
   const hwUnreadCount = hwNotifs.filter(hw => !(hwRead[hw.id] ?? !hwCtx?.isUnseen(hw.lesson_id || hw.lesson_name))).length;
   const unreadCount = realUnread + serverUnread + hwUnreadCount;
 
@@ -1091,6 +1094,10 @@ export default function NotificationsPage() {
     events.length === 0 &&
     serverNotifs.length === 0;
 
+  const visibleCount = filter === "action"
+    ? hwNotifs.filter(hw => hw.status === "rejected").length
+    : filter === "unread" ? unreadCount : events.length + serverNotifs.length + hwNotifs.length;
+
   const handleDeleteAll = () => {
     // Clear localStorage events
     clearAllEvents();
@@ -1100,8 +1107,9 @@ export default function NotificationsPage() {
   };
 
   return (
-    <Layout title="Уведомления" rightWidth="320px" stickyBar={<FilterBar active={filter} unreadCount={unreadCount} hasRequiredAction={hwNotifs.length > 0 || events.some(event => event.type === "lesson_completed")} onChange={setFilter} onDeleteAll={() => setShowDeleteAllConfirm(true)} />}>
+    <Layout title="Уведомления" rightWidth="320px" stickyBar={<FilterBar active={filter} unreadCount={unreadCount} hasRequiredAction={hwNotifs.some(hw => hw.status === "rejected")} onChange={setFilter} onDeleteAll={() => setShowDeleteAllConfirm(true)} />}>
       <div className="flex flex-col gap-[25px] w-full">
+        {!listEmpty && visibleCount === 0 && <p role="status" className="py-10 text-center text-[#b5c0c5]">{filter === "unread" ? "Всё прочитано" : "Нет уведомлений, требующих действия"}</p>}
 
         {/* Notification list */}
         <div className="content-stretch flex flex-col gap-[30px] items-start relative shrink-0 w-full pb-[40px]">
@@ -1109,9 +1117,9 @@ export default function NotificationsPage() {
           {listEmpty && <EmptyState />}
 
           {/* ── Homework status notifications (real, from backend) ── */}
-          {hwNotifs.length > 0 && (filter === "all" || filter === "action" || filter === "unread") && (
+          {visibleHomeworkNotifs.length > 0 && (filter === "all" || filter === "action" || filter === "unread") && (
             <DateGroup label="Домашние работы">
-              {hwNotifs.map(hw => {
+              {visibleHomeworkNotifs.map(hw => {
                 const isRead = hwRead[hw.id] ?? !hwCtx?.isUnseen(hw.lesson_id || hw.lesson_name);
                 const label = hw.status === "reviewed" ? "Работа проверена ✅" : "Нужно переделать ↩";
                 const desc  = hw.status === "reviewed"
@@ -1120,6 +1128,7 @@ export default function NotificationsPage() {
                 const color = hw.status === "reviewed" ? "#5EDD60" : "#FF6B21";
                 const lessonId = hw.lesson_id || hw.lesson_name;
                 if (filter === "unread" && isRead) return null;
+                if (filter === "action" && hw.status !== "rejected") return null;
                 return (
                   <SeenNotification key={hw.id} isRead={isRead} onRead={() => readHomework(hw.id, lessonId)}>
                   <div

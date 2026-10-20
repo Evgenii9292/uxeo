@@ -429,7 +429,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
           [lessonId]: {
             ...lessonProgress,
             questions: updatedQuestions,
-            isCompleted: isPassed,
+            isCompleted: lessonProgress.isCompleted,
           },
         },
       };
@@ -460,6 +460,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
           [lessonId]: {
             ...lessonProgress,
             correctAnswers: newBest,
+            totalTasks: totalQuestions,
             isCompleted: isPassed,
           },
         },
@@ -472,7 +473,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       const lessonProgress = prev.lessonProgress[lessonId];
       if (!lessonProgress) return prev;
 
-      const correctCount = Object.values(lessonProgress.questions || {}).filter(q => q.correct).length;
+      const correctCount = lessonProgress.correctAnswers ?? 0;
       const isPassed = correctCount >= Math.ceil(lessonProgress.totalTasks * 0.5);
       const newBest = Math.max(lessonProgress.correctAnswers ?? 0, correctCount);
 

@@ -560,8 +560,11 @@ function InfoPopup({ onClose }: { onClose: () => void }) {
 
 function PCGuidanceBanner() {
   const [copied, setCopied] = useState(false);
-  const handleCopy = () => {
-    try { navigator.clipboard.writeText(window.location.href); } catch (_) {}
+  const [copyError, setCopyError] = useState(false);
+  const handleCopy = async () => {
+    setCopyError(false);
+    try { await navigator.clipboard.writeText(window.location.href); }
+    catch { setCopyError(true); return; }
     setCopied(true);
     setTimeout(() => setCopied(false), 2200);
   };
@@ -570,6 +573,7 @@ function PCGuidanceBanner() {
       className="rounded-[12px] flex flex-col gap-[10px] px-[14px] py-[12px]"
       style={{ background: "rgba(255,107,33,0.07)", border: "1px solid rgba(255,107,33,0.18)" }}
     >
+      {copyError && <p role="alert" className="text-[#ffbaaa] text-[13px]">Не удалось скопировать ссылку. Скопируйте адрес из строки браузера.</p>}
       <div className="flex items-start gap-[8px]">
         {/* Figma logo */}
         <svg width="12" height="18" viewBox="0 0 10 15" fill="none" style={{ flexShrink: 0, marginTop: 1 }}>
@@ -719,7 +723,6 @@ function SubmitBlock({ homeworkLessonId, lessonName, mobileCompact }: { homework
       if (hwCtx.isUnseen(homeworkLessonId)) {
         if (serverStatus === "reviewed") {
           // Grant XP + show achievement modal (no custom popup)
-          userData?.updateQuestionState(homeworkLessonId, "hw_xp_reward", true, 800);
           achievementsCtx?.triggerAchievement("homework_done");
           hwCtx.markSeen(homeworkLessonId);
         } else {
@@ -1322,7 +1325,14 @@ function SubmitBlock({ homeworkLessonId, lessonName, mobileCompact }: { homework
 export default function HomeworkPage() {
   const location = useLocation();
   const isMobile = useIsMobile();
-  const homeworkLessonId = (location.state as any)?.homeworkId || "homework-1";
+  const navigate = useNavigate();
+  const params = new URLSearchParams(location.search);
+  const homeworkLessonId = params.get("lessonId") || (location.state as any)?.homeworkId || "homework-1";
+  useEffect(() => {
+    if (!params.get("lessonId")) {
+      navigate(`/homework?lessonId=${encodeURIComponent(homeworkLessonId)}`, { replace: true, state: location.state });
+    }
+  }, [homeworkLessonId, location.search, navigate]);
   const hw = HOMEWORK_CONTENT[homeworkLessonId] || DEFAULT_HOMEWORK;
   const hwCtx = useHomeworkSafe();
   const serverRecord = hwCtx?.getByLessonId(homeworkLessonId) ?? hwCtx?.getByLessonName(hw.title);
@@ -1343,6 +1353,8 @@ export default function HomeworkPage() {
       return next;
     });
   };
+
+  if (!HOMEWORK_CONTENT[homeworkLessonId]) return <Layout title="Задание недоступно"><p className="text-[#f4f5fc]">Не удалось найти это домашнее задание.</p><button onClick={() => navigate("/lessons")} className="text-[#ff6b21]">Вернуться к урокам</button></Layout>;
 
   return (
     <>

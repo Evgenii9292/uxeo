@@ -63,6 +63,7 @@ function playResultSound(correct: boolean) {
 // ── Main component ─────────────────────────────────────────────────────────────
 
 export function CompareUIQuiz({
+  continueLabel = "Следующий вопрос",
   question,
   compareOptions,
   correctAnswer,
@@ -77,6 +78,7 @@ export function CompareUIQuiz({
   mobileNaturalW,
   mobileNaturalH,
 }: {
+  continueLabel?: string;
   question: string;
   /** MUST be an array of 2 items with label + (content or previewType). */
   compareOptions: CompareUIOption[];
@@ -240,7 +242,7 @@ export function CompareUIQuiz({
           {phase === "feedback" && (
             <div className="mb-[10px]">
               {isCorrect
-                ? <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
+                ? <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} xp={earnedXP} />
                 : <IncorrectFeedback correctAnswer={correctAnswer} explanation={explanation} isReplay={isReplay} hideAnswer />
               }
             </div>
@@ -249,8 +251,8 @@ export function CompareUIQuiz({
             <FlagReportButton />
             <div className="flex-1">
               {phase === "selecting"
-                ? selection === null ? <ContinueDisabled fullWidth /> : <ContinueActive onClick={handleContinue} fullWidth />
-                : isCorrect ? <ContinueCorrect onClick={handleContinue} fullWidth /> : <ContinueActive onClick={handleContinue} fullWidth />
+                ? selection === null ? <ContinueDisabled label="Проверить ответ" fullWidth /> : <ContinueActive label={phase === "selecting" ? "Проверить ответ" : continueLabel} onClick={handleContinue} fullWidth />
+                : isCorrect ? <ContinueCorrect label={continueLabel} onClick={handleContinue} fullWidth /> : <ContinueActive label={phase === "selecting" ? "Проверить ответ" : continueLabel} onClick={handleContinue} fullWidth />
               }
             </div>
           </div>
@@ -298,18 +300,18 @@ export function CompareUIQuiz({
           <div className="flex-1 flex items-center" style={{ paddingRight: 40 }}>
             {phase === "feedback" && (
               isCorrect
-                ? <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
+                ? <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} xp={earnedXP} />
                 : <IncorrectFeedback correctAnswer={correctAnswer} explanation={explanation} isReplay={isReplay} hideAnswer />
             )}
           </div>
           <div className="flex-none flex items-center justify-end gap-[20px]">
             <FlagReportButton />
             {phase === "selecting" ? (
-              selection === null ? <ContinueDisabled /> : <ContinueActive onClick={handleContinue} />
+              selection === null ? <ContinueDisabled label="Проверить ответ" /> : <ContinueActive label={phase === "selecting" ? "Проверить ответ" : continueLabel} onClick={handleContinue} />
             ) : isCorrect ? (
-              <ContinueCorrect onClick={handleContinue} />
+              <ContinueCorrect label={continueLabel} onClick={handleContinue} />
             ) : (
-              <ContinueActive onClick={handleContinue} />
+              <ContinueActive label={phase === "selecting" ? "Проверить ответ" : continueLabel} onClick={handleContinue} />
             )}
           </div>
         </div>

@@ -36,7 +36,7 @@ export default function AuthCallbackPage() {
     function handleNoSession() {
       if (resolved || cancelled) return;
       resolved = true;
-      navigate("/welcome", { replace: true });
+      navigate("/welcome?authError=1", { replace: true });
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -59,9 +59,7 @@ export default function AuthCallbackPage() {
       if (data.session && !resolved) handleSession(data.session);
     };
 
-    completeAuth().catch(() => {
-      // Timeout below remains the fallback.
-    });
+    completeAuth().catch(handleNoSession);
 
     const timeout = window.setTimeout(handleNoSession, 8000);
 

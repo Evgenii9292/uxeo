@@ -184,7 +184,7 @@ export default function QuizPage() {
             {phase === "feedback" && (
               <div className="mb-[10px]">
                 {isCorrect
-                  ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} />
+                  ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} xp={earnedXP} />
                   : <IncorrectFeedback correctAnswer="А" explanation={EXPLANATION} />
                 }
               </div>
@@ -275,7 +275,7 @@ export default function QuizPage() {
               <div className="flex-1 flex items-center min-w-0">
                 {phase === "feedback" && (
                   isCorrect
-                    ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} />
+                    ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} xp={earnedXP} />
                     : <IncorrectFeedback correctAnswer="А" explanation={EXPLANATION} />
                 )}
               </div>
@@ -332,7 +332,7 @@ export default function QuizPage() {
             <div className="w-[460px] flex items-center">
               {phase === "feedback" && (
                 isCorrect
-                  ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} />
+                  ? <CorrectFeedback explanation={EXPLANATION} showXp={earnedXP > 0} xp={earnedXP} />
                   : <IncorrectFeedback correctAnswer="А" explanation={EXPLANATION} />
               )}
             </div>

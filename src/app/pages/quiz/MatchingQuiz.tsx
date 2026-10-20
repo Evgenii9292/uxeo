@@ -1,3 +1,4 @@
+import { shuffled } from "../../utils/quizSession";
 /**
  * MatchingQuiz — click-or-drag to connect pairs.
  *
@@ -105,6 +106,7 @@ function playCheckSound(correct: boolean) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function MatchingQuiz({
+  continueLabel = "Следующий вопрос",
   question,
   pairs,
   explanation,
@@ -112,6 +114,7 @@ export function MatchingQuiz({
   onContinue,
   earnedXP,
 }: {
+  continueLabel?: string;
   question: string;
   pairs: MatchingPair[];
   explanation: string;
@@ -120,10 +123,7 @@ export function MatchingQuiz({
   earnedXP: number;
 }) {
   // Shuffle bottom row once on mount (rotate by 1)
-  const shuffledPairs = useMemo(() => {
-    const n = pairs.length;
-    return pairs.map((_, i) => pairs[(i + 1) % n]);
-  }, []);
+  const shuffledPairs = useMemo(() => shuffled(pairs), []);
 
   // topId → bottomId. All shown as gray until checked.
   const [connections, setConnections] = useState<Record<string, string>>({});
@@ -759,7 +759,7 @@ export function MatchingQuiz({
           {checked && (
             <div className="mb-[10px]">
               {allCorrect ? (
-                <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
+                <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} xp={earnedXP} />
               ) : (
                 <IncorrectFeedback correctAnswer="" explanation={explanation} hideAnswer />
               )}
@@ -768,10 +768,10 @@ export function MatchingQuiz({
           <div className="flex items-center gap-[20px]">
             <FlagReportButton />
             <div className="flex-1">
-              {!allConnected && !checked && <ContinueDisabled fullWidth />}
-              {allConnected && !checked && <ContinueActive onClick={handleCheck} fullWidth />}
-              {checked && allCorrect && <ContinueCorrect onClick={onContinue} fullWidth />}
-              {checked && !allCorrect && <ContinueActive onClick={onContinue} fullWidth />}
+              {!allConnected && !checked && <ContinueDisabled label="Проверить ответ" fullWidth />}
+              {allConnected && !checked && <ContinueActive label="Проверить ответ" onClick={handleCheck} fullWidth />}
+              {checked && allCorrect && <ContinueCorrect label={continueLabel} onClick={onContinue} fullWidth />}
+              {checked && !allCorrect && <ContinueActive label={continueLabel} onClick={onContinue} fullWidth />}
             </div>
           </div>
         </div>
@@ -1000,7 +1000,7 @@ export function MatchingQuiz({
           {/* Left: feedback */}
           <div className="flex-1 flex items-center">
             {checked && allCorrect && (
-              <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} />
+              <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} xp={earnedXP} />
             )}
             {checked && !allCorrect && (
               <IncorrectFeedback correctAnswer="" explanation={explanation} hideAnswer />
@@ -1010,9 +1010,9 @@ export function MatchingQuiz({
           {/* Right: button */}
           <div className="flex-none flex items-center justify-end gap-[20px]">
             <FlagReportButton />
-            {!allConnected && !checked && <ContinueDisabled />}
-            {allConnected && !checked && <ContinueActive onClick={handleCheck} />}
-            {checked && <ContinueCorrect onClick={onContinue} />}
+            {!allConnected && !checked && <ContinueDisabled label="Проверить ответ" />}
+            {allConnected && !checked && <ContinueActive label="Проверить ответ" onClick={handleCheck} />}
+            {checked && <ContinueCorrect label={continueLabel} onClick={onContinue} />}
           </div>
         </div>
       </div>

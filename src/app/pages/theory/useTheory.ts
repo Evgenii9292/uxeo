@@ -52,6 +52,8 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
   // Use per-lesson localStorage key so different lessons don't share state
   const storageKey = `${auth?.isDemo ? "skillum-demo" : "skillum"}-theory-max-reached-${resolvedLessonId}`;
 
+  const sectionStorageKey = `${storageKey}-open-section`;
+
   // Load lesson progress using the resolved lessonId
   const progress = getLessonProgress(resolvedLessonId);
 
@@ -115,7 +117,15 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     }
 
     setMaxReached(nextMaxReached);
-    setOpenSections(new Set([0]));
+    let lastOpen = 0;
+    try { lastOpen = Number(localStorage.getItem(sectionStorageKey)) || 0; } catch {}
+    const restoredSection = Math.max(0, Math.min(lastOpen, nextMaxReached, lastSectionIndex));
+    setOpenSections(new Set([restoredSection]));
+    if (restoredSection > 0) setTimeout(() => {
+      const element = document.querySelector(`[data-section="${restoredSection}"]`) as HTMLElement | null;
+      const container = element && findScrollContainer(element);
+      if (element && container) container.scrollTo({ top: Math.max(0, container.scrollTop + element.getBoundingClientRect().top - container.getBoundingClientRect().top - 80) });
+    }, 350);
     setAccordionStates(
       Array.from({ length: totalSections }, (_, index) => {
         const quizId = `mini-quiz-${index}`;
@@ -157,6 +167,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
   const handleToggle = (index: number) => {
     if (!isUnlocked(index)) return;
     const isCurrentlyOpen = openSections.has(index);
+    if (!isCurrentlyOpen) { try { localStorage.setItem(sectionStorageKey, String(index)); } catch {} }
 
     if (!isCurrentlyOpen) {
       setOpenSections(prev => { const next = new Set(prev); next.add(index); return next; });
@@ -244,6 +255,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     }
 
     const nextSection = sectionIndex + 1;
+    try { localStorage.setItem(sectionStorageKey, String(nextSection)); } catch {}
     if (nextSection > maxReached) {
       setMaxReached(nextSection);
       try { localStorage.setItem(storageKey, String(nextSection)); } catch {}

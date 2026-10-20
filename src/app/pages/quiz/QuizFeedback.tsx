@@ -4,7 +4,7 @@ import { QuizFeedbackIcon } from "./QuizFeedbackIcon";
 import { useState } from "react";
 import { PartyPopperIcon, LightningIcon } from "./QuizIcons";
 
-export function CorrectFeedback({ explanation, showXp = true }: { explanation: string; showXp?: boolean }) {
+export function CorrectFeedback({ explanation, showXp = true, xp = 25 }: { explanation: string; showXp?: boolean; xp?: number }) {
   return (
     <div className="flex gap-[16px] items-start shrink-0 w-full">
       <div className="flex flex-col gap-[5px] items-end justify-start shrink-0">
@@ -14,7 +14,7 @@ export function CorrectFeedback({ explanation, showXp = true }: { explanation: s
         </div>
         {showXp && (
           <div className="flex items-center justify-between w-[47px]">
-            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] text-[#00d043] text-[18px] whitespace-nowrap">+25</p>
+            <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] text-[#00d043] text-[18px] whitespace-nowrap">+{xp}</p>
             <LightningIcon />
           </div>
         )}
@@ -37,7 +37,7 @@ export function IncorrectFeedback({
   isReplay?: boolean;
   hideAnswer?: boolean;
 }) {
-  const phrase = isReplay ? "Попробуйте ещё раз" : "Не совсем верно";
+  const phrase = "Не совсем верно";
 
   return (
     <div className="flex gap-[16px] items-start shrink-0 w-full">

@@ -1,3 +1,4 @@
+import { getQuizResult } from "../utils/learningProgress";
 import { lazy, Suspense, useState, useMemo, useCallback, useEffect } from "react";
 import Layout from "../components/Layout";
 import RoadmapPanel from "../components/RoadmapPanel";
@@ -184,7 +185,7 @@ export default function LessonPage() {
       // CRITICAL: Use lesson.quizId (stored in data) to get progress per quiz
       // Each lesson has its own unique quizId — no shared progress possible
       const progressKey = lesson.quizId || lesson.lessonId;
-      const progressData    = userData?.getLessonProgress(progressKey);
+      const progressData = lesson.quizId ? getQuizResult(lesson.quizId, lesson.lessonId, userData?.user.lessonProgress ?? {}) : userData?.getLessonProgress(progressKey);
       const hasContextData  = progressData && (progressData.correctAnswers > 0 || Object.keys(progressData.questions).length > 0);
 
       // Completion uses correctAnswers (best-ever score, set by saveBestScore at quiz end).

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useLocation } from "react-router";
+import { Link, useLocation } from "react-router";
 import Layout from "../components/Layout";
 import { useUserSafe } from "../context/UserContext";
 import { useWindowWidth } from "../hooks/useWindowWidth";
@@ -21,11 +21,18 @@ export default function TheoryPage() {
     || (location.pathname === "/contrast" ? "contrast-lesson" : "color-lesson");
 
   // Lazy-load lesson content — lesson-content.tsx is a separate chunk
+  const [missingLesson, setMissingLesson] = useState(false);
   const [lessonData, setLessonData] = useState<LessonContentData | null>(null);
   useEffect(() => {
+    let cancelled = false;
+    setLessonData(null);
+    setMissingLesson(false);
     import("../data/lesson-content").then(mod => {
-      setLessonData(mod.LESSON_CONTENT[lessonId] || mod.LESSON_CONTENT["color-lesson"]);
-    });
+      if (cancelled) return;
+      setLessonData(mod.LESSON_CONTENT[lessonId] ?? null);
+      setMissingLesson(!mod.LESSON_CONTENT[lessonId]);
+    }).catch(() => { if (!cancelled) setMissingLesson(true); });
+    return () => { cancelled = true; };
   }, [lessonId]);
 
   const vw = useWindowWidth();
@@ -60,6 +67,8 @@ export default function TheoryPage() {
     handleAnswerSelect,
     handleContinue,
   } = useTheory(isMobile, lessonId, lessonData?.sections.length ?? 5);
+
+  if (missingLesson) return <main className="min-h-screen flex flex-col gap-4 items-center justify-center text-[#f4f5fc] bg-[#282F33] p-6 text-center"><h1>Урок недоступен</h1><p>Не удалось открыть этот урок. Вернитесь к списку и выберите его снова.</p><Link className="text-[#ff6b21]" to="/lessons">Вернуться к урокам</Link></main>;
 
   // Loading state — dark background matches app theme, no flash
   if (!lessonData) {

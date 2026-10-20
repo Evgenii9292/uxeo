@@ -1,3 +1,5 @@
+import { presentQuestion, shuffled, quizRunKey, readQuizRun, type QuizRun } from "../utils/quizSession";
+import { useAuthSafe } from "../context/AuthContext";
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { useUser } from "../context/UserContext";
@@ -148,9 +150,14 @@ function gainFor(base: number) {
 }
 
 export default function LessonQuizPage() {
+  const location = useLocation();
+  return <LessonQuizSession key={`${location.search}:${JSON.stringify(location.state)}`} />;
+}
+
+function LessonQuizSession() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { xp, getLessonProgress, incrementStreak, streak, saveBestScore } = useUser();
+  const { xp, getLessonProgress, incrementStreak, streak, saveBestScore, userLoading } = useUser();
   const { lessonState, initializeLesson, answerQuestion, nextQuestion, completeLesson, exitLesson } = useLesson();
   const achievementsCtx = useAchievementsSafe();
 
@@ -182,6 +189,11 @@ export default function LessonQuizPage() {
   const QUIZ_QUESTIONS = QUIZ_BANK[quizId];
   const totalQuestions = QUIZ_QUESTIONS ? QUIZ_QUESTIONS.length : 0;
 
+  const auth = useAuthSafe();
+  const sessionKey = quizRunKey(auth?.isDemo ? "demo" : auth?.userId ?? "guest", quizId);
+  const initializedRun = useRef(false);
+  const [savedRun] = useState(() => readQuizRun(sessionKey, quizId, totalQuestions));
+  const [shuffleSeed, setShuffleSeed] = useState(() => savedRun?.seed ?? Math.floor(Math.random() * 2147483647));
   const [selection, setSelection] = useState<Selection>(null);
   const [phase, setPhase] = useState<Phase>("selecting");
   const [showExitModal, setShowExitModal] = useState(false);
@@ -190,18 +202,18 @@ export default function LessonQuizPage() {
   const [showStreakOverlay, setShowStreakOverlay] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
-  const quizStartTime = useRef(Date.now());
-  const [runAnsweredQuestions, setRunAnsweredQuestions] = useState(0);
-  const [runCorrectAnswers, setRunCorrectAnswers] = useState(0);
-  const runCorrectRef = useRef(0);
+  const quizStartTime = useRef(savedRun?.startedAt ?? Date.now());
+  const [runAnsweredQuestions, setRunAnsweredQuestions] = useState(savedRun?.answers.length ?? 0);
+  const [runCorrectAnswers, setRunCorrectAnswers] = useState(savedRun?.answers.filter(answer => answer.isCorrect).length ?? 0);
+  const runCorrectRef = useRef(savedRun?.answers.filter(answer => answer.isCorrect).length ?? 0);
   // Temporary XP accumulated during this quiz run — NOT persisted until quiz is fully complete
   const [temporaryQuizXp, setTemporaryQuizXp] = useState(0);
   // ── Streak state ──────────────────────────────────────────────────────────
-  const [currentStreak, setCurrentStreak] = useState(0);
-  const [bestStreak, setBestStreak] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(() => { let n = 0; for (const answer of [...(savedRun?.answers ?? [])].reverse()) { if (!answer.isCorrect) break; n++; } return n; });
+  const [bestStreak, setBestStreak] = useState(() => { let best = 0, n = 0; for (const answer of savedRun?.answers ?? []) { n = answer.isCorrect ? n + 1 : 0; best = Math.max(best, n); } return best; });
   const [streakBump, setStreakBump] = useState(false);
   // Temporary per-run answers — NOT persisted until quiz is fully complete
-  const runAnswers = useRef<{ questionId: string; isCorrect: boolean; xpValue: number }[]>([]);
+  const runAnswers = useRef<{ questionId: string; isCorrect: boolean; xpValue: number }[]>(savedRun?.answers ?? []);
   // !! Хук до любых ранних return — Rules of Hooks !!
   const vw = useWindowWidth();
   const isMobile = vw < 768;
@@ -220,17 +232,21 @@ export default function LessonQuizPage() {
   const barW = isTablet ? Math.min(1042, vw - 88) : 1042;
 
   useEffect(() => {
-    // Always reinitialize on mount — previous lessonState may be stale
-    // (e.g. after a failed attempt where lessonState wasn't cleared)
-    initializeLesson(quizId, totalQuestions);
-    setRunAnsweredQuestions(0);
-    setRunCorrectAnswers(0);
-    runCorrectRef.current = 0;
-    setTemporaryQuizXp(0);
-    runAnswers.current = [];
-    setCurrentStreak(0);
-    setBestStreak(0);
-  }, []);
+    if (userLoading || initializedRun.current) return;
+    initializedRun.current = true;
+    initializeLesson(quizId, totalQuestions, savedRun?.answers.length ?? 0);
+    const previous = getLessonProgress(quizId);
+    setTemporaryQuizXp((savedRun?.answers ?? []).reduce((sum, answer) => sum + (answer.isCorrect && !previous.questions[answer.questionId]?.xpAwarded ? answer.xpValue : 0), 0));
+  }, [userLoading]);
+
+  useEffect(() => {
+    if (!totalQuestions) return;
+    if (quizFinished) { try { localStorage.removeItem(sessionKey); } catch {} return; }
+    // The final answer is committed when its explanation is continued; until then resume at that question.
+    const answers = runAnswers.current.slice(0, Math.max(0, totalQuestions - 1));
+    const run: QuizRun = { version: 1, total: totalQuestions, seed: shuffleSeed, answers, startedAt: quizStartTime.current };
+    try { localStorage.setItem(sessionKey, JSON.stringify(run)); } catch {}
+  }, [runAnsweredQuestions, quizFinished, shuffleSeed, sessionKey, totalQuestions]);
 
   const lessonProgress = getLessonProgress(quizId);
 
@@ -244,6 +260,8 @@ export default function LessonQuizPage() {
 
     const handleRetry = () => {
       quizStartTime.current = Date.now();
+      setShuffleSeed(Math.floor(Math.random() * 2147483647));
+      try { localStorage.removeItem(sessionKey); } catch {}
       setQuizFinished(false);
       setShowCompletionOverlay(false);
       setSelection(null);
@@ -292,7 +310,7 @@ export default function LessonQuizPage() {
   }
 
   // ── Loading guard ──────────────────────────────────────────────────────────
-  if (!lessonState && !quizFinished) {
+  if (QUIZ_QUESTIONS?.length && (!initializedRun.current || !lessonState || lessonState.lessonId !== quizId) && !quizFinished) {
     return (
       <div
         className="relative min-h-screen w-full overflow-hidden flex items-center justify-center"
@@ -312,12 +330,12 @@ export default function LessonQuizPage() {
       >
         <div className="flex flex-col items-center gap-[16px]">
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[24px]">Квиз не найден</p>
-          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[18px]">quizId: {quizId}</p>
+          <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#798589] text-[18px]">Выберите урок на карте и попробуйте открыть квиз снова.</p>
           <button
             onClick={() => navigate("/lessons")}
             className="mt-[12px] bg-[#ff6b21] text-[#f4f5fc] px-[24px] py-[12px] rounded-[12px] font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[18px] cursor-pointer"
           >
-            Вернуться
+            Вернуться к урокам
           </button>
         </div>
       </div>
@@ -325,7 +343,7 @@ export default function LessonQuizPage() {
   }
 
   const currentQuestionIndex = lessonState.currentQuestionIndex;
-  const currentQuestion = QUIZ_QUESTIONS[currentQuestionIndex];
+  const currentQuestion = presentQuestion(QUIZ_QUESTIONS[currentQuestionIndex], shuffleSeed + currentQuestionIndex * 7919);
   const currentQuestionId = `${quizId}-q${currentQuestionIndex}`;
   // Define questionType early so the card pre-computations below can use it
   const questionType = (currentQuestion as any).type || "single_choice";
@@ -1167,6 +1185,7 @@ export default function LessonQuizPage() {
           <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`} style={isMobile ? { paddingTop: 'calc(44px + env(safe-area-inset-top, 0px))' } : undefined}>
             <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-center" : isCompact ? "justify-center gap-[28px]" : "justify-center gap-[52px]"}`}>
               <MultipleChoiceQuiz
+                continueLabel={currentQuestionIndex === totalQuestions - 1 ? "Завершить квиз" : "Следующий вопрос"}
                 key={currentQuestionIndex}
                 question={(currentQuestion as any).question}
                 subtitle={(currentQuestion as any).subtitle}
@@ -1189,6 +1208,7 @@ export default function LessonQuizPage() {
           <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`} style={isMobile ? { paddingTop: 'calc(44px + env(safe-area-inset-top, 0px))' } : undefined}>
             <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-start pt-[10px] gap-[10px]" : isCompact ? "justify-center gap-[28px]" : "justify-center gap-[52px]"}`}>
               <MatchingQuiz
+                continueLabel={currentQuestionIndex === totalQuestions - 1 ? "Завершить квиз" : "Следующий вопрос"}
                 key={currentQuestionIndex}
                 question={(currentQuestion as any).question}
                 pairs={augmentedMatchingPairs}
@@ -1205,9 +1225,10 @@ export default function LessonQuizPage() {
           <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`} style={isMobile ? { paddingTop: 'calc(44px + env(safe-area-inset-top, 0px))' } : undefined}>
             <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-start pt-[10px]" : isCompact ? "justify-center gap-[28px]" : "justify-center gap-[52px]"}`}>
               <CompareUIQuiz
+                continueLabel={currentQuestionIndex === totalQuestions - 1 ? "Завершить квиз" : "Следующий вопрос"}
                 key={currentQuestionIndex}
                 question={(currentQuestion as any).question}
-                compareOptions={compareUiOptions}
+                compareOptions={shuffled(compareUiOptions, shuffleSeed + currentQuestionIndex * 7919)}
                 correctAnswer={(currentQuestion as any).correctAnswer ?? ""}
                 explanation={(currentQuestion as any).explanation}
                 onAnswer={handleAnswerNewType}
@@ -1290,7 +1311,7 @@ export default function LessonQuizPage() {
                 {phase === "feedback" && (
                   <div className="mb-[10px]">
                     {isCorrect
-                      ? <CorrectFeedback explanation={(currentQuestion as any).explanation} showXp={earnedXP > 0} />
+                      ? <CorrectFeedback explanation={(currentQuestion as any).explanation} showXp={earnedXP > 0} xp={earnedXP} />
                       : <IncorrectFeedback correctAnswer={(currentQuestion as any).correctAnswer ?? ""} explanation={(currentQuestion as any).explanation} isReplay={xpAlreadyAwarded} hideAnswer />
                     }
                   </div>
@@ -1299,8 +1320,8 @@ export default function LessonQuizPage() {
                   <FlagReportButton />
                   <div className="flex-1">
                     {phase === "selecting"
-                      ? selection === null ? <ContinueDisabled fullWidth /> : <ContinueActive onClick={handleContinue} fullWidth />
-                      : isCorrect ? <ContinueCorrect onClick={handleContinue} fullWidth /> : <ContinueActive onClick={handleContinue} fullWidth />
+                      ? selection === null ? <ContinueDisabled label="Проверить ответ" fullWidth /> : <ContinueActive label={phase === "selecting" ? "Проверить ответ" : currentQuestionIndex === totalQuestions - 1 ? "Завершить квиз" : "Следующий вопрос"} onClick={handleContinue} fullWidth />
+                      : isCorrect ? <ContinueCorrect label={currentQuestionIndex === totalQuestions - 1 ? "Завершить квиз" : "Следующий вопрос"} onClick={handleContinue} fullWidth /> : <ContinueActive label={phase === "selecting" ? "Проверить ответ" : currentQuestionIndex === totalQuestions - 1 ? "Завершить квиз" : "Следующий вопрос"} onClick={handleContinue} fullWidth />
                     }
                   </div>
                 </div>
@@ -1311,18 +1332,18 @@ export default function LessonQuizPage() {
                   <div className="flex-1 flex items-center">
                     {phase === "feedback" && (
                       isCorrect
-                        ? <CorrectFeedback explanation={(currentQuestion as any).explanation} showXp={earnedXP > 0} />
+                        ? <CorrectFeedback explanation={(currentQuestion as any).explanation} showXp={earnedXP > 0} xp={earnedXP} />
                         : <IncorrectFeedback correctAnswer={(currentQuestion as any).correctAnswer ?? ""} explanation={(currentQuestion as any).explanation} isReplay={xpAlreadyAwarded} hideAnswer />
                     )}
                   </div>
                   <div className="flex-none flex items-center gap-[20px] justify-end">
                     {!isMobile && <FlagReportButton />}
                     {phase === "selecting" ? (
-                      selection === null ? <ContinueDisabled /> : <ContinueActive onClick={handleContinue} />
+                      selection === null ? <ContinueDisabled label="Проверить ответ" /> : <ContinueActive label={phase === "selecting" ? "Проверить ответ" : currentQuestionIndex === totalQuestions - 1 ? "Завершить квиз" : "Следующий вопрос"} onClick={handleContinue} />
                     ) : isCorrect ? (
-                      <ContinueCorrect onClick={handleContinue} />
+                      <ContinueCorrect label={currentQuestionIndex === totalQuestions - 1 ? "Завершить квиз" : "Следующий вопрос"} onClick={handleContinue} />
                     ) : (
-                      <ContinueActive onClick={handleContinue} />
+                      <ContinueActive label={phase === "selecting" ? "Проверить ответ" : currentQuestionIndex === totalQuestions - 1 ? "Завершить квиз" : "Следующий вопрос"} onClick={handleContinue} />
                     )}
                   </div>
                 </div>

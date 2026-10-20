@@ -12,7 +12,7 @@ interface LessonState {
 
 interface LessonContextValue {
   lessonState: LessonState | null;
-  initializeLesson: (lessonId: string, totalQuestions: number) => void;
+  initializeLesson: (lessonId: string, totalQuestions: number, startIndex?: number) => void;
   answerQuestion: (questionId: string, isCorrect: boolean, xpValue?: number) => number;
   nextQuestion: () => void;
   completeLesson: () => void;
@@ -55,12 +55,12 @@ export function LessonProvider({ children }: { children: ReactNode }) {
   const { updateQuestionState, completeLesson: markLessonComplete } = userContext;
 
   // Initialize a new lesson
-  const initializeLesson = (lessonId: string, totalQuestions: number) => {
+  const initializeLesson = (lessonId: string, totalQuestions: number, startIndex = 0) => {
     correctStreakRef.current = 0;
     setLessonState({
       lessonId,
       totalQuestions,
-      currentQuestionIndex: 0,
+      currentQuestionIndex: Math.max(0, Math.min(startIndex, totalQuestions - 1)),
     });
   };
 

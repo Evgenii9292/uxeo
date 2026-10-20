@@ -156,12 +156,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsDemo(false);
     localStorage.removeItem(DEMO_MODE_KEY);
     const supabase = await getSupabase();
-    await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
+    if (error) throw error;
   };
 
   const signInWithEmail = async (email: string): Promise<{ error?: string }> => {
