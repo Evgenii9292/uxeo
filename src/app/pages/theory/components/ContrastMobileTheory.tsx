@@ -91,12 +91,9 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
       const visibleBottom = Math.min(bounds.bottom, controls?.getBoundingClientRect().top ?? bounds.bottom);
       const visibleHeight = visibleBottom - bounds.top;
       if (visibleHeight <= 0) return;
-      const answerTop = container.scrollTop + feedback.getBoundingClientRect().top - bounds.top;
-      const nextHeader = container.querySelector<HTMLElement>(`[data-section="${index + 1}"] .real-section-header`);
-      const groupBottom = container.scrollTop + (nextHeader ?? feedback).getBoundingClientRect().bottom - bounds.top;
-      // Retain a little of option B above the explanation, plus the next header below it.
-      const cardTail = Math.min(100, visibleHeight * .18);
-      const target = Math.max(0, answerTop - cardTail, groupBottom - visibleHeight + 16);
+      const feedbackBounds = feedback.getBoundingClientRect();
+      const answerTop = container.scrollTop + feedbackBounds.top - bounds.top;
+      const target = Math.max(0, answerTop + feedbackBounds.height / 2 - visibleHeight / 2);
       container.scrollTo({ top: target, behavior: "smooth" });
     }, 320);
   }
