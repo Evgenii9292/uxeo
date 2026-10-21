@@ -13,15 +13,16 @@ export function SeenNotification({ isRead, onRead, children }: { isRead: boolean
     let timer: ReturnType<typeof setTimeout> | undefined;
     let visible = false;
     let finished = false;
+    let viewed = false;
+    const commit = () => { if (viewed && !finished) { finished = true; onReadRef.current(); } };
     const cancel = () => { clearTimeout(timer); timer = undefined; };
     const schedule = () => {
       cancel();
-      if (!visible || document.hidden || finished) return;
+      if (document.hidden) { commit(); return; }
+      if (!visible || finished || viewed) return;
       timer = setTimeout(() => {
         if (document.hidden || !visible) return;
-        finished = true;
-        onReadRef.current();
-        observer.disconnect();
+        viewed = true;
       }, 1200);
     };
     const observer = new IntersectionObserver(([entry]) => {
@@ -30,7 +31,7 @@ export function SeenNotification({ isRead, onRead, children }: { isRead: boolean
     }, { threshold: [0, 0.5] });
     observer.observe(element);
     document.addEventListener("visibilitychange", schedule);
-    return () => { cancel(); observer.disconnect(); document.removeEventListener("visibilitychange", schedule); };
+    return () => { cancel(); commit(); observer.disconnect(); document.removeEventListener("visibilitychange", schedule); };
   }, [isRead]);
 
   return <div ref={elementRef}>{children}</div>;

@@ -171,7 +171,7 @@ export default function BottomTabBar() {
       <nav
         className="flex-none relative z-50 rounded-tl-[15px] rounded-tr-[15px]"
         style={{
-          height: "calc(52px + max(env(safe-area-inset-bottom, 0px), 34px))",
+          height: "var(--mobile-nav-height)",
           background: "rgba(45,54,58,0.95)",
           backdropFilter: "blur(14px)",
           WebkitBackdropFilter: "blur(14px)",
@@ -182,7 +182,7 @@ export default function BottomTabBar() {
         <div
           className="absolute left-0 right-0 flex items-center justify-around"
           style={{
-            height: 52,
+            height: 60,
             top: 0,
             paddingLeft: 8,
             paddingRight: 8,
@@ -193,9 +193,9 @@ export default function BottomTabBar() {
               className="absolute rounded-[13px] pointer-events-none"
               style={{
                 left: `calc(8px + ((100% - 16px) / 5) * ${activeIndex} + 6px)`,
-                top: 7,
+                top: 8,
                 width: "calc((100% - 16px) / 5 - 12px)",
-                height: 38,
+                height: 44,
                 background: "rgba(255,255,255,0.07)",
                 transition: "left 260ms cubic-bezier(0.22,1,0.36,1), width 260ms cubic-bezier(0.22,1,0.36,1)",
                 willChange: "left",
@@ -208,21 +208,22 @@ export default function BottomTabBar() {
             return (
               <button
                 key={tab.key}
-                onClick={() => { hapticTap(); navigate(tab.path); }}
+                aria-label={{learning:"Обучение",notifications:"Уведомления",challenges:"Вызовы",league:"Лига"}[tab.key]}
+                onClick={() => { hapticTap(); setMoreOpen(false); navigate(tab.path); }}
                 className="flex flex-col items-center justify-center flex-1 h-full cursor-pointer border-0 outline-none active:scale-90 transition-transform duration-75 relative"
                 style={{
                   background: "transparent",
-                  opacity: showMore ? 0 : 1,
-                  pointerEvents: showMore ? "none" : "auto",
+                  opacity: 1,
+                  pointerEvents: "auto",
                 }}
               >
-                <Icon active />
+                <span className="inline-flex" style={{transform:"scale(1.14)"}}><Icon active /></span>
               </button>
             );
           })}
 
           {/* More (···) button */}
-          <button
+          <button aria-label="Ещё" aria-expanded={showMore}
             onClick={() => {
               hapticTap();
               if (showMore) setMoreOpen(false);
@@ -234,7 +235,7 @@ export default function BottomTabBar() {
             className="flex flex-col items-center justify-center flex-1 h-full cursor-pointer border-0 outline-none active:scale-90 transition-transform duration-75 relative"
             style={{ background: "transparent" }}
           >
-            <IconMore active />
+            <span className="inline-flex" style={{transform:"scale(1.14)"}}><IconMore active /></span>
           </button>
         </div>
       </nav>

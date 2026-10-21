@@ -68,7 +68,7 @@ function SupportAnnotation() {
   return (
     <svg width="106" height="66" viewBox="0 0 298 190" aria-label="Мы с вами">
       <path d="M7 33C-10-16 101-5 204 33C299 67 314 146 270 180C235 208 116 153 57 103C24 76 3 53 7 33Z" fill="none" stroke="#485b61" strokeWidth="4" />
-      <text x="39" y="89" transform="rotate(25 145 90)" fill="#485b61" fontFamily="Roboto Condensed, sans-serif" fontStyle="italic" fontSize="39">Мы с вами</text>
+      <text x="39" y="89" transform="rotate(25 145 90)" fill="#485b61" fontFamily="Caveat, cursive" fontSize="43">Мы с вами</text>
     </svg>
   );
 }

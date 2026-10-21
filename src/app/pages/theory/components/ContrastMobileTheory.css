@@ -10,7 +10,7 @@
 .real-figure.compact [class*="top-[200px]"]{top:131px!important}
 .real-choice{box-shadow:none}
 
-.real-action{bottom:76px;padding:14px 16px 24px;background:#282f33}
+.real-action{bottom:var(--mobile-nav-height);padding:14px 16px 24px;background:#282f33}
 .real-scroll{padding-bottom:115px}
 
 .real-question{color:#ff6b21}

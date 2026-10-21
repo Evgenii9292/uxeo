@@ -336,7 +336,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
             zIndex: 100,
             borderRadius: "20px 20px 0 0",
             background: "linear-gradient(150deg, #C0C3D0 0%, #CEC4BB 16.8%, #9699A5 100%)",
-            padding: "20px 20px 44px",
+            padding: "20px 20px calc(20px + env(safe-area-inset-bottom, 0px))",
             transform: visible ? `translateY(${dragY}px)` : "translateY(100%)",
             transition: dragY > 0 ? "none" : "transform 0.38s cubic-bezier(0.25, 1, 0.5, 1)",
             willChange: "transform",

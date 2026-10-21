@@ -183,7 +183,7 @@ function UserSessionProvider({ children }: { children: ReactNode }) {
       || (u.level && u.level !== "")
       || (u.goal && u.goal !== "")
       || Object.keys(u.lessonProgress).length > 0;
-    if (!hasProgress) return syncQueueRef.current;
+    if (!hasProgress) { setSyncStatus("synced"); return syncQueueRef.current; }
     setSyncStatus("syncing");
 
     // Skip data URLs > 80KB to avoid large payloads; sync http(s) URLs always
@@ -270,6 +270,7 @@ function UserSessionProvider({ children }: { children: ReactNode }) {
       { headers: { Authorization: `Bearer ${nextToken}` } }
     );
 
+    let cancelled = false;
     getProgress(accessToken)
       .then(async r => {
         if (r.status === 401) {
@@ -283,6 +284,7 @@ function UserSessionProvider({ children }: { children: ReactNode }) {
         return r.json();
       })
       .then((res) => {
+        if (cancelled) return;
         loadedUserIdRef.current = userId;
         readyRef.current = true;
         if (!res.found) return;
@@ -310,13 +312,24 @@ function UserSessionProvider({ children }: { children: ReactNode }) {
           };
         });
       })
-      .then(() => setSyncStatus("synced"))
+      .then(() => { if (!cancelled) return syncToSupabase(); })
       .catch((error) => {
+        if (cancelled) return;
         console.error("Progress load failed:", error);
         setSyncStatus("error");
       })
-      .finally(() => setUserLoading(false));
+      .finally(() => { if (!cancelled) setUserLoading(false); });
+    return () => { cancelled = true; };
   }, [userId, authLoading, accessToken, isDemo, refreshVersion]);
+
+  // Retry transient failures after reconnecting without requiring a page reload.
+  useEffect(() => {
+    if (isDemo || syncStatus !== "error" || !userId) return;
+    const timer = setTimeout(() => {
+      if (navigator.onLine && !document.hidden) setRefreshVersion(value => value + 1);
+    }, 15000);
+    return () => clearTimeout(timer);
+  }, [isDemo, syncStatus, userId, refreshVersion]);
 
   // Debounced sync to Supabase on user changes (3s)
   useEffect(() => {
