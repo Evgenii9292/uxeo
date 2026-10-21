@@ -20,7 +20,7 @@ export function ExitConfirmationModal({
         </h2>
 
         <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#5a6569] text-[18px] leading-[1.4] text-center">
-          Проверенные ответы сохранятся в этом браузере. Вы сможете продолжить с первого непроверенного вопроса.
+          Ваши ответы сохранятся. Вы сможете продолжить позже с того же места.
         </p>
 
         <div className="flex flex-col gap-[12px] w-full">

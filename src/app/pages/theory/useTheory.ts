@@ -120,7 +120,11 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     setMaxReached(nextMaxReached);
     let lastOpen = 0;
     try { lastOpen = Number(localStorage.getItem(sectionStorageKey)) || 0; } catch {}
-    const restoredSection = Math.max(0, Math.min(lastOpen, nextMaxReached, lastSectionIndex));
+    // The mobile contrast theory starts a fresh reading session at the first section.
+    // Keep earned progress and unlocked sections, but do not jump to the previous visit.
+    const restoredSection = isMobile && resolvedLessonId === "contrast-lesson"
+      ? 0
+      : Math.max(0, Math.min(lastOpen, nextMaxReached, lastSectionIndex));
     setOpenSections(new Set([restoredSection]));
     if (restoredSection > 0) setTimeout(() => {
       const element = document.querySelector(`[data-section="${restoredSection}"]`) as HTMLElement | null;

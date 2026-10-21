@@ -168,7 +168,7 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
         })}
       </div>
     </div>
-    <div className="real-action"><button disabled={!answer.selected} onClick={proceed}>{!answer.checked ? "Проверить ответ" : active === lesson.sections.length - 1 ? "Начать квиз" : "Продолжить"}</button><button className="real-start-quiz" aria-label="Начать квиз без теории" title="Начать квиз" onClick={() => { const quizId = LESSONS.find(item => item.lessonId === lesson.lessonId)?.quizId || lesson.lessonId; navigate(`/lesson-quiz?quizId=${encodeURIComponent(quizId)}&lessonId=${encodeURIComponent(lesson.lessonId)}`); }}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 10 7-10 7V5Z" fill="currentColor" /></svg></button></div>
+    <div className="real-action"><button disabled={!answer.selected} onClick={proceed}>{!answer.checked ? "Проверить ответ" : active === lesson.sections.length - 1 ? "Начать квиз" : "Продолжить"}</button>{active < lesson.sections.length - 1 && <button className="real-start-quiz" aria-label="Начать квиз без теории" title="Начать квиз" onClick={() => { const quizId = LESSONS.find(item => item.lessonId === lesson.lessonId)?.quizId || lesson.lessonId; navigate(`/lesson-quiz?quizId=${encodeURIComponent(quizId)}&lessonId=${encodeURIComponent(lesson.lessonId)}`); }}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 10 7-10 7V5Z" fill="currentColor" /></svg></button>}</div>
     <div className="real-navigation"><BottomTabBar /></div>
   </main>;
 }
