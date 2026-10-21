@@ -448,7 +448,7 @@ function UserSessionProvider({ children }: { children: ReactNode }) {
       };
 
       // Contrast microquizzes award XP for the first submitted attempt only.
-      const awardXp = isCorrect && !(["contrast-lesson", "color-lesson"].includes(lessonId) && questionId.startsWith("mini-quiz-") && lessonProgress.questions[questionId]);
+      const awardXp = isCorrect && !(questionId.startsWith("mini-quiz-") && lessonProgress.questions[questionId]);
       if (!questionState.xpAwarded && awardXp) {
         xpEarned = finalXpValue;
       }

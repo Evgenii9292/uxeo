@@ -791,7 +791,7 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где интерфейс создаёт проблемы для пользователя?",
+        quizQuestion: "Где пользователю проще выполнить задачу?",
         quizLabel: "Проверим",
         quizLeftNode: <M2L1Q4A />,
         quizRightNode: <M2L1Q4B />,
@@ -925,7 +925,7 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где пользователь может потеряться?",
+        quizQuestion: "Где пользовательский путь понятнее?",
         quizLabel: "Проверим",
         quizLeftNode: <M2L2Q4A />,
         quizRightNode: <M2L2Q4B />,
@@ -1228,7 +1228,7 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где пользовательский сценарий сложнее?",
+        quizQuestion: "Где пользовательский сценарий проще?",
         quizLabel: "Закрепим!",
         quizLeftNode: <M2L5Q1A />,
         quizRightNode: <M2L5Q1B />,
@@ -1258,7 +1258,7 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где логика интерфейса непонятна?",
+        quizQuestion: "Где действия пользователя понятнее?",
         quizLabel: "Проверим",
         quizLeftNode: <M2L5Q2A />,
         quizRightNode: <M2L5Q2B />,
@@ -1287,7 +1287,7 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где структура интерфейса хуже?",
+        quizQuestion: "Где структура интерфейса понятнее?",
         quizLabel: "Закрепим!",
         quizLeftNode: <M2L5Q3A />,
         quizRightNode: <M2L5Q3B />,
@@ -1317,7 +1317,7 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где экран перегружен?",
+        quizQuestion: "Какой экран меньше перегружен?",
         quizLabel: "Проверим",
         quizLeftNode: <M2L5Q4A />,
         quizRightNode: <M2L5Q4B />,

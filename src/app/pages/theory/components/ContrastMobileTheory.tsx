@@ -9,6 +9,7 @@ import { QUIZ_CARD_BACKGROUNDS, QUIZ_CARD_BORDERS } from "../../quiz/quizCardSty
 import { LESSONS } from "../../../data/lessons";
 import { ChevronIcon, TimeIcon } from "../ui/Icons";
 import { ColorTheoryExample, COLOR_THEORY_QUESTIONS } from "./ColorTheoryExample";
+import { PortableTheoryExample, PORTABLE_THEORY_LESSONS } from "./PortableTheoryExample";
 import "./ContrastMobileTheory.css";
 
 export function BalanceExample({ correct }: { correct: boolean }) {
@@ -192,7 +193,7 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
                   const letter = optionIndex ? "Б" : "А";
                   return <button key={side} className="real-choice" aria-label={`Выбрать вариант ${letter}`} aria-pressed={selected} disabled={current.checked || !open.has(index)} onClick={event => choose(index, side, event.currentTarget)} style={{ background: state === "idle" || state === "selected" ? "#282f33" : QUIZ_CARD_BACKGROUNDS[state], borderColor: QUIZ_CARD_BORDERS[state] ?? "transparent" }}>
                     <span className="real-choice-label"><span className="real-radio" />Вариант {letter}</span>
-                    <RealExample compact={true} node={lesson.lessonId === "color-lesson" ? <ColorTheoryExample index={index} correct={correct} /> : section.title === "Контраст цвета" ? <ColorContrastExample correct={correct} /> : section.title === "Правило баланса" ? <BalanceExample correct={correct} /> : side === "left" ? section.quizLeftNode : section.quizRightNode} />
+                    <RealExample compact={true} node={PORTABLE_THEORY_LESSONS.includes(lesson.lessonId) ? <PortableTheoryExample lessonId={lesson.lessonId} index={index} correct={correct} /> : lesson.lessonId === "color-lesson" ? <ColorTheoryExample index={index} correct={correct} /> : section.title === "Контраст цвета" ? <ColorContrastExample correct={correct} /> : section.title === "Правило баланса" ? <BalanceExample correct={correct} /> : side === "left" ? section.quizLeftNode : section.quizRightNode} />
                   </button>;
                 })}
               </div>

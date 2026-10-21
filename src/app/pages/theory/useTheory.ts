@@ -78,7 +78,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     return Array.from({ length: totalSections }, (_, index) => {
       const quizId = `mini-quiz-${index}`;
       const questionState = progress.questions[quizId];
-      if (questionState?.correct && !(isMobile && ["contrast-lesson", "color-lesson"].includes(resolvedLessonId))) {
+      if (questionState?.correct && !isMobile) {
         return { selectedAnswer: correctSides?.[index] ?? "right", showFeedback: true, completed: true, hasIncorrectAnswer: false };
       }
       return { selectedAnswer: null, showFeedback: false, completed: false, hasIncorrectAnswer: false };
@@ -122,7 +122,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     try { lastOpen = Number(localStorage.getItem(sectionStorageKey)) || 0; } catch {}
     // The mobile compact theory starts a fresh reading session at the first section.
     // Keep earned progress and unlocked sections, but do not jump to the previous visit.
-    const restoredSection = isMobile && ["contrast-lesson", "color-lesson"].includes(resolvedLessonId)
+    const restoredSection = isMobile
       ? 0
       : Math.max(0, Math.min(lastOpen, nextMaxReached, lastSectionIndex));
     setOpenSections(new Set([restoredSection]));
@@ -135,7 +135,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
       Array.from({ length: totalSections }, (_, index) => {
         const quizId = `mini-quiz-${index}`;
         const questionState = nextProgress.questions[quizId];
-        if (questionState?.correct && !(isMobile && ["contrast-lesson", "color-lesson"].includes(resolvedLessonId))) {
+        if (questionState?.correct && !isMobile) {
           return {
             selectedAnswer: correctSides?.[index] ?? "right",
             showFeedback: true,
@@ -209,7 +209,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
       hasIncorrectAnswer: !isCorrect || (newStates[sectionIndex]?.hasIncorrectAnswer ?? false)
     };
     setAccordionStates(newStates);
-    if (isMobile && ["contrast-lesson", "color-lesson"].includes(resolvedLessonId)) {
+    if (isMobile) {
       const nextReached = Math.max(effectiveMaxReached, Math.min(sectionIndex + 1, lastSectionIndex));
       setMaxReached(nextReached);
       try { localStorage.setItem(storageKey, String(nextReached)); } catch {}
@@ -218,7 +218,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     // Scroll further so feedback and the Continue button are immediately visible.
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        if (isMobile && ["contrast-lesson", "color-lesson"].includes(resolvedLessonId)) return;
+        if (isMobile) return;
         const sectionEl = document.querySelector(`[data-section="${sectionIndex}"]`) as HTMLElement | null;
         if (!sectionEl) return;
         const sc = findScrollContainer(sectionEl);
