@@ -219,7 +219,7 @@ export function MoreSheet({ onClose, open }: MoreSheetProps) {
 
 
   return (
-    <div className="fixed inset-0 z-[80] flex items-end" style={{bottom:"var(--mobile-nav-height)"}} onClick={handleClose}>
+    <div className="fixed inset-0 z-[80] flex items-end" style={{bottom:"var(--mobile-nav-height)", overflow:"hidden"}} onClick={handleClose}>
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 transition-opacity duration-[220ms]"

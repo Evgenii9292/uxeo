@@ -74,6 +74,7 @@ function StandardTheoryMobileLayout({
 
   // Hide-on-scroll for tab bar
   const [tabBarVisible, setTabBarVisible] = useState(true);
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [showFloatingControls, setShowFloatingControls] = useState(false);
   const lastScrollY = useRef(0);
   const handleScroll = useCallback(() => {
@@ -206,10 +207,10 @@ function StandardTheoryMobileLayout({
         className="fixed left-0 right-0 z-20 transition-transform duration-300"
         style={{
           bottom: 0,
-          transform: tabBarVisible ? "translateY(0)" : "translateY(100%)",
+          transform: tabBarVisible || moreMenuOpen ? "translateY(0)" : "translateY(100%)",
         }}
       >
-        <BottomTabBar />
+        <BottomTabBar onMoreOpenChange={setMoreMenuOpen} />
       </div>
 
       {/* ── Floating circles ── */}

@@ -197,6 +197,7 @@ export default function MobileShell({
 
   // ── Hide-on-scroll state ───────────────────────────────────────────────────
   const [tabBarVisible, setTabBarVisible] = useState(true);
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [showFloatingControls, setShowFloatingControls] = useState(false);
   const [showBottomFade, setShowBottomFade] = useState(false);
   const lastScrollY = useRef(0);
@@ -224,7 +225,7 @@ export default function MobileShell({
   }, [keepTabBarVisible, updateBottomFade]);
 
   // Heights for fixed elements
-  const effectiveTabBarVisible = keepTabBarVisible ? true : tabBarVisible;
+  const effectiveTabBarVisible = moreMenuOpen || keepTabBarVisible || tabBarVisible;
   const TAB_H = effectiveTabBarVisible ? 72 : 0;
   const STICKY_H = stickyBottom ? 72 : 0;
   // Total bottom padding for scroll area = tab + sticky + small gap
@@ -318,7 +319,7 @@ export default function MobileShell({
           background: "rgba(45,54,58,0.95)",
         }}
       >
-        <BottomTabBar />
+        <BottomTabBar onMoreOpenChange={setMoreMenuOpen} />
       </div>
 
       {/* PWA install banner — above tab bar */}

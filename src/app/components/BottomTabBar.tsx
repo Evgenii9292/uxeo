@@ -154,11 +154,12 @@ const NAV_TABS = [
 
 // ── BottomTabBar ──────────────────────────────────────────────────────────────
 
-export default function BottomTabBar() {
+export default function BottomTabBar({ onMoreOpenChange }: { onMoreOpenChange?: (open: boolean) => void } = {}) {
   const location = useLocation();
   const navigate = useNavigate();
   const [showMore, setShowMore] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  useEffect(() => { onMoreOpenChange?.(showMore); }, [showMore, onMoreOpenChange]);
 
   const isActive = (matchPaths: readonly string[]) =>
     matchPaths.some((p) =>
@@ -188,7 +189,7 @@ export default function BottomTabBar() {
             paddingRight: 8,
           }}
         >
-          {activeIndex >= 0 && !showMore && (
+          {activeIndex >= 0 && (
             <div
               className="absolute rounded-[13px] pointer-events-none"
               style={{
