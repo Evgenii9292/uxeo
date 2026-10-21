@@ -83,7 +83,7 @@
 .portable-button.secondary{background:#e1e3eb;color:#475467}
 .portable-box{background:#e9ecf2;border-radius:5px;padding:5px;font-size:10px;line-height:13px}
 .portable-field-group{display:flex;align-items:center;gap:4px;min-height:24px}
-.portable-field-group label{width:35px;flex-shrink:0;font-size:9px;line-height:12px}
+.portable-field-group label{width:45px;flex-shrink:0;font-size:9px;line-height:12px}
 .portable-input{min-width:0;flex:1;min-height:21px;background:#f2f4f8;border:1px solid #d8dce5;border-radius:5px;padding:3px 5px;font-size:9px;line-height:13px;color:#667085}
 .portable-flow{display:flex;flex-direction:column;gap:3px}
 .portable-step{position:relative;min-height:20px;display:flex;align-items:center;gap:7px;background:#e9ecf2;border-radius:5px;padding:2px 5px;font-size:10px;line-height:14px}
@@ -107,13 +107,48 @@
 
 /* Shared example rhythm. Keep task-specific differences in the example's inline styles. */
 .portable-button,.color-example-action,.balance-example-action,.color-contrast-example-action{height:24px;min-height:24px;padding:4px 6px;border-radius:6px;font-size:10px;line-height:14px;font-weight:500;flex-shrink:0}
-.portable-theory-example>.portable-button,.color-theory-example>.color-example-action,.balance-example>h3+.balance-example-action{margin-top:auto}
-.portable-theory-example>.portable-button+.portable-button,.color-theory-example>.color-example-action+.color-example-action{margin-top:0}
+.color-theory-example>.color-example-action,.balance-example>h3+.balance-example-action{margin-top:auto}
+.color-theory-example>.color-example-action+.color-example-action{margin-top:0}
 .portable-content-layout{flex:1;min-height:0}
 .portable-content-layout.ordered>.portable-button{margin-top:auto}
 .portable-flow{flex:1;justify-content:space-between}
 .portable-path{flex:1;justify-content:space-between}
 .portable-list{flex:1;justify-content:space-between}
-.portable-theory-example:not(:has(.portable-button)):not(:has(.portable-input)):not(:has(.portable-field-group))>.portable-box{flex:1;display:flex;flex-direction:column;justify-content:center}
-.portable-theory-example:has(>.portable-field-group):not(:has(.portable-button)){justify-content:space-between}
-.portable-plain-copy{margin-block:auto}
+.portable-plain-copy{margin:0}
+
+/* Composition belongs to each example, rather than a catch-all vertical centering rule. */
+.portable-actions{display:flex;flex-direction:column;gap:6px;margin-top:auto;flex-shrink:0}
+.portable-article{display:flex;flex-direction:column;gap:10px}
+.portable-article section{display:flex;flex-direction:column;gap:3px}
+.portable-form-fields{display:flex;flex-direction:column;gap:5px}
+.portable-form-fields.compact-fields{gap:3px}
+.compact-fields .portable-field-group{min-height:20px}
+.compact-fields .portable-input{min-height:18px;padding:2px 4px;line-height:13px}
+.portable-course-list{display:flex;flex-direction:column;gap:6px}
+.portable-course-heading{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.portable-library-list{display:flex;flex-direction:column;gap:6px}
+.portable-library-list>.portable-box>.portable-button,.portable-library-list>.portable-box>.portable-linked-card{flex:1;min-width:0}
+.portable-category-label{font-size:9px;line-height:12px;width:53px;flex-shrink:0}
+.portable-state-list{display:flex;flex-direction:column;gap:8px;flex:1;justify-content:space-between}
+.portable-state-row,.portable-instance{display:flex;align-items:center;gap:6px}
+.portable-state-row>span{width:64px;font-size:9px;line-height:12px;flex-shrink:0}
+.portable-state-row>.portable-button,.portable-instance>.portable-button{flex:1}
+.portable-instance>span{width:47px;flex-shrink:0;font-size:9px;line-height:12px;color:#667085}
+.portable-linked-card{padding:4px 6px;border-radius:8px;background:#e9ecf2;border:1px solid #c9d0dc;font-size:10px;line-height:14px;flex:1}
+.portable-link-arrows{font-size:11px;line-height:10px;text-align:center;color:#798589}
+.portable-kit-source{display:flex;align-items:center;gap:6px;height:20px}
+.portable-kit-source>span{font-size:9px;line-height:12px}
+.portable-kit-primitives{display:flex;align-items:center;gap:6px;flex:1}
+.portable-mini-button{height:15px;width:33px;border-radius:6px;background:#364146}
+.portable-mini-field{height:15px;width:33px;border:1px solid #d8dce5;border-radius:5px;background:#f2f4f8}
+.portable-mini-card{height:18px;width:33px;border-radius:5px;background:#e9ecf2}
+.portable-kit-screen{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:5px;background:#e9ecf2;border-radius:5px}
+.portable-kit-screen>.portable-note,.portable-kit-screen>.portable-button{grid-column:1/-1}
+.portable-kit-card{background:#f7f8fc;border-radius:5px;padding:3px;font-size:9px;line-height:13px}
+.portable-groups{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.portable-groups.grouped{gap:16px}
+.portable-data-group{display:flex;flex-direction:column;gap:3px}
+.portable-nav>span.current{background:#364146;color:white;border-radius:3px;padding:1px 3px}
+.portable-overview{display:flex;flex-direction:column;gap:6px}
+
+.color-example-system-course{display:flex;flex-direction:column;gap:4px;padding:6px;border-radius:5px;background:#e9ecf2;font-size:10px;line-height:13px}
