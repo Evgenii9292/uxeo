@@ -1,0 +1,2 @@
+.tablet-matching-stage{width:100%;min-height:560px;height:calc(100dvh - 270px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}
+.tablet-matching-board{max-width:772px;margin-inline:auto}

@@ -1,3 +1,4 @@
+import "./MatchingQuiz.css";
 import { shuffled } from "../../utils/quizSession";
 /**
  * MatchingQuiz — click-or-drag to connect pairs.
@@ -177,6 +178,7 @@ export function MatchingQuiz({
   const allConnected = pairs.every((p) => connections[p.id] !== undefined);
   const allCorrect   = pairs.every((p) => connections[p.id] === p.id);
   const vw = useWindowWidth();
+  const isTablet = vw >= 600 && vw < 1024;
   const isMobile = vw < 1024; // mobile + tablet both use the compact tap-to-connect layout
   const quizW = Math.min(1042, vw - 48);
 
@@ -546,21 +548,23 @@ export function MatchingQuiz({
 
   // ── Mobile render — vertical tap-to-connect ────────────────────────────────
   if (isMobile) {
-    const topCardW = Math.floor((vw - 48) / pairs.length) - 8;
+    const rowGap = isTablet ? 24 : 8;
+    const topCardW = isTablet ? Math.floor((Math.min(vw - 32, 740) - rowGap * (pairs.length - 1)) / pairs.length) : Math.floor((vw - 48) / pairs.length) - 8;
 
     // Scale card height based on viewport height so cards fit without overlapping button.
     // Overhead: header(44) + outer-pb(140) + inner-pt(10) + question(80) + hint(28) + gaps(20) ≈ 322px
     const availForContainer = Math.max(180, vh - 322);
     // Two card rows + minimum line gap; solve for maxCardH: availH = 2*h + 76 + 50 + 16 → h = (availH-142)/2
     const maxCardHFromVH = Math.floor((availForContainer - 142) / 2);
-    const topCardH = Math.max(56, Math.min(Math.min(maxCardHFromVH, 100), topCardW));
+    const topCardH = isTablet ? Math.min(140, topCardW) : Math.max(56, Math.min(Math.min(maxCardHFromVH, 100), topCardW));
 
     // Container fits both rows + 50px visible line gap + 16px top/bottom padding
-    const bottomCardH = 76; // minHeight(56) + paddingTop(10) + paddingBottom(10)
-    const containerMinH = Math.max(200, topCardH + bottomCardH + 66);
+    const bottomCardH = isTablet ? topCardH : 76; // minHeight(56) + paddingTop(10) + paddingBottom(10)
+    const containerMinH = Math.max(200, topCardH + bottomCardH + (isTablet ? 136 : 66));
 
     return (
       <>
+        <div className={isTablet ? "tablet-matching-stage" : undefined} style={isTablet ? undefined : {display:"contents"}}>
         {/* Question */}
         <div className="w-full px-[16px] flex justify-center">
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.25] text-[#f4f5fc] text-[22px] text-center" style={{ userSelect: "none" }}>
@@ -571,7 +575,7 @@ export function MatchingQuiz({
         {/* Matching container */}
         <div
           ref={containerRef}
-          className="relative w-full px-[16px]"
+          className={`relative w-full px-[16px] ${isTablet ? "tablet-matching-board" : ""}`}
           style={{ userSelect: "none", minHeight: containerMinH, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 10 }}
         >
           {/* SVG lines */}
@@ -583,7 +587,7 @@ export function MatchingQuiz({
           </svg>
 
           {/* TOP ROW */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 8, paddingTop: 8, position: "relative", zIndex: 10 }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: rowGap, paddingTop: 8, position: "relative", zIndex: 10 }}>
             {pairs.map((pair) => {
               const ring = topCardRing(pair.id);
               const dot = topDotStyle(pair.id);
@@ -663,7 +667,7 @@ export function MatchingQuiz({
           </div>
 
           {/* BOTTOM ROW */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 8, paddingBottom: 8, position: "relative", zIndex: 10 }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: rowGap, paddingBottom: 8, position: "relative", zIndex: 10 }}>
             {shuffledPairs.map((pair) => {
               const ring = bottomCardRing(pair.id);
               const dot = bottomDotStyle(pair.id);
@@ -725,6 +729,7 @@ export function MatchingQuiz({
                     style={{
                       width: topCardW,
                       minHeight: 56,
+                      ...(isTablet ? {height: bottomCardH} : {}),
                       borderRadius: 15,
                       backgroundImage: bottomCardBg,
                       boxShadow: ring ? `0 0 0 3px ${ring}` : undefined,
@@ -751,6 +756,7 @@ export function MatchingQuiz({
           </p>
         )}
 
+        </div>
         {/* Fixed bottom bar */}
         <div
           className="fixed left-0 right-0 z-10 px-[16px] pt-[12px]"
