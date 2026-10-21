@@ -18,8 +18,8 @@
 .real-question{color:#f4f5fc;font-size:24px;line-height:28px}
 
 .real-theory-screen{position:fixed;inset:0;background:#282f33}
-.balance-example{width:186px;height:162px;background:#f7f8fc;padding:10px;display:flex;flex-direction:column;gap:10px;font-family:Inter,sans-serif;color:#101828}
-.balance-example h3{font-size:12px;line-height:16px;text-align:center;margin:0 0 2px}
+.balance-example{width:186px;height:162px;background:#f7f8fc;padding:10px;display:flex;flex-direction:column;gap:6px;font-family:Inter,sans-serif;color:#101828}
+.balance-example h3{font-size:12px;line-height:16px;text-align:left;margin:0}
 .balance-example-action{height:31px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;line-height:12px}
 .balance-example-action.primary{background:#364146;color:white}
 .balance-example-action.secondary{background:#e1e3eb;color:#414651}
@@ -46,16 +46,16 @@
 @keyframes theory-screen-enter{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){.real-theory-screen{animation:none}.section-chevron *{transition:none!important}}
 
-.color-contrast-example{width:186px;height:162px;background:#f7f8fc;padding:14px 10px;display:flex;flex-direction:column;font-family:Inter,sans-serif;color:#101828}
-.color-contrast-example h3{font-size:12px;line-height:16px;margin:0 0 16px;font-weight:600}
-.color-contrast-example p{font-size:10px;line-height:14px;margin:0 0 5px}
+.color-contrast-example{width:186px;height:162px;background:#f7f8fc;padding:10px;display:flex;flex-direction:column;gap:6px;font-family:Inter,sans-serif;color:#101828}
+.color-contrast-example h3{font-size:12px;line-height:16px;margin:0;font-weight:600}
+.color-contrast-example p{font-size:10px;line-height:14px;margin:0}
 .color-contrast-example>span{font-size:9px;line-height:13px;color:#667085}
 .color-contrast-example-action{margin-top:auto;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;line-height:14px;font-weight:600}
 .color-contrast-example-action.clear{background:#397df5;color:#fff}
 .color-contrast-example-action.faint{background:#e8ebf2;color:#adb4c2}
 
-.color-theory-example{width:186px;height:162px;padding:10px;background:#f7f8fc;display:flex;flex-direction:column;gap:7px;font-family:Inter,sans-serif;color:#101828}
-.color-theory-example h3{font-size:12px;line-height:16px;font-weight:600;margin:0 0 3px}
+.color-theory-example{width:186px;height:162px;padding:10px;background:#f7f8fc;display:flex;flex-direction:column;gap:6px;font-family:Inter,sans-serif;color:#101828}
+.color-theory-example h3{font-size:12px;line-height:16px;font-weight:600;margin:0}
 .color-example-action{min-height:25px;padding:4px 6px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;line-height:13px;font-weight:500}
 .color-theory-example .accent{background:#397df5;color:white}
 .color-theory-example .muted{background:#e1e3eb;color:#667085}
@@ -104,3 +104,16 @@
 .portable-icons span{font-size:9px;line-height:12px;color:#475467}
 .portable-noise-row{display:flex;gap:4px}
 .portable-noise-row>.portable-box{background:#8256de;color:white;flex:1}
+
+/* Shared example rhythm. Keep task-specific differences in the example's inline styles. */
+.portable-button,.color-example-action,.balance-example-action,.color-contrast-example-action{height:24px;min-height:24px;padding:4px 6px;border-radius:6px;font-size:10px;line-height:14px;font-weight:500;flex-shrink:0}
+.portable-theory-example>.portable-button,.color-theory-example>.color-example-action,.balance-example>h3+.balance-example-action{margin-top:auto}
+.portable-theory-example>.portable-button+.portable-button,.color-theory-example>.color-example-action+.color-example-action{margin-top:0}
+.portable-content-layout{flex:1;min-height:0}
+.portable-content-layout.ordered>.portable-button{margin-top:auto}
+.portable-flow{flex:1;justify-content:space-between}
+.portable-path{flex:1;justify-content:space-between}
+.portable-list{flex:1;justify-content:space-between}
+.portable-theory-example:not(:has(.portable-button)):not(:has(.portable-input)):not(:has(.portable-field-group))>.portable-box{flex:1;display:flex;flex-direction:column;justify-content:center}
+.portable-theory-example:has(>.portable-field-group):not(:has(.portable-button)){justify-content:space-between}
+.portable-plain-copy{margin-block:auto}

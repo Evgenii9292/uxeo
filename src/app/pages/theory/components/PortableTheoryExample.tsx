@@ -9,8 +9,8 @@ const stack = { display: "flex", flexDirection: "column", gap: 6 } as React.CSSP
 
 function Form({ correct, registration = false, system = false }: { correct: boolean; registration?: boolean; system?: boolean }) {
   const labels = registration ? ["Имя", "Email", "Пароль"] : ["Имя", "Email"];
-  return <><Title>{system ? "Поля ввода" : registration ? "Регистрация" : "Обратная связь"}</Title>{labels.map((label, i) => <div key={label} className="portable-field-group" style={!correct ? { paddingLeft: i % 2 ? 8 : 0 } : undefined}>
-    {correct && <label>{label}</label>}<div className="portable-input" style={!correct ? { borderRadius: i % 2 ? 0 : 7, borderColor: i % 2 ? "#8e9199" : "#d8dce5" } : undefined}>{correct ? label === "Пароль" ? "••••••" : label === "Email" ? "mail@example.ru" : "Ваше имя" : label === "Email" ? "Поле 2" : label === "Пароль" ? "Текст" : "Введите данные"}</div>
+  return <><Title>{system ? "Поля ввода" : registration ? "Регистрация" : "Обратная связь"}</Title>{labels.map((label, i) => <div key={label} className="portable-field-group" style={!correct && system ? { paddingLeft: i % 2 ? 8 : 0 } : undefined}>
+    {correct && <label>{label}</label>}<div className="portable-input" style={!correct && system ? { borderRadius: i % 2 ? 0 : 7, borderColor: i % 2 ? "#8e9199" : "#d8dce5" } : undefined}>{correct ? label === "Пароль" ? "••••••" : label === "Email" ? "mail@example.ru" : "Ваше имя" : label === "Email" ? "Поле 2" : label === "Пароль" ? "Текст" : "Введите данные"}</div>
   </div>)}{!system && <Button>{registration ? "Создать аккаунт" : correct ? "Отправить сообщение" : "Далее"}</Button>}</>;
 }
 function Flow({ correct, purchase = false }: { correct: boolean; purchase?: boolean }) {
@@ -35,7 +35,7 @@ function Navigation({ correct }: { correct: boolean }) {
 function Grid({ correct, alignment = false, rhythm = false, spacing = false }: { correct: boolean; alignment?: boolean; rhythm?: boolean; spacing?: boolean }) {
   const title = alignment ? "Данные профиля" : rhythm ? "Мои уроки" : spacing ? "План обучения" : "Мои курсы";
   const labels = alignment ? ["Имя: Анна", "Email: anna@mail.ru", "Город: Москва"] : rhythm ? ["Контраст", "Цвет", "Иерархия"] : spacing ? ["Теория", "Практика", "Домашняя работа"] : ["UX", "UI", "Figma", "Дизайн"];
-  return <><Title>{title}</Title><div className={alignment || rhythm || spacing ? "portable-list" : "portable-grid"} style={{ gap: correct ? 8 : 2 }}>{labels.map((label, i) => <Box key={label} style={correct ? {} : { marginLeft: i % 2 ? 14 : 0, marginTop: i === 2 ? 10 : 0, padding: i % 2 ? 3 : 9, width: i % 2 ? "78%" : "100%" }}>{label}</Box>)}</div></>;
+  return <><Title>{title}</Title><div className={alignment || rhythm || spacing ? "portable-list" : "portable-grid"} style={{ gap: correct ? 8 : 2 }}>{labels.map((label, i) => <Box key={label} style={correct ? {} : alignment ? { marginLeft: i % 2 ? 14 : 0 } : spacing ? { marginTop: i === 2 ? 10 : 0 } : rhythm ? { padding: i % 2 ? 3 : 9, minHeight: i % 2 ? 21 : 32 } : { marginLeft: i % 2 ? 14 : 0, marginTop: i === 2 ? 10 : 0, width: i % 2 ? "78%" : "100%" }}>{label}</Box>)}</div></>;
 }
 function Icons({ correct }: { correct: boolean }) {
   return <><Title>Навигация</Title><div className="portable-icons">{[0, 1, 2].map(i => <div key={i}><svg width={correct ? 24 : [17, 30, 20][i]} height={correct ? 24 : [17, 30, 20][i]} viewBox="0 0 24 24" fill={!correct && i === 1 ? "#364146" : "none"} stroke="#364146" strokeWidth={correct ? 2 : [1, 3, 1.5][i]} strokeLinecap="round" strokeLinejoin="round">{i === 0 ? <path d="m3 10 9-7 9 7v11h-6v-7H9v7H3V10Z" /> : i === 1 ? <><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></> : <><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></>}</svg><span>{["Главная", "Поиск", "Профиль"][i]}</span></div>)}</div></>;
@@ -60,9 +60,9 @@ function ExampleContent({ lessonId, index, correct }: { lessonId: string; index:
       if (index === 2) return <Flow correct={correct} purchase />;
       return <><Title>Путь к покупке</Title><div className={`portable-path ${correct ? "ordered" : "tangled"}`}>{(correct ? ["Каталог → Товар", "Товар → Оплата", "Оплата → Готово"] : ["Каталог ↔ Оплата", "↓ Назад к товару", "Корзина ↔ Каталог"]).map(x => <Box key={x}>{x}</Box>)}</div></>;
     case "interface-structure-lesson":
-      if (index === 0) return <><Title>Курс по дизайну</Title><div style={{ ...stack, flexDirection: correct ? "column" : "column-reverse" }}><Box>Описание<Note>Основы UX за 8 недель</Note></Box><Box>Программа<Note>Теория и практика</Note></Box><Button>Записаться</Button></div></>;
+      if (index === 0) return <><Title>Курс по дизайну</Title><div className={correct ? "portable-content-layout ordered" : "portable-content-layout"} style={{ ...stack, flexDirection: correct ? "column" : "column-reverse" }}><Box>Описание<Note>Основы UX за 8 недель</Note></Box><Box>Программа<Note>Теория и практика</Note></Box><Button>Записаться</Button></div></>;
       if (index === 1) return <><Title>Ваши данные</Title><div style={{ ...stack, gap: correct ? 10 : 1 }}><Box>Имя: Анна<Note>Фамилия: Иванова</Note></Box><Box>Email: anna@mail.ru<Note>Телефон: +7 …</Note></Box></div></>;
-      if (index === 2) return <><Title>Наушники</Title><div style={{ ...stack, flexDirection: correct ? "column" : "column-reverse" }}><Note>Беспроводные · 20 часов работы</Note><Box>4 990 ₽</Box><Button>Купить</Button></div></>;
+      if (index === 2) return <><Title>Наушники</Title><div className={correct ? "portable-content-layout ordered" : "portable-content-layout"} style={{ ...stack, flexDirection: correct ? "column" : "column-reverse" }}><Note>Беспроводные · 20 часов работы</Note><Box>4 990 ₽</Box><Button>Купить</Button></div></>;
       return <Article correct={correct} />;
     case "interface-elements-lesson":
       if (index === 0) return <><Title>Курс для начинающих</Title><Note>Основы пользовательского опыта</Note><Button>{correct ? "Записаться на курс" : "Action"}</Button><Button secondary>{correct ? "Программа" : "More"}</Button></>;
@@ -72,7 +72,7 @@ function ExampleContent({ lessonId, index, correct }: { lessonId: string; index:
     case "ux-errors-lesson":
       if (index === 0) return <Flow correct={correct} />;
       if (index === 1) return <><Title>Управление аккаунтом</Title><Box>Ваш профиль</Box><Button>{correct ? "Изменить пароль" : "Action A"}</Button><Button secondary>{correct ? "Настройки профиля" : "Option 2"}</Button></>;
-      if (index === 2) return <><Title>Личный кабинет</Title><div style={{ ...stack, flexDirection: correct ? "column" : "column-reverse" }}><Box>Мои данные<Note>Имя и email</Note></Box><Box>Мои курсы<Note>Следующий урок: цвет</Note></Box><Button>Продолжить урок</Button></div></>;
+      if (index === 2) return <><Title>Личный кабинет</Title><div className={correct ? "portable-content-layout ordered" : "portable-content-layout"} style={{ ...stack, flexDirection: correct ? "column" : "column-reverse" }}><Box>Мои данные<Note>Имя и email</Note></Box><Box>Мои курсы<Note>Следующий урок: цвет</Note></Box><Button>Продолжить урок</Button></div></>;
       return <><Title>{correct ? "Ваше обучение" : "Акции! Новости! Курсы!"}</Title>{!correct && <><div className="portable-noise-row"><Box>Акция</Box><Box>Бонус</Box></div><Note>Новости, скидки, предложения и обновления</Note></>}<Box>Основы UX</Box><Button>Продолжить урок</Button></>;
     case "what-is-ui-kit-lesson":
       if (index === 0) return <><Title>{correct ? "UI Kit → Экран" : "Экран курса"}</Title>{correct && <div className="portable-library-label">Button + Card + Input</div>}<Box>Основы UX<Note>Начальный курс</Note></Box><Button>Начать обучение</Button></>;
