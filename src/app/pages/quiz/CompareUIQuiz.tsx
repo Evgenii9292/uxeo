@@ -108,14 +108,14 @@ export function CompareUIQuiz({
   const footerRef = useRef<HTMLDivElement>(null);
   const [footerHeight, setFooterHeight] = useState(180);
   useLayoutEffect(() => {
-    if (!isTablet || !footerRef.current) return;
+    if (!isMobile || !footerRef.current) return;
     const element = footerRef.current;
     const measure = () => setFooterHeight(element.getBoundingClientRect().height);
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(element);
     return () => observer.disconnect();
-  }, [isTablet, explanation]);
+  }, [isMobile, explanation]);
   const quizW = Math.min(1042, vw - 48);
   const colW = Math.min(506, Math.floor((quizW - 18) / 2));
 
@@ -176,8 +176,8 @@ export function CompareUIQuiz({
     const containerH = mobileCardMinHeight
       ? mobileCardMinHeight
       : (isLargePhone ? 250 : 220);
-    const paddingY   = mobileCardMinHeight ? 20 : 10;
-    const paddingX   = mobileCardMinHeight ? 20 : 0;
+    const paddingY   = 20;
+    const paddingX   = 20;
     const figmaW     = mobileNaturalW ?? FIGMA_W;
     const figmaH     = mobileNaturalH ?? FIGMA_H;
 
@@ -187,7 +187,7 @@ export function CompareUIQuiz({
     return (
       <>
         {/* ── Content block — single wrapper, NO auto-spacing ── */}
-        <div data-tablet-compare={isTablet || undefined} className={`w-full px-[16px] flex flex-col ${isTablet ? "tablet-compare-content" : ""}`} style={{ gap: 10, ...(isTablet ? {height: `calc(100dvh - ${footerHeight}px - 106px)`} : {}) }}>
+        <div data-tablet-compare={isTablet || undefined} className={`w-full px-[16px] flex flex-col ${isTablet ? "tablet-compare-content" : ""}`} style={{ gap: 10, ...(isTablet ? {height: `calc(100dvh - ${footerHeight}px - 106px)`} : {paddingBottom:Math.max(0, footerHeight + 52 - 140)}) }}>
 
           {/* Question title */}
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.25] text-[#f4f5fc] text-[22px] text-center w-full">
@@ -207,9 +207,7 @@ export function CompareUIQuiz({
                   onClick={isClickable ? () => handleSelect(option.label) : undefined}
                   className={`relative rounded-[15px] overflow-hidden transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.98]" : ""}`}
                   style={{
-                    height: isTablet ? "auto" : mobileCardMinHeight
-                      ? `calc((100% - 290px) / 2)`
-                      : `calc((100% - 296px) / 2)`,
+                    height: isTablet ? "auto" : containerH,
                     minHeight: containerH,
                     ...(isTablet ? {flex: "1 0 0"} : {}),
                     background: QUIZ_CARD_BACKGROUNDS[state],
@@ -234,7 +232,8 @@ export function CompareUIQuiz({
                         centered
                         naturalWidth={MOCK_W}
                         naturalHeight={MOCK_H}
-                        paddingY={10}
+                        paddingY={20}
+                        paddingX={20}
                         maxScale={1}
                       >
                         {option.previewType === "good" ? <CardAMockup /> : <CardBMockup />}
@@ -253,10 +252,10 @@ export function CompareUIQuiz({
         {/* ── Fixed bottom bar — feedback + button ── */}
         <div
           ref={footerRef}
-          className={`fixed left-0 right-0 z-10 px-[16px] pt-[12px] ${isTablet ? "tablet-compare-footer" : ""}`}
+          className={`fixed left-0 right-0 z-10 px-[16px] pt-[12px] tablet-compare-footer`}
           style={{ bottom: "max(40px, env(safe-area-inset-bottom, 40px))", paddingBottom: 12 }}
         >
-          {isTablet ? <div className="tablet-compare-feedback mb-[10px]" aria-live="polite">
+          {isMobile ? <div className="tablet-compare-feedback mb-[10px]" aria-live="polite">
             <div style={{visibility: phase === "feedback" && isCorrect ? "visible" : "hidden"}}>
               <CorrectFeedback explanation={explanation} showXp xp={earnedXP} />
             </div>

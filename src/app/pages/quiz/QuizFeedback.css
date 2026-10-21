@@ -4,3 +4,8 @@
 .quiz-incorrect-heading>span{position:absolute;left:0;top:-3.5px}
 .quiz-incorrect-heading>p,.quiz-incorrect-feedback>p{line-height:20px}
 }
+
+@media (max-width:599px){
+.quiz-incorrect-heading{align-items:flex-start}
+.quiz-incorrect-heading>p{width:84px;white-space:normal;line-height:19px}
+}
