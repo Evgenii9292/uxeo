@@ -92,7 +92,7 @@ export function AccordionSectionMobile({
                 <div className="flex flex-col gap-[20px]">
                   {/* Header row */}
                   <div className="flex items-center w-full">
-                    <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[24px] text-[#f1f2fb] text-[20px] flex-1">
+                    <p data-theory-question className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[24px] text-[#f1f2fb] text-[20px] flex-1">
                       {section.quizQuestion}
                     </p>
                   </div>
@@ -235,7 +235,7 @@ export function AccordionSectionDesktop({
                   <div className="flex flex-col gap-[20px]">
                     {/* Header row: question only */}
                     <div className="content-stretch flex items-center relative shrink-0 w-full">
-                      <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f1f2fb] text-[26px] flex-1">
+                      <p data-theory-question className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[27.5px] text-[#f1f2fb] text-[26px] flex-1">
                         {section.quizQuestion}
                       </p>
                     </div>

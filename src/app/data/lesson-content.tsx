@@ -7,6 +7,9 @@
  */
 
 import React from "react";
+import { PortableTheoryExample } from "../pages/theory/components/PortableTheoryExample";
+import { ColorTheoryExample } from "../pages/theory/components/ColorTheoryExample";
+import { BalanceExample, ColorContrastExample } from "../pages/theory/components/ContrastTheoryExample";
 import {
   Quiz1VariantA, Quiz1VariantB,
   Quiz2VariantA, Quiz2VariantB,
@@ -182,14 +185,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Цвет делает интерфейс понятнее",
+        quizQuestion: "Где цвет помогает заметить кнопку входа?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <Quiz1VariantA />,
-        quizRightNode: <Quiz1VariantB />,
+        quizLeftNode: <ColorTheoryExample index={0} correct={false} />,
+        quizRightNode: <ColorTheoryExample index={0} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Цвет помогает выделить важные элементы. Так пользователю легче понять, куда смотреть и с чего начать.",
-        incorrectFeedback: "Цвет помогает выделить важные элементы. Так пользователю легче понять, куда смотреть и с чего начать.",
+        correctFeedback: "Цветная кнопка «Войти» выделяется среди нейтральных полей. Так главное действие легче найти.",
+        incorrectFeedback: "Цветная кнопка «Войти» выделяется среди нейтральных полей. Так главное действие легче найти.",
       },
       // ─── 2. Цвет выделяет действия ───────────────────────────────────────────
       {
@@ -212,14 +215,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Цвет выделяет действия",
+        quizQuestion: "Где кнопка оформления заказа заметнее?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <Quiz2VariantA />,
-        quizRightNode: <Quiz2VariantB />,
+        quizLeftNode: <ColorTheoryExample index={1} correct={false} />,
+        quizRightNode: <ColorTheoryExample index={1} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Основное действие должно выделяться цветом. Так пользователь быстрее понимает, куда нужно нажать.",
-        incorrectFeedback: "Основное действие должно выделяться цветом. Так пользователь быстрее понимает, куда нужно нажать.",
+        correctFeedback: "Кнопка «Оформить заказ» выделена цветом, а товары и цены остаются нейтральными.",
+        incorrectFeedback: "Кнопка «Оформить заказ» выделена цветом, а товары и цены остаются нейтральными.",
       },
       // ─── 3. Цвет показывает состояние ────────────────────────────────────────
       {
@@ -238,14 +241,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Цвет показывает состояние",
+        quizQuestion: "Где ошибка в поле показана понятнее?",
         quizLabel: "Проверим",
-        quizLeftNode: <Quiz3VariantA />,
-        quizRightNode: <Quiz3VariantB />,
+        quizLeftNode: <ColorTheoryExample index={2} correct={false} />,
+        quizRightNode: <ColorTheoryExample index={2} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Цвет помогает быстро понять состояние интерфейса. Красный обычно означает ошибку, зелёный — успешное действие.",
-        incorrectFeedback: "Цвет помогает быстро понять состояние интерфейса. Красный обычно означает ошибку, зелёный — успешное действие.",
+        correctFeedback: "Красная рамка и подпись «Неверный формат email» вместе показывают, какое поле нужно исправить.",
+        incorrectFeedback: "Красная рамка и подпись «Неверный формат email» вместе показывают, какое поле нужно исправить.",
       },
       // ─── 4. Цветовая система ─────────────────────────────────────────────────
       {
@@ -264,14 +267,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Цветовая система",
+        quizQuestion: "Где одинаковые действия обозначены одним цветом?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <Quiz4VariantA />,
-        quizRightNode: <Quiz4VariantB />,
+        quizLeftNode: <ColorTheoryExample index={3} correct={false} />,
+        quizRightNode: <ColorTheoryExample index={3} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Когда цвета используются системно, интерфейс выглядит аккуратно. Пользователю легче ориентироваться на экране.",
-        incorrectFeedback: "Когда цвета используются системно, интерфейс выглядит аккуратно. Пользователю легче ориентироваться на экране.",
+        correctFeedback: "Обе кнопки «Открыть» выполняют одинаковое действие и имеют один цвет. Это последовательное правило.",
+        incorrectFeedback: "Обе кнопки «Открыть» выполняют одинаковое действие и имеют один цвет. Это последовательное правило.",
       },
       // ─── 5. Ошибка: слишком много цветов ─────────────────────────────────────
       {
@@ -294,14 +297,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Ошибка: слишком много цветов",
+        quizQuestion: "Какой интерфейс не перегружен цветами?",
         quizLabel: "Проверим",
-        quizLeftNode: <Quiz5VariantA />,
-        quizRightNode: <Quiz5VariantB />,
+        quizLeftNode: <ColorTheoryExample index={4} correct={false} />,
+        quizRightNode: <ColorTheoryExample index={4} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Слишком много цветов создаёт визуальный шум. Лучше использовать один основной цвет и нейтральные оттенки.",
-        incorrectFeedback: "Слишком много цветов создаёт визуальный шум. Лучше использовать один основной цвет и нейтральные оттенки.",
+        correctFeedback: "Строки задач нейтральные; цвет выделяет только кнопку «Добавить задачу», а не каждый элемент списка.",
+        incorrectFeedback: "Строки задач нейтральные; цвет выделяет только кнопку «Добавить задачу», а не каждый элемент списка.",
       },
       // ─── 6. Простое правило цвета ─────────────────────────────────────────────
       {
@@ -316,14 +319,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Простое правило цвета",
+        quizQuestion: "Где цвет выделяет начало урока?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <ContrastQuiz6VariantA />,
-        quizRightNode: <ContrastQuiz6VariantB />,
+        quizLeftNode: <ColorTheoryExample index={5} correct={false} />,
+        quizRightNode: <ColorTheoryExample index={5} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Цвет должен выделять главный элемент на экране. Так пользователь быстрее понимает, что нужно сделать.",
-        incorrectFeedback: "Цвет должен выделять главный элемент на экране. Так пользователь быстрее понимает, что нужно сделать.",
+        correctFeedback: "Цвет выделяет «Начать урок». «Программа курса» и «О преподавателе» остаются второстепенными.",
+        incorrectFeedback: "Цвет выделяет «Начать урок». «Программа курса» и «О преподавателе» остаются второстепенными.",
       },
     ],
   },
@@ -363,14 +366,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Контраст делает интерфейс понятным",
+        quizQuestion: "Где главное действие заметнее?",
         quizLabel: "Закрепим!",
         quizLeftNode: <ContrastQuiz1VariantA />,
         quizRightNode: <ContrastQuiz1VariantB />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Контраст помогает различать элементы. Так пользователь быстрее понимает, что на экране главное.",
-        incorrectFeedback: "Контраст помогает различать элементы. Так пользователь быстрее понимает, что на экране главное.",
+        correctFeedback: "Кнопка «Читать далее» выделяется на фоне текста и второстепенного действия «Пропустить».",
+        incorrectFeedback: "Кнопка «Читать далее» выделяется на фоне текста и второстепенного действия «Пропустить».",
       },
       // ─── 2. Контраст размера ──────────────────────────────────────────────────
       {
@@ -384,14 +387,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Что заметят быстрее всего?",
+        quizQuestion: "Где заголовок заметнее благодаря размеру?",
         quizLabel: "Закрепим!",
         quizLeftNode: <ContrastQuiz2VariantA />,
         quizRightNode: <ContrastQuiz2VariantB />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Размер управляет вниманием пользователя. Крупные элементы замечают быстрее маленьких.",
-        incorrectFeedback: "Размер управляет вниманием пользователя. Крупные элементы замечают быстрее маленьких.",
+        correctFeedback: "Крупный заголовок «Как улучшить дизайн» отличается от описания и первым привлекает внимание.",
+        incorrectFeedback: "Крупный заголовок «Как улучшить дизайн» отличается от описания и первым привлекает внимание.",
       },
       // ─── 3. Визуальная иерархия ───────────────────────────────────────────────
       {
@@ -409,14 +412,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Разный размер элементов создаёт иерархию",
+        quizQuestion: "Где заголовок важнее описания по размеру?",
         quizLabel: "Проверим",
         quizLeftNode: <ContrastQuiz4VariantA />,
         quizRightNode: <ContrastQuiz4VariantB />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Разный размер элементов создаёт иерархию. Так пользователь быстрее считывает структуру информации.",
-        incorrectFeedback: "Разный размер элементов создаёт иерархию. Так пользователь быстрее считывает структуру информации.",
+        correctFeedback: "Заголовок «Завершить настройку» крупнее описания. Разница размеров показывает порядок чтения.",
+        incorrectFeedback: "Заголовок «Завершить настройку» крупнее описания. Разница размеров показывает порядок чтения.",
       },
       // ─── 4. Контраст цвета ────────────────────────────────────────────────────
       {
@@ -435,14 +438,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Какая кнопка заметнее?",
+        quizQuestion: "Какая кнопка записи заметнее?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <ContrastQuiz6VariantA />,
-        quizRightNode: <ContrastQuiz6VariantB />,
+        quizLeftNode: <ColorContrastExample correct={false} />,
+        quizRightNode: <ColorContrastExample correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Контрастный цвет помогает выделить действие. Поэтому кнопки должны отличаться от фона.",
-        incorrectFeedback: "Контрастный цвет помогает выделить действие. Поэтому кнопки должны отличаться от фона.",
+        correctFeedback: "Контрастная кнопка «Записаться» хорошо отделяется от светлого фона. Бледная кнопка с ним сливается.",
+        incorrectFeedback: "Контрастная кнопка «Записаться» хорошо отделяется от светлого фона. Бледная кнопка с ним сливается.",
       },
       // ─── 5. Контраст формы и веса ─────────────────────────────────────────────
       {
@@ -460,14 +463,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Форма и толщина тоже создают контраст",
+        quizQuestion: "Где важная информация выделена начертанием?",
         quizLabel: "Проверим",
         quizLeftNode: <ContrastQuiz5VariantA />,
         quizRightNode: <ContrastQuiz5VariantB />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Форма и толщина тоже создают контраст. Это помогает выделять важные элементы интерфейса.",
-        incorrectFeedback: "Форма и толщина тоже создают контраст. Это помогает выделять важные элементы ин��ерфейса.",
+        correctFeedback: "Более насыщенное начертание выделяет «Важную информацию» среди второстепенных подписей.",
+        incorrectFeedback: "Более насыщенное начертание выделяет «Важную информацию» среди второстепенных подписей.",
       },
       // ─── 6. Правило баланса ───────────────────────────────────────────────────
       {
@@ -485,14 +488,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Какой интерфейс использует правило баланса?",
+        quizQuestion: "Где выделено только главное действие?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <ContrastQuiz6VariantA />,
-        quizRightNode: <ContrastQuiz6VariantB />,
+        quizLeftNode: <BalanceExample correct={false} />,
+        quizRightNode: <BalanceExample correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Один акцент работает лучше многих. Так пользователь сразу видит главное действие.",
-        incorrectFeedback: "Один акцент работает лучше многих. Так пользователь сразу видит главное действие.",
+        correctFeedback: "Кнопка «Создать» — единственный сильный акцент. «Экспорт» и «Настройки» не конкурируют с ней.",
+        incorrectFeedback: "Кнопка «Создать» — единственный сильный акцент. «Экспорт» и «Настройки» не конкурируют с ней.",
       },
     ],
   },
@@ -522,14 +525,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где интерфейс имеет понятную иерархию?",
+        quizQuestion: "Где легче заметить начало обучения?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <HierarchyQuiz1VariantA />,
-        quizRightNode: <HierarchyQuiz1VariantB />,
+        quizLeftNode: <PortableTheoryExample lessonId="hierarchy-lesson" index={0} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="hierarchy-lesson" index={0} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Иерархия помогает быстро понять структуру экрана. Пользователь сразу видит, что главное, а что второстепенное.",
-        incorrectFeedback: "Иерархия помогает быстро понять структуру экрана. Пользователь сразу видит, что главное, а что второстепенное.",
+        correctFeedback: "«Начать обучение» выделено сильнее «Программы курса»: видно, с какого действия начать.",
+        incorrectFeedback: "«Начать обучение» выделено сильнее «Программы курса»: видно, с какого действия начать.",
       },
       // ─── 2. Как пользователь смотрит на экран ────────────────────────────────
       {
@@ -549,14 +552,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где интерфейс легче сканировать глазами?",
+        quizQuestion: "Где быстрее найти информацию об отступах?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <HierarchyQuiz2VariantA />,
-        quizRightNode: <HierarchyQuiz2VariantB />,
+        quizLeftNode: <PortableTheoryExample lessonId="hierarchy-lesson" index={1} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="hierarchy-lesson" index={1} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Пользователь сначала смотрит на самый заметный элемент. Затем внимание переходит к тексту и другим деталям.",
-        incorrectFeedback: "Пользователь сначала смотрит на самый заметный элемент. Затем внимание переходит к тексту и другим деталям.",
+        correctFeedback: "Подзаголовок «Интервалы» указывает на совет об отступах. Его можно найти, не читая весь текст подряд.",
+        incorrectFeedback: "Подзаголовок «Интервалы» указывает на совет об отступах. Его можно найти, не читая весь текст подряд.",
       },
       // ─── 3. Что делает элемент главным ───────────────────────────────────────
       {
@@ -576,14 +579,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где главный элемент на экране выделен правильно?",
+        quizQuestion: "Где сохранение выделено как главное действие?",
         quizLabel: "Проверим",
-        quizLeftNode: <HierarchyQuiz3VariantA />,
-        quizRightNode: <HierarchyQuiz3VariantB />,
+        quizLeftNode: <PortableTheoryExample lessonId="hierarchy-lesson" index={2} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="hierarchy-lesson" index={2} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Главный элемент должен выделяться среди остальных. Тогда пользователь быстрее понимает, куда смотреть.",
-        incorrectFeedback: "Главный элемент должен выделяться среди остальных. Тогда пользователь быстрее понимает, куда смотреть.",
+        correctFeedback: "«Сохранить изменения» заметнее «Отмены». Основное действие отделено от второстепенного.",
+        incorrectFeedback: "«Сохранить изменения» заметнее «Отмены». Основное действие отделено от второстепенного.",
       },
       // ─── 4. Иерархия через размер ────────────────────────────────────────────
       {
@@ -601,14 +604,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где размер правильно создаёт иерархию?",
+        quizQuestion: "Где название и цена выделены размером?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <HierarchyQuiz4VariantA />,
-        quizRightNode: <HierarchyQuiz4VariantB />,
+        quizLeftNode: <PortableTheoryExample lessonId="hierarchy-lesson" index={3} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="hierarchy-lesson" index={3} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Размер помогает выстроить структуру информации. Крупные элементы замечают раньше мелких.",
-        incorrectFeedback: "Размер помогает выстроить структуру информации. Крупные элементы замечают раньше мелких.",
+        correctFeedback: "Название наушников и цена крупнее описания. Размер показывает, какую информацию читать сначала.",
+        incorrectFeedback: "Название наушников и цена крупнее описания. Размер показывает, какую информацию читать сначала.",
       },
       // ─── 5. Иерархия через расстояние ────────────────────────────────────────
       {
@@ -628,14 +631,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где расстояние между элементами используется правильно?",
+        quizQuestion: "Где имя и email воспринимаются как одна группа?",
         quizLabel: "Проверим",
-        quizLeftNode: <HierarchyQuiz5VariantA />,
-        quizRightNode: <HierarchyQuiz5VariantB />,
+        quizLeftNode: <PortableTheoryExample lessonId="hierarchy-lesson" index={4} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="hierarchy-lesson" index={4} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Расстояние помогает объединять элементы в группы. Так интерфейс легче читать и понимать.",
-        incorrectFeedback: "Расстояние помогает объединять элементы в группы. Так интерфейс легче читать и понимать.",
+        correctFeedback: "Имя и email расположены рядом. Настройки уведомлений отделены большим расстоянием и образуют другую группу.",
+        incorrectFeedback: "Имя и email расположены рядом. Настройки уведомлений отделены большим расстоянием и образуют другую группу.",
       },
       // ─── 6. Ошибка: всё одинаково важное ─────────────────────────────────────
       {
@@ -657,14 +660,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где иерархия построена правильно?",
+        quizQuestion: "Где скачивание выделено среди других действий?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <HierarchyQuiz6VariantA />,
-        quizRightNode: <HierarchyQuiz6VariantB />,
+        quizLeftNode: <PortableTheoryExample lessonId="hierarchy-lesson" index={5} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="hierarchy-lesson" index={5} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Е��ли всё выглядит одинаково, пользователь теряется. Иерархия помогает показать главный элемент на экране.",
-        incorrectFeedback: "Если всё выглядит одинаково, пользователь теряется. Иерархия помогает показать главный элемент на экране.",
+        correctFeedback: "«Скачать» — главный акцент. «Поделиться» и «Закрыть» оформлены спокойнее и не конкурируют с ним.",
+        incorrectFeedback: "«Скачать» — главный акцент. «Поделиться» и «Закрыть» оформлены спокойнее и не конкурируют с ним.",
       },
     ],
   },
@@ -698,14 +701,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где пользовательский опыт лучше?",
+        quizQuestion: "Где проще заказать пиццу без отвлечений?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <M2L1Q1A />,
-        quizRightNode: <M2L1Q1B />,
+        quizLeftNode: <PortableTheoryExample lessonId="what-is-ux-lesson" index={0} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="what-is-ux-lesson" index={0} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Хороший UX помогает пользователю быстро понять, что делать на экране. Чем меньше лишних действий — тем удобнее интерфейс.",
-        incorrectFeedback: "Хороший UX помогает пользователю быстро понять, что делать на экране. Чем меньше лишних действий — тем удобнее интерфейс.",
+        correctFeedback: "Рядом с пиццей сразу видна кнопка заказа. Рекламные блоки не отвлекают от выбранной задачи.",
+        incorrectFeedback: "Рядом с пиццей сразу видна кнопка заказа. Рекламные блоки не отвлекают от выбранной задачи.",
       },
       // ─── 2. Как пользователь воспринимает интерфейс ──────────────────────────
       {
@@ -727,14 +730,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где интерфейс лучше помогает выполнить задачу?",
+        quizQuestion: "Где ничто не отвлекает от покупки наушников?",
         quizLabel: "Проверим",
-        quizLeftNode: <M2L1Q2A />,
-        quizRightNode: <M2L1Q2B />,
+        quizLeftNode: <PortableTheoryExample lessonId="what-is-ux-lesson" index={1} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="what-is-ux-lesson" index={1} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Интерфейс должен помогать выполнить задачу. Когда действие видно сразу, пользователь быстрее достигает цели.",
-        incorrectFeedback: "Интерфейс должен помогать выполнить задачу. Когда действие видно сразу, пользователь быстрее достигает цели.",
+        correctFeedback: "Цена и переход к оплате находятся на экране товара. Посторонние предложения не мешают покупке.",
+        incorrectFeedback: "Цена и переход к оплате находятся на экране товара. Посторонние предложения не мешают покупке.",
       },
       // ─── 3. Простота интерфейса ───────────────────────────────────────────────
       {
@@ -760,14 +763,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где интерфейс проще?",
+        quizQuestion: "Где оставлены только данные для входа по email?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <M2L1Q3A />,
-        quizRightNode: <M2L1Q3B />,
+        quizLeftNode: <PortableTheoryExample lessonId="what-is-ux-lesson" index={2} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="what-is-ux-lesson" index={2} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Простой интерфейс легче воспринимать. Когда на экране только нужные элементы, пользователь быстрее ориентируется.",
-        incorrectFeedback: "Простой интерфейс легче воспринимать. Когда на экране только нужные элементы, пользователь быстрее ориентируется.",
+        correctFeedback: "Для входа нужны email и пароль. Имя и город в этом сценарии добавляют необязательные поля.",
+        incorrectFeedback: "Для входа нужны email и пароль. Имя и город в этом сценарии добавляют необязательные поля.",
       },
       // ─── 4. Проблемы UX ──────────────────────────────────────────────────────
       {
@@ -791,14 +794,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где интерфейс создаёт проблемы для пользователя?",
+        quizQuestion: "Где меню подтверждает, что открыт раздел курсов?",
         quizLabel: "Проверим",
-        quizLeftNode: <M2L1Q4A />,
-        quizRightNode: <M2L1Q4B />,
+        quizLeftNode: <PortableTheoryExample lessonId="what-is-ux-lesson" index={3} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="what-is-ux-lesson" index={3} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Сложные сценарии создают плохой UX. Чем больше шагов требуется, тем выше шанс, что пользователь уйдёт.",
-        incorrectFeedback: "Сложные сценарии создают плохой UX. Чем больше шагов требуется, тем выше шанс, что пользователь уйдёт.",
+        correctFeedback: "В меню выделены «Курсы», а заголовок подтверждает текущий раздел. Не нужно угадывать своё положение.",
+        incorrectFeedback: "В меню выделены «Курсы», а заголовок подтверждает текущий раздел. Не нужно угадывать своё положение.",
       },
     ],
   },
@@ -836,14 +839,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где пользовательский путь организован лучше?",
+        quizQuestion: "Где регистрация не требует ненужной анкеты?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <M2L2Q1A />,
-        quizRightNode: <M2L2Q1B />,
+        quizLeftNode: <PortableTheoryExample lessonId="user-flow-lesson" index={0} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="user-flow-lesson" index={0} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "User Flow показывает путь пользователя к цели. Хороший сценарий содержит минимальное количество шагов.",
-        incorrectFeedback: "User Flow показывает путь пользователя к цели. Хороший сценарий содержит минимальное количество шагов.",
+        correctFeedback: "Оба пути заканчиваются созданием аккаунта, но короткий путь не требует анкеты, ненужной для входа.",
+        incorrectFeedback: "Оба пути заканчиваются созданием аккаунта, но короткий путь не требует анкеты, ненужной для входа.",
       },
       // ─── 2. Цель пользователя ────────────────────────────────────────────────
       {
@@ -866,14 +869,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где цель пользователя показана понятнее?",
+        quizQuestion: "Где кнопка ясно ведёт к записи на курс?",
         quizLabel: "Проверим",
-        quizLeftNode: <M2L2Q2A />,
-        quizRightNode: <M2L2Q2B />,
+        quizLeftNode: <PortableTheoryExample lessonId="user-flow-lesson" index={1} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="user-flow-lesson" index={1} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Интерфейс должен вести пользователя к его цели. Главное действие должно быть очевидным.",
-        incorrectFeedback: "Интерфейс должен вести пользователя к его цели. Главное действие должно быть очевидным.",
+        correctFeedback: "«Записаться на курс» называет результат действия. «Подробнее» не объясняет, как перейти к записи.",
+        incorrectFeedback: "«Записаться на курс» называет результат действия. «Подробнее» не объясняет, как перейти к записи.",
       },
       // ─── 3. Шаги пользователя ────────────────────────────────────────────────
       {
@@ -890,20 +893,20 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
               </ul>
             </TextSection>
             <ContentDivider />
-            <TextSection emoji="⭐" title="Меньше шагов = лучше UX">
-              <p>UX-дизайн старается {H("уменьшить количество шагов")}.</p>
-              <p>Чем короче путь — тем выше вероятность, что пользователь завершит действие.</p>
+            <TextSection emoji="⭐" title="Меньше лишних шагов">
+              <p>UX-дизайн старается {H("убрать лишние переходы")}.</p>
+              <p>При этом сохраняют необходимые данные, понятность и подтверждение результата.</p>
             </TextSection>
           </>
         ),
-        quizQuestion: "Где путь пользователя короче?",
+        quizQuestion: "Где покупка одного товара требует меньше переходов?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <M2L2Q3A />,
-        quizRightNode: <M2L2Q3B />,
+        quizLeftNode: <PortableTheoryExample lessonId="user-flow-lesson" index={2} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="user-flow-lesson" index={2} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Чем меньше шагов в сценарии, тем удобнее интерфейс. Пользователь быстрее завершает действие.",
-        incorrectFeedback: "Чем меньше шагов в сценарии, тем удобнее интерфейс. Пользовател�� быстрее завершает действие.",
+        correctFeedback: "Адрес уже сохранён. Можно перейти от товара к оплате без отдельного экрана корзины; оба пути заканчиваются «Готово».",
+        incorrectFeedback: "Адрес уже сохранён. Можно перейти от товара к оплате без отдельного экрана корзины; оба пути заканчиваются «Готово».",
       },
       // ─── 4. Ошибки сценариев ─────────────────────────────────────────────────
       {
@@ -925,14 +928,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где пользователь может потеряться?",
+        quizQuestion: "Где переходы ведут к покупке без возвратов?",
         quizLabel: "Проверим",
-        quizLeftNode: <M2L2Q4A />,
-        quizRightNode: <M2L2Q4B />,
+        quizLeftNode: <PortableTheoryExample lessonId="user-flow-lesson" index={3} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="user-flow-lesson" index={3} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Лишние шаги усложняют сценарий. Хороший UX сокращает путь пользователя.",
-        incorrectFeedback: "Лишние шаги усложняют сценарий. Хороший UX сокращает путь пользователя.",
+        correctFeedback: "Путь последовательно ведёт от каталога к товару, оплате и завершению. Нет возвратов между каталогом и корзиной.",
+        incorrectFeedback: "Путь последовательно ведёт от каталога к товару, оплате и завершению. Нет возвратов между каталогом и корзиной.",
       },
     ],
   },
@@ -967,14 +970,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где экран лучше организован?",
+        quizQuestion: "Где описание отделено от программы курса?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <M2L3Q1A />,
-        quizRightNode: <M2L3Q1B />,
+        quizLeftNode: <PortableTheoryExample lessonId="interface-structure-lesson" index={0} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="interface-structure-lesson" index={0} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Информация на экране должна быть разделена на блоки. Так пользователь быстрее понимает структуру страницы.",
-        incorrectFeedback: "Информация на экране должна быть разделена на блоки. Так пользователь быстрее понимает структуру страницы.",
+        correctFeedback: "Описание и программа оформлены отдельными смысловыми блоками. Их не нужно вычитывать из сплошного абзаца.",
+        incorrectFeedback: "Описание и программа оформлены отдельными смысловыми блоками. Их не нужно вычитывать из сплошного абзаца.",
       },
       // ─── 2. Группировка информации ───────────────────────────────────────────
       {
@@ -996,14 +999,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где информация сгруппирована лучше?",
+        quizQuestion: "Где контакты отделены от настроек безопасности?",
         quizLabel: "Проверим",
-        quizLeftNode: <M2L3Q2A />,
-        quizRightNode: <M2L3Q2B />,
+        quizLeftNode: <PortableTheoryExample lessonId="interface-structure-lesson" index={1} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="interface-structure-lesson" index={1} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Связанные элементы должны находиться рядом. Это помогает быстрее читать интерфейс.",
-        incorrectFeedback: "Связанные элементы должны находиться рядом. Это помогает быстрее читать интерфейс.",
+        correctFeedback: "Имя и email собраны вместе, пароль и вход по коду — в другой группе. В перемешанном списке эти связи не видны.",
+        incorrectFeedback: "Имя и email собраны вместе, пароль и вход по коду — в другой группе. В перемешанном списке эти связи не видны.",
       },
       // ─── 3. Логика экрана ────────────────────────────────────────────────────
       {
@@ -1025,45 +1028,39 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где логика расположения элементов понятнее?",
+        quizQuestion: "Где товар, цена и покупка идут в понятном порядке?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <M2L3Q3A />,
-        quizRightNode: <M2L3Q3B />,
+        quizLeftNode: <PortableTheoryExample lessonId="interface-structure-lesson" index={2} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="interface-structure-lesson" index={2} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Элементы должны располагаться в логическом порядке. Тогда пользователь легко понимает последовательность действий.",
-        incorrectFeedback: "Элементы должны располагаться в логическом порядке. Тогда пользователь легко понимает последовательность действий.",
+        correctFeedback: "Сначала описание наушников, затем цена и кнопка «Купить». Не приходится искать данные после кнопки.",
+        incorrectFeedback: "Сначала описание наушников, затем цена и кнопка «Купить». Не приходится искать данные после кнопки.",
       },
       // ─── 4. Сканирование экрана ──────────────────────────────────────────────
       {
         title: "Сканирование экрана",
         content: (
           <>
-            <TextSection emoji="👀" title="Как пользователи читают интерфейс">
-              <p>Люди редко читают интерфейс полностью. Обычно они {H("сканируют экран")} глазами.</p>
-              <p>Исследования выделяют два распространённых паттерна:</p>
+            <TextSection emoji="👀" title="Сначала заголовки">
+              <p>Чтобы найти нужную информацию, пользователь часто сначала просматривает {H("заголовки и подзаголовки")}.</p>
+              <p>Назовите блоки по содержанию: например, «Описание» и «Программа курса».</p>
             </TextSection>
             <ContentDivider />
-            <TextSection emoji="📖" title="F-паттерн">
-              <p>Пользователь читает экран {H("сверху вниз и слева направо")}.</p>
-              <p>Часто встречается на новостных сайтах, страницах с текстом и длинных интерфейсах.</p>
-            </TextSection>
-            <ContentDivider />
-            <TextSection emoji="⚡" title="Z-паттерн">
-              <p>Пользователь движется глазами {H("по форме буквы Z")}.</p>
-              <p>Так читаются лендинги, простые страницы и промо-экраны.</p>
-              <p>Важные элементы размещают по {H("траектории взгляда")} пользователя.</p>
+            <TextSection emoji="📖" title="Разбейте текст по смыслу">
+              <p>Размещайте пояснение сразу под его подзаголовком. Отделяйте разные темы небольшим интервалом.</p>
+              <p>Так нужный раздел можно найти, {H("не читая весь экран подряд")}.</p>
             </TextSection>
           </>
         ),
-        quizQuestion: "Где экран легче просканировать?",
+        quizQuestion: "Где быстрее найти программу курса?",
         quizLabel: "Проверим",
-        quizLeftNode: <M2L3Q4A />,
-        quizRightNode: <M2L3Q4B />,
+        quizLeftNode: <PortableTheoryExample lessonId="interface-structure-lesson" index={3} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="interface-structure-lesson" index={3} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Пользователь не читает экран полностью — он его сканирует. Поэтому важные элементы должны быть заметны сразу.",
-        incorrectFeedback: "Пользователь не читает экран полностью — он его сканирует. Поэтому важные элементы должны быть заметны сразу.",
+        correctFeedback: "Подзаголовок «Программа» сразу указывает на «Теорию и практику». В сплошном тексте нужный фрагмент приходится искать.",
+        incorrectFeedback: "Подзаголовок «Программа» сразу указывает на «Теорию и практику». В сплошном тексте нужный фрагмент приходится искать.",
       },
     ],
   },
@@ -1100,14 +1097,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где пользователю легче выполнить действие?",
+        quizQuestion: "Где название кнопки объясняет, как записаться?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <M2L4Q1A />,
-        quizRightNode: <M2L4Q1B />,
+        quizLeftNode: <PortableTheoryExample lessonId="interface-elements-lesson" index={0} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="interface-elements-lesson" index={0} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Кнопки показывают, какое действие можно выполнить. Главное действие должно выделяться.",
-        incorrectFeedback: "Кнопки показывают, какое действие можно выполнить. Главное действие должно выделяться.",
+        correctFeedback: "«Записаться на курс» называет действие. «Открыть» не сообщает, что именно произойдёт.",
+        incorrectFeedback: "«Записаться на курс» называет действие. «Открыть» не сообщает, что именно произойдёт.",
       },
       // ─── 2. Формы и ввод данных ──────────────────────────────────────────────
       {
@@ -1129,14 +1126,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где форму легче заполнить?",
+        quizQuestion: "Где понятно, куда написать свой вопрос?",
         quizLabel: "Проверим",
-        quizLeftNode: <M2L4Q2A />,
-        quizRightNode: <M2L4Q2B />,
+        quizLeftNode: <PortableTheoryExample lessonId="interface-elements-lesson" index={1} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="interface-elements-lesson" index={1} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Поля ввода должны быть понятными. Подписи помогают пользователю понять, какие данные вводить.",
-        incorrectFeedback: "Поля ввода должны быть понятными. Подписи помогают пользователю понять, какие данные вводить.",
+        correctFeedback: "Поля «Email» и «Сообщение» подписаны. Ясно, где оставить контакт и где написать вопрос.",
+        incorrectFeedback: "Поля «Email» и «Сообщение» подписаны. Ясно, где оставить контакт и где написать вопрос.",
       },
       // ─── 3. Навигация ────────────────────────────────────────────────────────
       {
@@ -1159,14 +1156,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где навигация понятнее?",
+        quizQuestion: "Где в меню отмечен текущий раздел курсов?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <M2L4Q3A />,
-        quizRightNode: <M2L4Q3B />,
+        quizLeftNode: <PortableTheoryExample lessonId="interface-elements-lesson" index={2} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="interface-elements-lesson" index={2} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Навигация показывает структуру продукта. Пользователь должен легко понимать, куда он может перейти.",
-        incorrectFeedback: "Навигация показывает структуру продукта. Пользователь должен легко понимать, куда он может перейти.",
+        correctFeedback: "Выделенный пункт «Курсы» показывает текущее положение в меню; остальные пункты остаются нейтральными.",
+        incorrectFeedback: "Выделенный пункт «Курсы» показывает текущее положение в меню; остальные пункты остаются нейтральными.",
       },
       // ─── 4. Информационные блоки ─────────────────────────────────────────────
       {
@@ -1187,14 +1184,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где информация структурирована лучше?",
+        quizQuestion: "Где описание и программа курса разделены на блоки?",
         quizLabel: "Проверим",
-        quizLeftNode: <M2L4Q4A />,
-        quizRightNode: <M2L4Q4B />,
+        quizLeftNode: <PortableTheoryExample lessonId="interface-elements-lesson" index={3} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="interface-elements-lesson" index={3} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Карточки и блоки помогают структурировать информацию. Это делает интерфейс легче для восприятия.",
-        incorrectFeedback: "Карточки и блоки помогают структурировать информацию. Это делает интерфейс легче для восприятия.",
+        correctFeedback: "Отдельные блоки «Описание» и «Программа» помогают найти нужные сведения. Кнопка записи расположена после информации.",
+        incorrectFeedback: "Отдельные блоки «Описание» и «Программа» помогают найти нужные сведения. Кнопка записи расположена после информации.",
       },
     ],
   },
@@ -1228,14 +1225,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где пользовательский сценарий сложнее?",
+        quizQuestion: "Где из регистрации убран ненужный шаг?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <M2L5Q1A />,
-        quizRightNode: <M2L5Q1B />,
+        quizLeftNode: <PortableTheoryExample lessonId="ux-errors-lesson" index={0} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="ux-errors-lesson" index={0} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Слишком длинные сценарии ухудшают UX. Чем больше шагов, тем выше вероятность, что пользователь прервёт действие.",
-        incorrectFeedback: "Слишком длинные сценарии ухудшают UX. Чем больше шагов, тем выше вероятность, что пользователь прервёт действие.",
+        correctFeedback: "Аккаунт создаётся без анкеты, которая не нужна для входа. Подтверждение email и завершение сохранены.",
+        incorrectFeedback: "Аккаунт создаётся без анкеты, которая не нужна для входа. Подтверждение email и завершение сохранены.",
       },
       // ─── 2. Непонятная логика ────────────────────────────────────────────────
       {
@@ -1258,14 +1255,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где логика интерфейса непонятна?",
+        quizQuestion: "Где понятно, какая кнопка меняет пароль?",
         quizLabel: "Проверим",
-        quizLeftNode: <M2L5Q2A />,
-        quizRightNode: <M2L5Q2B />,
+        quizLeftNode: <PortableTheoryExample lessonId="ux-errors-lesson" index={1} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="ux-errors-lesson" index={1} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Кнопки и действия должны быть понятными. Если пользователь не понимает, что произойдёт после нажатия, интерфейс становится сложным.",
-        incorrectFeedback: "Кнопки и действия должны быть понятными. Если пользователь не понимает, что произойдёт после нажатия, интерфейс становится сложным.",
+        correctFeedback: "«Изменить пароль» прямо называет результат. По надписи «Действие 1» его предсказать нельзя.",
+        incorrectFeedback: "«Изменить пароль» прямо называет результат. По надписи «Действие 1» его предсказать нельзя.",
       },
       // ─── 3. Плохая структура ─────────────────────────────────────────────────
       {
@@ -1287,14 +1284,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где структура интерфейса хуже?",
+        quizQuestion: "Где личные данные не смешаны с безопасностью?",
         quizLabel: "Закрепим!",
-        quizLeftNode: <M2L5Q3A />,
-        quizRightNode: <M2L5Q3B />,
+        quizLeftNode: <PortableTheoryExample lessonId="ux-errors-lesson" index={2} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="ux-errors-lesson" index={2} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Интерфейс должен иметь понятную структуру. Когда элементы расположены хаотично, пользователю сложнее ориентироваться.",
-        incorrectFeedback: "Интерфейс должен иметь понятную структуру. Когда элементы расположены хаотично, пользователю сложнее ориентироваться.",
+        correctFeedback: "Имя и email отделены от пароля и входа по коду. Так настройки не приходится искать в перемешанном списке.",
+        incorrectFeedback: "Имя и email отделены от пароля и входа по коду. Так настройки не приходится искать в перемешанном списке.",
       },
       // ─── 4. Перегруженный экран ──────────────────────────────────────────────
       {
@@ -1306,7 +1303,7 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
               <p>Человек не понимает:</p>
               <ul className="list-disc flex flex-col gap-[4px]">
                 <li className="ms-[27px]">куда смотреть</li>
-                <li className="ms-[27px]">ч��о важнее</li>
+                <li className="ms-[27px]">что важнее</li>
                 <li className="ms-[27px]">какое действие главное</li>
               </ul>
             </TextSection>
@@ -1317,14 +1314,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </TextSection>
           </>
         ),
-        quizQuestion: "Где экран перегружен?",
+        quizQuestion: "Какой экран не отвлекает от продолжения урока?",
         quizLabel: "Проверим",
-        quizLeftNode: <M2L5Q4A />,
-        quizRightNode: <M2L5Q4B />,
+        quizLeftNode: <PortableTheoryExample lessonId="ux-errors-lesson" index={3} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="ux-errors-lesson" index={3} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Слишком большое количество элементов создаёт визуальный шум. Чем проще и чище интерфейс, тем легче пользователю им пользоваться.",
-        incorrectFeedback: "Слишком большое количество элементов создаёт визуальный шум. Чем проще и чище интерфейс, тем легче пользователю им пользоваться.",
+        correctFeedback: "На экране остаются курс и продолжение урока. Акции и новости не отвлекают от текущего обучения.",
+        incorrectFeedback: "На экране остаются курс и продолжение урока. Акции и новости не отвлекают от текущего обучения.",
       },
     ],
   },
@@ -1345,14 +1342,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             <p>Это не просто набор кнопок, а единая система, по которой собирается весь интерфейс.</p>
           </div>
         ),
-        quizQuestion: "Где используется UI Kit?",
+        quizQuestion: "Где экран использует элементы показанного набора?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L1Q1A />,
-        quizRightNode: <M3L1Q1B />,
+        quizLeftNode: <PortableTheoryExample lessonId="what-is-ui-kit-lesson" index={0} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="what-is-ui-kit-lesson" index={0} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "UI Kit — это система компонентов. Когда интерфейс собирается из готовых элементов, он становится единым, понятным и удобным в поддержке.",
-        incorrectFeedback: "UI Kit — это система компонентов. Когда интерфейс собирается из готовых элементов, он становится единым, понятным и удобным в поддержке.",
+        correctFeedback: "Кнопка, поле и карточка на экране повторяют формы и цвета элементов набора. Другой экран использует произвольное оформление.",
+        incorrectFeedback: "Кнопка, поле и карточка на экране повторяют формы и цвета элементов набора. Другой экран использует произвольное оформление.",
       },
       {
         title: "Компоненты интерфейса",
@@ -1365,18 +1362,18 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
               <li className="ms-[27px]">карточки</li>
               <li className="ms-[27px]">текст</li>
             </ul>
-            <p>Эти элементы называются {H("компонентами")}.</p>
+            <p>Для повторяющихся элементов создают {H("компоненты")}.</p>
             <p>👉 Вместо того чтобы рисовать их каждый раз заново, дизайнер создаёт их один раз и использует повторно.</p>
           </div>
         ),
-        quizQuestion: "Где элементы интерфейса организованы лучше?",
+        quizQuestion: "Где элементы разложены по своим категориям?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L1Q2A />,
-        quizRightNode: <M3L1Q2B />,
+        quizLeftNode: <PortableTheoryExample lessonId="what-is-ui-kit-lesson" index={1} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="what-is-ui-kit-lesson" index={1} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Группировка элементов — основа UI Kit. Когда кнопки, поля и карточки разделены по категориям, с ними проще работать и находить нужные элементы.",
-        incorrectFeedback: "Группировка элементов — основа UI Kit. Когда кнопки, поля и карточки разделены по категориям, с ними проще работать и находить нужные элементы.",
+        correctFeedback: "В «Кнопках» находится кнопка, в «Полях» — поле ввода, в «Карточках» — карточка курса. Типы не перемешаны.",
+        incorrectFeedback: "В «Кнопках» находится кнопка, в «Полях» — поле ввода, в «Карточках» — карточка курса. Типы не перемешаны.",
       },
       {
         title: "Повторяющиеся элементы",
@@ -1389,37 +1386,37 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
               <li className="ms-[27px]">одинаковые карточки</li>
             </ul>
             <p>👉 Если каждый раз рисовать их по-разному — интерфейс становится хаотичным.</p>
-            <p>UI Kit решает это: все элементы становятся одинаковыми.</p>
+            <p>UI Kit решает это: одинаковые элементы следуют общим правилам.</p>
           </div>
         ),
-        quizQuestion: "Где интерфейс легче поддерживать?",
+        quizQuestion: "Где новый цвет применился на обоих экранах?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L1Q3A />,
-        quizRightNode: <M3L1Q3B />,
+        quizLeftNode: <PortableTheoryExample lessonId="what-is-ui-kit-lesson" index={2} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="what-is-ui-kit-lesson" index={2} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Компоненты упрощают поддержку интерфейса. Если изменить один компонент, изменения применяются ко всем его копиям.",
-        incorrectFeedback: "Компоненты упрощают поддержку интерфейса. Если изменить один компонент, изменения применяются ко всем его копиям.",
+        correctFeedback: "После изменения кнопки в наборе обе связанные кнопки стали синими. Независимые копии сохранили старый цвет.",
+        incorrectFeedback: "После изменения кнопки в наборе обе связанные кнопки стали синими. Независимые копии сохранили старый цвет.",
       },
       {
         title: "Зачем нужен UI Kit",
         content: (
           <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[24px] text-[#f1f2fb] opacity-80 w-full flex flex-col gap-[8px]">
             <p><strong className="opacity-100">Скорость</strong> — не нужно каждый раз заново рисовать элементы.</p>
-            <p><strong className="opacity-100">Консистентность</strong> — все экраны выглядят одинаково.</p>
+            <p><strong className="opacity-100">Консистентность</strong> — элементы на разных экранах оформлены по общим правилам.</p>
             <p><strong className="opacity-100">Упрощение разработки</strong> — разработчик понимает, какие элементы использовать.</p>
             <p><strong className="opacity-100">Меньше ошибок</strong> — нет случайных размеров, цветов и отступов.</p>
             <p>👉 UI Kit — это способ сделать дизайн {H("предсказуемым и управляемым")}.</p>
           </div>
         ),
-        quizQuestion: "Где интерфейс выглядит более системным?",
+        quizQuestion: "Где карточки курсов используют общую структуру?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L1Q4A />,
-        quizRightNode: <M3L1Q4B />,
+        quizLeftNode: <PortableTheoryExample lessonId="what-is-ui-kit-lesson" index={3} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="what-is-ui-kit-lesson" index={3} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Системность — это одинаковые элементы и отступы. Когда интерфейс построен по правилам, он выглядит аккуратно и профессионально.",
-        incorrectFeedback: "Системность — это одинаковые элементы и отступы. Когда интерфейс построен по правилам, он выглядит аккуратно и профессионально.",
+        correctFeedback: "В обеих карточках название, длительность и кнопка стоят на одинаковых местах. Содержимое меняется, структура сохраняется.",
+        incorrectFeedback: "В обеих карточках название, длительность и кнопка стоят на одинаковых местах. Содержимое меняется, структура сохраняется.",
       },
     ],
   },
@@ -1440,19 +1437,19 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             <p><strong className="opacity-100">Важно:</strong></p>
             <ul className="list-disc flex flex-col gap-[4px]">
               <li className="ms-[27px]">у кнопки всегда должно быть понятное действие</li>
-              <li className="ms-[27px]">например: Submit, Buy, Continue</li>
+              <li className="ms-[27px]">например: «Отправить», «Купить», «Продолжить»</li>
             </ul>
             <p>Если кнопка непонятна — пользователь не будет действовать.</p>
           </div>
         ),
-        quizQuestion: "Где кнопки организованы правильнее?",
+        quizQuestion: "Где кнопка ясно предлагает купить курс?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L2Q1A />,
-        quizRightNode: <M3L2Q1B />,
+        quizLeftNode: <PortableTheoryExample lessonId="ui-elements-lesson" index={0} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="ui-elements-lesson" index={0} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Кнопки должны быть частью системы. Единый стиль помогает пользователю быстрее понимать действия.",
-        incorrectFeedback: "Кнопки должны быть частью системы. Единый стиль помогает пользователю быстрее понимать действия.",
+        correctFeedback: "«Купить курс» называет действие и объект. «Выполнить» не объясняет результат нажатия.",
+        incorrectFeedback: "«Купить курс» называет действие и объект. «Выполнить» не объясняет результат нажатия.",
       },
       {
         title: "Поля ввода",
@@ -1467,14 +1464,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             <p>Пример ошибки: пустое поле без подписи → пользователь теряется.</p>
           </div>
         ),
-        quizQuestion: "Где поля ввода сделаны правильнее?",
+        quizQuestion: "Где понятно, какое поле предназначено для email?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L2Q2A />,
-        quizRightNode: <M3L2Q2B />,
+        quizLeftNode: <PortableTheoryExample lessonId="ui-elements-lesson" index={1} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="ui-elements-lesson" index={1} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Поля должны быть одинаковыми. Это делает форму понятной и снижает нагрузку на пользователя.",
-        incorrectFeedback: "Поля должны быть одинаковыми. Это делает форму понятной и снижает нагрузку на пользователя.",
+        correctFeedback: "Постоянная подпись «Email» объясняет назначение поля. «Поле 2» не подсказывает, какие данные вводить.",
+        incorrectFeedback: "Постоянная подпись «Email» объясняет назначение поля. «Поле 2» не подсказывает, какие данные вводить.",
       },
       {
         title: "Карточки",
@@ -1489,14 +1486,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             <p>👉 Карточки помогают разбить информацию на удобные блоки.</p>
           </div>
         ),
-        quizQuestion: "Где карточки интерфейса выглядят более системно?",
+        quizQuestion: "Где карточки имеют одинаковый порядок элементов?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L2Q3A />,
-        quizRightNode: <M3L2Q3B />,
+        quizLeftNode: <PortableTheoryExample lessonId="ui-elements-lesson" index={2} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="ui-elements-lesson" index={2} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Карточки должны иметь одинаковую структуру. Это упрощает восприятие информации и делает интерфейс чище.",
-        incorrectFeedback: "Карточки должны иметь одинаковую структуру. Это упрощает восприятие информации и делает интерфейс чище.",
+        correctFeedback: "В каждой карточке сначала название и длительность, затем «Открыть курс». Порядок и оформление не меняются.",
+        incorrectFeedback: "В каждой карточке сначала название и длительность, затем «Открыть курс». Порядок и оформление не меняются.",
       },
       {
         title: "Иконки",
@@ -1507,21 +1504,21 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             <p>👉 Один набор иконок → единый визуальный язык → пользователь быстрее считывает интерфейс.</p>
           </div>
         ),
-        quizQuestion: "Где система иконок выглядит правильнее?",
+        quizQuestion: "Где иконки выполнены в одном стиле?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L2Q4A />,
-        quizRightNode: <M3L2Q4B />,
+        quizLeftNode: <PortableTheoryExample lessonId="ui-elements-lesson" index={3} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="ui-elements-lesson" index={3} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Иконки должны быть в одном стиле. Разные стили создают визуальный шум и ломают интерфейс.",
-        incorrectFeedback: "Иконки должны быть в одном стиле. Разные стили создают визуальный шум и ломают интерфейс.",
+        correctFeedback: "У иконок одинаковый размер и толщина линий. Нет случайного смешения заливки и контурного рисунка.",
+        incorrectFeedback: "У иконок одинаковый размер и толщина линий. Нет случайного смешения заливки и контурного рисунка.",
       },
     ],
   },
 
   "element-states-lesson": {
     lessonId: "element-states-lesson",
-    title: "Состояния элементов",
+    title: "Сетка и отступы",
     moduleLabel: "Модуль 3 — UI Kit",
     duration: "7 мин",
     level: "Новенький",
@@ -1536,14 +1533,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             <p>👉 Благодаря сетке элементы стоят ровно, а не «прыгают».</p>
           </div>
         ),
-        quizQuestion: "Где используется сетка?",
+        quizQuestion: "Где карточки выстроены по общей сетке?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L3Q1A />,
-        quizRightNode: <M3L3Q1B />,
+        quizLeftNode: <PortableTheoryExample lessonId="element-states-lesson" index={0} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="element-states-lesson" index={0} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Сетка помогает выравнивать элементы. Благодаря ей интерфейс становится структурированным и понятным.",
-        incorrectFeedback: "Сетка помогает выравнивать элементы. Благодаря ей интерфейс становится структурированным и понятным.",
+        correctFeedback: "Карточки занимают одинаковые колонки. Их края выровнены, элементы не смещаются случайным образом.",
+        incorrectFeedback: "Карточки занимают одинаковые колонки. Их края выровнены, элементы не смещаются случайным образом.",
       },
       {
         title: "Отступы",
@@ -1557,14 +1554,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             <p>👉 Если нет отступов — интерфейс превращается в хаос.</p>
           </div>
         ),
-        quizQuestion: "Где отступы сделаны правильнее?",
+        quizQuestion: "Где расстояния между этапами одинаковые?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L3Q2A />,
-        quizRightNode: <M3L3Q2B />,
+        quizLeftNode: <PortableTheoryExample lessonId="element-states-lesson" index={1} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="element-states-lesson" index={1} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Одинаковые отступы создают порядок. Они помогают отделять элементы и показывают связи между ними.",
-        incorrectFeedback: "Одинаковые отступы создают порядок. Они помогают отделять элементы и показывают связи между ними.",
+        correctFeedback: "Между этапами плана выдержан один интервал. Случайного дополнительного разрыва перед домашней работой нет.",
+        incorrectFeedback: "Между этапами плана выдержан один интервал. Случайного дополнительного разрыва перед домашней работой нет.",
       },
       {
         title: "Ритм интерфейса",
@@ -1578,14 +1575,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             <p>👉 Это делает интерфейс аккуратным и предсказуемым.</p>
           </div>
         ),
-        quizQuestion: "Где интерфейс выглядит более аккуратно?",
+        quizQuestion: "Где строки уроков имеют одинаковый ритм?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L3Q3A />,
-        quizRightNode: <M3L3Q3B />,
+        quizLeftNode: <PortableTheoryExample lessonId="element-states-lesson" index={2} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="element-states-lesson" index={2} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Ритм — это повторение расстояний. Он делает интерфейс визуально спокойным и предсказуемым.",
-        incorrectFeedback: "Ритм — это повторение расстояний. Он делает интерфейс визуально спокойным и предсказуемым.",
+        correctFeedback: "Строки одной высоты и повторяющиеся интервалы создают ровный ритм. Размеры не меняются от строки к строке.",
+        incorrectFeedback: "Строки одной высоты и повторяющиеся интервалы создают ровный ритм. Размеры не меняются от строки к строке.",
       },
       {
         title: "Выравнивание",
@@ -1598,14 +1595,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             <p>👉 Если выравнивание нарушено — интерфейс выглядит неаккуратно.</p>
           </div>
         ),
-        quizQuestion: "Где элементы выровнены правильно?",
+        quizQuestion: "Где данные выровнены по левому краю?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L3Q4A />,
-        quizRightNode: <M3L3Q4B />,
+        quizLeftNode: <PortableTheoryExample lessonId="element-states-lesson" index={3} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="element-states-lesson" index={3} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Выравнивание делает интерфейс аккуратным. Когда элементы стоят по одной линии, интерфейс легче воспринимается.",
-        incorrectFeedback: "Выравнивание делает интерфейс аккуратным. Когда элементы стоят по одной линии, интерфейс легче воспринимается.",
+        correctFeedback: "Имя, email и город начинаются на одной линии. Это позволяет читать список без скачков взгляда в стороны.",
+        incorrectFeedback: "Имя, email и город начинаются на одной линии. Это позволяет читать список без скачков взгляда в стороны.",
       },
     ],
   },
@@ -1626,14 +1623,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             <p>Вы создаёте кнопку один раз → используете везде.</p>
           </div>
         ),
-        quizQuestion: "Где используется компонент?",
+        quizQuestion: "Где изменение кнопки обновило оба экрана?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L4Q1A />,
-        quizRightNode: <M3L4Q1B />,
+        quizLeftNode: <PortableTheoryExample lessonId="figma-components-lesson" index={0} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="figma-components-lesson" index={0} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Компоненты позволяют переиспользовать элементы. Это экономит время и делает интерфейс единым.",
-        incorrectFeedback: "Компоненты позволяют переиспользовать элементы. Это экономит время и делает интерфейс единым.",
+        correctFeedback: "Цвет изменили один раз в наборе, и обе связанные кнопки обновились. Отдельные копии остались прежними.",
+        incorrectFeedback: "Цвет изменили один раз в наборе, и обе связанные кнопки обновились. Отдельные копии остались прежними.",
       },
       {
         title: "Варианты компонентов",
@@ -1648,14 +1645,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             <p>👉 Это один компонент, но с разными состояниями.</p>
           </div>
         ),
-        quizQuestion: "Где используются варианты компонентов?",
+        quizQuestion: "Где состояния одной кнопки различимы?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L4Q2A />,
-        quizRightNode: <M3L4Q2B />,
+        quizLeftNode: <PortableTheoryExample lessonId="figma-components-lesson" index={1} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="figma-components-lesson" index={1} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Варианты позволяют хранить состояния в одном компоненте. Это упрощает работу и делает систему гибкой.",
-        incorrectFeedback: "Варианты позволяют хранить состояния в одном компоненте. Это упрощает работу и делает систему гибкой.",
+        correctFeedback: "Обычная кнопка, наведение и отключённое состояние выглядят по-разному. Название действия и размеры при этом одинаковые.",
+        incorrectFeedback: "Обычная кнопка, наведение и отключённое состояние выглядят по-разному. Название действия и размеры при этом одинаковые.",
       },
       {
         title: "Переиспользование",
@@ -1663,20 +1660,20 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
           <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[24px] text-[#f1f2fb] opacity-80 w-full flex flex-col gap-[8px]">
             <p>Когда вы используете компонент:</p>
             <ul className="list-disc flex flex-col gap-[4px]">
-              <li className="ms-[27px]">изменяешь его в одном месте</li>
+              <li className="ms-[27px]">изменяете его в одном месте</li>
               <li className="ms-[27px]">→ он обновляется везде</li>
             </ul>
             <p>👉 Это {H("экономит время")} и убирает ошибки.</p>
           </div>
         ),
-        quizQuestion: "Где элементы проще переиспользовать?",
+        quizQuestion: "Где новое скругление применилось ко всем карточкам?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L4Q3A />,
-        quizRightNode: <M3L4Q3B />,
+        quizLeftNode: <PortableTheoryExample lessonId="figma-components-lesson" index={2} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="figma-components-lesson" index={2} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Использование компонентов ускоряет дизайн. Не нужно создавать элементы заново — достаточно использовать готовые.",
-        incorrectFeedback: "Использование компонентов ускоряет дизайн. Не нужно создавать элементы заново — достаточно использовать готовые.",
+        correctFeedback: "Скругление изменено в общем компоненте и повторяется на обоих экранах. Независимые карточки остались прямоугольными.",
+        incorrectFeedback: "Скругление изменено в общем компоненте и повторяется на обоих экранах. Независимые карточки остались прямоугольными.",
       },
       {
         title: "Организация компонентов",
@@ -1691,14 +1688,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             <p>👉 UI Kit должен быть удобным не только для создания, но и для использования.</p>
           </div>
         ),
-        quizQuestion: "Где компоненты организованы лучше?",
+        quizQuestion: "Где кнопка, поле и карточка находятся в своих группах?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L4Q4A />,
-        quizRightNode: <M3L4Q4B />,
+        quizLeftNode: <PortableTheoryExample lessonId="figma-components-lesson" index={3} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="figma-components-lesson" index={3} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Хорошая структура UI Kit ускоряет работу. Когда всё разложено по категориям, дизайнер быстрее ориентируется.",
-        incorrectFeedback: "Хорошая структура UI Kit ускоряет работу. Когда всё разложено по категориям, дизайнер быстрее ориентируется.",
+        correctFeedback: "Каждый тип элемента лежит в своей категории. Нужный компонент не приходится искать среди чужих типов.",
+        incorrectFeedback: "Каждый тип элемента лежит в своей категории. Нужный компонент не приходится искать среди чужих типов.",
       },
     ],
   },
@@ -1720,18 +1717,18 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
               <li className="ms-[27px]">основную кнопку (главное действие)</li>
               <li className="ms-[27px]">второстепенную</li>
             </ul>
-            <p>И состояния: default / hover / disabled.</p>
+            <p>Для каждой кнопки подготовьте состояния: обычное, при наведении и отключённое. Тип действия и состояние — разные свойства.</p>
             <p>👉 Это {H("база любого интерфейса")}.</p>
           </div>
         ),
-        quizQuestion: "Где кнопки подготовлены для UI Kit правильнее?",
+        quizQuestion: "Где показаны три разных состояния кнопки?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L5Q1A />,
-        quizRightNode: <M3L5Q1B />,
+        quizLeftNode: <PortableTheoryExample lessonId="creating-ui-kit-lesson" index={0} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="creating-ui-kit-lesson" index={0} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Кнопки должны быть системой. Единые размеры, отступы и состояния делают интерфейс стабильным.",
-        incorrectFeedback: "Кнопки должны быть системой. Единые размеры, отступы и состояния делают интерфейс стабильным.",
+        correctFeedback: "Для одного действия показаны обычное состояние, наведение и отключение. Состояния различимы, размеры и подпись едины.",
+        incorrectFeedback: "Для одного действия показаны обычное состояние, наведение и отключение. Состояния различимы, размеры и подпись едины.",
       },
       {
         title: "Поля ввода",
@@ -1746,14 +1743,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             <p>👉 Пользователь всегда должен понимать, что происходит.</p>
           </div>
         ),
-        quizQuestion: "Где поля ввода подготовлены для UI Kit правильнее?",
+        quizQuestion: "Где видны обычное поле, фокус и ошибка?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L5Q2A />,
-        quizRightNode: <M3L5Q2B />,
+        quizLeftNode: <PortableTheoryExample lessonId="creating-ui-kit-lesson" index={1} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="creating-ui-kit-lesson" index={1} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Поля должны иметь состояния. Это помогает пользователю понимать, что происходит в интерфейсе.",
-        incorrectFeedback: "Поля должны иметь состояния. Это помогает пользователю понимать, что происходит в интерфейсе.",
+        correctFeedback: "Нейтральная рамка обозначает обычное поле, синяя — фокус, красная — ошибку. Размеры полей не меняются.",
+        incorrectFeedback: "Нейтральная рамка обозначает обычное поле, синяя — фокус, красная — ошибку. Размеры полей не меняются.",
       },
       {
         title: "Формы",
@@ -1768,14 +1765,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </ul>
           </div>
         ),
-        quizQuestion: "Где форма сделана правильнее для UI Kit?",
+        quizQuestion: "Где понятно, какие данные вводить в форму?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L5Q3A />,
-        quizRightNode: <M3L5Q3B />,
+        quizLeftNode: <PortableTheoryExample lessonId="creating-ui-kit-lesson" index={2} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="creating-ui-kit-lesson" index={2} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Форма должна быть структурированной. Логичный порядок и выравнивание делают её удобной для заполнения.",
-        incorrectFeedback: "Форма должна быть структурированной. Логичный порядок и выравнивание делают её удобной для заполнения.",
+        correctFeedback: "У имени, email и пароля есть постоянные подписи. Безымянные «Поле 1», «Поле 2», «Поле 3» не объясняют назначение.",
+        incorrectFeedback: "У имени, email и пароля есть постоянные подписи. Безымянные «Поле 1», «Поле 2», «Поле 3» не объясняют назначение.",
       },
       {
         title: "Карточки",
@@ -1788,14 +1785,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             </ul>
           </div>
         ),
-        quizQuestion: "Где карточки подготовлены для UI Kit правильнее?",
+        quizQuestion: "Где карточки обновились после изменения в наборе?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L5Q4A />,
-        quizRightNode: <M3L5Q4B />,
+        quizLeftNode: <PortableTheoryExample lessonId="creating-ui-kit-lesson" index={3} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="creating-ui-kit-lesson" index={3} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Карточки должны быть компонентами. Это позволяет использовать их в разных экранах без изменений.",
-        incorrectFeedback: "Карточки должны быть компонентами. Это позволяет использовать их в разных экранах без изменений.",
+        correctFeedback: "Обе карточки повторяют новое скругление общего компонента. Независимые копии не изменились.",
+        incorrectFeedback: "Обе карточки повторяют новое скругление общего компонента. Независимые копии не изменились.",
       },
       {
         title: "Уведомления",
@@ -1811,14 +1808,14 @@ export const LESSON_CONTENT: Record<string, LessonContentData> = {
             <p>👉 Пользователь всегда должен получать обратную связь.</p>
           </div>
         ),
-        quizQuestion: "Где система уведомлений организована правильнее?",
+        quizQuestion: "Где уведомления имеют единую структуру?",
         quizLabel: "Проверим",
-        quizLeftNode: <M3L5Q5A />,
-        quizRightNode: <M3L5Q5B />,
+        quizLeftNode: <PortableTheoryExample lessonId="creating-ui-kit-lesson" index={4} correct={false} />,
+        quizRightNode: <PortableTheoryExample lessonId="creating-ui-kit-lesson" index={4} correct={true} />,
         quizLeftCorrect: false,
         quizRightCorrect: true,
-        correctFeedback: "Уведомления должны быть едиными. Одинаковая структура помогает быстро распознавать сообщения.",
-        incorrectFeedback: "Уведомления должны быть едиными. Одинаковая структура помогает быстро распознавать сообщения.",
+        correctFeedback: "Успех, ошибка и информация имеют одинаковые поля, скругления и размеры. Цвет сообщает тип сообщения, а не меняет его композицию.",
+        incorrectFeedback: "Успех, ошибка и информация имеют одинаковые поля, скругления и размеры. Цвет сообщает тип сообщения, а не меняет его композицию.",
       },
     ],
   },

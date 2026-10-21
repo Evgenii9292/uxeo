@@ -289,7 +289,7 @@ function ContrastContent4() {
   return (
     <>
       <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 text-[#f1f2fb] text-[18px] w-full">
-        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium h-[22px] leading-[22px] relative shrink-0">✨ ��орма создаёт акцент</p>
+        <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium h-[22px] leading-[22px] relative shrink-0">✨ Форма создаёт акцент</p>
         <div className="font-['Roboto_Condensed:Regular',sans-serif] font-normal leading-[22px] min-w-full opacity-80 relative shrink-0 flex flex-col gap-[8px]">
           <p>Контраст — это не только цвет и размер. <span className="bg-[#46545b] rounded-[6px] px-[7px] py-[1px] text-[#f1f2fb]">Форма, толщина и насыщенность</span> тоже помогают выделять элементы.</p>
           <p>Например: жирный текст рядом с обычным, круглая кнопка среди прямоугольных, залитая иконка среди контурных.</p>

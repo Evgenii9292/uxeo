@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import type { TheoryMobileLayoutProps } from "./TheoryMobileLayout";
 import { getLessonIcon } from "../../../data/lesson-icons";
 import { MobileHeader } from "../../../components/MobileShell";
@@ -8,14 +8,10 @@ import { QuizFeedbackIcon } from "../../quiz/QuizFeedbackIcon";
 import { QUIZ_CARD_BACKGROUNDS, QUIZ_CARD_BORDERS } from "../../quiz/quizCardStyles";
 import { LESSONS } from "../../../data/lessons";
 import { ChevronIcon, TimeIcon } from "../ui/Icons";
+import { getTheoryReviewTarget } from "../../../utils/theoryReviewLink";
+export { BalanceExample } from "./ContrastTheoryExample";
 import "./ContrastMobileTheory.css";
 
-export function BalanceExample({ correct }: { correct: boolean }) {
-  return <div className="balance-example">
-    <h3>Управление задачами</h3>
-    {["Создать", "Экспорт", "Настройки"].map((label, index) => <div key={label} className={`balance-example-action ${correct ? index === 0 ? "primary" : "secondary" : `noisy noisy-${index}`}`}>{label}</div>)}
-  </div>;
-}
 type Answer = { selected: "left" | "right" | null; checked: boolean };
 
 function RealExample({ node, compact }: { node: React.ReactNode; compact: boolean }) {
@@ -40,11 +36,37 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
   const lesson = props.lessonData;
   const navigate = useNavigate();
   const scroll = props.mobileScrollRef;
+  const location = useLocation();
+  const reviewTarget = getTheoryReviewTarget(location.search, lesson.sections.length);
+  const reviewedLink = useRef<string | null>(null);
+  useEffect(() => {
+    if (!reviewTarget || !props.openSections.has(reviewTarget.index)) return;
+    const linkKey = `${lesson.lessonId}:${location.key}:${location.search}`;
+    if (reviewedLink.current === linkKey) return;
+    const timer = window.setTimeout(() => {
+      const container = scroll.current;
+      const section = container?.querySelector<HTMLElement>(`[data-section="${reviewTarget.index}"]`);
+      const target = reviewTarget.focus === "theory" ? section?.querySelector<HTMLElement>(".real-section-body") : section?.querySelector<HTMLElement>("[data-theory-question]");
+      if (!container || !target) return;
+      reviewedLink.current = linkKey;
+      container.scrollTo({ top: Math.max(0, container.scrollTop + target.getBoundingClientRect().top - container.getBoundingClientRect().top - 12) });
+    }, 350);
+    return () => window.clearTimeout(timer);
+  }, [location.key, location.search, lesson.lessonId, props.openSections]);
+  const feedbackScrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (feedbackScrollTimer.current !== null) clearTimeout(feedbackScrollTimer.current);
+  }, []);
   const [openOverrides, setOpenOverrides] = useState<Record<number, boolean>>({});
   const open = new Set(lesson.sections.flatMap((_, index) => (openOverrides[index] ?? props.openSections.has(index)) ? [index] : []));
   const [active, setActive] = useState(() => [...props.openSections][0] ?? 0);
   const [reached, setReached] = useState(0);
   const [pending, setPending] = useState<Record<number, "left" | "right">>({});
+  useEffect(() => {
+    if (!reviewTarget) return;
+    setOpenOverrides({});
+    setActive(reviewTarget.index);
+  }, [location.key, location.search, lesson.lessonId]);
   const answers: Answer[] = lesson.sections.map((_, index) => { const state = props.accordionStates[index] ?? {selectedAnswer: null, showFeedback: false}; return ({selected: (pending[index] ?? state.selectedAnswer) as Answer["selected"], checked: state.showFeedback}); });
   useEffect(() => { const index = [...props.openSections].at(-1); if (index !== undefined) setActive(index); }, [props.openSections]);
   const answer = answers[active] ?? answers[0];
@@ -60,7 +82,31 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
       container.scrollTo({ top: Math.max(0, container.scrollTop + target.top - bounds.top - 12), behavior: "smooth" });
     }
   }
+  function cancelFeedbackScroll() {
+    if (feedbackScrollTimer.current !== null) clearTimeout(feedbackScrollTimer.current);
+    feedbackScrollTimer.current = null;
+  }
+  function revealAnswer(index: number) {
+    cancelFeedbackScroll();
+    // Let the next accordion finish opening before measuring the answer group.
+    feedbackScrollTimer.current = setTimeout(() => {
+      feedbackScrollTimer.current = null;
+      const container = scroll.current;
+      const feedback = container?.querySelector<HTMLElement>(`[data-feedback="${index}"]`);
+      if (!container || !feedback) return;
+      const bounds = container.getBoundingClientRect();
+      const controls = container.parentElement?.querySelector<HTMLElement>(".real-action");
+      const visibleBottom = Math.min(bounds.bottom, controls?.getBoundingClientRect().top ?? bounds.bottom);
+      const visibleHeight = visibleBottom - bounds.top;
+      if (visibleHeight <= 0) return;
+      const feedbackBounds = feedback.getBoundingClientRect();
+      const answerTop = container.scrollTop + feedbackBounds.top - bounds.top;
+      const target = Math.max(0, answerTop + feedbackBounds.height / 2 - visibleHeight / 2);
+      container.scrollTo({ top: target, behavior: "smooth" });
+    }, 320);
+  }
   function toggle(index: number) {
+    cancelFeedbackScroll();
     if (index > available) return;
     setActive(index);
     setOpenOverrides(prev => ({ ...prev, [index]: !open.has(index) }));
@@ -69,6 +115,7 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
 
   function choose(index: number, selected: "left" | "right", element: HTMLElement) {
     if (answers[index].checked) return;
+    cancelFeedbackScroll();
     setActive(index);
     setPending(prev => ({...prev, [index]: selected}));
     requestAnimationFrame(() => reveal(element));
@@ -79,13 +126,8 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
       setReached(prev => Math.max(prev, Math.min(active + 1, lesson.sections.length - 1)));
       setOpenOverrides(prev => ({ ...prev, [Math.min(active + 1, lesson.sections.length - 1)]: true }));
       props.handleAnswerSelect(active, answer.selected, !!correctAt(active));
-      requestAnimationFrame(() => reveal(scroll.current?.querySelector(`[data-feedback="${active}"]`) ?? null));
-    } else if (active < lesson.sections.length - 1) {
-      const next = active + 1;
-      props.handleContinue(active);
-      setReached(prev => Math.max(prev, next));
-      setActive(next);
-      setOpenOverrides(prev => ({ ...prev, [next]: true }));
+      revealAnswer(active);
+      if (active < lesson.sections.length - 1) setActive(active + 1);
     } else {
       props.handleContinue(active);
     }
@@ -148,7 +190,7 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
             <div className="real-accordion" aria-hidden={!open.has(index)} style={{ gridTemplateRows: open.has(index) ? "1fr" : "0fr" }}><div className="real-accordion-inner"><div className="real-section-body">
               <div className="real-content">{section.content}</div>
               <div className="real-divider"><span>Закрепим</span></div>
-              <h2 className="real-question">{section.quizQuestion}</h2>
+              <h2 data-theory-question className="real-question">{section.quizQuestion}</h2>
               <p className="real-hint">Выберите один вариант: нажмите на карточку.</p>
               <div className="real-choices" role="group" aria-label="Варианты ответа">
                 {(["left", "right"] as const).map((side, optionIndex) => {
@@ -158,7 +200,7 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
                   const letter = optionIndex ? "Б" : "А";
                   return <button key={side} className="real-choice" aria-label={`Выбрать вариант ${letter}`} aria-pressed={selected} disabled={current.checked || !open.has(index)} onClick={event => choose(index, side, event.currentTarget)} style={{ background: state === "idle" || state === "selected" ? "#282f33" : QUIZ_CARD_BACKGROUNDS[state], borderColor: QUIZ_CARD_BORDERS[state] ?? "transparent" }}>
                     <span className="real-choice-label"><span className="real-radio" />Вариант {letter}</span>
-                    <RealExample compact={index < 2 || (section.title === "Правило баланса" || section.title === "Контраст цвета")} node={(section.title === "Правило баланса" || section.title === "Контраст цвета") ? <BalanceExample correct={correct} /> : side === "left" ? section.quizLeftNode : section.quizRightNode} />
+                    <RealExample compact={true} node={side === "left" ? section.quizLeftNode : section.quizRightNode} />
                   </button>;
                 })}
               </div>
@@ -168,7 +210,7 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
         })}
       </div>
     </div>
-    <div className="real-action"><button disabled={!answer.selected} onClick={proceed}>{!answer.checked ? "Проверить ответ" : active === lesson.sections.length - 1 ? "Начать квиз" : "Продолжить"}</button><button className="real-start-quiz" aria-label="Начать квиз без теории" title="Начать квиз" onClick={() => { const quizId = LESSONS.find(item => item.lessonId === lesson.lessonId)?.quizId || lesson.lessonId; navigate(`/lesson-quiz?quizId=${encodeURIComponent(quizId)}&lessonId=${encodeURIComponent(lesson.lessonId)}`); }}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 10 7-10 7V5Z" fill="currentColor" /></svg></button></div>
+    <div className="real-action"><button disabled={!answer.selected || (answer.checked && active < lesson.sections.length - 1)} onClick={proceed}>{answer.checked && active === lesson.sections.length - 1 ? "Начать квиз" : "Проверить ответ"}</button>{active < lesson.sections.length - 1 && <button className="real-start-quiz" aria-label="Начать квиз без теории" title="Начать квиз" onClick={() => { const quizId = LESSONS.find(item => item.lessonId === lesson.lessonId)?.quizId || lesson.lessonId; navigate(`/lesson-quiz?quizId=${encodeURIComponent(quizId)}&lessonId=${encodeURIComponent(lesson.lessonId)}`); }}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 10 7-10 7V5Z" fill="currentColor" /></svg></button>}</div>
     <div className="real-navigation"><BottomTabBar /></div>
   </main>;
 }

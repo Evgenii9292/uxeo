@@ -823,7 +823,7 @@ function LessonQuizSession() {
       return raw.map((pair: any) => ({ ...pair, node: nodeMap[pair.id] ?? undefined }));
     }
 
-    // ── quiz_figma_components ───────��──────────────────────────────────────
+    // ── quiz_figma_components ───────────────────────────────────────────────
     // Q10 pairs: button / menu / input
     // Q11 pairs: complex / navigation / overloaded
     // Q12 pairs: search / choice / finish

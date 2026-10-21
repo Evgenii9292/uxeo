@@ -148,7 +148,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
 
   const isMobile = window.innerWidth < 768;
   const isMobileSheet = isMobile;
-  const MOBILE_CLOSE_MS = 280;
+  const MOBILE_CLOSE_MS = 380;
 
   const isLocked   = lesson.status === "locked";
   const isCompleted = lesson.status === "completed";
@@ -263,20 +263,10 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
     });
   }, [pos !== null]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Desktop: close on outside mousedown
-  // Mobile sheet: close on outside touchstart (nodes excluded — their onClick handles switch)
+  // The mobile backdrop handles outside taps for both touch and mouse input.
+  // Desktop retains its anchored-popup outside-click behavior.
   useEffect(() => {
-    if (isMobileSheet) {
-      const handler = (e: TouchEvent) => {
-        const target = e.target as Element | null;
-        if (!target) return;
-        if (target.closest('[data-roadmap-node]')) return;
-        if (popupRef.current && popupRef.current.contains(target)) return;
-        requestClose();
-      };
-      document.addEventListener("touchstart", handler, { passive: true });
-      return () => document.removeEventListener("touchstart", handler);
-    }
+    if (isMobileSheet) return;
     const handler = (e: MouseEvent) => {
       const target = e.target as Element | null;
       if (!target) return;
@@ -310,6 +300,12 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
   if (isMobileSheet) {
     return ReactDOM.createPortal(
       <>
+        <button
+          type="button"
+          aria-label="Закрыть окно урока"
+          onClick={requestClose}
+          style={{ position: "fixed", inset: 0, zIndex: 99, background: "transparent", border: 0, padding: 0 }}
+        />
         {/* Sheet */}
         <div
           ref={popupRef}
@@ -338,7 +334,7 @@ export function LessonPopup({ lesson, anchorRef, onClose, isClosing = false }: L
             background: "linear-gradient(150deg, #C0C3D0 0%, #CEC4BB 16.8%, #9699A5 100%)",
             padding: "20px 20px calc(20px + env(safe-area-inset-bottom, 0px))",
             transform: visible ? `translateY(${dragY}px)` : "translateY(100%)",
-            transition: dragY > 0 ? "none" : "transform 0.38s cubic-bezier(0.25, 1, 0.5, 1)",
+            transition: dragY > 0 ? "none" : `transform ${MOBILE_CLOSE_MS}ms cubic-bezier(0.25, 1, 0.5, 1)`,
             willChange: "transform",
           }}
         >
