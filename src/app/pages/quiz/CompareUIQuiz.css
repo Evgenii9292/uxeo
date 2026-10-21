@@ -1,5 +1,7 @@
-.tablet-compare-content{min-height:570px}
-.tablet-compare-options{flex:1;min-height:0}
-.tablet-compare-footer{background:#282f33}
+.compare-responsive-shell{position:fixed;inset:calc(54px + env(safe-area-inset-top,0px)) 0 max(12px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:20px;overflow-y:auto;overscroll-behavior:contain}
+.compare-responsive-content{flex:1 1 0;min-height:280px}
+.compare-responsive-options{flex:1 1 0;min-height:0}
+.compare-responsive-options>div{min-height:0}
+.compare-responsive-footer{flex-shrink:0;background:#282f33}
 .tablet-compare-feedback{display:grid;min-height:60px}
 .tablet-compare-feedback>div{grid-area:1/1}

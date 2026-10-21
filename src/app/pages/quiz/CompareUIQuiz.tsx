@@ -1,7 +1,7 @@
 import { QUIZ_CARD_BACKGROUNDS, QUIZ_CARD_BORDERS } from "./quizCardStyles";
 /** CompareUIQuiz — pick the better UI out of two options */
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useState } from "react";
 import type { CompareUIOption } from "../../data/quiz-bank";
 import { ContinueDisabled, ContinueActive, ContinueCorrect } from "./ContinueButtons";
 import { CorrectFeedback, IncorrectFeedback } from "./QuizFeedback";
@@ -104,18 +104,6 @@ export function CompareUIQuiz({
   const [phase, setPhase] = useState<Phase>("selecting");
   const vw = useWindowWidth();
   const isMobile = vw < 768;
-  const isTablet = vw >= 600 && vw < 768;
-  const footerRef = useRef<HTMLDivElement>(null);
-  const [footerHeight, setFooterHeight] = useState(180);
-  useLayoutEffect(() => {
-    if (!isMobile || !footerRef.current) return;
-    const element = footerRef.current;
-    const measure = () => setFooterHeight(element.getBoundingClientRect().height);
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [isMobile, explanation]);
   const quizW = Math.min(1042, vw - 48);
   const colW = Math.min(506, Math.floor((quizW - 18) / 2));
 
@@ -168,14 +156,8 @@ export function CompareUIQuiz({
     );
   }
 
-  // ── MOBILE layout — FIXED pixel system per spec ────────────────────────────
+  // ── MOBILE layout — fit options between header and feedback ────────────────────────────
   if (isMobile) {
-    // Breakpoint: 440px = "large phone" (Pro Max etc.)
-    const isLargePhone = vw >= 440;
-
-    const containerH = mobileCardMinHeight
-      ? mobileCardMinHeight
-      : (isLargePhone ? 250 : 220);
     const paddingY   = 20;
     const paddingX   = 20;
     const figmaW     = mobileNaturalW ?? FIGMA_W;
@@ -185,17 +167,17 @@ export function CompareUIQuiz({
     const getBorderColor = (state: CompareCardState) => QUIZ_CARD_BORDERS[state];
 
     return (
-      <>
-        {/* ── Content block — single wrapper, NO auto-spacing ── */}
-        <div data-tablet-compare={isTablet || undefined} className={`w-full px-[16px] flex flex-col ${isTablet ? "tablet-compare-content" : ""}`} style={{ gap: 10, ...(isTablet ? {height: `calc(100dvh - ${footerHeight}px - 106px)`} : {paddingBottom:Math.max(0, footerHeight + 52 - 140)}) }}>
+      <div className="compare-responsive-shell">
+        {/* Flexible question and options; footer keeps its own space. */}
+        <div className="compare-responsive-content w-full px-[16px] flex flex-col" style={{gap:10}}>
 
           {/* Question title */}
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.25] text-[#f4f5fc] text-[22px] text-center w-full">
             {question}
           </p>
 
-          {/* Cards — FIXED gap 10px between them */}
-          <div className={`w-full flex flex-col ${isTablet ? "tablet-compare-options" : ""}`} style={{ gap: 10 }}>
+          {/* Equal-height options scale with the available screen height. */}
+          <div className="compare-responsive-options w-full flex flex-col" style={{gap:12}}>
             {compareOptions.map((option) => {
               const state = getCardState(option.label);
               const isClickable = state === "idle" || state === "selected";
@@ -207,9 +189,9 @@ export function CompareUIQuiz({
                   onClick={isClickable ? () => handleSelect(option.label) : undefined}
                   className={`relative rounded-[15px] overflow-hidden transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.98]" : ""}`}
                   style={{
-                    height: isTablet ? "auto" : containerH,
-                    minHeight: containerH,
-                    ...(isTablet ? {flex: "1 0 0"} : {}),
+                    height: "auto",
+                    minHeight: 0,
+                    flex: "1 1 0",
                     background: QUIZ_CARD_BACKGROUNDS[state],
                     boxShadow: borderColor ? `0 0 0 3px ${borderColor}` : undefined,
                   }}
@@ -249,11 +231,10 @@ export function CompareUIQuiz({
           </div>
         </div>
 
-        {/* ── Fixed bottom bar — feedback + button ── */}
+        {/* Feedback and button occupy a separate row, never cover an option. */}
         <div
-          ref={footerRef}
-          className={`fixed left-0 right-0 z-10 px-[16px] pt-[12px] tablet-compare-footer`}
-          style={{ bottom: "max(40px, env(safe-area-inset-bottom, 40px))", paddingBottom: 12 }}
+          className="compare-responsive-footer px-[16px]"
+          style={{paddingBottom:12}}
         >
           {isMobile ? <div className="tablet-compare-feedback mb-[10px]" aria-live="polite">
             <div style={{visibility: phase === "feedback" && isCorrect ? "visible" : "hidden"}}>
@@ -280,7 +261,7 @@ export function CompareUIQuiz({
             </div>
           </div>
         </div>
-      </>
+      </div>
     );
   }
 
