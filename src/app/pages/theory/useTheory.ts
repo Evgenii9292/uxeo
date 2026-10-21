@@ -209,6 +209,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     // Scroll further so feedback and the Continue button are immediately visible.
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
+        if (isMobile && resolvedLessonId === "contrast-lesson") return;
         const sectionEl = document.querySelector(`[data-section="${sectionIndex}"]`) as HTMLElement | null;
         if (!sectionEl) return;
         const sc = findScrollContainer(sectionEl);

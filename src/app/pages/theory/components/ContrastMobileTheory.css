@@ -23,3 +23,21 @@
 .balance-example-action.secondary{background:#e1e3eb;color:#414651}
 .balance-example-action.noisy{color:white}.balance-example-action.noisy-0{background:#458fff}.balance-example-action.noisy-1{background:#8b5cf6}.balance-example-action.noisy-2{background:#d83786}
 .contrast-quiz-link{display:block;margin:0 16px 16px auto;background:none;border:0;color:#ff6b21;font-size:16px;text-decoration:underline}
+
+/* Keep the existing theory controls and motion with the new answer layout. */
+.real-accordion{display:grid;transition:grid-template-rows 300ms ease}
+.real-accordion-inner{min-height:0;overflow:hidden}
+.real-accordion[aria-hidden=true]{pointer-events:none;visibility:hidden;transition:grid-template-rows 300ms ease,visibility 0s 300ms}
+.real-section-header>span:nth-child(2){flex:1;min-width:0}
+.section-chevron{margin-left:auto;display:flex;align-items:center;justify-content:center;width:20px;flex:0 0 20px;transform:scale(.85)}
+.real-action{display:flex;gap:12px}
+.real-action button{background:#364146;border:1px solid #4b595e;box-shadow:0 4px 0 #1b2428;flex:1;min-width:0}
+.real-action button:hover:not(:disabled){background:#404d52}
+.real-action button:active:not(:disabled){box-shadow:0 1px 0 #1b2428}
+.real-action button:disabled{background:#364146;color:#798589}
+.real-action .real-start-quiz{flex:0 0 54px;display:flex;align-items:center;justify-content:center}
+@media(prefers-reduced-motion:reduce){.real-accordion{transition:none}}
+
+.real-theory-screen{animation:theory-screen-enter 250ms ease both}
+@keyframes theory-screen-enter{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.real-theory-screen{animation:none}.section-chevron *{transition:none!important}}
