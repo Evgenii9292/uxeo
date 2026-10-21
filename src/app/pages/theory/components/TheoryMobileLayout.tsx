@@ -290,5 +290,5 @@ function StandardTheoryMobileLayout({
 }
 
 export function TheoryMobileLayout(props: TheoryMobileLayoutProps) {
-  return props.lessonId === "contrast-lesson" ? <ContrastMobileTheory {...props} /> : <StandardTheoryMobileLayout {...props} />;
+  return ["contrast-lesson", "color-lesson"].includes(props.lessonId) ? <ContrastMobileTheory {...props} /> : <StandardTheoryMobileLayout {...props} />;
 }

@@ -53,3 +53,24 @@
 .color-contrast-example-action{margin-top:auto;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;line-height:14px;font-weight:600}
 .color-contrast-example-action.clear{background:#397df5;color:#fff}
 .color-contrast-example-action.faint{background:#e8ebf2;color:#adb4c2}
+
+.color-theory-example{width:186px;height:162px;padding:10px;background:#f7f8fc;display:flex;flex-direction:column;gap:7px;font-family:Inter,sans-serif;color:#101828}
+.color-theory-example h3{font-size:12px;line-height:16px;font-weight:600;margin:0 0 3px}
+.color-example-action{min-height:25px;padding:4px 6px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;line-height:13px;font-weight:500}
+.color-theory-example .accent{background:#397df5;color:white}
+.color-theory-example .muted{background:#e1e3eb;color:#667085}
+.color-theory-example .neutral{background:#e9ecf2;color:#475467}
+.color-example-field{height:24px;display:flex;align-items:center;padding:4px 7px;background:#eceff5;border:1px solid #d8dce5;border-radius:5px;font-size:10px;line-height:14px}
+.color-example-secondary{font-size:9px;line-height:12px;text-align:center;color:#667085}
+.color-example-product{display:flex;justify-content:space-between;padding:8px 6px;border-radius:5px;background:#e9ecf2;font-size:10px;line-height:14px}
+.color-example-product strong{font-weight:500}
+.color-example-message{font-size:9px;line-height:12px;color:#667085}
+.color-example-field.error{border-color:#d92d20;background:#fff1ef}
+.color-example-message.error{color:#c32920}
+.color-example-course{display:flex;justify-content:space-between;align-items:center;padding:8px 6px;border-radius:5px;background:#e9ecf2;font-size:10px;line-height:14px}
+.color-example-course>span{font-size:9px}
+.color-example-task{padding:5px 6px;border-radius:5px;font-size:10px;line-height:13px}
+.color-theory-example .noisy-purple,.color-theory-example .noise-0{background:#8256de;color:white}
+.color-theory-example .noisy-pink,.color-theory-example .noise-1{background:#d83d8a;color:white}
+.color-theory-example .noise-2{background:#22936e;color:white}
+.color-example-summary{font-size:10px;line-height:14px;color:#667085;margin-bottom:2px}
