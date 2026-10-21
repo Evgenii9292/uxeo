@@ -4,7 +4,7 @@
  */
 
 import React, { lazy, Suspense, useRef, useState, useCallback, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useNavigate } from "react-router";
 import { formatXp } from "../utils/league";
 import svgPaths from "../../imports/svg-ns2c3tgkyt";
 import { useUserSafe } from "../context/UserContext";
@@ -154,7 +154,6 @@ export default function MobileShell({
   blurHeader = false,
 }: MobileShellProps) {
   const navigate = useNavigate();
-  const location = useLocation();
   const userData = useUserSafe();
   const auth = useAuthSafe();
   const syncLabel = !auth?.isDemo && userData?.syncStatus === "error"
@@ -162,38 +161,6 @@ export default function MobileShell({
     : null;
   const xp = userData?.xp ?? 0;
   const streak = userData?.streak ?? 0;
-
-  // ── Swipe navigation ───────────────────────────────────────────────────────
-  const TAB_PATHS = ["/lessons", "/notifications", "/challenges", "/league"];
-  const touchStartX = useRef<number | null>(null);
-  const touchStartY = useRef<number | null>(null);
-
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-  }, []);
-
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    if (touchStartX.current === null || touchStartY.current === null) return;
-    const dx = e.changedTouches[0].clientX - touchStartX.current;
-    const dy = e.changedTouches[0].clientY - touchStartY.current;
-    touchStartX.current = null;
-    touchStartY.current = null;
-
-    // Only handle mostly-horizontal swipes (more horizontal than vertical)
-    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-
-    if (showBack) {
-      // Inner page: swipe right → go back
-      if (dx > 0) navigate(backPath);
-    } else {
-      // Tab pages: swipe left/right → adjacent tab
-      const currentIdx = TAB_PATHS.findIndex(p => location.pathname.startsWith(p));
-      if (currentIdx === -1) return;
-      if (dx < 0 && currentIdx < TAB_PATHS.length - 1) navigate(TAB_PATHS[currentIdx + 1]);
-      if (dx > 0 && currentIdx > 0) navigate(TAB_PATHS[currentIdx - 1]);
-    }
-  }, [showBack, backPath, navigate, location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Hide-on-scroll state ───────────────────────────────────────────────────
   const [tabBarVisible, setTabBarVisible] = useState(true);
@@ -245,8 +212,6 @@ export default function MobileShell({
     <div
       className="flex flex-col size-full"
       style={{ background: "#282F33" }}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
     >
       <MobileHeader
         title={title}
