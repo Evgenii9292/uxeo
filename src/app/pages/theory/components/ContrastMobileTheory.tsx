@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import type { TheoryMobileLayoutProps } from "./TheoryMobileLayout";
 import { getLessonIcon } from "../../../data/lesson-icons";
 import { MobileHeader } from "../../../components/MobileShell";
@@ -10,6 +10,7 @@ import { LESSONS } from "../../../data/lessons";
 import { ChevronIcon, TimeIcon } from "../ui/Icons";
 import { ColorTheoryExample, COLOR_THEORY_QUESTIONS } from "./ColorTheoryExample";
 import { PortableTheoryExample, PORTABLE_THEORY_LESSONS } from "./PortableTheoryExample";
+import { getTheoryReviewTarget } from "../../../utils/theoryReviewLink";
 import "./ContrastMobileTheory.css";
 
 export function BalanceExample({ correct }: { correct: boolean }) {
@@ -51,6 +52,23 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
   const lesson = props.lessonData;
   const navigate = useNavigate();
   const scroll = props.mobileScrollRef;
+  const location = useLocation();
+  const reviewTarget = getTheoryReviewTarget(location.search, lesson.sections.length);
+  const reviewedLink = useRef<string | null>(null);
+  useEffect(() => {
+    if (!reviewTarget || !props.openSections.has(reviewTarget.index)) return;
+    const linkKey = `${lesson.lessonId}:${location.key}:${location.search}`;
+    if (reviewedLink.current === linkKey) return;
+    const timer = window.setTimeout(() => {
+      const container = scroll.current;
+      const section = container?.querySelector<HTMLElement>(`[data-section="${reviewTarget.index}"]`);
+      const target = reviewTarget.focus === "theory" ? section?.querySelector<HTMLElement>(".real-section-body") : section?.querySelector<HTMLElement>("[data-theory-question]");
+      if (!container || !target) return;
+      reviewedLink.current = linkKey;
+      container.scrollTo({ top: Math.max(0, container.scrollTop + target.getBoundingClientRect().top - container.getBoundingClientRect().top - 12) });
+    }, 350);
+    return () => window.clearTimeout(timer);
+  }, [location.key, location.search, lesson.lessonId, props.openSections]);
   const feedbackScrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => {
     if (feedbackScrollTimer.current !== null) clearTimeout(feedbackScrollTimer.current);
@@ -60,6 +78,11 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
   const [active, setActive] = useState(() => [...props.openSections][0] ?? 0);
   const [reached, setReached] = useState(0);
   const [pending, setPending] = useState<Record<number, "left" | "right">>({});
+  useEffect(() => {
+    if (!reviewTarget) return;
+    setOpenOverrides({});
+    setActive(reviewTarget.index);
+  }, [location.key, location.search, lesson.lessonId]);
   const answers: Answer[] = lesson.sections.map((_, index) => { const state = props.accordionStates[index] ?? {selectedAnswer: null, showFeedback: false}; return ({selected: (pending[index] ?? state.selectedAnswer) as Answer["selected"], checked: state.showFeedback}); });
   useEffect(() => { const index = [...props.openSections].at(-1); if (index !== undefined) setActive(index); }, [props.openSections]);
   const answer = answers[active] ?? answers[0];
@@ -183,7 +206,7 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
             <div className="real-accordion" aria-hidden={!open.has(index)} style={{ gridTemplateRows: open.has(index) ? "1fr" : "0fr" }}><div className="real-accordion-inner"><div className="real-section-body">
               <div className="real-content">{section.content}</div>
               <div className="real-divider"><span>Закрепим</span></div>
-              <h2 className="real-question">{lesson.lessonId === "color-lesson" ? COLOR_THEORY_QUESTIONS[index] : section.quizQuestion}</h2>
+              <h2 data-theory-question className="real-question">{lesson.lessonId === "color-lesson" ? COLOR_THEORY_QUESTIONS[index] : section.quizQuestion}</h2>
               <p className="real-hint">Выберите один вариант: нажмите на карточку.</p>
               <div className="real-choices" role="group" aria-label="Варианты ответа">
                 {(["left", "right"] as const).map((side, optionIndex) => {

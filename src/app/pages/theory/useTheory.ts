@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useUserSafe, type LessonProgress } from "../../context/UserContext";
 import { useAuthSafe } from "../../context/AuthContext";
 import { LESSONS } from "../../data/lessons";
+import { getTheoryReviewTarget } from "../../utils/theoryReviewLink";
 import { hapticCorrect, hapticWrong } from "../../utils/haptics";
 
 export interface AccordionState {
@@ -59,6 +60,8 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
   const progress = getLessonProgress(resolvedLessonId);
 
   const lastSectionIndex = totalSections - 1;
+  const reviewTarget = getTheoryReviewTarget(location.search, totalSections);
+  const reviewSection = reviewTarget?.index ?? null;
 
   // Persist max reached section (per-lesson)
   const [maxReached, setMaxReached] = useState<number>(() => {
@@ -122,11 +125,11 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     try { lastOpen = Number(localStorage.getItem(sectionStorageKey)) || 0; } catch {}
     // The mobile compact theory starts a fresh reading session at the first section.
     // Keep earned progress and unlocked sections, but do not jump to the previous visit.
-    const restoredSection = isMobile
+    const restoredSection = reviewSection ?? (isMobile
       ? 0
-      : Math.max(0, Math.min(lastOpen, nextMaxReached, lastSectionIndex));
+      : Math.max(0, Math.min(lastOpen, nextMaxReached, lastSectionIndex)));
     setOpenSections(new Set([restoredSection]));
-    if (restoredSection > 0) setTimeout(() => {
+    if (restoredSection > 0 && reviewSection === null) setTimeout(() => {
       const element = document.querySelector(`[data-section="${restoredSection}"]`) as HTMLElement | null;
       const container = element && findScrollContainer(element);
       if (element && container) container.scrollTo({ top: Math.max(0, container.scrollTop + element.getBoundingClientRect().top - container.getBoundingClientRect().top - 80) });
@@ -155,19 +158,21 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
 
   const completedUpTo = accordionStates.reduce((max, s, idx) => s.completed ? Math.max(max, idx + 1) : max, 0);
   const effectiveMaxReached = Math.max(maxReached, completedUpTo);
-  const isUnlocked = (i: number): boolean => i <= effectiveMaxReached;
+  const isUnlocked = (i: number): boolean => i <= effectiveMaxReached || i === reviewSection;
 
-  // Handle URL section parameter
+  // Review access is temporary: opening a link never writes progress or maxReached.
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const sectionParam = queryParams.get("section");
-    if (sectionParam) {
-      const sectionIndex = parseInt(sectionParam, 10);
-      if (!isNaN(sectionIndex) && sectionIndex >= 0 && sectionIndex < totalSections) {
-        setOpenSections(prev => new Set([...prev, sectionIndex]));
-      }
-    }
-  }, [location]);
+    if (reviewSection === null || !correctSideKey || userCtx?.userLoading) return;
+    setOpenSections(new Set([reviewSection]));
+    if (isMobile) return; // Mobile waits for the accordion to open before scrolling.
+    const timer = window.setTimeout(() => {
+      const section = document.querySelector<HTMLElement>(`[data-section="${reviewSection}"]`);
+      const target = reviewTarget?.focus === "theory" ? section : section?.querySelector<HTMLElement>("[data-theory-question]") ?? section;
+      const container = target && findScrollContainer(target);
+      if (target && container) container.scrollTo({ top: Math.max(0, container.scrollTop + target.getBoundingClientRect().top - container.getBoundingClientRect().top - 12) });
+    }, 350);
+    return () => window.clearTimeout(timer);
+  }, [location.search, reviewSection, correctSideKey, userCtx?.userLoading, isMobile]);
 
   const handleToggle = (index: number) => {
     if (!isUnlocked(index)) return;
