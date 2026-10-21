@@ -36,7 +36,7 @@
 .real-action button{background:#ff6b21;border:1px solid #ff6b21;box-shadow:0 4px 0 #c54a0a;flex:1;min-width:0}
 .real-action button:hover:not(:disabled){background:#ff7b35}
 .real-action button:active:not(:disabled){box-shadow:0 1px 0 #c54a0a}
-.real-action button:disabled{background:#364146;border-color:#4b595e;color:#798589;box-shadow:0 4px 0 #1b2428}
+.real-action button:disabled{background:#343e42;border-color:transparent;color:#798589;box-shadow:none}
 .real-action .real-start-quiz{flex:0 0 54px;display:flex;align-items:center;justify-content:center;background:#404d52;border-color:#798589;color:#f4f5fc;box-shadow:0 4px 0 #1b2428}
 .real-action .real-start-quiz:hover:not(:disabled){background:#4b595e}
 .real-action .real-start-quiz:active:not(:disabled){box-shadow:0 1px 0 #1b2428}

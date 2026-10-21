@@ -50,6 +50,10 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
   const lesson = props.lessonData;
   const navigate = useNavigate();
   const scroll = props.mobileScrollRef;
+  const feedbackScrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (feedbackScrollTimer.current !== null) clearTimeout(feedbackScrollTimer.current);
+  }, []);
   const [openOverrides, setOpenOverrides] = useState<Record<number, boolean>>({});
   const open = new Set(lesson.sections.flatMap((_, index) => (openOverrides[index] ?? props.openSections.has(index)) ? [index] : []));
   const [active, setActive] = useState(() => [...props.openSections][0] ?? 0);
@@ -70,7 +74,34 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
       container.scrollTo({ top: Math.max(0, container.scrollTop + target.top - bounds.top - 12), behavior: "smooth" });
     }
   }
+  function cancelFeedbackScroll() {
+    if (feedbackScrollTimer.current !== null) clearTimeout(feedbackScrollTimer.current);
+    feedbackScrollTimer.current = null;
+  }
+  function revealAnswer(index: number) {
+    cancelFeedbackScroll();
+    // Let the next accordion finish opening before measuring the answer group.
+    feedbackScrollTimer.current = setTimeout(() => {
+      feedbackScrollTimer.current = null;
+      const container = scroll.current;
+      const feedback = container?.querySelector<HTMLElement>(`[data-feedback="${index}"]`);
+      if (!container || !feedback) return;
+      const bounds = container.getBoundingClientRect();
+      const controls = container.parentElement?.querySelector<HTMLElement>(".real-action");
+      const visibleBottom = Math.min(bounds.bottom, controls?.getBoundingClientRect().top ?? bounds.bottom);
+      const visibleHeight = visibleBottom - bounds.top;
+      if (visibleHeight <= 0) return;
+      const answerTop = container.scrollTop + feedback.getBoundingClientRect().top - bounds.top;
+      const nextHeader = container.querySelector<HTMLElement>(`[data-section="${index + 1}"] .real-section-header`);
+      const groupBottom = container.scrollTop + (nextHeader ?? feedback).getBoundingClientRect().bottom - bounds.top;
+      // Retain a little of option B above the explanation, plus the next header below it.
+      const cardTail = Math.min(100, visibleHeight * .18);
+      const target = Math.max(0, answerTop - cardTail, groupBottom - visibleHeight + 16);
+      container.scrollTo({ top: target, behavior: "smooth" });
+    }, 320);
+  }
   function toggle(index: number) {
+    cancelFeedbackScroll();
     if (index > available) return;
     setActive(index);
     setOpenOverrides(prev => ({ ...prev, [index]: !open.has(index) }));
@@ -79,6 +110,7 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
 
   function choose(index: number, selected: "left" | "right", element: HTMLElement) {
     if (answers[index].checked) return;
+    cancelFeedbackScroll();
     setActive(index);
     setPending(prev => ({...prev, [index]: selected}));
     requestAnimationFrame(() => reveal(element));
@@ -89,7 +121,7 @@ export function ContrastMobileTheory(props: TheoryMobileLayoutProps) {
       setReached(prev => Math.max(prev, Math.min(active + 1, lesson.sections.length - 1)));
       setOpenOverrides(prev => ({ ...prev, [Math.min(active + 1, lesson.sections.length - 1)]: true }));
       props.handleAnswerSelect(active, answer.selected, !!correctAt(active));
-      requestAnimationFrame(() => reveal(scroll.current?.querySelector(`[data-feedback="${active}"]`) ?? null));
+      revealAnswer(active);
       if (active < lesson.sections.length - 1) setActive(active + 1);
     } else {
       props.handleContinue(active);
