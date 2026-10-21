@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
 import { RouterProvider } from "react-router";
 import { router } from "./routes";
+import { needsPortraitGuard } from "./utils/portraitGuard";
+
+function phoneNeedsPortrait() {
+  return typeof window !== "undefined" && needsPortraitGuard(window.innerWidth, window.innerHeight, window.screen.width, window.screen.height, window.matchMedia("(pointer: coarse)").matches);
+}
 
 // ── Portrait-only guard — shows overlay in landscape on mobile ─────────────────
 function PortraitGuard() {
   const [isLandscape, setIsLandscape] = useState(
-    () => typeof window !== "undefined" && window.innerWidth > window.innerHeight && window.innerWidth < 1024
+    phoneNeedsPortrait
   );
 
   useEffect(() => {
     const check = () => {
-      setIsLandscape(window.innerWidth > window.innerHeight && window.innerWidth < 1024);
+      setIsLandscape(phoneNeedsPortrait());
     };
     window.addEventListener("resize", check);
     window.addEventListener("orientationchange", check);

@@ -1,3 +1,4 @@
+import "./QuizFeedback.css";
 import { QuizFeedbackIcon } from "./QuizFeedbackIcon";
 /** Feedback bars for LessonQuizPage correct/incorrect answers */
 
@@ -12,7 +13,7 @@ export function CorrectFeedback({ explanation, showXp = true, xp = 25 }: { expla
           <QuizFeedbackIcon correct />
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] text-[#cdf6db] text-[18px] whitespace-nowrap" style={{ marginBottom: 4 }}>Верно!</p>
         </div>
-        {showXp && (
+        {showXp && xp > 0 && (
           <div className="flex items-center justify-between w-[47px]">
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] text-[#00d043] text-[18px] whitespace-nowrap">+{xp}</p>
             <LightningIcon />
@@ -40,10 +41,10 @@ export function IncorrectFeedback({
   const phrase = "Не совсем верно";
 
   return (
-    <div className="flex gap-[16px] items-start shrink-0 w-full">
+    <div className="quiz-incorrect-feedback flex gap-[16px] items-start shrink-0 w-full">
       {/* Left col: label + correct answer */}
       <div className="flex flex-col gap-[4px] items-start justify-start shrink-0">
-        <div className="flex items-center gap-[8px]">
+        <div className="quiz-incorrect-heading flex items-center gap-[8px]">
           <QuizFeedbackIcon correct={false} />
         <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.2] text-[#ffbaaa] text-[16px] whitespace-nowrap">
           {phrase}

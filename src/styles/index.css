@@ -6,7 +6,7 @@
 html {
   height: 100%;
   overscroll-behavior: none;
-  background-color: #000;
+  background-color: #282f33;
   color-scheme: dark;
 }
 
@@ -52,3 +52,7 @@ button, a, [role="button"], input, select, textarea, label {
 #root:has(.welcome-page) {
   overflow-y: auto;
 }
+
+:root{--mobile-nav-row:60px;--mobile-nav-height:calc(var(--mobile-nav-row) + env(safe-area-inset-bottom, 0px))}
+
+@media(prefers-reduced-motion:reduce){.mobile-tab-indicator{transition:none!important}}

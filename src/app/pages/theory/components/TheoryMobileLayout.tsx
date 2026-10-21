@@ -13,9 +13,10 @@ import type { LessonContentData } from "../../../data/lesson-content";
 import type { AccordionState } from "../useTheory";
 import { LESSONS } from "../../../data/lessons";
 import { MobileHeader } from "../../../components/MobileShell";
+import { ContrastMobileTheory } from "./ContrastMobileTheory";
 import BottomTabBar from "../../../components/BottomTabBar";
 
-interface TheoryMobileLayoutProps {
+export interface TheoryMobileLayoutProps {
   xp: number;
   streak: number;
   lessonData: LessonContentData;
@@ -39,7 +40,7 @@ interface TheoryMobileLayoutProps {
   setFeedbackText: (text: string) => void;
 }
 
-export function TheoryMobileLayout({
+function StandardTheoryMobileLayout({
   xp,
   streak,
   lessonData,
@@ -73,6 +74,7 @@ export function TheoryMobileLayout({
 
   // Hide-on-scroll for tab bar
   const [tabBarVisible, setTabBarVisible] = useState(true);
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [showFloatingControls, setShowFloatingControls] = useState(false);
   const lastScrollY = useRef(0);
   const handleScroll = useCallback(() => {
@@ -205,10 +207,10 @@ export function TheoryMobileLayout({
         className="fixed left-0 right-0 z-20 transition-transform duration-300"
         style={{
           bottom: 0,
-          transform: tabBarVisible ? "translateY(0)" : "translateY(100%)",
+          transform: tabBarVisible || moreMenuOpen ? "translateY(0)" : "translateY(100%)",
         }}
       >
-        <BottomTabBar />
+        <BottomTabBar onMoreOpenChange={setMoreMenuOpen} />
       </div>
 
       {/* ── Floating circles ── */}
@@ -285,4 +287,8 @@ export function TheoryMobileLayout({
       )}
     </div>
   );
+}
+
+export function TheoryMobileLayout(props: TheoryMobileLayoutProps) {
+  return props.lessonId === "contrast-lesson" ? <ContrastMobileTheory {...props} /> : <StandardTheoryMobileLayout {...props} />;
 }

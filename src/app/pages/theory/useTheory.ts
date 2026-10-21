@@ -78,7 +78,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
     return Array.from({ length: totalSections }, (_, index) => {
       const quizId = `mini-quiz-${index}`;
       const questionState = progress.questions[quizId];
-      if (questionState?.correct) {
+      if (questionState?.correct && !(isMobile && resolvedLessonId === "contrast-lesson")) {
         return { selectedAnswer: correctSides?.[index] ?? "right", showFeedback: true, completed: true, hasIncorrectAnswer: false };
       }
       return { selectedAnswer: null, showFeedback: false, completed: false, hasIncorrectAnswer: false };
@@ -131,7 +131,7 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
       Array.from({ length: totalSections }, (_, index) => {
         const quizId = `mini-quiz-${index}`;
         const questionState = nextProgress.questions[quizId];
-        if (questionState?.correct) {
+        if (questionState?.correct && !(isMobile && resolvedLessonId === "contrast-lesson")) {
           return {
             selectedAnswer: correctSides?.[index] ?? "right",
             showFeedback: true,

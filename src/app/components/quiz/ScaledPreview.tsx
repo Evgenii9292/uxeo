@@ -24,6 +24,7 @@ interface ScaledPreviewProps {
   maxScale?: number;
   children: React.ReactNode;
   className?: string;
+  centered?: boolean;
 }
 
 export function ScaledPreview({
@@ -34,6 +35,7 @@ export function ScaledPreview({
   maxScale = 1,
   children,
   className = "",
+  centered = false,
 }: ScaledPreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -57,7 +59,7 @@ export function ScaledPreview({
     const ro = new ResizeObserver(compute);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [naturalWidth, naturalHeight, paddingY, maxScale]);
+  }, [naturalWidth, naturalHeight, paddingY, paddingX, maxScale]);
 
   return (
     <div
@@ -65,6 +67,9 @@ export function ScaledPreview({
       className={`flex items-center justify-center w-full h-full overflow-hidden ${className}`}
       style={{ padding: `${paddingY}px 0` }}
     >
+      {centered ? <div style={{width: naturalWidth * scale, height: naturalHeight * scale, flexShrink: 0, position: "relative"}}>
+        <div style={{width: naturalWidth, height: naturalHeight, transform: `scale(${scale})`, transformOrigin: "top left"}}>{children}</div>
+      </div> : <>
       {/* Pivot wrapper — keeps natural size, scaled from center */}
       <div
         style={{
@@ -80,6 +85,7 @@ export function ScaledPreview({
       >
         {children}
       </div>
+      </>}
     </div>
   );
 }

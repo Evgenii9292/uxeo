@@ -10,7 +10,6 @@ import svgPaths from "../../imports/svg-ns2c3tgkyt";
 import { useUserSafe } from "../context/UserContext";
 import { useAuthSafe } from "../context/AuthContext";
 import BottomTabBar from "./BottomTabBar";
-import { PWAInstallBanner } from "./PWAInstallBanner";
 
 const MobileFloatingCircles = lazy(() => import("./MobileFloatingCircles").then((mod) => ({ default: mod.MobileFloatingCircles })));
 
@@ -159,7 +158,7 @@ export default function MobileShell({
   const userData = useUserSafe();
   const auth = useAuthSafe();
   const syncLabel = !auth?.isDemo && userData?.syncStatus === "error"
-    ? "Прогресс не синхронизирован. Проверьте соединение."
+    ? "Не удалось подтвердить синхронизацию. Прогресс сохранён на устройстве."
     : null;
   const xp = userData?.xp ?? 0;
   const streak = userData?.streak ?? 0;
@@ -198,6 +197,7 @@ export default function MobileShell({
 
   // ── Hide-on-scroll state ───────────────────────────────────────────────────
   const [tabBarVisible, setTabBarVisible] = useState(true);
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [showFloatingControls, setShowFloatingControls] = useState(false);
   const [showBottomFade, setShowBottomFade] = useState(false);
   const lastScrollY = useRef(0);
@@ -225,7 +225,7 @@ export default function MobileShell({
   }, [keepTabBarVisible, updateBottomFade]);
 
   // Heights for fixed elements
-  const effectiveTabBarVisible = keepTabBarVisible ? true : tabBarVisible;
+  const effectiveTabBarVisible = moreMenuOpen || keepTabBarVisible || tabBarVisible;
   const TAB_H = effectiveTabBarVisible ? 72 : 0;
   const STICKY_H = stickyBottom ? 72 : 0;
   // Total bottom padding for scroll area = tab + sticky + small gap
@@ -298,7 +298,7 @@ export default function MobileShell({
           className="fixed left-0 right-0 z-30 px-[16px] transition-[bottom] duration-300"
           style={{
             bottom: effectiveTabBarVisible
-              ? "calc(67px + max(env(safe-area-inset-bottom, 0px), 20px))"
+              ? "calc(var(--mobile-nav-height) + 12px)"
               : 0,
             paddingBottom: effectiveTabBarVisible
               ? 10
@@ -319,11 +319,11 @@ export default function MobileShell({
           background: "rgba(45,54,58,0.95)",
         }}
       >
-        <BottomTabBar />
+        <BottomTabBar onMoreOpenChange={setMoreMenuOpen} />
       </div>
 
       {/* PWA install banner — above tab bar */}
-      <PWAInstallBanner tabBarBottom="calc(52px + env(safe-area-inset-bottom, 0px) + 15px)" />
+
 
       {/* Floating action circles */}
       {showFloatingControls && (

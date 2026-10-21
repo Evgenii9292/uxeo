@@ -128,14 +128,14 @@ function AchievementsSection({ xp, streak }: { xp: number; streak: number }) {
     <div className="flex gap-[8px]">
       <StatCard
         icon={
-          <img src="/fire-icon-active.png" width={22} height={22} style={{ objectFit: "contain" }} alt="" loading="eager" decoding="async" />
+          <img src="/zap-icon-active.png" width={22} height={22} style={{ objectFit: "contain" }} alt="" loading="eager" decoding="async" />
         }
         value={xp}
         label="Очков XP"
       />
       <StatCard
         icon={
-          <img src="/zap-icon-active.png" width={22} height={22} style={{ objectFit: "contain" }} alt="" loading="eager" decoding="async" />
+          <img src="/fire-icon-active.png" width={22} height={22} style={{ objectFit: "contain" }} alt="" loading="eager" decoding="async" />
         }
         value={streak}
         label="Дней подряд"
@@ -158,11 +158,12 @@ export function MoreSheet({ onClose, open }: MoreSheetProps) {
   const closeTimerRef = useRef<number | null>(null);
   const SHEET_ANIMATION_MS = 260;
 
-  useLayoutEffect(() => {
-    if (open) {
-      closingRef.current = false;
-      setVisible(true);
-    }
+  useEffect(() => {
+    if (!open) return;
+    closingRef.current = false;
+    let second = 0;
+    const first = requestAnimationFrame(() => { second = requestAnimationFrame(() => setVisible(true)); });
+    return () => { cancelAnimationFrame(first); cancelAnimationFrame(second); };
   }, [open]);
 
   const handleClose = useCallback(() => {
@@ -218,7 +219,7 @@ export function MoreSheet({ onClose, open }: MoreSheetProps) {
 
 
   return (
-    <div className="fixed inset-0 z-[80] flex items-end" onClick={handleClose}>
+    <div className="fixed inset-0 z-[80] flex items-end" style={{bottom:"var(--mobile-nav-height)", overflow:"hidden"}} onClick={handleClose}>
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 transition-opacity duration-[220ms]"
@@ -231,10 +232,10 @@ export function MoreSheet({ onClose, open }: MoreSheetProps) {
         style={{
           background: "#2C3438",
           borderRadius: "24px 24px 0 0",
-          maxHeight: "80vh",
+          maxHeight: "calc(100dvh - var(--mobile-nav-height) - 80px)",
           overflowY: "auto",
           WebkitOverflowScrolling: "touch",
-          paddingBottom: "calc(36px + 52px + max(env(safe-area-inset-bottom, 0px), 34px))",
+          paddingBottom: 24,
           transform: visible ? `translateY(${dragOffset}px)` : "translateY(100%)",
           transition:
             dragOffset > 0
@@ -296,23 +297,6 @@ export function MoreSheet({ onClose, open }: MoreSheetProps) {
 
       </div>
 
-      {/* Keep the same bottom-right tap target while the sheet is open. */}
-      <button
-        type="button"
-        aria-label="Закрыть меню"
-        onClick={(event) => {
-          event.stopPropagation();
-          handleClose();
-        }}
-        className="fixed right-0 z-[100] flex h-[52px] w-1/5 items-center justify-center border-0 bg-transparent active:scale-90 transition-transform duration-75"
-        style={{ bottom: "max(env(safe-area-inset-bottom, 0px), 34px)" }}
-      >
-        <svg width="29" height="29" viewBox="0 0 29 29" fill="none" aria-hidden="true">
-          <circle cx="6.5" cy="14.5" r="2.5" fill="#FF6B21" />
-          <circle cx="14.5" cy="14.5" r="2.5" fill="#FF6B21" />
-          <circle cx="22.5" cy="14.5" r="2.5" fill="#FF6B21" />
-        </svg>
-      </button>
     </div>
   );
 }

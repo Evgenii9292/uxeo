@@ -1,3 +1,4 @@
+import "./MatchingQuiz.css";
 import { shuffled } from "../../utils/quizSession";
 /**
  * MatchingQuiz — click-or-drag to connect pairs.
@@ -14,7 +15,7 @@ import { shuffled } from "../../utils/quizSession";
  * Lines start/end at the connector dots, not the card centres.
  */
 
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useLayoutEffect, useMemo } from "react";
 import type { MatchingPair } from "../../data/quiz-bank";
 import { ContinueDisabled, ContinueActive, ContinueCorrect } from "./ContinueButtons";
 import { CorrectFeedback, IncorrectFeedback } from "./QuizFeedback";
@@ -177,11 +178,24 @@ export function MatchingQuiz({
   const allConnected = pairs.every((p) => connections[p.id] !== undefined);
   const allCorrect   = pairs.every((p) => connections[p.id] === p.id);
   const vw = useWindowWidth();
+  const isTablet = vw >= 600 && vw < 1024;
   const isMobile = vw < 1024; // mobile + tablet both use the compact tap-to-connect layout
   const quizW = Math.min(1042, vw - 48);
 
   // Viewport height — used to scale card/container sizes on small screens
   const vh = typeof window !== 'undefined' ? window.innerHeight : 800;
+
+  const phoneFooterRef = useRef<HTMLDivElement>(null);
+  const [phoneFooterHeight, setPhoneFooterHeight] = useState(180);
+  useLayoutEffect(() => {
+    if (!isMobile || isTablet || !phoneFooterRef.current) return;
+    const element = phoneFooterRef.current;
+    const measure = () => setPhoneFooterHeight(element.getBoundingClientRect().height);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [isMobile, isTablet, explanation]);
 
   // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -546,21 +560,18 @@ export function MatchingQuiz({
 
   // ── Mobile render — vertical tap-to-connect ────────────────────────────────
   if (isMobile) {
-    const topCardW = Math.floor((vw - 48) / pairs.length) - 8;
+    const rowGap = isTablet ? 24 : 12;
+    const topCardW = isTablet ? Math.floor((Math.min(vw - 32, 740) - rowGap * (pairs.length - 1)) / pairs.length) : Math.floor((vw - 32 - rowGap * (pairs.length - 1)) / pairs.length);
 
-    // Scale card height based on viewport height so cards fit without overlapping button.
-    // Overhead: header(44) + outer-pb(140) + inner-pt(10) + question(80) + hint(28) + gaps(20) ≈ 322px
-    const availForContainer = Math.max(180, vh - 322);
-    // Two card rows + minimum line gap; solve for maxCardH: availH = 2*h + 76 + 50 + 16 → h = (availH-142)/2
-    const maxCardHFromVH = Math.floor((availForContainer - 142) / 2);
-    const topCardH = Math.max(56, Math.min(Math.min(maxCardHFromVH, 100), topCardW));
+    const topCardH = isTablet ? Math.min(140, topCardW) : Math.max(84, Math.min(vh <= 700 ? 84 : 110, topCardW));
 
     // Container fits both rows + 50px visible line gap + 16px top/bottom padding
-    const bottomCardH = 76; // minHeight(56) + paddingTop(10) + paddingBottom(10)
-    const containerMinH = Math.max(200, topCardH + bottomCardH + 66);
+    const bottomCardH = topCardH;
+    const containerMinH = Math.max(200, topCardH + bottomCardH + (isTablet ? 136 : 96));
 
     return (
       <>
+        <div className={isTablet ? "tablet-matching-stage" : "phone-matching-stage"} style={isTablet ? undefined : {height:`calc(100dvh - ${phoneFooterHeight}px - 106px)`, marginBottom: Math.max(0, phoneFooterHeight - 140)}}>
         {/* Question */}
         <div className="w-full px-[16px] flex justify-center">
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.25] text-[#f4f5fc] text-[22px] text-center" style={{ userSelect: "none" }}>
@@ -571,7 +582,7 @@ export function MatchingQuiz({
         {/* Matching container */}
         <div
           ref={containerRef}
-          className="relative w-full px-[16px]"
+          className={`relative w-full px-[16px] ${isTablet ? "tablet-matching-board" : ""}`}
           style={{ userSelect: "none", minHeight: containerMinH, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 10 }}
         >
           {/* SVG lines */}
@@ -583,7 +594,7 @@ export function MatchingQuiz({
           </svg>
 
           {/* TOP ROW */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 8, paddingTop: 8, position: "relative", zIndex: 10 }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: rowGap, paddingTop: 8, position: "relative", zIndex: 10 }}>
             {pairs.map((pair) => {
               const ring = topCardRing(pair.id);
               const dot = topDotStyle(pair.id);
@@ -663,7 +674,7 @@ export function MatchingQuiz({
           </div>
 
           {/* BOTTOM ROW */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 8, paddingBottom: 8, position: "relative", zIndex: 10 }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: rowGap, paddingBottom: 8, position: "relative", zIndex: 10 }}>
             {shuffledPairs.map((pair) => {
               const ring = bottomCardRing(pair.id);
               const dot = bottomDotStyle(pair.id);
@@ -725,6 +736,7 @@ export function MatchingQuiz({
                     style={{
                       width: topCardW,
                       minHeight: 56,
+                      height: bottomCardH,
                       borderRadius: 15,
                       backgroundImage: bottomCardBg,
                       boxShadow: ring ? `0 0 0 3px ${ring}` : undefined,
@@ -745,18 +757,23 @@ export function MatchingQuiz({
         </div>
 
         {/* Hint */}
-        {!checked && (
-          <p className="text-center text-[#798589] text-[13px] font-['Roboto_Condensed:Regular',sans-serif] px-4">
+        {(!checked || !isTablet) && (
+          <p style={{visibility: checked ? "hidden" : "visible"}} className="text-center text-[#798589] text-[13px] font-['Roboto_Condensed:Regular',sans-serif] px-4">
             Нажмите или перетащите карточки, чтобы соединить
           </p>
         )}
 
+        </div>
         {/* Fixed bottom bar */}
         <div
-          className="fixed left-0 right-0 z-10 px-[16px] pt-[12px]"
+          ref={phoneFooterRef}
+          className={`fixed left-0 right-0 z-10 px-[16px] pt-[12px] ${!isTablet ? "phone-matching-footer" : ""}`}
           style={{ bottom: "max(40px, env(safe-area-inset-bottom, 40px))", paddingBottom: 12 }}
         >
-          {checked && (
+          {!isTablet ? <div className="phone-matching-feedback mb-[10px]" aria-live="polite">
+            <div style={{visibility: checked && allCorrect ? "visible" : "hidden"}}><CorrectFeedback explanation={explanation} showXp xp={earnedXP} /></div>
+            <div style={{visibility: checked && !allCorrect ? "visible" : "hidden"}}><IncorrectFeedback correctAnswer="" explanation={explanation} hideAnswer /></div>
+          </div> : checked && (
             <div className="mb-[10px]">
               {allCorrect ? (
                 <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} xp={earnedXP} />

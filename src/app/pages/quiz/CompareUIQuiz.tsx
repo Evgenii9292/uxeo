@@ -1,7 +1,7 @@
 import { QUIZ_CARD_BACKGROUNDS, QUIZ_CARD_BORDERS } from "./quizCardStyles";
 /** CompareUIQuiz — pick the better UI out of two options */
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import type { CompareUIOption } from "../../data/quiz-bank";
 import { ContinueDisabled, ContinueActive, ContinueCorrect } from "./ContinueButtons";
 import { CorrectFeedback, IncorrectFeedback } from "./QuizFeedback";
@@ -10,6 +10,7 @@ import type { CompareCardState } from "./QuizLeftBlock";
 import { useWindowWidth } from "../../hooks/useWindowWidth";
 import { ScaledPreview } from "../../components/quiz/ScaledPreview";
 import { CardAMockup, CardBMockup } from "../../components/quiz/QuizCardMockups";
+import "./CompareUIQuiz.css";
 import { FlagReportButton } from "./FlagReportButton";
 
 // Natural dimensions of Figma compare cards
@@ -103,6 +104,18 @@ export function CompareUIQuiz({
   const [phase, setPhase] = useState<Phase>("selecting");
   const vw = useWindowWidth();
   const isMobile = vw < 768;
+  const isTablet = vw >= 600 && vw < 768;
+  const footerRef = useRef<HTMLDivElement>(null);
+  const [footerHeight, setFooterHeight] = useState(180);
+  useLayoutEffect(() => {
+    if (!isMobile || !footerRef.current) return;
+    const element = footerRef.current;
+    const measure = () => setFooterHeight(element.getBoundingClientRect().height);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [isMobile, explanation]);
   const quizW = Math.min(1042, vw - 48);
   const colW = Math.min(506, Math.floor((quizW - 18) / 2));
 
@@ -163,8 +176,8 @@ export function CompareUIQuiz({
     const containerH = mobileCardMinHeight
       ? mobileCardMinHeight
       : (isLargePhone ? 250 : 220);
-    const paddingY   = mobileCardMinHeight ? 20 : 10;
-    const paddingX   = mobileCardMinHeight ? 20 : 0;
+    const paddingY   = 20;
+    const paddingX   = 20;
     const figmaW     = mobileNaturalW ?? FIGMA_W;
     const figmaH     = mobileNaturalH ?? FIGMA_H;
 
@@ -174,7 +187,7 @@ export function CompareUIQuiz({
     return (
       <>
         {/* ── Content block — single wrapper, NO auto-spacing ── */}
-        <div className="w-full px-[16px] flex flex-col" style={{ gap: 10 }}>
+        <div data-tablet-compare={isTablet || undefined} className={`w-full px-[16px] flex flex-col ${isTablet ? "tablet-compare-content" : ""}`} style={{ gap: 10, ...(isTablet ? {height: `calc(100dvh - ${footerHeight}px - 106px)`} : {paddingBottom:Math.max(0, footerHeight + 52 - 140)}) }}>
 
           {/* Question title */}
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.25] text-[#f4f5fc] text-[22px] text-center w-full">
@@ -182,7 +195,7 @@ export function CompareUIQuiz({
           </p>
 
           {/* Cards — FIXED gap 10px between them */}
-          <div className="w-full flex flex-col" style={{ gap: 10 }}>
+          <div className={`w-full flex flex-col ${isTablet ? "tablet-compare-options" : ""}`} style={{ gap: 10 }}>
             {compareOptions.map((option) => {
               const state = getCardState(option.label);
               const isClickable = state === "idle" || state === "selected";
@@ -194,10 +207,9 @@ export function CompareUIQuiz({
                   onClick={isClickable ? () => handleSelect(option.label) : undefined}
                   className={`relative rounded-[15px] overflow-hidden transition-all duration-200 ${isClickable ? "cursor-pointer active:scale-[0.98]" : ""}`}
                   style={{
-                    height: mobileCardMinHeight
-                      ? `calc((100% - 290px) / 2)`
-                      : `calc((100% - 296px) / 2)`,
+                    height: isTablet ? "auto" : containerH,
                     minHeight: containerH,
+                    ...(isTablet ? {flex: "1 0 0"} : {}),
                     background: QUIZ_CARD_BACKGROUNDS[state],
                     boxShadow: borderColor ? `0 0 0 3px ${borderColor}` : undefined,
                   }}
@@ -206,6 +218,7 @@ export function CompareUIQuiz({
                   <div className="w-full h-full">
                     {option.content ? (
                       <ScaledPreview
+                        centered
                         naturalWidth={figmaW}
                         naturalHeight={figmaH}
                         paddingY={paddingY}
@@ -216,9 +229,11 @@ export function CompareUIQuiz({
                       </ScaledPreview>
                     ) : (
                       <ScaledPreview
+                        centered
                         naturalWidth={MOCK_W}
                         naturalHeight={MOCK_H}
-                        paddingY={10}
+                        paddingY={20}
+                        paddingX={20}
                         maxScale={1}
                       >
                         {option.previewType === "good" ? <CardAMockup /> : <CardBMockup />}
@@ -236,10 +251,18 @@ export function CompareUIQuiz({
 
         {/* ── Fixed bottom bar — feedback + button ── */}
         <div
-          className="fixed left-0 right-0 z-10 px-[16px] pt-[12px]"
+          ref={footerRef}
+          className={`fixed left-0 right-0 z-10 px-[16px] pt-[12px] tablet-compare-footer`}
           style={{ bottom: "max(40px, env(safe-area-inset-bottom, 40px))", paddingBottom: 12 }}
         >
-          {phase === "feedback" && (
+          {isMobile ? <div className="tablet-compare-feedback mb-[10px]" aria-live="polite">
+            <div style={{visibility: phase === "feedback" && isCorrect ? "visible" : "hidden"}}>
+              <CorrectFeedback explanation={explanation} showXp xp={earnedXP} />
+            </div>
+            <div style={{visibility: phase === "feedback" && !isCorrect ? "visible" : "hidden"}}>
+              <IncorrectFeedback correctAnswer={correctAnswer} explanation={explanation} isReplay={isReplay} hideAnswer />
+            </div>
+          </div> : phase === "feedback" && (
             <div className="mb-[10px]">
               {isCorrect
                 ? <CorrectFeedback explanation={explanation} showXp={earnedXP > 0} xp={earnedXP} />

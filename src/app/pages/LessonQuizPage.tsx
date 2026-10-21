@@ -1222,7 +1222,7 @@ function LessonQuizSession() {
           </PageTransition>
         ) : questionType === "compare_ui" ? (
           <PageTransition key={currentQuestionIndex} duration={0} scaleFrom={1}>
-          <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`} style={isMobile ? { paddingTop: 'calc(44px + env(safe-area-inset-top, 0px))' } : undefined}>
+          <div className={`w-full min-h-screen flex flex-col items-center ${isMobile ? "pb-[140px]" : isCompact ? "pt-[60px] pb-[80px]" : "pt-[80px] pb-[120px]"}`} style={isMobile ? { paddingTop: 'calc(44px + env(safe-area-inset-top, 0px))', height:'100dvh', minHeight:0, overflowY:'auto' } : undefined}>
             <div className={`flex-1 flex flex-col items-center w-full ${isMobile ? "justify-start pt-[10px]" : isCompact ? "justify-center gap-[28px]" : "justify-center gap-[52px]"}`}>
               <CompareUIQuiz
                 continueLabel={currentQuestionIndex === totalQuestions - 1 ? "Завершить квиз" : "Следующий вопрос"}
