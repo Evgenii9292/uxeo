@@ -184,7 +184,8 @@ function UserSessionProvider({ children }: { children: ReactNode }) {
       || (u.goal && u.goal !== "")
       || Object.keys(u.lessonProgress).length > 0;
     if (!hasProgress) { setSyncStatus("synced"); return syncQueueRef.current; }
-    setSyncStatus("syncing");
+    // A retry is not proof of recovery: keep the warning until a write succeeds.
+    setSyncStatus(previous => previous === "error" ? "error" : "syncing");
 
     // Skip data URLs > 80KB to avoid large payloads; sync http(s) URLs always
     const avatarToSync = u.userAvatar
