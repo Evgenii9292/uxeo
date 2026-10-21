@@ -54,3 +54,5 @@ button, a, [role="button"], input, select, textarea, label {
 }
 
 :root{--mobile-nav-row:60px;--mobile-nav-height:calc(var(--mobile-nav-row) + env(safe-area-inset-bottom, 0px))}
+
+@media(prefers-reduced-motion:reduce){.mobile-tab-indicator{transition:none!important}}

@@ -3,7 +3,7 @@
  * The "···" tab opens the MoreSheet bottom drawer.
  */
 
-import React, { lazy, Suspense, useState, useEffect } from "react";
+import React, { lazy, Suspense, useState, useEffect, useLayoutEffect } from "react";
 import ReactDOM from "react-dom";
 import { useLocation, useNavigate } from "react-router";
 import { NOTIF_COUNT_KEY, NOTIF_INITIAL_UNREAD } from "../utils/notifications";
@@ -152,6 +152,9 @@ const NAV_TABS = [
   },
 ] as const;
 
+// Remember the selection across page components that remount their mobile shell.
+let previousTabIndex: number | null = null;
+
 // ── BottomTabBar ──────────────────────────────────────────────────────────────
 
 export default function BottomTabBar({ onMoreOpenChange }: { onMoreOpenChange?: (open: boolean) => void } = {}) {
@@ -166,6 +169,17 @@ export default function BottomTabBar({ onMoreOpenChange }: { onMoreOpenChange?: 
       p === "/" ? location.pathname === "/" : location.pathname.startsWith(p)
     );
   const activeIndex = NAV_TABS.findIndex((tab) => isActive(tab.matchPaths));
+  const [indicatorIndex, setIndicatorIndex] = useState(() => previousTabIndex ?? activeIndex);
+  useLayoutEffect(() => {
+    if (activeIndex < 0) return;
+    previousTabIndex = activeIndex;
+    let secondFrame = 0;
+    const firstFrame = requestAnimationFrame(() => {
+      secondFrame = requestAnimationFrame(() => setIndicatorIndex(activeIndex));
+    });
+    return () => { cancelAnimationFrame(firstFrame); cancelAnimationFrame(secondFrame); };
+  }, [activeIndex]);
+
 
   return (
     <>
@@ -191,9 +205,9 @@ export default function BottomTabBar({ onMoreOpenChange }: { onMoreOpenChange?: 
         >
           {activeIndex >= 0 && (
             <div
-              className="absolute rounded-[13px] pointer-events-none"
+              className="mobile-tab-indicator absolute rounded-[13px] pointer-events-none"
               style={{
-                left: `calc(8px + ((100% - 16px) / 5) * ${activeIndex} + 6px)`,
+                left: `calc(8px + ((100% - 16px) / 5) * ${indicatorIndex} + 6px)`,
                 top: 8,
                 width: "calc((100% - 16px) / 5 - 12px)",
                 height: 44,
