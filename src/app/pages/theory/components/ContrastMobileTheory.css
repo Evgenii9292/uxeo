@@ -45,3 +45,11 @@
 .real-theory-screen{animation:theory-screen-enter 250ms ease both}
 @keyframes theory-screen-enter{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){.real-theory-screen{animation:none}.section-chevron *{transition:none!important}}
+
+.color-contrast-example{width:186px;height:162px;background:#f7f8fc;padding:14px 10px;display:flex;flex-direction:column;font-family:Inter,sans-serif;color:#101828}
+.color-contrast-example h3{font-size:12px;line-height:16px;margin:0 0 16px;font-weight:600}
+.color-contrast-example p{font-size:10px;line-height:14px;margin:0 0 5px}
+.color-contrast-example>span{font-size:9px;line-height:13px;color:#667085}
+.color-contrast-example-action{margin-top:auto;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;line-height:14px;font-weight:600}
+.color-contrast-example-action.clear{background:#397df5;color:#fff}
+.color-contrast-example-action.faint{background:#e8ebf2;color:#adb4c2}
