@@ -1,0 +1,5 @@
+.tablet-compare-content{min-height:570px}
+.tablet-compare-options{flex:1;min-height:0}
+.tablet-compare-footer{background:#282f33}
+.tablet-compare-feedback{display:grid}
+.tablet-compare-feedback>div{grid-area:1/1}
