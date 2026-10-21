@@ -13,7 +13,7 @@ export function CorrectFeedback({ explanation, showXp = true, xp = 25 }: { expla
           <QuizFeedbackIcon correct />
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] text-[#cdf6db] text-[18px] whitespace-nowrap" style={{ marginBottom: 4 }}>Верно!</p>
         </div>
-        {showXp && (
+        {showXp && xp > 0 && (
           <div className="flex items-center justify-between w-[47px]">
             <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[20.587px] text-[#00d043] text-[18px] whitespace-nowrap">+{xp}</p>
             <LightningIcon />
