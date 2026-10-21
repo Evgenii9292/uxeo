@@ -44,3 +44,12 @@ test('resume rejects stale, mismatched and malformed attempts', () => {
   store.set('run', 'broken');
   assert.equal(readQuizRun('run', 'quiz_contrast', 12), null);
 });
+
+const { needsPortraitGuard } = load('src/app/utils/portraitGuard.ts');
+test('portrait guard allows laptops and tablets, including narrow landscape windows', () => {
+  assert.equal(needsPortraitGuard(1000, 768, 1440, 900, false), false);
+  assert.equal(needsPortraitGuard(1024, 768, 1024, 768, true), false);
+  assert.equal(needsPortraitGuard(698, 600, 1024, 768, true), false);
+  assert.equal(needsPortraitGuard(956, 440, 956, 440, true), true);
+  assert.equal(needsPortraitGuard(440, 956, 440, 956, true), false);
+});
