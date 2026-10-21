@@ -433,7 +433,9 @@ function UserSessionProvider({ children }: { children: ReactNode }) {
         xpValue: finalXpValue,
       };
 
-      if (!questionState.xpAwarded && isCorrect) {
+      // Contrast microquizzes award XP for the first submitted attempt only.
+      const awardXp = isCorrect && !(lessonId === "contrast-lesson" && questionId.startsWith("mini-quiz-") && lessonProgress.questions[questionId]);
+      if (!questionState.xpAwarded && awardXp) {
         xpEarned = finalXpValue;
       }
 
@@ -441,9 +443,9 @@ function UserSessionProvider({ children }: { children: ReactNode }) {
         ...lessonProgress.questions,
         [questionId]: {
           correct: questionState.correct || isCorrect,
-          xpAwarded: questionState.xpAwarded || isCorrect,
+          xpAwarded: questionState.xpAwarded || awardXp,
           xpValue: questionState.xpAwarded ? questionState.xpValue : finalXpValue,
-          awardedAt: questionState.awardedAt ?? (!questionState.xpAwarded && isCorrect ? new Date().toISOString() : undefined),
+          awardedAt: questionState.awardedAt ?? (!questionState.xpAwarded && awardXp ? new Date().toISOString() : undefined),
         },
       };
 

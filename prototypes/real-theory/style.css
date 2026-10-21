@@ -2,13 +2,13 @@ html,body,#root{height:100%;margin:0;background:#282f33;overflow:hidden}.real-th
 
 /* Isolated experiment: retain text size while removing blank space in simpler examples. */
 .real-figure.compact>div{height:162px!important}
-.real-figure.compact>div>div{height:142px!important}
+.real-figure.compact>div>[data-name="Container"]{height:142px!important}
 .real-figure.compact [class*="top-[158.5px]"]{top:89.5px!important}
 .real-figure.compact [class*="top-[154px]"]{top:85px!important}
 .real-figure.compact [class*="top-[165px]"]{top:96px!important}
 .real-figure.compact [class*="top-[200.5px]"]{top:131.5px!important}
 .real-figure.compact [class*="top-[200px]"]{top:131px!important}
-.real-choice{box-shadow:0 4px 0 #192023, inset 0 1px 0 #ffffff08}
+.real-choice{box-shadow:none}
 
 .real-action{bottom:76px;padding:14px 16px 24px;background:#282f33}
 .real-scroll{padding-bottom:115px}

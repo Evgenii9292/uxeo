@@ -13,9 +13,10 @@ import type { LessonContentData } from "../../../data/lesson-content";
 import type { AccordionState } from "../useTheory";
 import { LESSONS } from "../../../data/lessons";
 import { MobileHeader } from "../../../components/MobileShell";
+import { ContrastMobileTheory } from "./ContrastMobileTheory";
 import BottomTabBar from "../../../components/BottomTabBar";
 
-interface TheoryMobileLayoutProps {
+export interface TheoryMobileLayoutProps {
   xp: number;
   streak: number;
   lessonData: LessonContentData;
@@ -39,7 +40,7 @@ interface TheoryMobileLayoutProps {
   setFeedbackText: (text: string) => void;
 }
 
-export function TheoryMobileLayout({
+function StandardTheoryMobileLayout({
   xp,
   streak,
   lessonData,
@@ -285,4 +286,8 @@ export function TheoryMobileLayout({
       )}
     </div>
   );
+}
+
+export function TheoryMobileLayout(props: TheoryMobileLayoutProps) {
+  return props.lessonId === "contrast-lesson" ? <ContrastMobileTheory {...props} /> : <StandardTheoryMobileLayout {...props} />;
 }

@@ -10,6 +10,7 @@ import { QuizFeedbackIcon } from "../../src/app/pages/quiz/QuizFeedbackIcon";
 import { QUIZ_CARD_BACKGROUNDS, QUIZ_CARD_BORDERS } from "../../src/app/pages/quiz/quizCardStyles";
 import "../../src/styles/index.css";
 import "./style.css";
+import { BalanceExample } from "../../src/app/pages/theory/components/ContrastMobileTheory";
 
 const original = LESSON_CONTENT["contrast-lesson"];
 const lesson = { ...original, sections: presentTheorySections(original.sections, original.lessonId) };
@@ -108,7 +109,7 @@ function TheoryPreview() {
                   const letter = optionIndex ? "Б" : "А";
                   return <button key={side} className="real-choice" aria-label={`Выбрать вариант ${letter}`} aria-pressed={selected} disabled={current.checked} onClick={event => choose(index, side, event.currentTarget)} style={{ background: state === "idle" || state === "selected" ? "#282f33" : QUIZ_CARD_BACKGROUNDS[state], borderColor: QUIZ_CARD_BORDERS[state] ?? "transparent" }}>
                     <span className="real-choice-label"><span className="real-radio" />Вариант {letter}</span>
-                    <RealExample compact={index < 4} node={side === "left" ? section.quizLeftNode : section.quizRightNode} />
+                    <RealExample compact={index < 2 || (section.title === "Правило баланса" || section.title === "Контраст цвета")} node={(section.title === "Правило баланса" || section.title === "Контраст цвета") ? <BalanceExample correct={correct} /> : side === "left" ? section.quizLeftNode : section.quizRightNode} />
                   </button>;
                 })}
               </div>
