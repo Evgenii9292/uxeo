@@ -209,6 +209,11 @@ export function useTheory(isMobile: boolean, lessonId?: string, totalSections: n
       hasIncorrectAnswer: !isCorrect || (newStates[sectionIndex]?.hasIncorrectAnswer ?? false)
     };
     setAccordionStates(newStates);
+    if (isMobile && resolvedLessonId === "contrast-lesson") {
+      const nextReached = Math.max(effectiveMaxReached, Math.min(sectionIndex + 1, lastSectionIndex));
+      setMaxReached(nextReached);
+      try { localStorage.setItem(storageKey, String(nextReached)); } catch {}
+    }
 
     // Scroll further so feedback and the Continue button are immediately visible.
     requestAnimationFrame(() => {

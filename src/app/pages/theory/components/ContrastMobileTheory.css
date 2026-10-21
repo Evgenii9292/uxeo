@@ -6,6 +6,8 @@
 .real-figure.compact [class*="top-[158.5px]"]{top:89.5px!important}
 .real-figure.compact [class*="top-[154px]"]{top:85px!important}
 .real-figure.compact [class*="top-[165px]"]{top:96px!important}
+.real-figure.compact [class*="top-[168px]"]{top:99px!important}
+.real-figure.compact [class*="top-[201px]"]{top:132px!important}
 .real-figure.compact [class*="top-[200.5px]"]{top:131.5px!important}
 .real-figure.compact [class*="top-[200px]"]{top:131px!important}
 .real-choice{box-shadow:none}
@@ -13,7 +15,7 @@
 .real-action{bottom:var(--mobile-nav-height);padding:14px 16px 24px;background:#282f33}
 .real-scroll{padding-bottom:115px}
 
-.real-question{color:#ff6b21;font-size:24px;line-height:28px}
+.real-question{color:#f4f5fc;font-size:24px;line-height:28px}
 
 .real-theory-screen{position:fixed;inset:0;background:#282f33}
 .balance-example{width:186px;height:162px;background:#f7f8fc;padding:10px;display:flex;flex-direction:column;gap:10px;font-family:Inter,sans-serif;color:#101828}
