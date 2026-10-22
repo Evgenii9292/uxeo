@@ -1,3 +1,4 @@
+import { getProfileDisplayName } from "../utils/profileDisplayName";
 import React, { useEffect, useRef, useState } from "react";
 import Layout from "../components/Layout";
 import { useUserSafe } from "../context/UserContext";
@@ -533,7 +534,7 @@ function LeagueRightWidget({ userPosition, aboveUser, userXp, league }: {
 
 export default function LeaguePage() {
   const userData = useUserSafe();
-  const { userId } = useAuth();
+  const { userId, email, isDemo } = useAuth();
   const leagueUserId = userId ?? "demo-user";
 
   const userXp = userData?.xp ?? 0;
@@ -545,28 +546,8 @@ export default function LeaguePage() {
   // Week seed: deterministic per user per week → bots reset each Monday
   const weekSeed = leagueUserId + String(getCurrentWeekStart());
 
-  // Determine user display name — profile name → email → default
-  const userName = (() => {
-    try {
-      const profileName = localStorage.getItem("uxeo-profile-name");
-      if (profileName) return profileName;
-      const email = localStorage.getItem("uxeo-user-email");
-      if (email) {
-        const derived = email.split("@")[0];
-        const capitalized = derived.charAt(0).toUpperCase() + derived.slice(1);
-        localStorage.setItem("uxeo-profile-name", capitalized);
-        return capitalized;
-      }
-    } catch (_) {}
-    // Write default so next read is consistent
-    localStorage.setItem("uxeo-profile-name", "Evgeniy");
-    return "Evgeniy";
-  })();
-
-  // Build participants list (all xp values = weekly XP)
-  const rivals = generateRivals(leagueUserId, userWeeklyXp, weekSeed);
-
-  const userAvatarUrl = (() => { try { return localStorage.getItem("uxeo-profile-avatar") ?? undefined; } catch { return undefined; } })();
+  const userName = getProfileDisplayName(userData?.userName, isDemo ? null : email);
+  const userAvatarUrl = userData?.userAvatar ?? undefined;
 
   const userParticipant: Participant = {
     id: "user",

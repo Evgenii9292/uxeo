@@ -1,3 +1,4 @@
+import { getProfileDisplayName } from "../utils/profileDisplayName";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
 import Layout from "../components/Layout";
@@ -265,11 +266,11 @@ function AvatarPickerModal({ current, onSelect, onClose }: {
 
 function ProfileCard() {
   const userCtx = useUserSafe();
-  const { email } = useAuth();
+  const { email, isDemo } = useAuth();
   const autoTitle = getProfileTitleFromLevel(userCtx?.level);
 
   // Read from UserContext (synced across devices); fall back to defaults
-  const name = userCtx?.userName ?? "Evgeniy";
+  const name = getProfileDisplayName(userCtx?.userName, isDemo ? null : email);
   const title = userCtx?.userTitle ?? autoTitle;
   const avatarSrc = userCtx?.userAvatar ?? null;
 
@@ -282,10 +283,10 @@ function ProfileCard() {
   // Keep edit fields in sync when UserContext loads fresh data from Supabase
   useEffect(() => {
     if (!isEditing) {
-      setEditName(userCtx?.userName ?? "Evgeniy");
+      setEditName(name);
       setEditTitle(userCtx?.userTitle ?? autoTitle);
     }
-  }, [userCtx?.userName, userCtx?.userTitle, autoTitle, isEditing]);
+  }, [name, userCtx?.userTitle, autoTitle, isEditing]);
 
   const handleAvatarSelect = (url: string) => {
     userCtx?.setUserAvatar(url);

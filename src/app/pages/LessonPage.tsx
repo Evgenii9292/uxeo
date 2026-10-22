@@ -1,3 +1,4 @@
+import { getProfileDisplayName } from "../utils/profileDisplayName";
 import { getQuizResult } from "../utils/learningProgress";
 import { lazy, Suspense, useState, useMemo, useCallback, useEffect } from "react";
 import Layout from "../components/Layout";
@@ -82,27 +83,6 @@ function MobileContinueButton({ onClick, xpReward }: { onClick: () => void; xpRe
 
 const LessonRightColumn = lazy(() => import("../components/LessonRightColumn"));
 
-const PROFILE_NAME_KEY = "uxeo-profile-name";
-const EMAIL_KEY = "uxeo-user-email";
-
-function deriveUserName(email?: string) {
-  try {
-    const savedName = localStorage.getItem(PROFILE_NAME_KEY)?.trim();
-    if (savedName) return savedName;
-
-    const savedEmail = localStorage.getItem(EMAIL_KEY)?.trim();
-    const sourceEmail = email?.trim() || savedEmail;
-    if (!sourceEmail) return "";
-
-    const derived = sourceEmail.split("@")[0]?.trim();
-    if (!derived) return "";
-
-    return derived.charAt(0).toUpperCase() + derived.slice(1);
-  } catch {
-    return "";
-  }
-}
-
 // ── Main page ────────────────────────────────────────────────────────────────
 
 export default function LessonPage() {
@@ -111,26 +91,7 @@ export default function LessonPage() {
   const navigate = useNavigate();
   const vw = useWindowWidth();
   const isMobile = vw < 768;
-  const [userName, setUserName] = useState(() => userData?.userName ?? deriveUserName(auth?.email));
-
-  useEffect(() => {
-    const nextName = auth?.isDemo ? (userData?.userName ?? "") : deriveUserName(auth?.email);
-    setUserName(prev => prev === nextName ? prev : nextName);
-
-    if (auth?.isDemo || !nextName) return;
-
-    try {
-      const savedName = localStorage.getItem(PROFILE_NAME_KEY)?.trim();
-      if (!savedName) {
-        localStorage.setItem(PROFILE_NAME_KEY, nextName);
-      }
-      if (auth?.email) {
-        localStorage.setItem(EMAIL_KEY, auth.email);
-      }
-    } catch {
-      // Ignore storage errors and keep the in-memory name.
-    }
-  }, [auth?.email, auth?.isDemo, userData?.userName]);
+  const userName = getProfileDisplayName(userData?.userName, auth?.isDemo ? null : auth?.email);
 
   // Derive dynamic lesson statuses from UserContext progress.
   // NODE STATE RULES:

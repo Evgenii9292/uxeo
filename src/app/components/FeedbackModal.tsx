@@ -119,26 +119,11 @@ export function FeedbackModal({ onClose }: { onClose: () => void }) {
               Спасибо за отзыв!
             </p>
             <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#798589] text-[15px] text-center leading-[1.4]">
-              Мы вышлем подарок — 1 месяц бесплатной подписки — на указанный email в течение 24 часов.
+              Ваш отзыв поможет нам сделать приложение удобнее.
             </p>
           </div>
         ) : (
           <>
-            {/* Gift promo banner */}
-            <div
-              className="flex gap-[12px] items-start rounded-[14px] px-[14px] py-[12px]"
-              style={{ background: "rgba(255,107,33,0.12)", border: "1px solid rgba(255,107,33,0.25)" }}
-            >
-              <span style={{ fontSize: 24, lineHeight: 1, flexShrink: 0 }}>🎁</span>
-              <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#f4d4c3] text-[14px] leading-[1.45]">
-                Напишите письменный отзыв — и получите{" "}
-                <span className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#FF6B21]">
-                  1 месяц бесплатной подписки
-                </span>{" "}
-                в подарок!
-              </p>
-            </div>
-
             {/* Rating */}
             <div className="flex flex-col gap-[10px]">
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f1f2fb] text-[16px]">
@@ -170,7 +155,7 @@ export function FeedbackModal({ onClose }: { onClose: () => void }) {
               <textarea
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder="Напишите здесь — это обязательно для подарка..."
+                placeholder="Что понравилось и что стоит улучшить?"
                 rows={3}
                 className="w-full rounded-[12px] px-[14px] py-[11px] text-[#f1f2fb] resize-none"
                 style={{ background: "#374348", border: "none", outline: "none", fontFamily: "Roboto Condensed, sans-serif", fontSize: 15, lineHeight: "1.4" }}
@@ -195,7 +180,7 @@ export function FeedbackModal({ onClose }: { onClose: () => void }) {
             {/* Email */}
             <div className="flex flex-col gap-[8px]">
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f1f2fb] text-[16px]">
-                Email для получения подарка
+                Email для ответа (необязательно)
               </p>
               <input
                 type="email"
@@ -257,7 +242,7 @@ export function FeedbackModal({ onClose }: { onClose: () => void }) {
                 <span style={{ fontSize: 18 }}>🎁</span>
               )}
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] text-[18px]">
-                {sending ? "Отправляем..." : "Отправить и получить подарок"}
+                {sending ? "Отправляем..." : "Отправить отзыв"}
               </p>
             </button>
           </>

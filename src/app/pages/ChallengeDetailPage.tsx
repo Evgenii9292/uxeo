@@ -1,17 +1,18 @@
+import { HealthChallengeExample } from "../components/HealthChallengeExample";
 import { ChallengePreview } from "../components/ChallengePreview";
 import { normalizeFigmaLink } from "../../../supabase/functions/server/figmaLink";
 import { DifficultyIcon } from "../components/DifficultyIcon";
 import { useState, useRef, useId } from "react";
 import { useIsMobile } from "../components/ui/use-mobile";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import Layout from "../components/Layout";
-import { HeroPhoneCard, ExampleContent } from "../../imports/Frame-185-621";
+import { HeroPhoneCard } from "../../imports/Frame-185-621";
 import { ChallengePhone1, ChallengePhone2, ChallengePhone3 } from "../../imports/Frame481451";
 import svgPaths from "../../imports/svg-ns2c3tgkyt";
 import svgInitial from "../../imports/svg-tq18tvw1l4";
 import svgDone from "../../imports/svg-ljco7xguob";
 import svgCardPaths from "../../imports/svg-u7gh1bm86c";
-import { Zap } from "lucide-react";
+import { Zap, Download, ZoomIn } from "lucide-react";
 import SkillsIcon from "../../imports/ЧтоВыПрокачиваете";
 import TaskIcon from "../../imports/Задание";
 import RequirementsIcon from "../../imports/Требования";
@@ -313,23 +314,12 @@ function ExampleSection() {
 
   return (
     <div className="w-full relative">
-      <div ref={exampleRef}>
-        <ExampleContent />
-      </div>
-      <div
-        className="absolute top-0 left-0 right-0 flex items-center justify-between pointer-events-none"
-        style={{ paddingLeft: '142px', paddingRight: '142px', paddingTop: '20px' }}
-      >
-        <button
-          onClick={handleDownload}
-          title="Скачать пример"
-          className="pointer-events-auto w-[25.5px] h-[25.5px] rounded-full opacity-0 hover:opacity-30 active:opacity-50 bg-white transition-opacity cursor-pointer"
-        />
-        <button
-          onClick={() => setIsZoomed(true)}
-          title="Увеличить"
-          className="pointer-events-auto w-[30.75px] h-[30px] rounded-full opacity-0 hover:opacity-30 active:opacity-50 bg-white transition-opacity cursor-pointer"
-        />
+      <div className="rounded-[15px] bg-[#38444a] px-[20px] pt-[16px] pb-[28px]">
+        <div className="flex justify-end gap-2 mb-4">
+          <button type="button" onClick={handleDownload} title="Скачать пример" aria-label="Скачать пример" className="p-2 rounded-full bg-[#2d373b] text-[#c3cdd1] hover:text-white cursor-pointer"><Download size={18} /></button>
+          <button type="button" onClick={() => setIsZoomed(true)} title="Увеличить" aria-label="Увеличить пример" className="p-2 rounded-full bg-[#2d373b] text-[#c3cdd1] hover:text-white cursor-pointer"><ZoomIn size={18} /></button>
+        </div>
+        <div ref={exampleRef}><HealthChallengeExample /></div>
       </div>
       {isZoomed && (
         <div
@@ -337,12 +327,12 @@ function ExampleSection() {
           onClick={() => setIsZoomed(false)}
         >
           <div className="flex flex-col items-center gap-[16px]" onClick={e => e.stopPropagation()}>
-            <div style={{ transform: 'scale(1.5)', transformOrigin: 'center' }}>
-              <ExampleContent />
+            <div className="max-h-[75dvh] overflow-y-auto px-4">
+              <HealthChallengeExample />
             </div>
             <button
               onClick={() => setIsZoomed(false)}
-              className="mt-[80px] bg-[#404d52] hover:bg-[#4d5d64] text-[#f1f2fb] text-[18px] px-[32px] py-[14px] rounded-[15px] transition-colors cursor-pointer"
+              className="bg-[#404d52] hover:bg-[#4d5d64] text-[#f1f2fb] text-[18px] px-[32px] py-[14px] rounded-[15px] transition-colors cursor-pointer"
             >
               Закрыть
             </button>
@@ -451,6 +441,7 @@ function InfoPopup({ onClose }: { onClose: () => void }) {
 function SubmitBlock({ challengeId, challengeName }: { challengeId: string; challengeName: string }) {
   const userData = useUserSafe();
   const auth = useAuthSafe();
+  const navigate = useNavigate();
   const [status, setStatus] = useState(() => getChallengeStatus(challengeId));
   const [url, setUrl]                   = useState("");
   const [showInfo, setShowInfo]         = useState(false);
@@ -615,6 +606,16 @@ function SubmitBlock({ challengeId, challengeName }: { challengeId: string; chal
             {isSubmitting ? "Отправка..." : "Отправить повторно"}
           </p>
         </div>
+      </div>
+    );
+  }
+
+  if (auth?.isDemo) {
+    return (
+      <div className="rounded-[15px] bg-[#343e42] p-[20px] flex flex-col gap-[16px]">
+        <p className={`${TEXT_TITLE} text-[#f4f5fc] text-[22px]`}>Попробуйте задание в Figma</p>
+        <p className={`${TEXT_BODY} text-[#a8b3b8] text-[16px] leading-[1.5]`}>В демо можно изучить задание и подготовить макет. Чтобы отправить работу на проверку, войдите в аккаунт.</p>
+        <button type="button" onClick={() => { auth.exitDemo(); navigate('/welcome'); }} className={`${TEXT_TITLE} rounded-[15px] bg-[#ff6b21] text-[#f4f5fc] text-[20px] min-h-[56px] px-4 shadow-[0_4px_0_#c24226] cursor-pointer active:translate-y-[2px]`}>Войти, чтобы отправить</button>
       </div>
     );
   }
