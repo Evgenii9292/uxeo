@@ -1,7 +1,7 @@
 import { DifficultyIcon, LessonCountIcon } from "./DifficultyIcon";
-import { useId } from "react";
+import { useId, useState } from "react";
 import { useNavigate } from "react-router";
-import { Zap, Check } from "lucide-react";
+import { Zap, Check, ChevronDown } from "lucide-react";
 import svgMfoan from "../../imports/svg-mfoan0qzpw";
 import { useUserSafe } from "../context/UserContext";
 import { LESSONS } from "../data/lessons";
@@ -385,14 +385,20 @@ export { COURSE_DISPLAY };
 export type { CourseDisplay };
 
 export default function CoursesContent() {
+  const [showUpcoming, setShowUpcoming] = useState(false);
+  const upcoming = COURSE_DISPLAY.filter(course => !course.isActive);
   return (
-    // Fix 5: gap matches RightWidgets gap-[20px]
-    <div className="content-stretch flex flex-col gap-[20px] items-start justify-center relative shrink-0 w-full">
-      {COURSE_DISPLAY.map((course) =>
-        course.isActive
-          ? <ActiveCourseCard key={course.id} course={course} />
-          : <LockedCourseCard key={course.id} course={course} />
-      )}
+    <div className="flex flex-col gap-[20px] w-full">
+      {COURSE_DISPLAY.filter(course => course.isActive).map(course => <ActiveCourseCard key={course.id} course={course} />)}
+      <section className="w-full">
+        <button type="button" onClick={() => setShowUpcoming(value => !value)} aria-expanded={showUpcoming} aria-controls="upcoming-courses" className="w-full flex items-center justify-between gap-4 rounded-[15px] bg-[#343e42] p-[20px] text-left cursor-pointer">
+          <span><span className="block text-[#f4f5fc] text-[22px] font-medium">Будущие курсы</span><span className="block text-[#9aa8ad] text-[16px] mt-1">Готовим ещё {upcoming.length} курсов</span></span>
+          <ChevronDown size={22} color="#9aa8ad" className={`shrink-0 transition-transform duration-300 ${showUpcoming ? "rotate-180" : ""}`} />
+        </button>
+        <div id="upcoming-courses" inert={showUpcoming ? undefined : ''} className="grid transition-[grid-template-rows,opacity] duration-300" style={{ gridTemplateRows: showUpcoming ? "1fr" : "0fr", opacity: showUpcoming ? 1 : 0 }}>
+          <div className="overflow-hidden min-h-0"><div className="flex flex-col gap-[20px] pt-[20px]">{upcoming.map(course => <LockedCourseCard key={course.id} course={course} />)}</div></div>
+        </div>
+      </section>
     </div>
   );
 }
