@@ -231,7 +231,7 @@ export default function LessonCompletionScreen({
             </div>
 
             {/* Stat cards */}
-            <div className={isMobile ? "grid grid-cols-2 gap-[12px] w-full" : "flex gap-[12px]"}>
+            <div className={isMobile ? `grid ${earnedXP > 0 ? "grid-cols-2" : "grid-cols-1 max-w-[260px] mx-auto"} gap-[12px] w-full` : "flex justify-center gap-[12px] w-full max-w-[420px]"}>
               <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: isMobile ? undefined : 1 }}>
                 <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] leading-[1.1] ${isMobile ? "text-[26px]" : "text-[36px]"}`}>
                   {correctAnswers}<span className="text-[#798589]">/{totalQuestions}</span>
@@ -283,7 +283,7 @@ export default function LessonCompletionScreen({
             </div>
 
             {/* Stat cards */}
-            <div className={isMobile ? "grid grid-cols-2 gap-[12px] w-full" : "flex gap-[12px]"}>
+            <div className={isMobile ? `grid ${earnedXP > 0 ? "grid-cols-2" : "grid-cols-1 max-w-[260px] mx-auto"} gap-[12px] w-full` : "flex justify-center gap-[12px] w-full max-w-[420px]"}>
               <div className="flex flex-col items-center gap-[6px] rounded-[16px] px-[24px] py-[18px]" style={{ background: "#343e42", minWidth: isMobile ? 0 : 140, flex: isMobile ? undefined : 1 }}>
                 <p className={`font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#f4f5fc] leading-[1.1] ${isMobile ? "text-[26px]" : "text-[36px]"}`}>
                   {correctAnswers}<span className="text-[#798589]">/{totalQuestions}</span>

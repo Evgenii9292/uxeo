@@ -119,7 +119,7 @@ function UserSessionProvider({ children }: { children: ReactNode }) {
         goal: parsed.goal || null,
         dailyTime: parsed.dailyTime || null,
         weeklyChallengesCompleted: typeof parsed.weeklyChallengesCompleted === 'number' ? parsed.weeklyChallengesCompleted : 0,
-        userName: parsed.userName ?? (!isDemo && !userId ? localStorage.getItem('uxeo-profile-name') : null) ?? null,
+        userName: (isDemo && parsed.userName === "Demo" ? null : parsed.userName) ?? (!isDemo && !userId ? localStorage.getItem('uxeo-profile-name') : null) ?? null,
         // Treat auto-generated titles as null (so they stay in sync with level)
         userTitle: (rawTitle && !AUTO_TITLES.has(rawTitle)) ? rawTitle : null,
         userAvatar: parsed.userAvatar ?? (!isDemo && !userId ? localStorage.getItem('uxeo-profile-avatar') : null) ?? null,

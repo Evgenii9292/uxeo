@@ -481,7 +481,7 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
       question: "Где действие понятнее?",
       compareOptions: [
         { label: "А", description: "Экран с большим текстом без действий — непонятно, что делать дальше", badge: "Без действий", previewType: "bad" },
-        { label: "Б", description: "Экран с кнопкой «Start» — сразу понятно, как начать", badge: "Понятно", previewType: "good" },
+        { label: "Б", description: "Экран с кнопкой «Начать обучение» — сразу понятно, как начать", badge: "Понятно", previewType: "good" },
       ],
       correctAnswer: "Б",
       explanation: "Явный призыв к действию (CTA) даёт пользователю понять, что делать. Без кнопки — нет движения вперёд.",
@@ -490,11 +490,11 @@ export const QUIZ_BANK: Record<string, QuizQuestion[]> = {
       type: "compare_ui",
       question: "Где интерфейс удобнее?",
       compareOptions: [
-        { label: "А", description: "Много элементов без структуры — взгляд теряется, непонятно с чего начать", badge: "Без структуры", previewType: "bad" },
-        { label: "Б", description: "Чёткая структура и одно основное действие — всё на месте", badge: "Удобно", previewType: "good" },
+        { label: "А", description: "Поля и кнопка записи разбросаны по экрану — непонятно, в каком порядке заполнять", badge: "Без структуры", previewType: "bad" },
+        { label: "Б", description: "Данные занятия, поля и кнопка записи расположены последовательно", badge: "Удобно", previewType: "good" },
       ],
       correctAnswer: "Б",
-      explanation: "Удобный интерфейс — чёткая структура и одно главное действие. Лишние элементы мешают пользователю.",
+      explanation: "Когда имя и email находятся рядом, а кнопка записи — под ними, порядок действий понятен. Разбросанные поля заставляют искать следующий шаг.",
     },
     {
       type: "compare_ui",

@@ -1835,53 +1835,38 @@ export function CQUxCompare1B() {
   // Хорошо: чёткий экран с одной кнопкой действия
   return (
     <div style={CW}><div style={{ ...CI, alignItems: "center", gap: 12 }}>
-      <span style={{ fontSize: 11, fontFamily: "Inter, sans-serif", fontWeight: 700, color: "#101828", textAlign: "center" }}>Изучите UX Дизайн</span>
+      <span style={{ fontSize: 11, fontFamily: "Inter, sans-serif", fontWeight: 700, color: "#101828", textAlign: "center" }}>Изучите UX-дизайн</span>
       <span style={{ fontSize: 9, fontFamily: "Inter, sans-serif", color: "#8e9199", textAlign: "center" }}>Начните обучение прямо сейчас</span>
       <div style={{ background: "#3b82f6", borderRadius: 8, height: 36, width: "80%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <span style={{ color: "white", fontSize: 12, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>Start</span>
+        <span style={{ color: "white", fontSize: 12, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>Начать обучение</span>
       </div>
     </div></div>
   );
 }
 
 // ─── Quiz 2: Где интерфейс удобнее? ─────────────────────────────────────────
-export function CQUxCompare2A() {
-  // Плохо: много элементов без структуры
-  const items = ["Кнопка", "Меню", "Форма", "Блок", "Иконка", "Текст"];
-  return (
-    <div style={CW}><div style={{ ...CI, gap: 5 }}>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
-        {items.map((t, i) => (
-          <div key={i} style={{ background: i % 2 === 0 ? "#f7f8fc" : "#e5e7eb", borderRadius: i * 2 + 2, padding: "5px 8px" }}>
-            <span style={{ fontSize: 8, fontFamily: "Inter, sans-serif", color: "#364146" }}>{t}</span>
-          </div>
-        ))}
-      </div>
-      <div style={{ background: "#dbeafe", borderRadius: 4, height: 20, width: "60%" }} />
-      <div style={{ background: "#f7f8fc", borderRadius: 6, height: 24, display: "flex", alignItems: "center", padding: "0 8px" }}>
-        <span style={{ fontSize: 8, fontFamily: "Inter, sans-serif", color: "#8e9199" }}>Введите текст...</span>
-      </div>
-    </div></div>
-  );
+function UxBookingExample({ crowded }: { crowded: boolean }) {
+  const text = { fontFamily: "Inter, sans-serif", fontSize: 9, color: "#364146" };
+  const field = (label: string) => <div style={{ ...text, background: "#f0f2f7", border: "1px solid #d9dfe8", borderRadius: 5, padding: "7px 8px" }}>{label}</div>;
+  const action = <div style={{ background: "#3b82f6", color: "white", fontSize: 10, fontFamily: "Inter, sans-serif", textAlign: "center", padding: "9px 6px", borderRadius: 6 }}>Записаться на занятие</div>;
+  if (crowded) return <div style={CW}>
+    <div style={{ ...text, position: "absolute", left: 12, top: 12, width: 70, lineHeight: "24px", color: "#68778b", fontSize: 8 }}>Каталог<br />Профиль<br />Помощь</div>
+    <div style={{ position: "absolute", left: 102, top: 12, width: 144 }}>{field("Ваше имя")}</div>
+    <div style={{ position: "absolute", left: 132, top: 58, width: 112 }}>{action}</div>
+    <div style={{ position: "absolute", left: 12, top: 108, width: 142 }}>{field("Ваш email")}</div>
+    <div style={{ ...text, position: "absolute", right: 14, top: 128, fontSize: 7, textAlign: "right", lineHeight: "12px" }}>Онлайн<br />45 минут</div>
+    <div style={{ ...text, position: "absolute", left: 40, bottom: 14, fontSize: 8 }}>22 мая · 18:00</div>
+  </div>;
+  return <div style={CW}><div style={{ ...CI, gap: 6, justifyContent: "flex-start", padding: 12 }}>
+    <div style={{ ...text, fontWeight: 700, fontSize: 12 }}>Занятие по UX-дизайну</div>
+    <div style={{ ...text, color: "#68778b", fontSize: 8 }}>22 мая · 18:00 · Онлайн · 45 минут</div>
+    {field("Ваше имя")}{field("Ваш email")}
+    <div style={{ marginTop: "auto" }}>{action}</div>
+    <div style={{ ...text, fontSize: 7, textAlign: "center", color: "#68778b" }}>Каталог · Профиль · Помощь</div>
+  </div></div>;
 }
-export function CQUxCompare2B() {
-  // Хорошо: чёткая структура и одно главное действие
-  return (
-    <div style={CW}><div style={{ ...CI, gap: 10 }}>
-      <div style={{ background: "#f7f8fc", borderRadius: 6, padding: "8px 10px" }}>
-        <div style={{ height: 7, background: "#d1d5db", borderRadius: 2, width: "50%", marginBottom: 5 }} />
-        <div style={{ height: 5, background: "#e5e7eb", borderRadius: 2, width: "80%" }} />
-      </div>
-      <div style={{ background: "#f7f8fc", borderRadius: 6, padding: "8px 10px" }}>
-        <div style={{ height: 5, background: "#e5e7eb", borderRadius: 2, width: "90%", marginBottom: 4 }} />
-        <div style={{ height: 5, background: "#e5e7eb", borderRadius: 2, width: "70%" }} />
-      </div>
-      <div style={{ background: "#3b82f6", borderRadius: 6, height: 32, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <span style={{ color: "white", fontSize: 10, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>Начать</span>
-      </div>
-    </div></div>
-  );
-}
+export function CQUxCompare2A() { return <UxBookingExample crowded />; }
+export function CQUxCompare2B() { return <UxBookingExample crowded={false} />; }
 
 // ─── Quiz 3: Где цель достичь легче? ────────────────────────────────────────
 export function CQUxCompare3A() {

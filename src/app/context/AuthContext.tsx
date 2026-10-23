@@ -65,7 +65,7 @@ function ensureDemoBootstrap(): boolean {
         streak: 0,
         lastStreakDate: null,
         weeklyChallengesCompleted: 0,
-        userName: "Demo",
+        userName: null,
       }));
     }
     return true;
@@ -181,6 +181,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
+    // Preview progress is already stored locally; it has no server session to flush.
+    if (isDemo) {
+      localStorage.removeItem(DEMO_MODE_KEY);
+      setIsDemo(false);
+      setSession(null);
+      return;
+    }
     if (!await flushProgressBeforeSignOut()) throw new Error("Не удалось сохранить прогресс. Проверьте интернет и попробуйте выйти снова.");
     const supabase = await getSupabase();
     const { error } = await supabase.auth.signOut({ scope: "local" });
