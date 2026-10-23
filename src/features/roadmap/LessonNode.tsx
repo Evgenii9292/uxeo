@@ -129,7 +129,7 @@ function GreenPartialEllipse({ pct, uid }: { pct: number; uid: string }) {
   );
 }
 
-// ─── Current: orange glow node ────────────────────────────────────────────────
+// ─── Current: orange node without a separate shadow or halo ────────────────────────────────────────────────
 
 function OrangeCurrentEllipse({ uid, pct, isHomework }: { uid: string; pct: number; isHomework?: boolean }) {
   const rx = 42;
@@ -140,22 +140,6 @@ function OrangeCurrentEllipse({ uid, pct, isHomework }: { uid: string; pct: numb
 
   return (
     <div style={{ width: 89, height: NODE_H + 7, position: "relative", flexShrink: 0, overflow: "visible" }}>
-      {/* Orange glow aura */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          top: 0, left: 0, width: 89, height: NODE_H,
-          borderRadius: "50%",
-          boxShadow: "0px 5px 95px 0px rgba(237, 147, 131, 0.5)",
-          pointerEvents: "none",
-        }}
-      />
-      {/* Static shadow — same pattern as green/grey nodes */}
-      <div
-        aria-hidden="true"
-        style={{ position: "absolute", top: 7, left: 0, width: 89, height: NODE_H, borderRadius: "50%", background: "#C54A0A" }}
-      />
       <div
         className="absolute group-hover:translate-y-[3px] group-active:translate-y-[6px] transition-transform duration-75"
         style={{ top: 0, left: 0, width: 89, height: NODE_H, borderRadius: "50%", overflow: "visible" }}

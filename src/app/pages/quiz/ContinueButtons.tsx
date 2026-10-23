@@ -1,3 +1,4 @@
+import { RaisedButton } from "../../components/RaisedButton";
 /** Continue button variants for LessonQuizPage */
 
 function playClickSound() {
@@ -31,12 +32,7 @@ export function ContinueDisabled({ fullWidth, label = "Продолжить" }: 
 
 export function ContinueActive({ onClick, fullWidth, label = "Продолжить" }: { onClick: () => void; fullWidth?: boolean; label?: string }) {
   return (
-    <button
-      onClick={() => { onClick(); playClickSound(); }}
-      className={`group relative flex h-[56px] items-center justify-center px-[25.835px] py-[0.835px] rounded-[15px] shrink-0 bg-[#ff6b21] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px] ${fullWidth ? "w-full" : ""}`}
-      translate="no"
-    >
-      <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
+    <RaisedButton onClick={() => { onClick(); playClickSound(); }} tone="orange" className={`h-[56px] ${fullWidth ? "w-full" : ""}`} translate="no">
       <p
         translate="no"
         className="font-medium leading-[22.955px] text-[#f4f5fc] text-[22px] whitespace-nowrap"
@@ -44,18 +40,13 @@ export function ContinueActive({ onClick, fullWidth, label = "Продолжит
       >
         {label}
       </p>
-    </button>
+    </RaisedButton>
   );
 }
 
 export function ContinueCorrect({ onClick, fullWidth, label = "Продолжить" }: { onClick: () => void; fullWidth?: boolean; label?: string }) {
   return (
-    <button
-      onClick={() => { onClick(); playClickSound(); }}
-      className={`group relative flex h-[56px] items-center justify-center px-[25.831px] py-[0.831px] rounded-[15px] shrink-0 bg-[#00bb3c] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px] ${fullWidth ? "w-full" : ""}`}
-      translate="no"
-    >
-      <div aria-hidden="true" className="absolute border-[#00b93c] border-[0.831px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#668562] group-hover:shadow-[0px_2px_0px_0px_#668562] group-active:shadow-none" />
+    <RaisedButton onClick={() => { onClick(); playClickSound(); }} tone="green" className={`h-[56px] ${fullWidth ? "w-full" : ""}`} translate="no">
       <p
         translate="no"
         className="font-medium leading-[22.955px] text-[#f4f5fc] text-[22px] whitespace-nowrap"
@@ -63,6 +54,6 @@ export function ContinueCorrect({ onClick, fullWidth, label = "Продолжи�
       >
         {label}
       </p>
-    </button>
+    </RaisedButton>
   );
 }

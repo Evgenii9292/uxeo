@@ -1,3 +1,4 @@
+import { RaisedButton } from "../../components/RaisedButton";
 import { QuizFeedbackIcon } from "./QuizFeedbackIcon";
 /**
  * Onboarding quiz UI components: continue buttons and feedback bars.
@@ -72,25 +73,17 @@ export function ContinueDisabled({ fullWidth }: { fullWidth?: boolean }) {
 
 export function ContinueActive({ onClick, fullWidth }: { onClick: () => void; fullWidth?: boolean }) {
   return (
-    <button
-      onClick={() => { onClick(); playClick(); }}
-      className={`group relative flex h-[59px] items-center justify-center px-[25.835px] py-[0.835px] rounded-[15px] shrink-0 bg-[#ff6b21] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px] ${fullWidth ? "w-full" : ""}`}
-    >
-      <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
+    <RaisedButton onClick={() => { onClick(); playClick(); }} tone="orange" className={`h-[59px] ${fullWidth ? "w-full" : ""}`}>
       <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] text-[#f4f5fc] text-[26px] whitespace-nowrap">Продолжить</p>
-    </button>
+    </RaisedButton>
   );
 }
 
 export function ContinueCorrect({ onClick, fullWidth }: { onClick: () => void; fullWidth?: boolean }) {
   return (
-    <button
-      onClick={() => { onClick(); playClick(); }}
-      className={`group relative flex h-[59px] items-center justify-center px-[25.831px] py-[0.831px] rounded-[15px] shrink-0 bg-[#00bb3c] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px] ${fullWidth ? "w-full" : ""}`}
-    >
-      <div aria-hidden="true" className="absolute border-[#00b93c] border-[0.831px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#668562] group-hover:shadow-[0px_2px_0px_0px_#668562] group-active:shadow-none" />
+    <RaisedButton onClick={() => { onClick(); playClick(); }} tone="green" className={`h-[59px] ${fullWidth ? "w-full" : ""}`}>
       <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] text-[#f4f5fc] text-[26px] whitespace-nowrap">Продолжить</p>
-    </button>
+    </RaisedButton>
   );
 }
 

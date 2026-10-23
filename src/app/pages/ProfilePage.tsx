@@ -643,7 +643,7 @@ function ProfileSkeleton() {
   );
 }
 
-function SignOutConfirmModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
+function SignOutConfirmModal({ onConfirm, onCancel, isDemo = false }: { onConfirm: () => void; onCancel: () => void; isDemo?: boolean }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" onClick={onCancel} />
@@ -652,7 +652,7 @@ function SignOutConfirmModal({ onConfirm, onCancel }: { onConfirm: () => void; o
           Точно выйти?
         </h2>
         <p className="font-['Roboto_Condensed:Regular',sans-serif] font-normal text-[#5a6569] text-[18px] leading-[1.4] text-center">
-          Вы вернётесь на экран входа. Прогресс сохранится.
+          {isDemo ? "Вы вернётесь на экран входа. Прогресс демо останется в этом браузере." : "Вы вернётесь на экран входа. Прогресс сохранится."}
         </p>
         <div className="flex flex-col gap-[12px] w-full">
           <button
@@ -681,7 +681,7 @@ function SignOutConfirmModal({ onConfirm, onCancel }: { onConfirm: () => void; o
 
 function AccountActionsCard() {
   const navigate = useNavigate();
-  const { signOut } = useAuth();
+  const { signOut, isDemo } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
@@ -705,6 +705,7 @@ function AccountActionsCard() {
     <>
       {showConfirm && (
         <SignOutConfirmModal
+          isDemo={isDemo}
           onConfirm={handleSignOut}
           onCancel={() => setShowConfirm(false)}
         />
@@ -721,7 +722,7 @@ function AccountActionsCard() {
             >
               <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[12px] shadow-[0px_4px_0px_0px_#1B2428] group-hover:shadow-[0px_2px_0px_0px_#1B2428] group-active:shadow-none transition-[box-shadow] duration-75" style={{ border: "1px solid rgba(232,80,58,0.45)" }} />
               <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium text-[#E8503A] text-[18px] leading-none whitespace-nowrap relative">
-                {isSigningOut ? "Выходим..." : "Выйти из аккаунта"}
+                {isSigningOut ? "Выходим..." : isDemo ? "Выйти из демо" : "Выйти из аккаунта"}
               </p>
             </button>
           </div>

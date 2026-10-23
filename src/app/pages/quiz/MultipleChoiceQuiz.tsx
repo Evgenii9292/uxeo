@@ -1,3 +1,4 @@
+import { RaisedButton } from "../../components/RaisedButton";
 /** MultipleChoiceQuiz — multiple-select question type */
 
 import React, { useState } from "react";
@@ -132,13 +133,9 @@ function CheckButton({ onClick, disabled, fullWidth }: { onClick: () => void; di
     );
   }
   return (
-    <button
-      onClick={onClick}
-      className={`group relative flex h-[56px] items-center justify-center px-[25.835px] py-[0.835px] rounded-[15px] shrink-0 bg-[#ff6b21] cursor-pointer select-none outline-none transition-transform duration-75 hover:translate-y-[3px] active:translate-y-[5px] ${fullWidth ? "w-full" : ""}`}
-    >
-      <div aria-hidden="true" className="absolute border-[#ff390d] border-[0.835px] border-solid inset-0 pointer-events-none rounded-[15px] transition-[box-shadow] duration-75 shadow-[0px_5px_0px_0px_#c24226] group-hover:shadow-[0px_2px_0px_0px_#c24226] group-active:shadow-none" />
+    <RaisedButton onClick={onClick} tone="orange" className={`h-[56px] ${fullWidth ? "w-full" : ""}`}>
       <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[22.955px] text-[#f4f5fc] text-[22px] whitespace-nowrap">Проверить ответ</p>
-    </button>
+    </RaisedButton>
   );
 }
 

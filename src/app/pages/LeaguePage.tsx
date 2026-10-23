@@ -549,6 +549,8 @@ export default function LeaguePage() {
   const userName = getProfileDisplayName(userData?.userName, isDemo ? null : email);
   const userAvatarUrl = userData?.userAvatar ?? undefined;
 
+  const rivals = generateRivals(leagueUserId, userWeeklyXp, weekSeed);
+
   const userParticipant: Participant = {
     id: "user",
     name: userName,

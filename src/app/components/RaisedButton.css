@@ -1,0 +1,12 @@
+.raised-button{position:relative;isolation:isolate;background:transparent!important;border:0!important;box-shadow:none!important;transform:none!important;padding:0!important;border-radius:15px;cursor:pointer;flex-shrink:0;min-height:56px;color:#f4f5fc;font-family:'Roboto Condensed',sans-serif;font-size:22px;font-weight:500;touch-action:manipulation}
+.raised-button::before{content:'';position:absolute;inset:0;border-radius:inherit;background:var(--raised-base);transform:translateY(5px);z-index:-1;pointer-events:none}
+.raised-button-face{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:100%;min-height:inherit;padding:0 20px;border-radius:inherit;background:var(--raised-face);transition:transform 90ms ease;pointer-events:none}
+@media(hover:hover){.raised-button:hover:not(:disabled)>.raised-button-face{transform:translateY(2px)}}
+.raised-button:active:not(:disabled)>.raised-button-face{transform:translateY(5px)}
+.raised-button:focus-visible{outline:2px solid #f4f5fc;outline-offset:8px}
+.raised-button:disabled{cursor:default;color:#798589}
+.raised-button:disabled::before{display:none}
+.raised-button:disabled>.raised-button-face{background:#343e42}
+@media(prefers-reduced-motion:reduce){.raised-button-face{transition:none}}
+
+.real-action .real-start-quiz>.raised-button-face{padding:0}
