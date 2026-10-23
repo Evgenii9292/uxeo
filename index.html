@@ -21,7 +21,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <script>
-    document.documentElement.dataset.skillumSplash = location.pathname === "/welcome" || location.pathname === "/" ? "on" : "off";
+    document.documentElement.dataset.skillumSplash = "on";
   </script>
   <style>
     html[data-prerendered="true"] #splash,
@@ -46,24 +46,21 @@
       pointer-events: none;
     }
     #splash img {
-      width: min(286px, 52vw);
+      width: min(240px, 58vw);
       height: auto;
     }
-    #splash p {
-      font-family: 'Roboto Condensed', sans-serif;
-      font-size: 16px;
-      line-height: 1.45;
-      color: rgba(121, 133, 137, 0.7);
-      letter-spacing: 0.02em;
-      text-align: center;
-      margin: 0;
-    }
+    #splash p {font:16px/1.4 'Roboto Condensed',sans-serif;color:#9aa8ad;margin:0}
+    #splash .loading-track {width:min(220px,52vw);height:5px;background:#3a464c;border-radius:999px;overflow:hidden}
+    #splash .loading-track span {display:block;width:38%;height:100%;background:#ff6b21;border-radius:inherit;animation:splash-slide 1.3s ease-in-out infinite}
+    @keyframes splash-slide {from{transform:translateX(-105%)}to{transform:translateX(365%)}}
+    @media(prefers-reduced-motion:reduce){#splash .loading-track span{animation:none;margin:auto}}
   </style>
   </head>
   <body>
-    <div id="splash">
+    <div id="splash" role="status" aria-label="Загрузка приложения">
       <img src="/logo-splash.svg" alt="Skillum" width="286" height="69" fetchpriority="high" />
-      <p>Интерактивное обучение дизайну<br>через практику</p>
+      <div class="loading-track" aria-hidden="true"><span></span></div>
+      <p>Загружаем…</p>
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>

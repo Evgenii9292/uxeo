@@ -1,3 +1,4 @@
+import { LoadingScreen } from "./LoadingScreen";
 import { useEffect } from "react";
 import { Navigate } from "react-router";
 import { useAuthSafe } from "../context/AuthContext";
@@ -14,7 +15,7 @@ function HomeRedirect() {
     }
   }, [isLoading]);
 
-  if (isLoading) return <div role="status" className="min-h-screen flex items-center justify-center text-[#9aa8ad] text-[18px]">Загружаем ваш прогресс…</div>;
+  if (isLoading) return <LoadingScreen label="Загружаем ваш прогресс…" />;
   if (!auth?.isAuthenticated) return <Navigate to="/welcome" replace />;
   if (!userCtx?.level) return <Navigate to="/level" replace />;
   return <Navigate to="/lessons" replace />;

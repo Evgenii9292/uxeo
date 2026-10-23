@@ -1,3 +1,4 @@
+import { LoadingScreen } from "./components/LoadingScreen";
 import { tabLoaders } from "./utils/routePreload";
 import React, { lazy, Suspense } from "react";
 import { createBrowserRouter, Outlet, Navigate } from "react-router";
@@ -36,13 +37,13 @@ const AppHomeRoute = lazy(() => import("./components/AppHomeRoute"));
 
 // ── Заглушка во время загрузки страницы ───────────────────────────────────────
 function PageLoader() {
-  return <div style={{ height: "100%", background: "#282F33" }} />;
+  return <LoadingScreen />;
 }
 
 // ── RequireAuth: редирект на /welcome если не авторизован ─────────────────────
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const auth = useAuthSafe();
-  if (auth?.loading && !auth?.isDemo) return null; // ждём загрузку
+  if (auth?.loading && !auth?.isDemo) return <LoadingScreen label="Проверяем вход…" />; // ждём загрузку
   if (!auth?.isAuthenticated) return <Navigate to="/welcome" replace />;
   return <>{children}</>;
 }

@@ -1,6 +1,6 @@
 import {build} from 'esbuild';import {createRequire} from 'node:module';import assert from 'node:assert/strict';import test from 'node:test';
 const require=createRequire(import.meta.url);const React=require('react');
-const output=await build({entryPoints:['src/app/pages/AuthCallbackPage.tsx'],bundle:true,platform:'node',format:'cjs',packages:'external',jsx:'automatic',write:false,plugins:[{name:'auth-fixture',setup(b){b.onResolve({filter:/utils\/supabase\/client$/},()=>({path:'auth-test-client',external:true}));}}]});
+const output=await build({entryPoints:['src/app/pages/AuthCallbackPage.tsx'],bundle:true,platform:'node',format:'cjs',packages:'external',loader:{'.css':'empty'},jsx:'automatic',write:false,plugins:[{name:'auth-fixture',setup(b){b.onResolve({filter:/utils\/supabase\/client$/},()=>({path:'auth-test-client',external:true}));}}]});
 async function scenario(session, eventFirst=false){
  const effects=[],routes=[];let listener;let unsubscribed=false;let read;
  const client={auth:{onAuthStateChange(fn){listener=fn;return {data:{subscription:{unsubscribe(){unsubscribed=true;}}}}},getSession(){return new Promise(resolve=>{read=resolve})},exchangeCodeForSession(){throw Error('Duplicate exchange')}}};

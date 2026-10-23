@@ -1,3 +1,4 @@
+import { LoadingScreen } from "../components/LoadingScreen";
 /**
  * AuthCallbackPage — handles redirect after OAuth (Google) or magic link.
  *
@@ -62,25 +63,5 @@ export default function AuthCallbackPage() {
     };
   }, [navigate]);
 
-  return (
-    <div
-      style={{
-        minHeight: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "linear-gradient(165.05deg, #282F33 14.367%, rgb(46, 57, 62) 147.74%)",
-        flexDirection: "column",
-        gap: 20,
-      }}
-    >
-      <svg className="animate-spin" width="40" height="40" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="10" stroke="rgba(255,93,57,0.3)" strokeWidth="3" />
-        <path d="M12 2a10 10 0 0 1 10 10" stroke="#ff5d39" strokeWidth="3" strokeLinecap="round" />
-      </svg>
-      <p style={{ fontFamily: "Roboto Condensed, sans-serif", color: "#798589", fontSize: 16 }}>
-        Входим в аккаунт…
-      </p>
-    </div>
-  );
+  return <LoadingScreen label="Входим в аккаунт…" />;
 }

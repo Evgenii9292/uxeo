@@ -1,0 +1,8 @@
+.skillum-loading{min-height:100dvh;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;background:#282f33;padding:32px 24px;box-sizing:border-box}
+.skillum-loading-compact{min-height:380px}
+.skillum-loading img{width:min(240px,58vw);height:auto}
+.skillum-loading-track{width:min(220px,52vw);height:5px;background:#3a464c;border-radius:999px;overflow:hidden}
+.skillum-loading-track>span{display:block;width:38%;height:100%;border-radius:inherit;background:#ff6b21;animation:skillum-loading-slide 1.3s ease-in-out infinite}
+.skillum-loading p{margin:0;color:#9aa8ad;font:16px/1.4 'Roboto Condensed',sans-serif;text-align:center}
+@keyframes skillum-loading-slide{0%{transform:translateX(-105%)}100%{transform:translateX(365%)}}
+@media(prefers-reduced-motion:reduce){.skillum-loading-track>span{animation:none;margin:auto}}
