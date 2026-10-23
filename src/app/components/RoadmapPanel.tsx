@@ -1,3 +1,4 @@
+import { LoadingScreen } from "./LoadingScreen";
 // ─── RoadmapPanel ─────────────────────────────────────────────────────────────
 // Thin adapter — keeps the existing prop interface, delegates to the
 // feature module at src/features/roadmap/Roadmap.tsx.
@@ -21,7 +22,7 @@ export default function RoadmapPanel({ loading = false, ...props }: RoadmapPanel
   const isMobile = vw < 768;
 
   // Mount the real map once initial progress is ready, without a one-frame fake map.
-  if (loading) return <div role="status" className="min-h-[300px] flex items-center justify-center text-[#9aa8ad] text-[18px]">Загружаем ваш прогресс…</div>;
+  if (loading) return <LoadingScreen compact label="Загружаем ваш прогресс…" />;
 
   return (
     <div style={{ position: "relative", width: "100%" }}>
