@@ -192,6 +192,7 @@ export default function LessonPage() {
       }
     >
       <RoadmapPanel
+          loading={userData?.userLoading ?? true}
           lessons={lessons}
           popupLessonId={popupLessonId}
           onSelectLesson={setPopupLessonId}

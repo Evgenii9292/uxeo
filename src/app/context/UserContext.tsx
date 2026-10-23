@@ -266,10 +266,14 @@ function UserSessionProvider({ children }: { children: ReactNode }) {
     const isFirstLoad = loadedUserIdRef.current !== userId;
     if (isFirstLoad) setUserLoading(true);
 
-    const getProgress = (nextToken: string) => fetch(
-      `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/progress?userId=${encodeURIComponent(userId)}`,
-      { headers: { Authorization: `Bearer ${nextToken}` } }
-    );
+    const getProgress = (nextToken: string) => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      return fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-d627d1b0/user/progress?userId=${encodeURIComponent(userId)}`,
+        { headers: { Authorization: `Bearer ${nextToken}` }, signal: controller.signal }
+      ).finally(() => clearTimeout(timeout));
+    };
 
     let cancelled = false;
     getProgress(accessToken)

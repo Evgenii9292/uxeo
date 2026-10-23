@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { warmTabs } from "../utils/routePreload";
 import type { ReactNode } from "react";
 import { UserProvider } from "../context/UserContext";
 import { LessonProvider } from "../context/LessonContext";
@@ -18,6 +20,7 @@ function PushInit() {
 }
 
 export default function AppProviders({ children }: { children: ReactNode }) {
+  useEffect(warmTabs, []);
   return (
     <UserProvider>
       <AchievementsProvider>

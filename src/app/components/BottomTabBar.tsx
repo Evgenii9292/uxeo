@@ -1,3 +1,4 @@
+import { preloadTab } from "../utils/routePreload";
 /**
  * BottomTabBar — 5 tabs: Обучение · Курсы · Вызовы · Профиль · ···
  * The "···" tab opens the MoreSheet bottom drawer.
@@ -224,6 +225,9 @@ export default function BottomTabBar({ onMoreOpenChange }: { onMoreOpenChange?: 
               <button
                 key={tab.key}
                 aria-label={{learning:"Обучение",notifications:"Уведомления",challenges:"Вызовы",league:"Лига"}[tab.key]}
+                onPointerEnter={() => preloadTab(tab.path)}
+                onPointerDown={() => preloadTab(tab.path)}
+                onFocus={() => preloadTab(tab.path)}
                 onClick={() => { hapticTap(); setMoreOpen(false); navigate(tab.path); }}
                 className="flex flex-col items-center justify-center flex-1 h-full cursor-pointer border-0 outline-none active:scale-90 transition-transform duration-75 relative"
                 style={{

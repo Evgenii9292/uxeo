@@ -50,7 +50,7 @@ export function IncorrectFeedback({
           {phrase}
         </p>
         </div>
-        {!hideAnswer && (
+        {!hideAnswer && !/^[А-ЯA-Z]$/.test(correctAnswer.trim()) && (
           <p className="font-['Roboto_Condensed:Medium',sans-serif] font-medium leading-[1.2] text-[#ffbaaa] text-[15px] whitespace-nowrap">
             {correctAnswer}
           </p>

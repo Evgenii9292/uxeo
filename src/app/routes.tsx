@@ -1,3 +1,4 @@
+import { tabLoaders } from "./utils/routePreload";
 import React, { lazy, Suspense } from "react";
 import { createBrowserRouter, Outlet, Navigate } from "react-router";
 
@@ -8,22 +9,22 @@ import { RouteSeo } from "./seo/RouteSeo";
 
 // ── Lazy: грузятся только при переходе на страницу ────────────────────────────
 const AuthCallbackPage   = lazy(() => import("./pages/AuthCallbackPage"));
-const CoursesPage        = lazy(() => import("./pages/CoursesPage"));
+const CoursesPage = lazy(tabLoaders["/courses"]);
 const ModulesPage        = lazy(() => import("./pages/ModulesPage"));
-const LessonPage         = lazy(() => import("./pages/LessonPage"));
+const LessonPage = lazy(tabLoaders["/lessons"]);
 const QuizPage           = lazy(() => import("./pages/QuizPage"));
 const LessonQuizPage     = lazy(() => import("./pages/LessonQuizPage"));
 const TheoryPage         = lazy(() => import("./pages/TheoryPage"));
 const LevelSelectPage    = lazy(() => import("./pages/LevelSelectPage"));
-const ProfilePage        = lazy(() => import("./pages/ProfilePage"));
-const ChallengesPage     = lazy(() => import("./pages/ChallengesPage"));
+const ProfilePage = lazy(tabLoaders["/profile"]);
+const ChallengesPage = lazy(tabLoaders["/challenges"]);
 const ChallengeDetailPage = lazy(() => import("./pages/ChallengeDetailPage"));
 const HomeworkPage       = lazy(() => import("./pages/HomeworkPage"));
-const NotificationsPage  = lazy(() => import("./pages/NotificationsPage"));
+const NotificationsPage = lazy(tabLoaders["/notifications"]);
 const AdminHomeworksPage = lazy(() => import("./pages/AdminHomeworksPage"));
 const AboutPage          = lazy(() => import("./pages/AboutPage"));
 const EmailCapturePage   = lazy(() => import("./pages/EmailCapturePage"));
-const LeaguePage         = lazy(() => import("./pages/LeaguePage"));
+const LeaguePage = lazy(tabLoaders["/league"]);
 const OnboardingGoalPage = lazy(() => import("./pages/OnboardingGoalPage"));
 const OnboardingTimePage = lazy(() => import("./pages/OnboardingTimePage"));
 const OnboardingNamePage = lazy(() => import("./pages/OnboardingNamePage"));
@@ -51,12 +52,17 @@ function PublicHomeRoute() {
   return auth?.isAuthenticated ? <AppHomeRoute /> : <WelcomePage />;
 }
 
+function SessionOutlet() {
+  const auth = useAuthSafe();
+  return auth?.isAuthenticated ? <AppProviders><Outlet /></AppProviders> : <Outlet />;
+}
+
 function Root() {
   return (
     <AuthProvider>
       <RouteSeo />
       <Suspense fallback={<PageLoader />}>
-        <Outlet />
+        <SessionOutlet />
       </Suspense>
     </AuthProvider>
   );
@@ -88,9 +94,7 @@ function ErrorPage() {
 function ProtectedLayout() {
   return (
     <RequireAuth>
-      <AppProviders>
-        <Outlet />
-      </AppProviders>
+      <Outlet />
     </RequireAuth>
   );
 }
