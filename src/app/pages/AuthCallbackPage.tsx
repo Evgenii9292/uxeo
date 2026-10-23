@@ -44,19 +44,11 @@ export default function AuthCallbackPage() {
     });
 
     const completeAuth = async () => {
-      const code = new URLSearchParams(window.location.search).get("code");
-      if (code) {
-        const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-        if (error) throw error;
-        if (data.session && !resolved) {
-          window.history.replaceState({}, document.title, window.location.pathname);
-          handleSession(data.session);
-          return;
-        }
-      }
-
+      // detectSessionInUrl already consumes the OAuth code/hash once during client initialization.
+      // getSession waits for that initialization; a second exchange would reuse a one-time code.
       const { data } = await supabase.auth.getSession();
       if (data.session && !resolved) handleSession(data.session);
+      else if (!data.session) handleNoSession();
     };
 
     completeAuth().catch(handleNoSession);

@@ -120,11 +120,10 @@ export function Roadmap({
   const MOBILE_POPUP_CLOSE_MS = 280;
 
   // Animate only once per session
-  const [shouldAnimate] = useState<boolean>(() => {
-    if (sessionStorage.getItem("roadmap-entered")) return false;
+  const [shouldAnimate] = useState<boolean>(() => !sessionStorage.getItem("roadmap-entered"));
+  useEffect(() => {
     sessionStorage.setItem("roadmap-entered", "1");
-    return true;
-  });
+  }, []);
 
 
   const roadmapW = mobile ? ROADMAP_W_MOBILE : ROADMAP_W;

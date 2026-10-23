@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { Navigate } from "react-router";
 import { useAuthSafe } from "../context/AuthContext";
 import { useUserSafe } from "../context/UserContext";
-import AppProviders from "./AppProviders";
 
 function HomeRedirect() {
   const auth = useAuthSafe();
@@ -15,7 +14,7 @@ function HomeRedirect() {
     }
   }, [isLoading]);
 
-  if (isLoading) return null;
+  if (isLoading) return <div role="status" className="min-h-screen flex items-center justify-center text-[#9aa8ad] text-[18px]">Загружаем ваш прогресс…</div>;
   if (!auth?.isAuthenticated) return <Navigate to="/welcome" replace />;
   if (!userCtx?.level) return <Navigate to="/level" replace />;
   return <Navigate to="/lessons" replace />;
@@ -23,8 +22,6 @@ function HomeRedirect() {
 
 export default function AppHomeRoute() {
   return (
-    <AppProviders>
-      <HomeRedirect />
-    </AppProviders>
+    <HomeRedirect />
   );
 }

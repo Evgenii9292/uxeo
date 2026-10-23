@@ -6,6 +6,8 @@
 }
 
 @media (max-width:599px){
-.quiz-incorrect-heading{align-items:flex-start}
-.quiz-incorrect-heading>p{width:84px;white-space:normal;line-height:19px}
+.quiz-incorrect-feedback{flex-direction:column;gap:8px}
+.quiz-incorrect-heading{align-items:center}
+.quiz-incorrect-heading>p{width:auto;white-space:normal;line-height:20px}
+.quiz-incorrect-feedback>p{width:100%;flex:auto;line-height:1.4}
 }

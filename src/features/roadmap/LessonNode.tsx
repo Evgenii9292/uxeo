@@ -129,7 +129,7 @@ function GreenPartialEllipse({ pct, uid }: { pct: number; uid: string }) {
   );
 }
 
-// ─── Current: orange node without a separate shadow or halo ────────────────────────────────────────────────
+// ─── Current: orange node with a fixed lower base, without a halo ────────────────────────────────────────────────
 
 function OrangeCurrentEllipse({ uid, pct, isHomework }: { uid: string; pct: number; isHomework?: boolean }) {
   const rx = 42;
@@ -141,7 +141,11 @@ function OrangeCurrentEllipse({ uid, pct, isHomework }: { uid: string; pct: numb
   return (
     <div style={{ width: 89, height: NODE_H + 7, position: "relative", flexShrink: 0, overflow: "visible" }}>
       <div
-        className="absolute group-hover:translate-y-[3px] group-active:translate-y-[6px] transition-transform duration-75"
+        aria-hidden="true"
+        style={{ position: "absolute", top: 7, left: 0, width: 89, height: NODE_H, borderRadius: "50%", background: "#C54A0A", pointerEvents: "none" }}
+      />
+      <div
+        className="absolute group-hover:translate-y-[3px] group-active:translate-y-[5px] transition-transform duration-75"
         style={{ top: 0, left: 0, width: 89, height: NODE_H, borderRadius: "50%", overflow: "visible" }}
       >
         <svg className="absolute inset-0 block" fill="none" width="89" height={NODE_H} viewBox="0 0 89 79">
